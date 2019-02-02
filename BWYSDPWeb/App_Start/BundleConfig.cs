@@ -22,23 +22,23 @@ namespace BWYSDPWeb
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js",
+                      "~/Scripts/jquery-2.1.3.min.js",
                       "~/Scripts/lib/jquery.mousewheel.min.js",
                       "~/Scripts/lib/jquery.cookie.min.js",
                       "~/Scripts/lib/fastclick.min.js",
                       "~/Scripts/lib/bootstrap.min.js",
                       "~/Scripts/lib/clearmin.min.js",
-                      "~/Scripts/lib/home.js",
-                      "~/Scripts/respond.js"
+                      "~/Scripts/lib/home.js"
                       ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css",
+                      //"~/Content/bootstrap.css",
+                      //"~/Content/site.css",
+                      "~/Content/bootstrap-clearmin.min.css",
                       "~/Content/roboto.css",
                       "~/Content/material-design.css",
                       "~/Content/small-n-flat.css",
-                      "~/Content/font-awesome.min.css",
-                      "~/Content/bootstrap-clearmin.min.css"
+                      "~/Content/font-awesome.min.css"
                       ));
         }
     }

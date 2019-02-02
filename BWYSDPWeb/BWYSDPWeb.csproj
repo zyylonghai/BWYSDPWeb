@@ -141,7 +141,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="BaseController\BaseController.cs" />
+    <Compile Include="BaseController\DataBaseController.cs" />
+    <Compile Include="BllAuthorControllers\HomeController.cs" />
+    <Compile Include="BllSCMController\SCMController.cs" />
+    <Compile Include="BllStockController\StockController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1893,6 +1897,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\SCM\" />
+    <Folder Include="Views\Stock\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
