@@ -28,7 +28,10 @@ namespace BWYSDPWeb
                       "~/Scripts/lib/fastclick.min.js",
                       "~/Scripts/lib/bootstrap.min.js",
                       "~/Scripts/lib/clearmin.min.js",
-                      "~/Scripts/lib/home.js"
+                      "~/Scripts/lib/home.js",
+                      "~/Scripts/lib/bootstrap-table.js",
+                      "~/Scripts/lib/bootstrap-table-zh-CN.js",
+                      "~/Scripts/lib/TableSetting.js"
                       ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
@@ -38,7 +41,8 @@ namespace BWYSDPWeb
                       "~/Content/roboto.css",
                       "~/Content/material-design.css",
                       "~/Content/small-n-flat.css",
-                      "~/Content/font-awesome.min.css"
+                      "~/Content/font-awesome.min.css",
+                      "~/Content/bootstrap-table.css"
                       ));
         }
     }
