@@ -79,6 +79,14 @@ namespace BWYSDPWeb.BaseController
             m.PmenuId = "0102";
             mdata.Add(m);
 
+            m = new Menu();
+            m.MenuId = "010203";
+            m.MenuName = "库存调整2";
+            m.ProgId = "stockpage2";
+            m.Package = "Stock";
+            m.PmenuId = "0102";
+            mdata.Add(m);
+
             return Json(new { Message = "success", data = mdata, Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 

@@ -31,6 +31,7 @@ namespace BWYSDPWeb
                       "~/Scripts/lib/home.js",
                       "~/Scripts/lib/bootstrap-table.js",
                       "~/Scripts/lib/bootstrap-table-zh-CN.js",
+                      "~/Scripts/lib/colResizable-1.6.js",
                       "~/Scripts/lib/TableSetting.js"
                       ));
 

@@ -85,6 +85,13 @@ function InitMainTable() {
             EditViewById(id, 'view');
         },
     });
+
+    $('#' + $table.ElemtableID).colResizable({
+        liveDrag: true,
+        gripInnerHtml: "",
+        draggingClass: "dragging",
+        resizeMode: 'fit'
+    });
 }
 
 //操作栏的格式化

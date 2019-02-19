@@ -1875,6 +1875,8 @@
     <Content Include="Scripts\lib\bootstrap-table.js" />
     <Content Include="Scripts\lib\c3.min.js" />
     <Content Include="Scripts\lib\clearmin.min.js" />
+    <Content Include="Scripts\lib\colResizable-1.6.js" />
+    <Content Include="Scripts\lib\colResizable-1.6.min.js" />
     <Content Include="Scripts\lib\d3.min.js" />
     <Content Include="Scripts\lib\dashboard.js" />
     <Content Include="Scripts\lib\fastclick.min.js" />
