@@ -116,7 +116,6 @@ namespace BWYSDPWeb.BaseController
                               html.Append("<div class='panel-body'>");
                              
                               html.Append("</div>");
-                            html.Append("</div>");
                           html.Append("</div>");
                         html.Append("</div>");
                         fileoperation.WritText(html.ToString());

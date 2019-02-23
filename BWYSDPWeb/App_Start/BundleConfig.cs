@@ -20,31 +20,56 @@ namespace BWYSDPWeb
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootstrap.min.js",
                       "~/Scripts/respond.js",
-                      "~/Scripts/jquery-2.1.3.min.js",
+                      //"~/Scripts/jquery-2.1.3.min.js",
                       "~/Scripts/lib/jquery.mousewheel.min.js",
                       "~/Scripts/lib/jquery.cookie.min.js",
                       "~/Scripts/lib/fastclick.min.js",
-                      "~/Scripts/lib/bootstrap.min.js",
+                      //"~/Scripts/lib/bootstrap.min.js",
                       "~/Scripts/lib/clearmin.min.js",
-                      "~/Scripts/lib/home.js",
+                      "~/Scripts/lib/home.js"
+                      //"~/Scripts/lib/bootstrap-table.js",
+                      //"~/Scripts/lib/bootstrap-table-zh-CN.js",
+                      //"~/Scripts/lib/colResizable-1.6.js",
+                      //"~/Scripts/lib/TableSetting.js",
+                      //"~/Scripts/lib/laydate/laydate.js"
+                      //"~/Scripts/lib/bootstrap-datetimepicker.js",
+                      //"~/Scripts/lib/bootstrap-datetimepicker.zh-CN.js"
+                      ));
+            #region js控件
+            //bootstrapTable
+            bundles.Add(new ScriptBundle("~/bundles/bootstrapTable").Include(
                       "~/Scripts/lib/bootstrap-table.js",
                       "~/Scripts/lib/bootstrap-table-zh-CN.js",
                       "~/Scripts/lib/colResizable-1.6.js",
                       "~/Scripts/lib/TableSetting.js"
-                      ));
+                      
+                ));
+            //laydate
+            bundles.Add(new ScriptBundle("~/bundles/laydate").Include(
+                    "~/Scripts/lib/laydate/laydate.js"
+                ));
+            #endregion
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       //"~/Content/bootstrap.css",
-                      //"~/Content/site.css",
+                      "~/Content/bootstrap.min.css",
                       "~/Content/bootstrap-clearmin.min.css",
                       "~/Content/roboto.css",
                       "~/Content/material-design.css",
                       "~/Content/small-n-flat.css",
-                      "~/Content/font-awesome.min.css",
-                      "~/Content/bootstrap-table.css"
+                      "~/Content/font-awesome.min.css"
+                      //"~/Content/bootstrap-table.css"
+                      //"~/Content/bootstrap-datetimepicker.min.css"
                       ));
+            #region 控件的css 
+            //bootstrapTable
+            bundles.Add(new StyleBundle("~/Content/bootstrapTable").Include(
+                     "~/Content/bootstrap-table.css"
+
+                ));
+            #endregion
         }
     }
 }
