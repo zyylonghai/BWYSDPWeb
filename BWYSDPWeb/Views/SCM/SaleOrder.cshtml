@@ -1,5 +1,6 @@
 @Styles.Render("~/Content/bootstrapTable")
 @Scripts.Render("~/bundles/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTableExport")
 @Scripts.Render("~/bundles/laydate")
 <div class="container-fluid">
     <div class="panel panel-default">
@@ -74,6 +75,17 @@
                         </div>
                         <div id="saleordercollapse" class="panel-collapse collapse">
                             <div class="panel-body">
+                                <div id="toolbar" class="btn-group">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-heart"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </button>
+                                </div>
                                 <table id="table"></table>
                             </div>
                         </div>
@@ -134,7 +146,11 @@
             field: 'Mobile',
             title: '手机',
             align: 'center',
-            sortable: true
+            sortable: true,
+            footerFormatter: function () {
+                return '汇总'
+            }
+
         }, {
             field: 'Email',
             align: 'center',
@@ -159,6 +175,34 @@
             field: 'Age',
             align: 'center',
             title: '年龄'
+        }, {
+            field: 'Age1',
+            align: 'center',
+            title: '年龄1'
+        }, {
+            field: 'Age2',
+            align: 'center',
+            title: '年龄2'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄3'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄4'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄5'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄6'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄7'
         }, {
             field: 'BirthDate',
             align: 'center',

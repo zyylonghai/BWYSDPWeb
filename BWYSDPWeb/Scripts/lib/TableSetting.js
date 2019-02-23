@@ -42,7 +42,7 @@ function InitMainTable() {
     $('#' + $table.ElemtableID).bootstrapTable({
         url: $table.url,                      //请求后台的URL（*）
         method: $table.method,                      //请求方式（*）
-        //toolbar: '#toolbar',              //工具按钮用哪个容器
+        toolbar: '#toolbar',              //工具按钮用哪个容器
         striped: $table.striped,                      //是否显示行间隔色
         cache: $table.cache,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
         pagination: $table.pagination,                   //是否显示分页（*）
@@ -63,6 +63,17 @@ function InitMainTable() {
         showToggle: $table.showToggle,                   //是否显示详细视图和列表视图的切换按钮
         cardView: $table.cardView,                    //是否显示详细视图
         detailView: $table.detailView,                  //是否显示父子表
+        showExport: true, //是否显示导出
+        exportDataType: "basic", //默认basic：只导出当前页的表格数据；all：导出所有数据；selected：导出选中的数据
+        //exportTypes: ['excel'] ,//导出文件类型 ，支持多种类型文件导出
+        //exportOptions: {
+        //    ignoreColumn: [0, 1],  //忽略某一列的索引  
+        //    fileName: '贷款总表',  //文件名称设置  
+        //    worksheetName: 'sheet1',  //表格工作区名称  
+        //    tableName: '贷款总表',
+        //    excelstyles: ['background-color', 'color', 'font-size', 'font-weight', 'border-top']
+        //},
+        showFooter: true,
         //得到查询的参数
         queryParams: function (params) {
             //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
@@ -82,7 +93,7 @@ function InitMainTable() {
         },
         onDblClickRow: function (row, $element) {
             var id = row.ID;
-            EditViewById(id, 'view');
+            //EditViewById(id, 'view');
         },
     });
 
@@ -90,7 +101,7 @@ function InitMainTable() {
         liveDrag: true,
         gripInnerHtml: "",
         draggingClass: "dragging",
-        resizeMode: 'fit'
+        resizeMode: 'overflow'//overflow,flex,fit
     });
 }
 
