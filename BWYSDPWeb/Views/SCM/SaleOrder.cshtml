@@ -15,23 +15,23 @@
             <br />
             <br />
             <form class="form-horizontal" action="DoSave">
-                <div class="panel-group" id="accordion">
+                <div class="panel-group" id="keyaccordion">
                     <div class="panel panel-default">
                         <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion"
-                                   href="#keyinfo">
-                                    关键信息
-                                </a>
+                                <a data-toggle="collapse" data-parent="#keyaccordion" href="#keyinfo">关键信息</a>
                             </h4>
                         </div>
                         <div id="keyinfo" class="panel-collapse in">
                             <div class="panel-body">
                                 <div class="form-group">
                                     <label for="billno" class="col-sm-1 control-label">单据编号</label>
-                                    <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="billno" name="billno" placeholder="billno">
+                                    <div class="col-sm-11">
+                                        <input type="text" class="form-control" id="billno" name="billno" readonly placeholder="billno">
                                     </div>
+                                </div>
+                                <div class="form-group">
+
                                     <label for="billdate" class="col-sm-1 control-label">单据日期</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="billdate" name="billdate">
@@ -42,9 +42,14 @@
                                     <div class="col-sm-2">
                                         <input type="date" class="form-control" id="createdatetime" placeholder="createdatetime">
                                     </div>
-                                    <label for="datetime" class="col-sm-1 control-label">创建日期</label>
+                                    <label for="datetime" class="col-sm-1 control-label">创建日期2</label>
                                     <div class="col-sm-2">
                                         <input type="datetime-local" class="form-control" id="createdatetime5" placeholder="createdatetime">
+                                    </div>
+
+                                    <label for="datetime" class="col-sm-1 control-label">创建日期3</label>
+                                    <div class="col-sm-2">
+                                        <input type="datetime-local" class="form-control" id="createdatetime9" placeholder="createdatetime9">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -52,17 +57,69 @@
                                     <div class="col-sm-2">
                                         <input type="datetime" class="form-control" id="datetime2" placeholder="datetime2">
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputPassword3" class="col-sm-1 control-label">Password</label>
-                                    <div class="col-sm-10">
-                                        <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+
+                                    <label for="billType" class="col-sm-1 control-label">单据类型</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-control" name="billType">
+                                            <option value="1">默认选择</option>
+                                            <option value="2">类型1</option>
+                                            <option value="3">类型2</option>
+                                        </select>
                                     </div>
+
                                 </div>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label for="inputPassword3" class="col-sm-1 control-label">Password</label>
+                                        <div class="col-sm-11">
+                                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                               
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="panel-group" id="customergroup">
+                    <div class="panel panel-default" >
+                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#customergroup" href="#customerinfo"> 客户信息</a>
+                            </h4>
+                        </div>
+                        <div id="customerinfo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <fieldset disabled>
+                                    <div class="form-group">
+                                        <label for="customer" class="col-sm-1 control-label">客户编码</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="customerid" name="customerid" placeholder="客户编码">
+                                        </div>
+
+                                        <label for="customerNm" class="col-sm-1 control-label">客户名称</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="customerNm" placeholder="客户名称">
+                                        </div>
+
+                                        <label for="customeraddress" class="col-sm-1 control-label">客户地址</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="customerNm" placeholder="客户地址">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-1 control-label">备注</label>
+                                    <div class="col-sm-11">
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="panel-group" id="accordion">
                     <div class="panel panel-success">
                         <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
@@ -140,6 +197,7 @@
             field: 'Name',
             title: '姓名',
             align: 'center',
+            //width:200,
             //valign: 'middle',
             sortable: true
         }, {
