@@ -53,7 +53,7 @@ namespace BWYSDPWeb
                      "~/Scripts/lib/jquery.base64.js"
                 ));
             //laydate
-            bundles.Add(new ScriptBundle("~/bundles/laydate").Include(
+            bundles.Add(new ScriptBundle("~/Scripts/lib/laydate/laydate").Include(
                     "~/Scripts/lib/laydate/laydate.js"
                 ));
             #endregion

@@ -151,6 +151,7 @@
     <Compile Include="BllSCMController\SaleOrderController.cs" />
     <Compile Include="BllSCMController\SCMController.cs" />
     <Compile Include="BllStockController\StockController.cs" />
+    <Compile Include="BllStockController\stocktestController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1864,6 +1865,7 @@
     <Content Include="fonts\roboto-mediumitalic.woff2" />
     <Content Include="fonts\roboto-regular.woff" />
     <Content Include="fonts\roboto-regular.woff2" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -1890,7 +1892,10 @@
     <Content Include="Scripts\lib\jquery.cookie.min.js" />
     <Content Include="Scripts\lib\jquery.mousewheel.min.js" />
     <Content Include="Scripts\lib\laydate\laydate.js" />
+    <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.svg" />
+    <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.ttf" />
+    <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.woff" />
     <Content Include="Scripts\lib\laydate\theme\default\laydate.css" />
     <Content Include="Scripts\lib\notepad.js" />
     <Content Include="Scripts\lib\popovers-tooltips.js" />
@@ -1915,13 +1920,12 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_Layout2.cshtml" />
-    <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.eot" />
-    <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.ttf" />
-    <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.woff" />
+    <Content Include="Views\SCM\index.cshtml" />
+    <Content Include="Views\SCM\SaleOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\SCM\" />
+    <Folder Include="Views\stocktest\" />
     <Folder Include="Views\Stock\" />
   </ItemGroup>
   <ItemGroup>

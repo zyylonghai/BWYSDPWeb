@@ -104,6 +104,7 @@ namespace BWYSDPWeb.BaseController
                 if (!string.IsNullOrEmpty(packagepath))
                 {
                     FileOperation fileoperation = new FileOperation();
+                    
                     fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", Server.MapPath("/").Replace("//", ""), packagepath, progId);
 
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
