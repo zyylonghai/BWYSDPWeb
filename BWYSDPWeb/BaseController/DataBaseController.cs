@@ -128,6 +128,7 @@ namespace BWYSDPWeb.BaseController
                         LibFormPage formpage= ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, packagepath.Replace("/", ""));
                         if (formpage != null)
                         {
+                            #region 旧代码
                             //StringBuilder html = new StringBuilder();
                             //html.Append("<div class=\"container-fluid\">");
                             ////页面内容
@@ -139,6 +140,7 @@ namespace BWYSDPWeb.BaseController
                             //html.Append("</div>");
                             //html.Append("</div>");
                             //fileoperation.WritText(html.ToString());
+                            #endregion
 
                             #region 根据排版模型对象 创建功能视图。
                             ViewFactory factory = new ViewFactory();

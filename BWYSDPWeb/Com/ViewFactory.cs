@@ -10,19 +10,30 @@ namespace BWYSDPWeb.Com
 {
     public class ViewFactory
     {
-        private StringBuilder _page;
+        private StringBuilder _page=null;
+        private StringBuilder _script=null;
         private Dictionary<string, bool> _panelgroupdic=null;
+        private Dictionary<string, bool> _gridGroupdic = null;
+        private List<string> _dateElemlst = null;
         //private Dictionary<string, bool> _fomGroupdic=null;
         public ViewFactory()
         {
             _page = new StringBuilder();
+            _script = new StringBuilder();
+            _dateElemlst = new List<string>();
             _panelgroupdic = new Dictionary<string, bool>();
+            _gridGroupdic = new Dictionary<string, bool>();
             //_fomGroupdic = new Dictionary<string, bool>();
         }
 
         public string PageHtml {
             get {
-                return _page.ToString();
+                StringBuilder jsandcss = new StringBuilder();
+                if (_dateElemlst.Count > 0) //加载日期控件的js，css
+                {
+                    jsandcss.Append("@Scripts.Render(\"~/Scripts/lib/laydate/laydate\")");
+                }
+                return jsandcss.Append(_page.ToString()).ToString();
             }
         }
         /// <summary>
@@ -62,17 +73,25 @@ namespace BWYSDPWeb.Com
         /// </summary>
         public void CreatePanelGroup(string title)
         {
-            foreach (KeyValuePair<string, bool> item in _panelgroupdic)
-            {
-                if (!item.Value)//未结束面板的  先结束面板。
-                {
-                    _page.Append("</div>");
-                    _page.Append("</div>");
-                    _page.Append("</div>");
-                    _page.Append("</div>");
-                    _panelgroupdic[item.Key] = true;
-                }
-            }
+            //KeyValuePair<string, bool> panelitem = _panelgroupdic.FirstOrDefault(i => !i.Value);
+            //if (panelitem.Key != null)
+            //{
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _panelgroupdic[panelitem.Key] = true;
+            //}
+            //KeyValuePair<string, bool> griditem = _gridGroupdic.FirstOrDefault(i => !i.Value);
+            //if (griditem.Key != null)
+            //{
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _gridGroupdic[griditem.Key] = true;
+            //}
+            EndprePanel();
             string id = string.Format("PanelGroup{0}", _panelgroupdic.Count + 1);
             string contentid = string.Format("{0}_info", id);
             _page.Append("<div class=\"panel-group\" id=\"" + id + "\">");
@@ -120,10 +139,26 @@ namespace BWYSDPWeb.Com
                     }
                     _page.Append("<div class=\"form-group\">");
                 }
-                string id = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+                string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
+                string name=string.Format("{0}.{1}", field.FromTableNm, field.Name);
                 _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName + "</label>");
                 _page.Append("<div class=\"col-sm-" + field.Width + "\">");
-                _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\">");
+                switch (field.ElemType)
+                {
+                    case ElementType.Date:
+                        _dateElemlst.Add(id);
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        break;
+                    case ElementType.DateTime:
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        break;
+                    case ElementType.Select:
+                        break;
+                    case ElementType.Text:
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        break;
+                }
+                //_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
                 _page.Append("</div>");
                 colcout += field.Width + 1;
             }
@@ -131,33 +166,111 @@ namespace BWYSDPWeb.Com
         }
 
         /// <summary>
+        /// 创建表格组
+        /// </summary>
+        /// <param name="title"></param>
+        public void CreateGridGroup(string tableNm, string title)
+        {
+            EndprePanel();
+            string id = string.Format("GridGroup{0}", _gridGroupdic.Count + 1);
+            string contentid = string.Format("{0}_info", id);
+            _page.Append("<div class=\"panel-group\" id=\"" + id + "\">");
+            _page.Append("<div class=\"panel panel-default\">");
+
+            //面板标题
+            _page.Append("<div class=\"panel-heading\" style=\"background-color:#dff0d8; text-align:left\">");
+            _page.Append("<h4 class=\"panel-title\">");
+            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">" + title + "</a>");
+            _page.Append("</h4>");
+            _page.Append("</div>");
+
+            //面板内容
+            _page.Append("<div id=\"" + contentid + "\" class=\"panel-collapse in \">");
+            _page.Append("<div class=\"panel-body\">");
+
+            _page.Append("<table id=\""+tableNm+"\"></table>");
+
+            _gridGroupdic.Add(id, false);
+        }
+        /// <summary>
+        /// 添加表格列
+        /// </summary>
+        /// <param name="fields"></param>
+        public void AddGridColumns(string tableNm, LibCollection<LibGridGroupField> fields)
+        {
+
+        }
+
+        /// <summary>
         /// 结束视图页
         /// </summary>
         public void EndPage()
         {
-            //foreach (KeyValuePair<string, bool> item in _panelgroupdic)
+            //KeyValuePair<string, bool> item = _panelgroupdic.FirstOrDefault(i => i.Value == false);
+            //if (item.Key !=null)
             //{
-            //    if (!item.Value)//未结束面板的  先结束面板。
-            //    {
-            //        _page.Append("</div>");
-            //        _page.Append("</div>");
-            //        _page.Append("</div>");
-            //        _page.Append("</div>");
-            //        _panelgroupdic[item.Key] = true;
-            //    }
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
+            //    _page.Append("</div>");
             //}
-            KeyValuePair<string, bool> item = _panelgroupdic.FirstOrDefault(i => i.Value == false);
-            if (item.Key !=null)
+            EndprePanel();
+            _page.Append("</form>");//
+            _page.Append("</div>");//panel - body
+            _page.Append("</div>");//panel panel - default
+            _page.Append("</div>");//container - fluid
+
+            CreateJavaScript();
+            _page.Append(_script.ToString());
+            
+        }
+
+        #region 私有函数
+        private void CreateJavaScript()
+        {
+            _script.Append("<script type=\"text/javascript\">");
+            _script.Append("$(function (){");
+
+            _script.Append("})");
+
+            #region 日期控件
+            foreach (string id in _dateElemlst)
+            {
+                _script.AppendLine();
+                _script.Append("laydate.render({");
+                _script.Append("elem: '#"+id+"'");
+                _script.Append(",format: 'yyyy-MM-dd'");
+                _script.Append(",value: new Date().toLocaleDateString().replace(new RegExp(\"/\", \"g\"),'-')");
+                _script.Append("});");
+            }
+            #endregion
+            _script.Append("</script>");
+        }
+
+        /// <summary>
+        /// 给上一个面板或表格组添加结束标志
+        /// </summary>
+        private void EndprePanel()
+        {
+            KeyValuePair<string, bool> panelitem = _panelgroupdic.FirstOrDefault(i => !i.Value);
+            if (panelitem.Key != null)
             {
                 _page.Append("</div>");
                 _page.Append("</div>");
                 _page.Append("</div>");
                 _page.Append("</div>");
+                _panelgroupdic[panelitem.Key] = true;
             }
-            _page.Append("</form>");//
-            _page.Append("</div>");//panel - body
-            _page.Append("</div>");//panel panel - default
-            _page.Append("</div>");//container - fluid
+            KeyValuePair<string, bool> griditem = _gridGroupdic.FirstOrDefault(i => !i.Value);
+            if (griditem.Key != null)
+            {
+                _page.Append("</div>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+                _gridGroupdic[griditem.Key] = true;
+            }
         }
+        #endregion
     }
 }

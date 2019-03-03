@@ -27,14 +27,14 @@
                                 <div class="form-group">
                                     <label for="billno" class="col-sm-1 control-label">单据编号</label>
                                     <div class="col-sm-11">
-                                        <input type="text" class="form-control" id="billno" name="billno" readonly placeholder="billno">
+                                        <input type="text" class="form-control" id="billno" name="webceshi.billno" readonly placeholder="billno">
                                     </div>
                                 </div>
                                 <div class="form-group">
 
                                     <label for="billdate" class="col-sm-1 control-label">单据日期</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="billdate" name="billdate">
+                                        <input type="text" class="form-control" id="billdate" name="billdate" placeholder="单据日期">
                                     </div>
 
 
@@ -464,7 +464,7 @@
         //, type: 'year'//year-只提供年列表选择||month-只提供年、月选择||date-可选择：年、月、日。type默认值，一般可不填||time-只提供时、分、秒选择||datetime-可选择：年、月、日、时、分、秒
         //, range: true //或 range: '~' 来自定义分割字符
         , format: 'yyyy-MM-dd' //可任意组合 yyyy年MM月dd日 HH时mm分ss秒===2017年08月18日 20时08分08秒，'yyyy/mm/dd'
-        , value: new Date().toLocaleDateString() //必须遵循format参数设定的格式String，默认值：new Date()
+        , value: new Date().toLocaleDateString().replace(new RegExp("/", "g"),'-') //必须遵循format参数设定的格式String，默认值：new Date()
         //, min: '1900-1-1'//min/max - 最小/大范围内的日期时间值 类型：string，默认值：min: '1900-1-1'、max: '2099-12-31'
         //, max: '2099-12-31'
         //, trigger: 'click' // 自定义弹出控件的事件(类型：String，默认值：focus，如果绑定的元素非输入框，则默认事件为：click)-采用click弹出
@@ -498,6 +498,8 @@
             console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
         }
     });
+
+    //laydate.render({ elem: '#webceshi.billdate', format: 'yyyy-MM-dd', value: '2019-03-03' });
 
     function tablerefresh() {
         $('#table').bootstrapTable('refresh');
