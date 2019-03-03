@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<DataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DSID>1002</DSID>
+  <DataSourceName>jito</DataSourceName>
+  <DSDisplayText>及投诉到</DSDisplayText>
+  <Package>com</Package>
+  <DefTables>
+    <DefineTable TableName="defineTable1" ID="1" DisplayName="自定义数据表">
+      <TableStruct>
+        <DataTableStruct Name="dataTableStruct1" Ignore="false" />
+      </TableStruct>
+    </DefineTable>
+  </DefTables>
+</DataSource>

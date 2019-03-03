@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="webceshi" FormName="web测试" DSID="webceshi" CssFile="" ScriptFile="" Package="com">
+  <FormGroups>
+    <LibFormGroup FormGroupID="4f35863c-2c92-4571-a403-ee0f25428caa" FormGroupName="FormGroup1" FormGroupDisplayNm="页面信息组">
+      <FmGroupFields>
+        <LibFormGroupField ID="8d0655ff-7ed8-4239-a1ec-e4f4f4d88fd3">
+          <Name>billNo</Name>
+          <FromTableNm>webceshi</FromTableNm>
+          <FromDefTableNm>webceshi</FromDefTableNm>
+          <DisplayName>单据号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="c76c2641-109b-4e47-b255-a91fc4e5b527">
+          <Name>billdate</Name>
+          <FromTableNm>webceshi</FromTableNm>
+          <FromDefTableNm>webceshi</FromDefTableNm>
+          <DisplayName>单据日期</DisplayName>
+          <ElemType>Date</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="0c75f906-3327-4f72-8084-549e91482b90">
+          <Name>qty</Name>
+          <FromTableNm>webceshi</FromTableNm>
+          <FromDefTableNm>webceshi</FromDefTableNm>
+          <DisplayName>数量</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="afd0ce4b-bf05-42f8-b8b8-81bb3d5ad2ea">
+          <Name>customer</Name>
+          <FromTableNm>webceshi</FromTableNm>
+          <FromDefTableNm>webceshi</FromDefTableNm>
+          <DisplayName>客户</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="49af2516-f9ac-48c3-819f-74ef66b0b176">
+          <Name>matid</Name>
+          <FromTableNm>webceshi</FromTableNm>
+          <FromDefTableNm>webceshi</FromDefTableNm>
+          <DisplayName>物料</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="a8651793-6b38-44e8-b01b-012a5311968d">
+          <Name>caddress</Name>
+          <FromTableNm>webceshi</FromTableNm>
+          <FromDefTableNm>webceshi</FromDefTableNm>
+          <DisplayName>客户地址</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="6ed206a6-67d7-4d8a-bc4f-7b9b0349a15f">
+          <Name>remark</Name>
+          <FromTableNm>webceshi</FromTableNm>
+          <FromDefTableNm>webceshi</FromDefTableNm>
+          <DisplayName>备注</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+      </FmGroupFields>
+    </LibFormGroup>
+  </FormGroups>
+  <GridGroups>
+    <LibGridGroup GridGroupID="f55e8af7-c432-4a43-8b48-2deb65973a48" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1">
+      <GdGroupFields />
+    </LibGridGroup>
+  </GridGroups>
+</LibFormPage>

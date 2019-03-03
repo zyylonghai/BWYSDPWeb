@@ -50,6 +50,9 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="SDPCRL.COM">
+      <HintPath>..\library\SDPCRL.COM.dll</HintPath>
+    </Reference>
     <Reference Include="SDPCRL.CORE">
       <HintPath>..\library\SDPCRL.CORE.dll</HintPath>
     </Reference>
@@ -148,10 +151,12 @@
     <Compile Include="BaseController\BaseController.cs" />
     <Compile Include="BaseController\DataBaseController.cs" />
     <Compile Include="BllAuthorControllers\HomeController.cs" />
+    <Compile Include="BllComController\ComController.cs" />
     <Compile Include="BllSCMController\SaleOrderController.cs" />
     <Compile Include="BllSCMController\SCMController.cs" />
     <Compile Include="BllStockController\StockController.cs" />
     <Compile Include="BllStockController\stocktestController.cs" />
+    <Compile Include="Com\ViewFactory.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1922,9 +1927,11 @@
     <Content Include="Views\Shared\_Layout2.cshtml" />
     <Content Include="Views\SCM\index.cshtml" />
     <Content Include="Views\SCM\SaleOrder.cshtml" />
+    <Content Include="Views\Shared\NotFindPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Com\" />
     <Folder Include="Views\stocktest\" />
     <Folder Include="Views\Stock\" />
   </ItemGroup>

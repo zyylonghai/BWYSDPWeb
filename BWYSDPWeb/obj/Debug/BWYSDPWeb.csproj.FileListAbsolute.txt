@@ -148,4 +148,5 @@ D:\Projects\BWYSDPWeb\BWYSDPWeb\obj\Debug\BWYSDPWeb.csproj.CoreCompileInputs.cac
 D:\Projects\BWYSDPWeb\BWYSDPWeb\obj\Debug\BWYSDPWeb.csproj.CopyComplete
 D:\Projects\BWYSDPWeb\BWYSDPWeb\obj\Debug\BWYSDPWeb.dll
 D:\Projects\BWYSDPWeb\BWYSDPWeb\obj\Debug\BWYSDPWeb.pdb
+D:\Projects\BWYSDPWeb\BWYSDPWeb\bin\SDPCRL.COM.dll
 D:\Projects\BWYSDPWeb\BWYSDPWeb\obj\Debug\BWYSDPWeb.csprojAssemblyReference.cache

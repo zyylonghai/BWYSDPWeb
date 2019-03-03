@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<DataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DSID>2536258</DSID>
+  <DataSourceName>akj</DataSourceName>
+  <DSDisplayText>爱哭的健康</DSDisplayText>
+  <Package>com</Package>
+  <DefTables>
+    <DefineTable TableName="defineTable1" ID="1" DisplayName="自定义数据表">
+      <TableStruct>
+        <DataTableStruct Name="dataTableStruct1" DisplayName="数据表结构" Ignore="true">
+          <Fields>
+            <LibField Name="testfield" AliasName="测试字段别名" DisplayName="测试字段" FieldType="6" AllowNull="true" IsActive="false" />
+          </Fields>
+        </DataTableStruct>
+      </TableStruct>
+    </DefineTable>
+  </DefTables>
+</DataSource>

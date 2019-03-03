@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<DSList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DSInfoCollection>
+    <DSInfo DSID="111253" Name="skjfk" DISPLAYTEXT="卢萨卡减肥" PACKAGE="com" />
+    <DSInfo DSID="2536258" Name="akj" DISPLAYTEXT="爱哭的健康" PACKAGE="com" />
+    <DSInfo DSID="19827" Name="student" DISPLAYTEXT="学生信息" PACKAGE="com" />
+    <DSInfo DSID="152625" Name="studentinfo" DISPLAYTEXT="学生信息" PACKAGE="com" />
+  </DSInfoCollection>
+</DSList>

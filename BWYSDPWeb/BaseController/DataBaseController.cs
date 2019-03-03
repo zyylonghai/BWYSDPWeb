@@ -8,6 +8,9 @@ using SDPCRL.CORE.FileUtils;
 using System.Text;
 using System.Data;
 using Newtonsoft.Json;
+using SDPCRL.COM.ModelManager;
+using SDPCRL.COM.ModelManager.FormTemplate;
+using BWYSDPWeb.Com;
 
 namespace BWYSDPWeb.BaseController
 {
@@ -87,6 +90,19 @@ namespace BWYSDPWeb.BaseController
             m.PmenuId = "0102";
             mdata.Add(m);
 
+            m = new Menu();
+            m.MenuId = "0103";
+            m.MenuName = "公共功能";
+            mdata.Add(m);
+
+            m = new Menu();
+            m.MenuId = "010301";
+            m.MenuName = "web测试";
+            m.ProgId = "webceshi";
+            m.Package = "com";
+            m.PmenuId = "0103";
+            mdata.Add(m);
+
             return Json(new { Message = "success", data = mdata, Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
@@ -109,17 +125,50 @@ namespace BWYSDPWeb.BaseController
 
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
-                        StringBuilder html = new StringBuilder();
-                        html.Append("<div class=\"container-fluid\">");
-                        //页面内容
-                          html.Append("<div class='panel panel-default'>");
-                            html.Append("<div class='panel-heading'>"+progId+"</div>");
-                              html.Append("<div class='panel-body'>");
-                             
-                              html.Append("</div>");
-                          html.Append("</div>");
-                        html.Append("</div>");
-                        fileoperation.WritText(html.ToString());
+                        LibFormPage formpage= ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, packagepath.Replace("/", ""));
+                        if (formpage != null)
+                        {
+                            //StringBuilder html = new StringBuilder();
+                            //html.Append("<div class=\"container-fluid\">");
+                            ////页面内容
+                            //html.Append("<div class='panel panel-default'>");
+                            //html.Append("<div class='panel-heading'>" + progId + "</div>");
+                            //html.Append("<div class='panel-body'>");
+
+                            //html.Append("</div>");
+                            //html.Append("</div>");
+                            //html.Append("</div>");
+                            //fileoperation.WritText(html.ToString());
+
+                            #region 根据排版模型对象 创建功能视图。
+                            ViewFactory factory = new ViewFactory();
+                            factory.BeginPage(formpage .FormName);
+                            factory.CreateBody();
+                            factory.CreateForm();
+                            if (formpage.FormGroups != null)
+                            {
+                                foreach (LibFormGroup formg in formpage.FormGroups)
+                                {
+                                    factory.CreatePanelGroup(formg.FormGroupDisplayNm);
+                                    if (formg.FmGroupFields != null)
+                                    {
+                                        factory.AddFormGroupFields(formg.FmGroupFields);
+                                    }
+                                }
+                            }
+                            if (formpage.GridGroups != null)
+                            {
+
+                            }
+                            factory.EndPage();
+
+                            fileoperation.WritText(factory.PageHtml);
+                            #endregion
+                        }
+                        else
+                        {
+                            return View("NotFindPage");
+                        }
                         
                     }
                     //Server.MapPath("/")

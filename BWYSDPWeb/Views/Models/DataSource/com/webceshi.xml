@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<LibDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" DSID="webceshi" DataSourceName="web测试" Package="com">
+  <DefTables>
+    <LibDefineTable ID="a5d42399-9104-4157-b1fc-6f02d30934df" TableName="webceshi" DisplayName="web测试">
+      <TableStruct>
+        <LibDataTableStruct ID="c9a0b19d-cec9-49bd-95e0-1d1c7562ac1d">
+          <Name>webceshi</Name>
+          <DisplayName>数据表-webceshi</DisplayName>
+          <Ignore>false</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey />
+          <Fields>
+            <LibField>
+              <ID>1f8c107a-1baa-4ab1-9267-d613aa30e60b</ID>
+              <Name>billNo</Name>
+              <AliasName />
+              <DisplayName>单据号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>38766904-381d-46e7-95a2-85b41003d7a6</ID>
+              <Name>billdate</Name>
+              <AliasName />
+              <DisplayName>单据日期</DisplayName>
+              <OrignNm />
+              <FieldType>Date</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>125485b8-f78f-4c2d-928f-fe1ee8f6acc6</ID>
+              <Name>qty</Name>
+              <AliasName />
+              <DisplayName>数量</DisplayName>
+              <OrignNm />
+              <FieldType>Decimal</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+        <LibDataTableStruct ID="289871a7-cede-487a-bd22-c55ffc65bf49">
+          <Name>webceshiDetail</Name>
+          <DisplayName>明细表</DisplayName>
+          <Ignore>true</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <Fields>
+            <LibField>
+              <ID>e00e78ab-16a7-4737-a9b6-e0c6fe930d5c</ID>
+              <Name>billno</Name>
+              <AliasName />
+              <DisplayName>单据号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>917aeac4-f749-45af-a1aa-504b5694e5d7</ID>
+              <Name>rowno</Name>
+              <AliasName />
+              <DisplayName>行项目号</DisplayName>
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>69b6d352-c1e0-4b20-ab92-83c897f731c8</ID>
+              <Name>cusaddress</Name>
+              <AliasName />
+              <DisplayName>客户地址</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>c7d9dff5-950a-4d17-aecc-62db038fe0a3</ID>
+              <Name>matid</Name>
+              <AliasName />
+              <DisplayName>物料</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>6a1555d5-37bf-4306-bf6b-54d8a03bd4ab</ID>
+              <Name>matNm</Name>
+              <AliasName />
+              <DisplayName>物料名称</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </LibDefineTable>
+  </DefTables>
+</LibDataSource>

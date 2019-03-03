@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<DataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DSID>111111111</DSID>
+  <DataSourceName>datasourcename</DataSourceName>
+  <DefTables>
+    <DefineTable TableName="zyy" ID="123456">
+      <TableStruct>
+        <LibDataTableStruct Name="数据表结构">
+          <Fields>
+            <LibField Name="字段名称1" AliasName="字段别名1" DisplayName="字段显示名称1" FieldType="0" />
+            <LibField Name="字段名称2" AliasName="字段别名2" DisplayName="字段显示名称2" FieldType="0" />
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </DefineTable>
+    <DefineTable TableName="ylr" ID="152625">
+      <TableStruct>
+        <LibDataTableStruct Name="数据表结构">
+          <Fields>
+            <LibField Name="字段名称1" AliasName="字段别名1" DisplayName="字段显示名称1" FieldType="0" />
+            <LibField Name="字段名称2" AliasName="字段别名2" DisplayName="字段显示名称2" FieldType="0" />
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </DefineTable>
+  </DefTables>
+</DataSource>

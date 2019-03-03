@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <title>Clearmin template</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <script type="text/javascript">
+        $(function () {
+            Initilmenus();
+            var actionmenuid = sessionStorage.getItem("actionmenuId");
+            var o = $('#' + actionmenuid);
+            o.addClass("active");
+            if (o.parent().parent().hasClass("cm-submenu")) {
+                o.parent().parent().addClass("pre-open");
+            }
+        });
+
+        function Initilmenus()
+        {
+            var mdata = localStorage.getItem("m_data");
+            if (mdata != "" && mdata != undefined && mdata != null) {
+                loadmenuData(mdata);
+                return;
+            }
+            $.ajax({
+                url: "@Url.Action("LoadMenus")",
+                data: "",
+                type: 'Get',
+                async: false,
+                success: function (obj) {
+                    debugger
+                    if (obj.Flag == 1) {
+
+                    }
+                    else {
+                        if (obj.data != null || obj.data != undefined) {
+                            var datastr = JSON.stringify(obj.data);
+                            localStorage.setItem("m_data", datastr);
+                            loadmenuData(datastr);
+                        }
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+                }
+            });
+        }
+        function loadmenuData(mdata) {
+            var menudata = $('#menudata');
+            //if (mdata != "" && mdata != undefined && mdata != null) {
+            var objs = JSON.parse(mdata);
+            jQuery.each(objs, function (i, val) {
+                if (val.PmenuId == '' || val.PmenuId == null || val.PmenuId == undefined) {
+                    if (val.ProgId == '' || val.ProgId == null || val.ProgId == undefined) {
+
+                        menudata.append("<li class='cm-submenu'><a class='sf-window-layout'>" + val.MenuName + "<span class='caret'></span></a><ul id='" + val.MenuId + "'></ul></li>");
+                    }
+                    else
+                        menudata.append("<li id='" + val.MenuId + "' onclick='menuClick(this)'><a href='/" + val.Package + "/ConverToPage?progId=" + val.ProgId + "'>" + val.MenuName + "</a></li>");
+                }
+                else {
+                    $('#' + val.PmenuId).append("<li id='" + val.MenuId + "' onclick='menuClick(this)'><a href='/" + val.Package + "/ConverToPage?progId=" + val.ProgId + "'>" + val.MenuName + "</a></li>");
+                }
+            });
+            //}
+        }
+        function menuClick(obj) {
+            sessionStorage.setItem("actionmenuId", obj.id);
+            //sessionStorage
+            //$(".active").removeClass("active");
+            //$(obj).addClass("active");
+        }
+    </script>
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<body class="cm-no-transition cm-1-navbar">
+    <div id="cm-menu">
+        <nav class="cm-navbar cm-navbar-primary">
+            <div class="cm-flex"><a href="/" class="cm-logo"></a></div>
+            <div class="btn btn-primary md-menu-white" data-toggle="cm-menu"></div>
+        </nav>
+        <div id="cm-menu-content">
+            <div id="cm-menu-items-wrapper">
+                <div id="cm-menu-scroller">
+                    <ul id="menudata" class="cm-menu-items">
+                        <li id="0001" onclick="menuClick(this)"><a href="/Home/ConverToPage?progId=Index" id="Index" class="sf-house">主页</a></li>
+                        @*<li>@Html.ActionLink("主页", "ConverToPage", "Home", new { progId = "Index" }, new { id = "Index" })</li>
+        <li>@Html.ActionLink("关于", "ConverToPage", "Home", new { progId = "About" }, new { id = "About" })</li>
+        <li>@Html.ActionLink("联系方式", "ConverToPage", "Home", new { progId = "Contact" }, new { id = "Contact" })</li>
+        <li class="cm-submenu">
+            <a class="sf-window-layout">供应链管理<span class="caret"></span></a>
+            <ul>
+                <li class="active"><a href="/SCM/ConverToPage?progId=SaleOrder" id="SaleOrder">销售订单</a></li>
+                <li><a href="/SCM/ConverToPage?progId=PurchaseOrder" id="PurchaseOrder">采购订单</a></li>
+                <li><a href="/SCM/ConverToPage?progId=ShipOrder" id="ShipOrder">发货单</a></li>
+            </ul>
+        </li>
+        <li class="cm-submenu">
+            <a class="sf-window-layout">库存管理 <span class="caret"></span></a>
+            <ul id="0102">
+                <li><a href="/Stock/ConverToPage?progId=StockReport" id="StockReport">库存报表</a></li>
+                <li><a href="/Stock/ConverToPage?progId=StockAdjustment">库存调整</a></li>
+                <li><a href="/Stock/ConverToPage?progId=StockSearch">库存查询</a></li>
+            </ul>
+        </li>
+        <li class="cm-submenu">
+            <a class="sf-window-layout">库存2 <span class="caret"></span></a>
+            <ul>
+                <li><a href="/Stock/ConverToPage?progId=StockReport2" id="StockReport2">库存报表</a></li>
+            </ul>
+        </li>
+        <li>@Html.ActionLink("自定义页面", "ConverToPage", "Home", new { progId = "bordtest" }, new { id = "bordtest" })</li>
+        <li><a href="login.html" class="sf-lock-open">Login page</a></li>*@
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <header id="cm-header">
+        <nav class="cm-navbar cm-navbar-primary">
+            <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
+            <div class="cm-flex">
+                <h1>Home</h1>
+                <form id="cm-search" action="@Url.Action("SearchFunc")" method="get">
+                    <input type="search" name="q" autocomplete="off" placeholder="请输入功能ID或名称...">
+                </form>
+            </div>
+            <div class="pull-right">
+                <div id="cm-search-btn" class="btn btn-primary md-search-white" data-toggle="cm-search"></div>
+            </div>
+            <div class="dropdown pull-right">
+                <button class="btn btn-primary md-notifications-white" data-toggle="dropdown"> <span class="label label-danger">23</span> </button>
+                <div class="popover cm-popover bottom">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading text-overflow">
+                                    <i class="fa fa-fw fa-envelope"></i> Nunc volutpat aliquet magna.
+                                </h4>
+                                <p class="list-group-item-text text-overflow">Pellentesque tincidunt mollis scelerisque. Praesent vel blandit quam.</p>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading">
+                                    <i class="fa fa-fw fa-envelope"></i> Aliquam orci lectus
+                                </h4>
+                                <p class="list-group-item-text">Donec quis arcu non risus sagittis</p>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading">
+                                    <i class="fa fa-fw fa-warning"></i> Holy guacamole !
+                                </h4>
+                                <p class="list-group-item-text">Best check yo self, you're not looking too good.</p>
+                            </a>
+                        </div>
+                        <div style="padding:10px"><a class="btn btn-success btn-block" href="#">Show me more...</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown pull-right">
+                <button class="btn btn-primary fa fa-fw fa-envelope" data-toggle="dropdown"></button>
+            </div>
+            <div class="dropdown pull-right">
+                <button class="btn btn-primary md-account-circle-white" data-toggle="dropdown"></button>
+                <ul class="dropdown-menu">
+                    <li class="disabled text-center">
+                        <a style="cursor:default;"><strong>John Smith</strong></a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-cog"></i> Settings</a>
+                    </li>
+                    <li>
+                        <a href="login.html"><i class="fa fa-fw fa-sign-out"></i> Sign out</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div id="global">
+        @RenderBody()
+        <footer class="cm-footer"><span class="pull-left">Connected as John Smith</span><span class="pull-right">&copy; PAOMEDIA SARL</span></footer>
+    </div>
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @RenderSection("scripts", required: false)
+    @*<script type="text/javascript">
+        $(function () {
+
+        });
+    </script>*@
+</body>
+</html>

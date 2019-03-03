@@ -1,0 +1,312 @@
+@Styles.Render("~/Content/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTableExport")
+@Scripts.Render("~/Scripts/lib/laydate/laydate")
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-heading">销售订单功能</div>
+        <div class="panel-body">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default"><i class="fa fa-fw fa-save"></i></button>
+                <button type="button" class="btn btn-default"><i class="fa fa-fw fa-cut"></i></button>
+                <button type="button" class="btn btn-default"><i class="fa fa-fw fa-copy"></i></button>
+                <button type="button" class="btn btn-default"><i class="fa fa-fw fa-clipboard"></i></button>
+            </div>
+            <br />
+            <br />
+            <form class="form-horizontal" action="DoSave">
+                <div class="panel-group" id="keyaccordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#keyaccordion" href="#keyinfo">关键信息</a>
+                            </h4>
+                        </div>
+                        <div id="keyinfo" class="panel-collapse in">
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="billno" class="col-sm-1 control-label">单据编号</label>
+                                    <div class="col-sm-11">
+                                        <input type="text" class="form-control" id="billno" name="billno" readonly placeholder="billno">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+
+                                    <label for="billdate" class="col-sm-1 control-label">单据日期</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" id="billdate" name="billdate">
+                                    </div>
+
+
+                                    <label for="datetime" class="col-sm-1 control-label">创建日期</label>
+                                    <div class="col-sm-2">
+                                        <input type="date" class="form-control" id="createdatetime" placeholder="createdatetime">
+                                    </div>
+                                    <label for="datetime" class="col-sm-1 control-label">创建日期2</label>
+                                    <div class="col-sm-2">
+                                        <input type="datetime-local" class="form-control" id="createdatetime5" placeholder="createdatetime">
+                                    </div>
+
+                                    <label for="datetime" class="col-sm-1 control-label">创建日期3</label>
+                                    <div class="col-sm-2">
+                                        <input type="datetime-local" class="form-control" id="createdatetime9" placeholder="createdatetime9">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="datetime" class="col-sm-1 control-label">创建日期</label>
+                                    <div class="col-sm-2">
+                                        <input type="datetime" class="form-control" id="datetime2" placeholder="datetime2">
+                                    </div>
+
+                                    <label for="billType" class="col-sm-1 control-label">单据类型</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-control" name="billType">
+                                            <option value="1">默认选择</option>
+                                            <option value="2">类型1</option>
+                                            <option value="3">类型2</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label for="inputPassword3" class="col-sm-1 control-label">Password</label>
+                                        <div class="col-sm-11">
+                                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group" id="customergroup">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#customergroup" href="#customerinfo"> 客户信息</a>
+                            </h4>
+                        </div>
+                        <div id="customerinfo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <fieldset disabled>
+                                    <div class="form-group">
+                                        <label for="customer" class="col-sm-1 control-label">客户编码</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="customerid" name="customerid" placeholder="客户编码">
+                                        </div>
+
+                                        <label for="customerNm" class="col-sm-1 control-label">客户名称</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="customerNm" placeholder="客户名称">
+                                        </div>
+
+                                        <label for="customeraddress" class="col-sm-1 control-label">客户地址</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="customerNm" placeholder="客户地址">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-1 control-label">备注</label>
+                                    <div class="col-sm-11">
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-success">
+                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion"
+                                   href="#saleordercollapse">
+                                    销售订单明细
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="saleordercollapse" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <div id="toolbar" class="btn-group">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-heart"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </button>
+                                </div>
+                                <table id="table"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<table data-toggle="table" data-url="data1.json">
+                    <thead>
+                        <tr>
+                            <th data-field="id">Item ID</th>
+                            <th data-field="name">Item Name</th>
+                            <th data-field="price">Item Price</th>
+                        </tr>
+                    </thead>
+                </table>*@
+                @*<div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox">
+                                Remember me
+                            </label>
+                        </div>
+                    </div>
+                </div>*@
+                <div class="form-group" style="margin-bottom:0">
+                    <div class="col-sm-offset-2 col-sm-10 text-right">
+                        <button type="submit" class="btn btn-default">提交</button>
+                        <button type="submit" class="btn btn-primary">暂存</button>
+                        <button type="reset" class="btn btn-default">重置</button>
+                    </div>
+                </div>
+            </form>
+            @*<div class="form-group text-right" style="margin-top:20px">
+                <button type="submit" class="btn btn-default">提交</button>
+                <button type="submit" class="btn btn-primary">暂存</button>
+            </div>*@
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#saleordercollapse').collapse('show');
+        //$('#keyinfo').collapse('show');
+        //初始化bootstrap-table的内容
+        $table.ElemtableID = "table";
+        $table.url = "/SaleOrder/BindTableData?progid=''";
+        //$table.url = "";
+        $table.columns = [{
+            checkbox: true,
+            visible: true                  //是否显示复选框
+        }, {
+            field: 'Name',
+            title: '姓名',
+            align: 'center',
+            //width:200,
+            //valign: 'middle',
+            sortable: true
+        }, {
+            field: 'Mobile',
+            title: '手机',
+            align: 'center',
+            sortable: true,
+            footerFormatter: function () {
+                return '汇总'
+            }
+
+        }, {
+            field: 'Email',
+            align: 'center',
+            title: '邮箱',
+            sortable: true
+            //formatter: emailFormatter
+        }, {
+            field: 'Homepage',
+            align: 'center',
+            title: '主页'
+            //formatter: linkFormatter
+        }, {
+            field: 'Hobby',
+            align: 'center',
+            title: '兴趣爱好'
+        }, {
+            field: 'Gender',
+            align: 'center',
+            title: '性别',
+            sortable: true
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄'
+        }, {
+            field: 'Age1',
+            align: 'center',
+            title: '年龄1'
+        }, {
+            field: 'Age2',
+            align: 'center',
+            title: '年龄2'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄3'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄4'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄5'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄6'
+        }, {
+            field: 'Age',
+            align: 'center',
+            title: '年龄7'
+        }, {
+            field: 'BirthDate',
+            align: 'center',
+            title: '出生日期'
+            //formatter: dateFormatter
+        }];
+        InitMainTable();
+    })
+    laydate.render({
+        elem: '#billdate' //或 elem: document.getElementById('test')、elem: lay('#test') 等（类型：String/DOM，默认值：无必填项，用于绑定执行日期渲染的元素，值一般为选择器，或DOM对象）
+        //, type: 'year'//year-只提供年列表选择||month-只提供年、月选择||date-可选择：年、月、日。type默认值，一般可不填||time-只提供时、分、秒选择||datetime-可选择：年、月、日、时、分、秒
+        //, range: true //或 range: '~' 来自定义分割字符
+        , format: 'yyyy-MM-dd' //可任意组合 yyyy年MM月dd日 HH时mm分ss秒===2017年08月18日 20时08分08秒，'yyyy/mm/dd'
+        , value: new Date().toLocaleDateString() //必须遵循format参数设定的格式String，默认值：new Date()
+        //, min: '1900-1-1'//min/max - 最小/大范围内的日期时间值 类型：string，默认值：min: '1900-1-1'、max: '2099-12-31'
+        //, max: '2099-12-31'
+        //, trigger: 'click' // 自定义弹出控件的事件(类型：String，默认值：focus，如果绑定的元素非输入框，则默认事件为：click)-采用click弹出
+        //, show: false //默认显示-类型：Boolean，默认值：false;;;;如果设置: true，则控件默认显示在绑定元素的区域。通常用于外部事件调用控件
+        //, position: 'absolute'//类型：String，默认值：absolute  (fixed,absolute,static)
+        //, zIndex: 99999999//层叠顺序-类型：Number，默认值：66666666一般用于解决与其它元素的互相被遮掩的问题。如果 position 参数设为 static 时，该参数无效
+        //, showBottom: false//是否显示底部栏--类型：Boolean，默认值：true如果设置 false，将不会显示控件的底部栏区域
+        //, btns: ['clear', 'now', 'confirm']//类型：Array，默认值：['clear', 'now', 'confirm'](显示清空，今天，确认)
+        //, lang: 'en'//语言类型：String，默认值：cn--内置了两种语言版本：cn（中文版）、en（国际版，即英文版）
+        //, theme: 'grid'//主题-类型：String，默认值：default，theme的可选值有：default（默认简约）、molv（墨绿背景）、#颜色值（自定义颜色背景）、grid（格子主题）
+        //, calendar: true//是否显示公历节日--类型：Boolean，默认值：false
+        //, mark: {//标注重要日子--类型：Object，默认值：无
+        //    '0-10-14': '生日'
+        //    , '0-12-31': '跨年' //每年12月31日
+        //    , '0-0-10': '工资' //每个月10号
+        //    , '2017-8-15': '' //具体日期
+        //    , '2017-8-20': '预发' //如果为空字符，则默认显示数字+徽章
+        //    , '2017-8-21': '发布'
+        //}
+        , ready: function (date) {//控件在打开时触发，回调返回一个参数
+            console.log(date); //得到初始的日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+        }
+        , change: function (value, date, endDate) {//日期时间被切换后的回调
+            console.log(value); //得到日期生成的值，如：2017-08-18
+            console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+        }
+        , done: function (value, date, endDate) {//控件选择完毕后的回调---点击日期、清空、现在、确定均会触发。
+            console.log(value); //得到日期生成的值，如：2017-08-18
+            console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+        }
+    });
+
+</script>
