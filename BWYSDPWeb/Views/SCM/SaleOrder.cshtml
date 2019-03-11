@@ -1,10 +1,10 @@
-@Styles.Render("~/Content/bootstrapTable")
+ï»¿@Styles.Render("~/Content/bootstrapTable")
 @Scripts.Render("~/bundles/bootstrapTable")
 @Scripts.Render("~/bundles/bootstrapTableExport")
 @Scripts.Render("~/Scripts/lib/laydate/laydate")
 <div class="container-fluid">
     <div class="panel panel-default">
-        <div class="panel-heading">ÏúÊÛ¶©µ¥¹¦ÄÜ</div>
+        <div class="panel-heading">é”€å”®è®¢å•åŠŸèƒ½</div>
         <div class="panel-body">
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-default"><i class="fa fa-fw fa-save"></i></button>
@@ -17,54 +17,67 @@
             <form class="form-horizontal" action="DoSave">
                 <div class="panel-group" id="keyaccordion">
                     <div class="panel panel-default">
-                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
+                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left;">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#keyaccordion" href="#keyinfo">¹Ø¼üĞÅÏ¢</a>
+                                <a data-toggle="collapse" data-parent="#keyaccordion" href="#keyinfo">å…³é”®ä¿¡æ¯</a>
                             </h4>
                         </div>
                         <div id="keyinfo" class="panel-collapse in">
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <label for="billno" class="col-sm-1 control-label">µ¥¾İ±àºÅ</label>
-                                    <div class="col-sm-11">
+                                    <label for="billno" class="col-sm-1 control-label">å•æ®ç¼–å·</label>
+                                    <div class="col-sm-2">
                                         <input type="text" class="form-control" id="billno" name="webceshi.billno" readonly placeholder="billno">
+                                    </div>
+
+                                    <label for="matid" class="col-sm-1 control-label">ç‰©æ–™</label>
+                                    <div class="col-sm-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="matid" name="webceshi.matid" placeholder="ç‰©æ–™">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#exampleModal" data-whatever="55555">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                    @*Go!*@
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
 
-                                    <label for="billdate" class="col-sm-1 control-label">µ¥¾İÈÕÆÚ</label>
+                                    <label for="billdate" class="col-sm-1 control-label">å•æ®æ—¥æœŸ</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="billdate" name="billdate" placeholder="µ¥¾İÈÕÆÚ">
+                                        <input type="text" class="form-control" id="billdate" name="billdate" placeholder="å•æ®æ—¥æœŸ">
                                     </div>
 
 
-                                    <label for="datetime" class="col-sm-1 control-label">´´½¨ÈÕÆÚ</label>
+                                    <label for="datetime" class="col-sm-1 control-label">åˆ›å»ºæ—¥æœŸ</label>
                                     <div class="col-sm-2">
                                         <input type="date" class="form-control" id="createdatetime" placeholder="createdatetime">
                                     </div>
-                                    <label for="datetime" class="col-sm-1 control-label">´´½¨ÈÕÆÚ2</label>
+                                    <label for="datetime" class="col-sm-1 control-label">åˆ›å»ºæ—¥æœŸ2</label>
                                     <div class="col-sm-2">
                                         <input type="datetime-local" class="form-control" id="createdatetime5" placeholder="createdatetime">
                                     </div>
 
-                                    <label for="datetime" class="col-sm-1 control-label">´´½¨ÈÕÆÚ3</label>
+                                    <label for="datetime" class="col-sm-1 control-label">åˆ›å»ºæ—¥æœŸ3</label>
                                     <div class="col-sm-2">
                                         <input type="datetime-local" class="form-control" id="createdatetime9" placeholder="createdatetime9">
                                     </div>
 
                                 </div>
                                 <div class="form-group">
-                                    <label for="datetime" class="col-sm-1 control-label">´´½¨ÈÕÆÚ</label>
+                                    <label for="datetime" class="col-sm-1 control-label">åˆ›å»ºæ—¥æœŸ</label>
                                     <div class="col-sm-2">
                                         <input type="datetime" class="form-control" id="datetime2" placeholder="datetime2">
                                     </div>
 
-                                    <label for="billType" class="col-sm-1 control-label">µ¥¾İÀàĞÍ</label>
+                                    <label for="billType" class="col-sm-1 control-label">å•æ®ç±»å‹</label>
                                     <div class="col-sm-2">
                                         <select class="form-control" name="billType">
-                                            <option value="1">Ä¬ÈÏÑ¡Ôñ</option>
-                                            <option value="2">ÀàĞÍ1</option>
-                                            <option value="3">ÀàĞÍ2</option>
+                                            <option value="1">é»˜è®¤é€‰æ‹©</option>
+                                            <option value="2">ç±»å‹1</option>
+                                            <option value="3">ç±»å‹2</option>
                                         </select>
                                     </div>
 
@@ -87,31 +100,31 @@
                     <div class="panel panel-default">
                         <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#customergroup" href="#customerinfo"> ¿Í»§ĞÅÏ¢</a>
+                                <a data-toggle="collapse" data-parent="#customergroup" href="#customerinfo"> å®¢æˆ·ä¿¡æ¯</a>
                             </h4>
                         </div>
                         <div id="customerinfo" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <fieldset disabled>
                                     <div class="form-group">
-                                        <label for="customer" class="col-sm-1 control-label">¿Í»§±àÂë</label>
+                                        <label for="customer" class="col-sm-1 control-label">å®¢æˆ·ç¼–ç </label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="customerid" name="customerid" placeholder="¿Í»§±àÂë">
+                                            <input type="text" class="form-control" id="customerid" name="customerid" placeholder="å®¢æˆ·ç¼–ç ">
                                         </div>
 
-                                        <label for="customerNm" class="col-sm-1 control-label">¿Í»§Ãû³Æ</label>
+                                        <label for="customerNm" class="col-sm-1 control-label">å®¢æˆ·åç§°</label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="customerNm" placeholder="¿Í»§Ãû³Æ">
+                                            <input type="text" class="form-control" id="customerNm" placeholder="å®¢æˆ·åç§°">
                                         </div>
 
-                                        <label for="customeraddress" class="col-sm-1 control-label">¿Í»§µØÖ·</label>
+                                        <label for="customeraddress" class="col-sm-1 control-label">å®¢æˆ·åœ°å€</label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="customerNm" placeholder="¿Í»§µØÖ·">
+                                            <input type="text" class="form-control" id="customerNm" placeholder="å®¢æˆ·åœ°å€">
                                         </div>
                                     </div>
                                 </fieldset>
                                 <div class="form-group">
-                                    <label for="name" class="col-sm-1 control-label">±¸×¢</label>
+                                    <label for="name" class="col-sm-1 control-label">å¤‡æ³¨</label>
                                     <div class="col-sm-11">
                                         <textarea class="form-control" rows="3"></textarea>
                                     </div>
@@ -125,7 +138,7 @@
                     <div class="panel panel-success">
                         <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#saleordercollapse">ÏúÊÛ¶©µ¥Ã÷Ï¸</a>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#saleordercollapse">é”€å”®è®¢å•æ˜ç»†</a>
                             </h4>
                         </div>
                         <div id="saleordercollapse" class="panel-collapse collapse">
@@ -148,232 +161,250 @@
                 </div>
 
                 <div class="panel-group" id="accordion2">
-            <div class="panel panel-success">
-                <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion2" href="#saleordercollapse2">ÏúÊÛ¶©µ¥Ã÷Ï¸2</a>
-                    </h4>
-                </div>
-                <div id="saleordercollapse2" class="panel-collapse in">
-                    <div class="panel-body">
-                        <div id="toolbar2" class="btn-group">
-                            <button type="button" class="btn btn-default">
-                                <i class="glyphicon glyphicon-plus"></i>
-                            </button>
-                            <button type="button" class="btn btn-default">
-                                <i class="glyphicon glyphicon-heart"></i>
-                            </button>
-                            <button type="button" class="btn btn-default">
-                                <i class="glyphicon glyphicon-trash"></i>
-                            </button>
+                    <div class="panel panel-success">
+                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left; ">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion2" href="#saleordercollapse2">é”€å”®è®¢å•æ˜ç»†2</a>
+                            </h4>
                         </div>
-                        <table id="table2"></table>
+                        <div id="saleordercollapse2" class="panel-collapse in">
+                            <div class="panel-body">
+                                <div id="toolbar2" class="btn-group">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-heart"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </button>
+                                </div>
+                                <table id="table2"></table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
                 @*<table data-toggle="table" data-url="data1.json">
-            <thead>
-                <tr>
-                    <th data-field="id">Item ID</th>
-                    <th data-field="name">Item Name</th>
-                    <th data-field="price">Item Price</th>
-                </tr>
-            </thead>
-        </table>*@
+                        <thead>
+                            <tr>
+                                <th data-field="id">Item ID</th>
+                                <th data-field="name">Item Name</th>
+                                <th data-field="price">Item Price</th>
+                            </tr>
+                        </thead>
+                    </table>*@
                 @*<div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox">
-                        Remember me
-                    </label>
-                </div>
-            </div>
-        </div>*@
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                    </div>*@
                 <div class="form-group" style="margin-bottom:0">
                     <div class="col-sm-offset-2 col-sm-10 text-right">
-                        <button type="submit" class="btn btn-default">Ìá½»</button>
-                        <button type="submit" class="btn btn-primary">Ôİ´æ</button>
-                        <button type="reset" class="btn btn-default">ÖØÖÃ</button>
+                        <button type="submit" class="btn btn-default">æäº¤</button>
+                        <button type="submit" class="btn btn-primary">æš‚å­˜</button>
+                        <button type="reset" class="btn btn-default">é‡ç½®</button>
                     </div>
                 </div>
+
             </form>
             @*<div class="form-group text-right" style="margin-top:20px">
-                <button type="submit" class="btn btn-default">Ìá½»</button>
-                <button type="submit" class="btn btn-primary">Ôİ´æ</button>
-            </div>*@
+                    <button type="submit" class="btn btn-default">æäº¤</button>
+                    <button type="submit" class="btn btn-primary">æš‚å­˜</button>
+                </div>*@
+
+            @*æ¨¡æ€æ¡†*@
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                Ã—
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                æ¨¡æ€æ¡†ï¼ˆModalï¼‰æ ‡é¢˜
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                å…³é—­
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                æäº¤æ›´æ”¹
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            @*æ¨¡æ€æ¡†*@
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:#dff0d8">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">Ã—</span>
+                            </button>
+                            <h4 class="modal-title" id="exampleModalLabel">New message</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="row">
+                                    <div>
+                                        <label class="form-inline">
+                                            å‚åŠ å•ä½ï¼š
+                                            <select class="form-control" name="billType">
+                                                <option value="1">ç­‰äº</option>
+                                                <option value="2">å¤§äº</option>
+                                                <option value="3">å°äº</option>
+                                            </select>
+                                            <input type="text" class="form-control" />
+                                            <input type="text" class="form-control" />
+                                            <select class="form-control" name="billType">
+                                                <option value="1">and</option>
+                                                <option value="2">or</option>
+                                            </select>
+                                        </label>
+
+                                        <label class="form-inline">
+                                            å‚åŠ å•ä½ï¼š
+                                            <select class="form-control" name="billType">
+                                                <option value="1">ç­‰äº</option>
+                                                <option value="2">å¤§äº</option>
+                                                <option value="3">å°äº</option>
+                                            </select>
+                                            <input type="text" class="form-control" />
+                                            <input type="text" class="form-control" />
+                                            <select class="form-control" name="billType">
+                                                <option value="1">and</option>
+                                                <option value="2">or</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label class="form-inline">
+                                            å‚åŠ å•ä½ï¼š
+                                            <select class="form-control" name="billType">
+                                                <option value="1">ç­‰äº</option>
+                                                <option value="2">å¤§äº</option>
+                                                <option value="3">å°äº</option>
+                                            </select>
+                                            <input type="text" class="form-control" />
+                                            <input type="text" class="form-control" />
+                                            <select class="form-control" name="billType">
+                                                <option value="1">and</option>
+                                                <option value="2">or</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                                <table id="matdata"></table>
+                                @*</div>*@
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Send message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 <script type="text/javascript">
     $(function () {
         $('#saleordercollapse').collapse('show');
-        //$('#keyinfo').collapse('show');
-        //³õÊ¼»¯bootstrap-tableµÄÄÚÈİ
-        //$table.ElemtableID = "table";
-        //$table.url = "/SaleOrder/BindTableData?progid=1";
-        //$table.toolbar = "#toolbar";
-        ////$table.url = "";
-        //$table.columns = [{
-        //    checkbox: true,
-        //    visible: true                  //ÊÇ·ñÏÔÊ¾¸´Ñ¡¿ò
-        //}, {
-        //    field: 'Name',
-        //    title: 'ĞÕÃû',
-        //    align: 'center',
-        //    //width:200,
-        //    //valign: 'middle',
-        //    sortable: true
-        //}, {
-        //    field: 'Mobile',
-        //    title: 'ÊÖ»ú',
-        //    align: 'center',
-        //    sortable: true,
-        //    footerFormatter: function () {
-        //        return '»ã×Ü'
-        //    }
-
-        //}, {
-        //    field: 'Email',
-        //    align: 'center',
-        //    title: 'ÓÊÏä',
-        //    sortable: true
-        //    //formatter: emailFormatter
-        //}, {
-        //    field: 'Homepage',
-        //    align: 'center',
-        //    title: 'Ö÷Ò³'
-        //    //formatter: linkFormatter
-        //}, {
-        //    field: 'Hobby',
-        //    align: 'center',
-        //    title: 'ĞËÈ¤°®ºÃ'
-        //}, {
-        //    field: 'Gender',
-        //    align: 'center',
-        //    title: 'ĞÔ±ğ',
-        //    sortable: true
-        //}, {
-        //    field: 'Age',
-        //    align: 'center',
-        //    title: 'ÄêÁä'
-        //}, {
-        //    field: 'Age1',
-        //    align: 'center',
-        //    title: 'ÄêÁä1'
-        //}, {
-        //    field: 'Age2',
-        //    align: 'center',
-        //    title: 'ÄêÁä2'
-        //}, {
-        //    field: 'Age',
-        //    align: 'center',
-        //    title: 'ÄêÁä3'
-        //}, {
-        //    field: 'Age',
-        //    align: 'center',
-        //    title: 'ÄêÁä4'
-        //}, {
-        //    field: 'Age',
-        //    align: 'center',
-        //    title: 'ÄêÁä5'
-        //}, {
-        //    field: 'Age',
-        //    align: 'center',
-        //    title: 'ÄêÁä6'
-        //}, {
-        //    field: 'Age',
-        //    align: 'center',
-        //    title: 'ÄêÁä7'
-        //}, {
-        //    field: 'BirthDate',
-        //    align: 'center',
-        //    title: '³öÉúÈÕÆÚ'
-        //    //formatter: dateFormatter
-        //}];
-        //InitMainTable();
 
         var tb = new LibTable("table");
         tb.$table.url = "/SaleOrder/BindTableData?progid=1";
         tb.$table.toolbar = "#toolbar";
         tb.$table.columns = [{
             checkbox: true,
-            visible: true                  //ÊÇ·ñÏÔÊ¾¸´Ñ¡¿ò
+            visible: true                  //æ˜¯å¦æ˜¾ç¤ºå¤é€‰æ¡†
         }, {
             field: 'Name',
-            title: 'ĞÕÃû',
+            title: 'å§“å',
             align: 'center',
             //width:200,
             //valign: 'middle',
             sortable: true
         }, {
             field: 'Mobile',
-            title: 'ÊÖ»ú',
+            title: 'æ‰‹æœº',
             align: 'center',
             sortable: true,
             footerFormatter: function () {
-                return '»ã×Ü'
+                return 'æ±‡æ€»'
             }
 
         }, {
             field: 'Email',
             align: 'center',
-            title: 'ÓÊÏä',
+            title: 'é‚®ç®±',
             sortable: true
             //formatter: emailFormatter
         }, {
             field: 'Homepage',
             align: 'center',
-            title: 'Ö÷Ò³'
+            title: 'ä¸»é¡µ'
             //formatter: linkFormatter
         }, {
             field: 'Hobby',
             align: 'center',
-            title: 'ĞËÈ¤°®ºÃ'
+            title: 'å…´è¶£çˆ±å¥½'
         }, {
             field: 'Gender',
             align: 'center',
-            title: 'ĞÔ±ğ',
+            title: 'æ€§åˆ«',
             sortable: true
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä'
+            title: 'å¹´é¾„'
         }, {
             field: 'Age1',
             align: 'center',
-            title: 'ÄêÁä1'
+            title: 'å¹´é¾„1'
         }, {
             field: 'Age2',
             align: 'center',
-            title: 'ÄêÁä2'
+            title: 'å¹´é¾„2'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä3'
+            title: 'å¹´é¾„3'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä4'
+            title: 'å¹´é¾„4'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä5'
+            title: 'å¹´é¾„5'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä6'
+            title: 'å¹´é¾„6'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä7'
+            title: 'å¹´é¾„7'
         }, {
             field: 'BirthDate',
             align: 'center',
-            title: '³öÉúÈÕÆÚ'
+            title: 'å‡ºç”Ÿæ—¥æœŸ'
             //formatter: dateFormatter
-            }];
+        }];
         tb.initialTable();
 
 
@@ -382,120 +413,229 @@
         tb2.$table.toolbar = "#toolbar2";
         tb2.$table.columns = [{
             checkbox: true,
-            visible: true                  //ÊÇ·ñÏÔÊ¾¸´Ñ¡¿ò
+            visible: true                  //æ˜¯å¦æ˜¾ç¤ºå¤é€‰æ¡†
         }, {
             field: 'Name',
-            title: 'ĞÕÃû',
+            title: 'å§“å',
             align: 'center',
             //width:200,
             //valign: 'middle',
             sortable: true
         }, {
             field: 'Mobile',
-            title: 'ÊÖ»ú',
+            title: 'æ‰‹æœº',
             align: 'center',
             sortable: true,
             footerFormatter: function () {
-                return '»ã×Ü'
+                return 'æ±‡æ€»'
             }
 
         }, {
             field: 'Email',
             align: 'center',
-            title: 'ÓÊÏä',
+            title: 'é‚®ç®±',
             sortable: true
             //formatter: emailFormatter
         }, {
             field: 'Homepage',
             align: 'center',
-            title: 'Ö÷Ò³'
+            title: 'ä¸»é¡µ'
             //formatter: linkFormatter
         }, {
             field: 'Hobby',
             align: 'center',
-            title: 'ĞËÈ¤°®ºÃ'
+            title: 'å…´è¶£çˆ±å¥½'
         }, {
             field: 'Gender',
             align: 'center',
-            title: 'ĞÔ±ğ',
+            title: 'æ€§åˆ«',
             sortable: true
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä'
+            title: 'å¹´é¾„'
         }, {
             field: 'Age1',
             align: 'center',
-            title: 'ÄêÁä1'
+            title: 'å¹´é¾„1'
         }, {
             field: 'Age2',
             align: 'center',
-            title: 'ÄêÁä2'
+            title: 'å¹´é¾„2'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä3'
+            title: 'å¹´é¾„3'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä4'
+            title: 'å¹´é¾„4'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä5'
+            title: 'å¹´é¾„5'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä6'
+            title: 'å¹´é¾„6'
         }, {
             field: 'Age',
             align: 'center',
-            title: 'ÄêÁä7'
+            title: 'å¹´é¾„7'
         }, {
             field: 'BirthDate',
             align: 'center',
-            title: '³öÉúÈÕÆÚ'
+            title: 'å‡ºç”Ÿæ—¥æœŸ'
             //formatter: dateFormatter
         }];
         tb2.initialTable();
-    })
+
+        $('#exampleModal').on('show.bs.modal', function (e) {
+            // å…³é”®ä»£ç ï¼Œå¦‚æ²¡å°†modalè®¾ç½®ä¸º blockï¼Œåˆ™$modala_dialog.height() ä¸ºé›¶
+            $(this).css('display', 'block');
+            if ($(window).width() > 780) {
+                $('#exampleModal .modal-dialog').width($(window).width() - 400);
+            }
+            var modalHeight = $(window).height() / 2 - $('#exampleModal .modal-dialog').height() / 2;
+            var modalWidth = $('#exampleModal .modal-dialog').width() / 2;
+            if ($(window).width() > 780) {
+                $(this).find('.modal-dialog').css({
+                    'margin-top': modalHeight,
+                    'margin-left': -modalWidth
+                });
+            }
+
+            var button = $(e.relatedTarget); // è§¦å‘äº‹ä»¶çš„æŒ‰é’®
+            var param = button.data('whatever') // è§£æå‡ºdata-whateverå†…å®¹
+
+            $('#billno').val($(window).height() + "-" + $(window).width());
+
+            var tb3 = new LibTable("matdata");
+            tb3.$table.url = "/SaleOrder/BindTableData?progid=2";
+            tb3.$table.hasoperation = false;
+            tb3.$table.showExport = false;
+            tb3.$table.showRefresh = false;
+            tb3.$table.showToggle = false;
+            tb3.$table.showColumns = false;
+            tb3.$table.columns = [{
+                checkbox: true,
+                visible: true                  //æ˜¯å¦æ˜¾ç¤ºå¤é€‰æ¡†
+            }, {
+                field: 'Name',
+                title: 'å§“å',
+                align: 'center',
+                //width:200,
+                //valign: 'middle',
+                sortable: true
+            }, {
+                field: 'Mobile',
+                title: 'æ‰‹æœº',
+                align: 'center',
+                sortable: true,
+                footerFormatter: function () {
+                    return 'æ±‡æ€»'
+                }
+
+            }, {
+                field: 'Email',
+                align: 'center',
+                title: 'é‚®ç®±',
+                sortable: true
+                //formatter: emailFormatter
+            }, {
+                field: 'Homepage',
+                align: 'center',
+                title: 'ä¸»é¡µ'
+                //formatter: linkFormatter
+            }, {
+                field: 'Hobby',
+                align: 'center',
+                title: 'å…´è¶£çˆ±å¥½'
+            }, {
+                field: 'Gender',
+                align: 'center',
+                title: 'æ€§åˆ«',
+                sortable: true
+            }, {
+                field: 'Age',
+                align: 'center',
+                title: 'å¹´é¾„'
+            }, {
+                field: 'Age1',
+                align: 'center',
+                title: 'å¹´é¾„1'
+            }, {
+                field: 'Age2',
+                align: 'center',
+                title: 'å¹´é¾„2'
+            }, {
+                field: 'Age',
+                align: 'center',
+                title: 'å¹´é¾„3'
+            }, {
+                field: 'Age',
+                align: 'center',
+                title: 'å¹´é¾„4'
+            }, {
+                field: 'Age',
+                align: 'center',
+                title: 'å¹´é¾„5'
+            }, {
+                field: 'Age',
+                align: 'center',
+                title: 'å¹´é¾„6'
+            }, {
+                field: 'Age',
+                align: 'center',
+                title: 'å¹´é¾„7'
+            }, {
+                field: 'BirthDate',
+                align: 'center',
+                title: 'å‡ºç”Ÿæ—¥æœŸ'
+                //formatter: dateFormatter
+            }];
+            tb3.initialTable();
+
+        });
+        drag("exampleModal");
+    });
     laydate.render({
-        elem: '#billdate' //»ò elem: document.getElementById('test')¡¢elem: lay('#test') µÈ£¨ÀàĞÍ£ºString/DOM£¬Ä¬ÈÏÖµ£ºÎŞ±ØÌîÏî£¬ÓÃÓÚ°ó¶¨Ö´ĞĞÈÕÆÚäÖÈ¾µÄÔªËØ£¬ÖµÒ»°ãÎªÑ¡ÔñÆ÷£¬»òDOM¶ÔÏó£©
-        //, type: 'year'//year-Ö»Ìá¹©ÄêÁĞ±íÑ¡Ôñ||month-Ö»Ìá¹©Äê¡¢ÔÂÑ¡Ôñ||date-¿ÉÑ¡Ôñ£ºÄê¡¢ÔÂ¡¢ÈÕ¡£typeÄ¬ÈÏÖµ£¬Ò»°ã¿É²»Ìî||time-Ö»Ìá¹©Ê±¡¢·Ö¡¢ÃëÑ¡Ôñ||datetime-¿ÉÑ¡Ôñ£ºÄê¡¢ÔÂ¡¢ÈÕ¡¢Ê±¡¢·Ö¡¢Ãë
-        //, range: true //»ò range: '~' À´×Ô¶¨Òå·Ö¸î×Ö·û
-        , format: 'yyyy-MM-dd' //¿ÉÈÎÒâ×éºÏ yyyyÄêMMÔÂddÈÕ HHÊ±mm·ÖssÃë===2017Äê08ÔÂ18ÈÕ 20Ê±08·Ö08Ãë£¬'yyyy/mm/dd'
-        , value: new Date().toLocaleDateString().replace(new RegExp("/", "g"),'-') //±ØĞë×ñÑ­format²ÎÊıÉè¶¨µÄ¸ñÊ½String£¬Ä¬ÈÏÖµ£ºnew Date()
-        //, min: '1900-1-1'//min/max - ×îĞ¡/´ó·¶Î§ÄÚµÄÈÕÆÚÊ±¼äÖµ ÀàĞÍ£ºstring£¬Ä¬ÈÏÖµ£ºmin: '1900-1-1'¡¢max: '2099-12-31'
+        elem: '#billdate' //æˆ– elem: document.getElementById('test')ã€elem: lay('#test') ç­‰ï¼ˆç±»å‹ï¼šString/DOMï¼Œé»˜è®¤å€¼ï¼šæ— å¿…å¡«é¡¹ï¼Œç”¨äºç»‘å®šæ‰§è¡Œæ—¥æœŸæ¸²æŸ“çš„å…ƒç´ ï¼Œå€¼ä¸€èˆ¬ä¸ºé€‰æ‹©å™¨ï¼Œæˆ–DOMå¯¹è±¡ï¼‰
+        //, type: 'year'//year-åªæä¾›å¹´åˆ—è¡¨é€‰æ‹©||month-åªæä¾›å¹´ã€æœˆé€‰æ‹©||date-å¯é€‰æ‹©ï¼šå¹´ã€æœˆã€æ—¥ã€‚typeé»˜è®¤å€¼ï¼Œä¸€èˆ¬å¯ä¸å¡«||time-åªæä¾›æ—¶ã€åˆ†ã€ç§’é€‰æ‹©||datetime-å¯é€‰æ‹©ï¼šå¹´ã€æœˆã€æ—¥ã€æ—¶ã€åˆ†ã€ç§’
+        //, range: true //æˆ– range: '~' æ¥è‡ªå®šä¹‰åˆ†å‰²å­—ç¬¦
+        , format: 'yyyy-MM-dd' //å¯ä»»æ„ç»„åˆ yyyyå¹´MMæœˆddæ—¥ HHæ—¶mmåˆ†ssç§’===2017å¹´08æœˆ18æ—¥ 20æ—¶08åˆ†08ç§’ï¼Œ'yyyy/mm/dd'
+        , value: new Date().toLocaleDateString().replace(new RegExp("/", "g"), '-') //å¿…é¡»éµå¾ªformatå‚æ•°è®¾å®šçš„æ ¼å¼Stringï¼Œé»˜è®¤å€¼ï¼šnew Date()
+        //, min: '1900-1-1'//min/max - æœ€å°/å¤§èŒƒå›´å†…çš„æ—¥æœŸæ—¶é—´å€¼ ç±»å‹ï¼šstringï¼Œé»˜è®¤å€¼ï¼šmin: '1900-1-1'ã€max: '2099-12-31'
         //, max: '2099-12-31'
-        //, trigger: 'click' // ×Ô¶¨Òåµ¯³ö¿Ø¼şµÄÊÂ¼ş(ÀàĞÍ£ºString£¬Ä¬ÈÏÖµ£ºfocus£¬Èç¹û°ó¶¨µÄÔªËØ·ÇÊäÈë¿ò£¬ÔòÄ¬ÈÏÊÂ¼şÎª£ºclick)-²ÉÓÃclickµ¯³ö
-        //, show: false //Ä¬ÈÏÏÔÊ¾-ÀàĞÍ£ºBoolean£¬Ä¬ÈÏÖµ£ºfalse;;;;Èç¹ûÉèÖÃ: true£¬Ôò¿Ø¼şÄ¬ÈÏÏÔÊ¾ÔÚ°ó¶¨ÔªËØµÄÇøÓò¡£Í¨³£ÓÃÓÚÍâ²¿ÊÂ¼şµ÷ÓÃ¿Ø¼ş
-        //, position: 'absolute'//ÀàĞÍ£ºString£¬Ä¬ÈÏÖµ£ºabsolute  (fixed,absolute,static)
-        //, zIndex: 99999999//²ãµşË³Ğò-ÀàĞÍ£ºNumber£¬Ä¬ÈÏÖµ£º66666666Ò»°ãÓÃÓÚ½â¾öÓëÆäËüÔªËØµÄ»¥Ïà±»ÕÚÑÚµÄÎÊÌâ¡£Èç¹û position ²ÎÊıÉèÎª static Ê±£¬¸Ã²ÎÊıÎŞĞ§
-        //, showBottom: false//ÊÇ·ñÏÔÊ¾µ×²¿À¸--ÀàĞÍ£ºBoolean£¬Ä¬ÈÏÖµ£ºtrueÈç¹ûÉèÖÃ false£¬½«²»»áÏÔÊ¾¿Ø¼şµÄµ×²¿À¸ÇøÓò
-        //, btns: ['clear', 'now', 'confirm']//ÀàĞÍ£ºArray£¬Ä¬ÈÏÖµ£º['clear', 'now', 'confirm'](ÏÔÊ¾Çå¿Õ£¬½ñÌì£¬È·ÈÏ)
-        //, lang: 'en'//ÓïÑÔÀàĞÍ£ºString£¬Ä¬ÈÏÖµ£ºcn--ÄÚÖÃÁËÁ½ÖÖÓïÑÔ°æ±¾£ºcn£¨ÖĞÎÄ°æ£©¡¢en£¨¹ú¼Ê°æ£¬¼´Ó¢ÎÄ°æ£©
-        //, theme: 'grid'//Ö÷Ìâ-ÀàĞÍ£ºString£¬Ä¬ÈÏÖµ£ºdefault£¬themeµÄ¿ÉÑ¡ÖµÓĞ£ºdefault£¨Ä¬ÈÏ¼òÔ¼£©¡¢molv£¨Ä«ÂÌ±³¾°£©¡¢#ÑÕÉ«Öµ£¨×Ô¶¨ÒåÑÕÉ«±³¾°£©¡¢grid£¨¸ñ×ÓÖ÷Ìâ£©
-        //, calendar: true//ÊÇ·ñÏÔÊ¾¹«Àú½ÚÈÕ--ÀàĞÍ£ºBoolean£¬Ä¬ÈÏÖµ£ºfalse
-        //, mark: {//±ê×¢ÖØÒªÈÕ×Ó--ÀàĞÍ£ºObject£¬Ä¬ÈÏÖµ£ºÎŞ
-        //    '0-10-14': 'ÉúÈÕ'
-        //    , '0-12-31': '¿çÄê' //Ã¿Äê12ÔÂ31ÈÕ
-        //    , '0-0-10': '¹¤×Ê' //Ã¿¸öÔÂ10ºÅ
-        //    , '2017-8-15': '' //¾ßÌåÈÕÆÚ
-        //    , '2017-8-20': 'Ô¤·¢' //Èç¹ûÎª¿Õ×Ö·û£¬ÔòÄ¬ÈÏÏÔÊ¾Êı×Ö+»ÕÕÂ
-        //    , '2017-8-21': '·¢²¼'
+        //, trigger: 'click' // è‡ªå®šä¹‰å¼¹å‡ºæ§ä»¶çš„äº‹ä»¶(ç±»å‹ï¼šStringï¼Œé»˜è®¤å€¼ï¼šfocusï¼Œå¦‚æœç»‘å®šçš„å…ƒç´ éè¾“å…¥æ¡†ï¼Œåˆ™é»˜è®¤äº‹ä»¶ä¸ºï¼šclick)-é‡‡ç”¨clickå¼¹å‡º
+        //, show: false //é»˜è®¤æ˜¾ç¤º-ç±»å‹ï¼šBooleanï¼Œé»˜è®¤å€¼ï¼šfalse;;;;å¦‚æœè®¾ç½®: trueï¼Œåˆ™æ§ä»¶é»˜è®¤æ˜¾ç¤ºåœ¨ç»‘å®šå…ƒç´ çš„åŒºåŸŸã€‚é€šå¸¸ç”¨äºå¤–éƒ¨äº‹ä»¶è°ƒç”¨æ§ä»¶
+        //, position: 'absolute'//ç±»å‹ï¼šStringï¼Œé»˜è®¤å€¼ï¼šabsolute  (fixed,absolute,static)
+        //, zIndex: 99999999//å±‚å é¡ºåº-ç±»å‹ï¼šNumberï¼Œé»˜è®¤å€¼ï¼š66666666ä¸€èˆ¬ç”¨äºè§£å†³ä¸å…¶å®ƒå…ƒç´ çš„äº’ç›¸è¢«é®æ©çš„é—®é¢˜ã€‚å¦‚æœ position å‚æ•°è®¾ä¸º static æ—¶ï¼Œè¯¥å‚æ•°æ— æ•ˆ
+        //, showBottom: false//æ˜¯å¦æ˜¾ç¤ºåº•éƒ¨æ --ç±»å‹ï¼šBooleanï¼Œé»˜è®¤å€¼ï¼štrueå¦‚æœè®¾ç½® falseï¼Œå°†ä¸ä¼šæ˜¾ç¤ºæ§ä»¶çš„åº•éƒ¨æ åŒºåŸŸ
+        //, btns: ['clear', 'now', 'confirm']//ç±»å‹ï¼šArrayï¼Œé»˜è®¤å€¼ï¼š['clear', 'now', 'confirm'](æ˜¾ç¤ºæ¸…ç©ºï¼Œä»Šå¤©ï¼Œç¡®è®¤)
+        //, lang: 'en'//è¯­è¨€ç±»å‹ï¼šStringï¼Œé»˜è®¤å€¼ï¼šcn--å†…ç½®äº†ä¸¤ç§è¯­è¨€ç‰ˆæœ¬ï¼šcnï¼ˆä¸­æ–‡ç‰ˆï¼‰ã€enï¼ˆå›½é™…ç‰ˆï¼Œå³è‹±æ–‡ç‰ˆï¼‰
+        //, theme: 'grid'//ä¸»é¢˜-ç±»å‹ï¼šStringï¼Œé»˜è®¤å€¼ï¼šdefaultï¼Œthemeçš„å¯é€‰å€¼æœ‰ï¼šdefaultï¼ˆé»˜è®¤ç®€çº¦ï¼‰ã€molvï¼ˆå¢¨ç»¿èƒŒæ™¯ï¼‰ã€#é¢œè‰²å€¼ï¼ˆè‡ªå®šä¹‰é¢œè‰²èƒŒæ™¯ï¼‰ã€gridï¼ˆæ ¼å­ä¸»é¢˜ï¼‰
+        //, calendar: true//æ˜¯å¦æ˜¾ç¤ºå…¬å†èŠ‚æ—¥--ç±»å‹ï¼šBooleanï¼Œé»˜è®¤å€¼ï¼šfalse
+        //, mark: {//æ ‡æ³¨é‡è¦æ—¥å­--ç±»å‹ï¼šObjectï¼Œé»˜è®¤å€¼ï¼šæ— 
+        //    '0-10-14': 'ç”Ÿæ—¥'
+        //    , '0-12-31': 'è·¨å¹´' //æ¯å¹´12æœˆ31æ—¥
+        //    , '0-0-10': 'å·¥èµ„' //æ¯ä¸ªæœˆ10å·
+        //    , '2017-8-15': '' //å…·ä½“æ—¥æœŸ
+        //    , '2017-8-20': 'é¢„å‘' //å¦‚æœä¸ºç©ºå­—ç¬¦ï¼Œåˆ™é»˜è®¤æ˜¾ç¤ºæ•°å­—+å¾½ç« 
+        //    , '2017-8-21': 'å‘å¸ƒ'
         //}
-        , ready: function (date) {//¿Ø¼şÔÚ´ò¿ªÊ±´¥·¢£¬»Øµ÷·µ»ØÒ»¸ö²ÎÊı
-            console.log(date); //µÃµ½³õÊ¼µÄÈÕÆÚÊ±¼ä¶ÔÏó£º{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+        , ready: function (date) {//æ§ä»¶åœ¨æ‰“å¼€æ—¶è§¦å‘ï¼Œå›è°ƒè¿”å›ä¸€ä¸ªå‚æ•°
+            console.log(date); //å¾—åˆ°åˆå§‹çš„æ—¥æœŸæ—¶é—´å¯¹è±¡ï¼š{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
         }
-        , change: function (value, date, endDate) {//ÈÕÆÚÊ±¼ä±»ÇĞ»»ºóµÄ»Øµ÷
-            console.log(value); //µÃµ½ÈÕÆÚÉú³ÉµÄÖµ£¬Èç£º2017-08-18
-            console.log(date); //µÃµ½ÈÕÆÚÊ±¼ä¶ÔÏó£º{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
-            console.log(endDate); //µÃ½áÊøµÄÈÕÆÚÊ±¼ä¶ÔÏó£¬¿ªÆô·¶Î§Ñ¡Ôñ£¨range: true£©²Å»á·µ»Ø¡£¶ÔÏó³ÉÔ±Í¬ÉÏ¡£
+        , change: function (value, date, endDate) {//æ—¥æœŸæ—¶é—´è¢«åˆ‡æ¢åçš„å›è°ƒ
+            console.log(value); //å¾—åˆ°æ—¥æœŸç”Ÿæˆçš„å€¼ï¼Œå¦‚ï¼š2017-08-18
+            console.log(date); //å¾—åˆ°æ—¥æœŸæ—¶é—´å¯¹è±¡ï¼š{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            console.log(endDate); //å¾—ç»“æŸçš„æ—¥æœŸæ—¶é—´å¯¹è±¡ï¼Œå¼€å¯èŒƒå›´é€‰æ‹©ï¼ˆrange: trueï¼‰æ‰ä¼šè¿”å›ã€‚å¯¹è±¡æˆå‘˜åŒä¸Šã€‚
         }
-        , done: function (value, date, endDate) {//¿Ø¼şÑ¡ÔñÍê±ÏºóµÄ»Øµ÷---µã»÷ÈÕÆÚ¡¢Çå¿Õ¡¢ÏÖÔÚ¡¢È·¶¨¾ù»á´¥·¢¡£
-            console.log(value); //µÃµ½ÈÕÆÚÉú³ÉµÄÖµ£¬Èç£º2017-08-18
-            console.log(date); //µÃµ½ÈÕÆÚÊ±¼ä¶ÔÏó£º{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
-            console.log(endDate); //µÃ½áÊøµÄÈÕÆÚÊ±¼ä¶ÔÏó£¬¿ªÆô·¶Î§Ñ¡Ôñ£¨range: true£©²Å»á·µ»Ø¡£¶ÔÏó³ÉÔ±Í¬ÉÏ¡£
+        , done: function (value, date, endDate) {//æ§ä»¶é€‰æ‹©å®Œæ¯•åçš„å›è°ƒ---ç‚¹å‡»æ—¥æœŸã€æ¸…ç©ºã€ç°åœ¨ã€ç¡®å®šå‡ä¼šè§¦å‘ã€‚
+            console.log(value); //å¾—åˆ°æ—¥æœŸç”Ÿæˆçš„å€¼ï¼Œå¦‚ï¼š2017-08-18
+            console.log(date); //å¾—åˆ°æ—¥æœŸæ—¶é—´å¯¹è±¡ï¼š{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            console.log(endDate); //å¾—ç»“æŸçš„æ—¥æœŸæ—¶é—´å¯¹è±¡ï¼Œå¼€å¯èŒƒå›´é€‰æ‹©ï¼ˆrange: trueï¼‰æ‰ä¼šè¿”å›ã€‚å¯¹è±¡æˆå‘˜åŒä¸Šã€‚
         }
     });
 
@@ -505,4 +645,36 @@
         $('#table').bootstrapTable('refresh');
     }
 
+    function drag(id) {
+        var x1, y1, x2, y2, offleft, offtop, isclik = 0;
+        var wmax = $("#" + id).find('.modal-dialog').width();
+        var hmax = $("#" + id).find('.modal-dialog').height();
+        //$('#billno').val(wmax + "----" + hmax);
+        $("#" + id).find('.modal-header').mousedown(function (e) {
+            x1 = e.clientX;
+            y1 = e.clientY;
+            offleft = parseInt($("#" + id).find('.modal-dialog').css('margin-left'));
+            offtop = parseInt($("#" + id).find('.modal-dialog').css('margin-top'));
+            isclik = 1;
+            //$('#billno').val(wmax + "----" + hmax + " :" + x1 + "-" + y1);
+        });
+        $("#" + id).find('.modal-header').mousemove(function (e) {
+            if (isclik == 1) {
+                x2 = e.clientX;
+                y2 = e.clientY;
+                var xx = x2 - x1 + offleft;
+                var yy = y2 - y1 + offtop;
+                //$('#matid').val(xx + "--" + yy + " :" + x2 + "-" + y2);
+                //if ( xx < wmax) {
+                $("#" + id).find('.modal-dialog').css('margin-left', xx + "px");
+                //}
+                if (yy <= 550) {
+                    $("#" + id).find('.modal-dialog').css('margin-top', yy + "px");
+                }
+            }
+
+        }).mouseup(function () {
+            isclik = 0;
+        });
+    }
 </script>

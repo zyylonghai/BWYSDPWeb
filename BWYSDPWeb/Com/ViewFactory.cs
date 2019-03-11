@@ -15,6 +15,9 @@ namespace BWYSDPWeb.Com
         private Dictionary<string, bool> _panelgroupdic=null;
         private Dictionary<string, bool> _gridGroupdic = null;
         private List<string> _dateElemlst = null;
+        private List<string> _tableScriptlst = null;
+        private string _progid = null;
+        private bool _hasSearchModal = false;// 是否有搜索控件。
         //private Dictionary<string, bool> _fomGroupdic=null;
         public ViewFactory()
         {
@@ -23,15 +26,31 @@ namespace BWYSDPWeb.Com
             _dateElemlst = new List<string>();
             _panelgroupdic = new Dictionary<string, bool>();
             _gridGroupdic = new Dictionary<string, bool>();
+            _tableScriptlst = new List<string>();
             //_fomGroupdic = new Dictionary<string, bool>();
+        }
+        public ViewFactory(string progid) 
+            : this()
+        {
+            this._progid = progid;
         }
 
         public string PageHtml {
             get {
                 StringBuilder jsandcss = new StringBuilder();
+                if (_gridGroupdic.Count > 0)
+                {
+                    jsandcss.Append("@Styles.Render(\"~/Content/bootstrapTable\")");
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
+                }
                 if (_dateElemlst.Count > 0) //加载日期控件的js，css
                 {
                     jsandcss.Append("@Scripts.Render(\"~/Scripts/lib/laydate/laydate\")");
+                }
+                if (_hasSearchModal)
+                {
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
                 }
                 return jsandcss.Append(_page.ToString()).ToString();
             }
@@ -65,7 +84,7 @@ namespace BWYSDPWeb.Com
         /// </summary>
         public void CreateForm()
         {
-            _page.Append("<form class=\"form-horizontal\" action=\"DoSave\">");
+            _page.Append("<form class=\"form-horizontal\" action=\"Save\">");
         }
 
         /// <summary>
@@ -126,6 +145,10 @@ namespace BWYSDPWeb.Com
         //    _fomGroupdic.Add(string.Format("formgroup{0}", _fomGroupdic.Count + 1), false);
         //}
 
+        /// <summary>
+        /// 添加信息组字段
+        /// </summary>
+        /// <param name="fields"></param>
         public void AddFormGroupFields(LibCollection<LibFormGroupField> fields)
         {
             int colcout = 0;
@@ -157,22 +180,33 @@ namespace BWYSDPWeb.Com
                     case ElementType.Text:
                         _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
                         break;
+                    case ElementType.Search:
+                        _page.Append("<div class=\"input-group\">");
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        _page.Append("<span class=\"input-group-btn\">");
+                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-whatever=\"" + field.DisplayName + "\">");
+                        _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
+                        _page.Append("</button>");
+                        _page.Append("</span>");
+                        _page.Append("</div>");
+                        this._hasSearchModal = true;
+                        break;
                 }
                 //_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
-                _page.Append("</div>");
+                _page.Append("</div>");//结束 col-sm
                 colcout += field.Width + 1;
             }
-            _page.Append("</div>");
+            _page.Append("</div>");// 结束 form-group
         }
 
         /// <summary>
         /// 创建表格组
         /// </summary>
         /// <param name="title"></param>
-        public void CreateGridGroup(string tableNm, string title)
+        public void CreateGridGroup(LibGridGroup grid,string package)
         {
             EndprePanel();
-            string id = string.Format("GridGroup{0}", _gridGroupdic.Count + 1);
+            string id = string.Format("GridGroup_{0}", grid.GridGroupName);
             string contentid = string.Format("{0}_info", id);
             _page.Append("<div class=\"panel-group\" id=\"" + id + "\">");
             _page.Append("<div class=\"panel panel-default\">");
@@ -180,7 +214,7 @@ namespace BWYSDPWeb.Com
             //面板标题
             _page.Append("<div class=\"panel-heading\" style=\"background-color:#dff0d8; text-align:left\">");
             _page.Append("<h4 class=\"panel-title\">");
-            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">" + title + "</a>");
+            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">" + grid.GridGroupDisplayNm + "</a>");
             _page.Append("</h4>");
             _page.Append("</div>");
 
@@ -188,16 +222,60 @@ namespace BWYSDPWeb.Com
             _page.Append("<div id=\"" + contentid + "\" class=\"panel-collapse in \">");
             _page.Append("<div class=\"panel-body\">");
 
-            _page.Append("<table id=\""+tableNm+"\"></table>");
+            #region toolbar
+            _page.Append("<div id=\""+grid .GridGroupName+"_toolbar\" class=\"btn-group\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"tablerefresh()\">");
+            _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>");
+            _page.Append("</button>");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>");
+            _page.Append("</button>");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>");
+            _page.Append("</button>");
+            _page.Append("</div>");
+            #endregion
+            _page.Append("<table id=\""+ grid.GridGroupName + "\"></table>");
 
             _gridGroupdic.Add(id, false);
+            AddGridColumns(grid, package);
         }
         /// <summary>
         /// 添加表格列
         /// </summary>
         /// <param name="fields"></param>
-        public void AddGridColumns(string tableNm, LibCollection<LibGridGroupField> fields)
+        private void AddGridColumns(LibGridGroup grid,string package)
         {
+            StringBuilder table = new StringBuilder();
+            string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
+            table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
+            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?progid ={2}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? package: grid.ControlClassNm,this._progid));
+            table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";",param,grid.GridGroupName));
+            if (grid.HasSummary)
+            {
+                table.Append(string.Format("{0}.$table.showFooter={1};",param,grid .HasSummary ? "true" : "false"));
+            }
+            table.Append(string.Format("{0}.$table.columns = [", param));
+            table.Append("{checkbox: true,visible: true }");
+            if (grid.GdGroupFields != null)
+            {
+                //bool flag = false;//用于标识是否已设置了 汇总行。
+                foreach (LibGridGroupField field in grid.GdGroupFields)
+                {
+                    table.Append(",{");
+                    table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2}", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                    if (grid .HasSummary)
+                    {
+                        //设置汇总行，
+                        table.Append(",footerFormatter: function() {return '汇总'}");
+                        grid.HasSummary = false;
+                    }
+                    table.Append("}");
+                }
+            }
+            table.Append("];");
+            table.Append(string.Format("{0}.initialTable();", param));
+            _tableScriptlst.Add(table.ToString());
 
         }
 
@@ -215,7 +293,45 @@ namespace BWYSDPWeb.Com
             //    _page.Append("</div>");
             //}
             EndprePanel();
+            #region 页面提交，暂存等尾部按钮
+            _page.Append("<div class=\"form-group\" style=\"margin-bottom:0\">");
+            _page.Append("<div class=\"col-sm-offset-2 col-sm-10 text-right\">");
+            _page.Append("<button type=\"submit\" class=\"btn btn-default\">提交</button>");
+            _page.Append("<button type=\"submit\" class=\"btn btn-primary\">暂存</button>");
+            _page.Append("<button type=\"reset\" class=\"btn btn-default\">重置</button>");
+            _page.Append("</div>");
+            _page.Append("</div>");
+            #endregion
             _page.Append("</form>");//
+
+            #region 添加模态框。
+            if (this._hasSearchModal)
+            {
+                //用于搜索控件的模态框
+                _page.Append(" <div class=\"modal fade\" id=\"searchModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"searchModalLabel\">");
+                _page.Append("<div class=\"modal-dialog\" role=\"document\">");
+                _page.Append("<div class=\"modal-content\">");
+                _page.Append("<div class=\"modal-header\" style=\"background-color:#dff0d8\">");
+                _page.Append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">");
+                _page.Append("<span aria-hidden=\"true\">×</span>");
+                _page.Append("</button>");
+                _page.Append("<h4 class=\"modal-title\" id=\"searchModalLabel\">来源主数据</h4>");
+                _page.Append("</div>");
+                _page.Append("<div class=\"modal-body\">");
+                _page.Append("<form>");
+                _page.Append("<table id=\"searchdata\"></table>");
+                _page.Append("</form>");
+                _page.Append("</div>");
+                _page.Append("<div class=\"modal-footer\">");
+                _page.Append("<button type=\"button\" class=\"btn btn-primary\">确定</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+            }
+            
+            #endregion
             _page.Append("</div>");//panel - body
             _page.Append("</div>");//panel panel - default
             _page.Append("</div>");//container - fluid
@@ -230,6 +346,14 @@ namespace BWYSDPWeb.Com
         {
             _script.Append("<script type=\"text/javascript\">");
             _script.Append("$(function (){");
+
+            #region 表格脚本
+            foreach (string script in _tableScriptlst)
+            {
+                _script.Append(script);
+                _script.AppendLine();
+            }
+            #endregion
 
             _script.Append("})");
 

@@ -1904,6 +1904,7 @@
     <Content Include="Scripts\lib\laydate\theme\default\laydate.css" />
     <Content Include="Scripts\lib\notepad.js" />
     <Content Include="Scripts\lib\popovers-tooltips.js" />
+    <Content Include="Scripts\lib\SearchModal.js" />
     <Content Include="Scripts\lib\summernote.min.js" />
     <Content Include="Scripts\lib\tableExport.js" />
     <Content Include="Scripts\lib\TableSetting.js" />

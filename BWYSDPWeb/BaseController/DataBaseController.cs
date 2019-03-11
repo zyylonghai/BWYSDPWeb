@@ -103,6 +103,14 @@ namespace BWYSDPWeb.BaseController
             m.PmenuId = "0103";
             mdata.Add(m);
 
+            m = new Menu();
+            m.MenuId = "010302";
+            m.MenuName = "检验单";
+            m.ProgId = "CheckBill";
+            m.Package = "com";
+            m.PmenuId = "0103";
+            mdata.Add(m);
+
             return Json(new { Message = "success", data = mdata, Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
@@ -143,7 +151,7 @@ namespace BWYSDPWeb.BaseController
                             #endregion
 
                             #region 根据排版模型对象 创建功能视图。
-                            ViewFactory factory = new ViewFactory();
+                            ViewFactory factory = new ViewFactory(progId);
                             factory.BeginPage(formpage .FormName);
                             factory.CreateBody();
                             factory.CreateForm();
@@ -152,7 +160,7 @@ namespace BWYSDPWeb.BaseController
                                 foreach (LibFormGroup formg in formpage.FormGroups)
                                 {
                                     factory.CreatePanelGroup(formg.FormGroupDisplayNm);
-                                    if (formg.FmGroupFields != null)
+                                    if (formg.FmGroupFields != null && formg.FmGroupFields .Count >0)
                                     {
                                         factory.AddFormGroupFields(formg.FmGroupFields);
                                     }
@@ -160,7 +168,13 @@ namespace BWYSDPWeb.BaseController
                             }
                             if (formpage.GridGroups != null)
                             {
-
+                                foreach (LibGridGroup grid in formpage.GridGroups)
+                                {
+                                    if (grid.GdGroupFields != null)
+                                    {
+                                        factory.CreateGridGroup(grid, packagepath.Replace("/", ""));
+                                    }
+                                }
                             }
                             factory.EndPage();
 
@@ -189,12 +203,12 @@ namespace BWYSDPWeb.BaseController
             return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult DoSave()
+        public ActionResult Save()
         {
             return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
         }
 
-        public string BindTableData(string progid,int page,int rows)
+        public string BindTableData(string progid,int page, int rows,string Mobile)
         {
             DataTable dt = new DataTable();
             DataColumn col = new DataColumn();

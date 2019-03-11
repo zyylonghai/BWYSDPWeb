@@ -56,6 +56,11 @@ namespace BWYSDPWeb
             bundles.Add(new ScriptBundle("~/Scripts/lib/laydate/laydate").Include(
                     "~/Scripts/lib/laydate/laydate.js"
                 ));
+            //searchmodal
+            bundles.Add(new ScriptBundle("~/bundles/searchmodal").Include(
+                     "~/Scripts/lib/SearchModal.js"
+
+               ));
             #endregion
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

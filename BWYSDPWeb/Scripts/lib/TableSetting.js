@@ -113,9 +113,9 @@ function LibTable(id)
         url: "",
         method: 'GET',
         toolbar: "",
-        striped: true,
+        striped: true,       //显示表格条纹
         cache: false,
-        pagination: true,
+        pagination: true,    //启动分页
         sortable: true,
         sortOrder: "asc",
         sidePagination: "server",
@@ -128,12 +128,14 @@ function LibTable(id)
         showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
         clickToSelect: true,                //是否启用点击选中行
-        //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+        height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
         uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
         showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
         cardView: false,                    //是否显示详细视图
         detailView: false,
-        hasoperation: true,
+        hasoperation: true,                 //是否显示操作列
+        showFooter: false,                  //表格最底部是否显示汇总行
+        showExport: true,                  //是否显示导出按钮
         columns: []
     };
     this.testid = id;
@@ -172,12 +174,12 @@ LibTable.prototype = {
             showRefresh: this.$table.showRefresh,                  //是否显示刷新按钮
             minimumCountColumns: this.$table.minimumCountColumns,             //最少允许的列数
             clickToSelect: this.$table.clickToSelect,                //是否启用点击选中行
-            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            height: this.$table.height,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
             uniqueId: this.$table.uniqueId,                     //每一行的唯一标识，一般为主键列
             showToggle: this.$table.showToggle,                   //是否显示详细视图和列表视图的切换按钮
             cardView: this.$table.cardView,                    //是否显示详细视图
             detailView: this.$table.detailView,                  //是否显示父子表
-            showExport: true, //是否显示导出
+            showExport: this.$table.showExport, //是否显示导出
             exportDataType: "basic", //默认basic：只导出当前页的表格数据；all：导出所有数据；selected：导出选中的数据
             //exportTypes: ['excel'] ,//导出文件类型 ，支持多种类型文件导出
             //exportOptions: {
@@ -187,7 +189,7 @@ LibTable.prototype = {
             //    tableName: '贷款总表',
             //    excelstyles: ['background-color', 'color', 'font-size', 'font-weight', 'border-top']
             //},
-            showFooter: true,
+            showFooter: this.$table.showFooter,
             //得到查询的参数
             queryParams: function (params) {
                 //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
@@ -195,7 +197,8 @@ LibTable.prototype = {
                     rows: params.limit,                         //页面大小
                     page: (params.offset / params.limit) + 1,   //页码
                     sort: params.sort,      //排序列名  
-                    sortOrder: params.order //排位命令（desc，asc） 
+                    sortOrder: params.order, //排位命令（desc，asc） 
+                    defindfield:"zyy"
                 };
                 return temp;
             },
@@ -220,7 +223,7 @@ LibTable.prototype = {
     }
 }
 
-操作栏的格式化
+//操作栏的格式化
 function actionFormatter(value, row, index) {
     var id = value;
     var result = "";
