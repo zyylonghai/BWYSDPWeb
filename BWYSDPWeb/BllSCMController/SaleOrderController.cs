@@ -15,5 +15,11 @@ namespace BWYSDPWeb.BllSCMController
         {
             base.GetTableDataExt(dt);
         }
+
+
+        public ActionResult TestAjax()
+        {
+            return Json(new {data="test" }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

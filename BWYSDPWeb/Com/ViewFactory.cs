@@ -84,7 +84,9 @@ namespace BWYSDPWeb.Com
         /// </summary>
         public void CreateForm()
         {
-            _page.Append("<form class=\"form-horizontal\" action=\"Save\">");
+            //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
+            _page.Append("@using(Html.BeginForm(\"Save\", \"DataBase\",FormMethod.Post,new{@class=\"form-horizontal\" }))");
+            _page.Append("{");
         }
 
         /// <summary>
@@ -302,7 +304,8 @@ namespace BWYSDPWeb.Com
             _page.Append("</div>");
             _page.Append("</div>");
             #endregion
-            _page.Append("</form>");//
+            //_page.Append("</form>");//
+            _page.Append("}");
 
             #region 添加模态框。
             if (this._hasSearchModal)

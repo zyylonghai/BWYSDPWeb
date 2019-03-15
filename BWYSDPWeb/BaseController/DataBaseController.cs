@@ -11,11 +11,13 @@ using Newtonsoft.Json;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using BWYSDPWeb.Com;
+using SDPCRL.CORE;
 
 namespace BWYSDPWeb.BaseController
 {
     public class DataBaseController : BaseController
     {
+
         public DataBaseController()
         {
 
@@ -117,7 +119,7 @@ namespace BWYSDPWeb.BaseController
         /// <summary>
         /// 菜单跳转功能页
         /// </summary>
-        /// <param name="progId"></param>
+        /// <param name="progId">排班模型ID</param>
         /// <returns></returns>
         [HttpGet]
         public ActionResult ConverToPage(string progId)
@@ -127,6 +129,8 @@ namespace BWYSDPWeb.BaseController
                 string packagepath = this.Request.Url.Segments[1];
                 if (!string.IsNullOrEmpty(packagepath))
                 {
+                    this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, packagepath.Replace("/", ""));
+                    //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     FileOperation fileoperation = new FileOperation();
                     
                     fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", Server.MapPath("/").Replace("//", ""), packagepath, progId);
@@ -205,7 +209,8 @@ namespace BWYSDPWeb.BaseController
 
         public ActionResult Save()
         {
-            return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
+            //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
+            return RedirectToAction("ConverToPage",this.Package, new { progId = this.ProgID });
         }
 
         public string BindTableData(string progid,int page, int rows,string Mobile)

@@ -7,14 +7,16 @@
         <div class="panel-heading">销售订单功能</div>
         <div class="panel-body">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default"><i class="fa fa-fw fa-save"></i></button>
+                <button type="button" class="btn btn-default" onclick="testajax()"><i class="fa fa-fw fa-save"></i></button>
                 <button type="button" class="btn btn-default"><i class="fa fa-fw fa-cut"></i></button>
                 <button type="button" class="btn btn-default"><i class="fa fa-fw fa-copy"></i></button>
                 <button type="button" class="btn btn-default"><i class="fa fa-fw fa-clipboard"></i></button>
             </div>
             <br />
             <br />
-            <form class="form-horizontal" action="DoSave">
+            @using(Html.BeginForm("Save", "DataBase",FormMethod.Post,new {@class="form-horizontal" }))
+            {
+            @*<form class="form-horizontal" action="Save" method="post">*@
                 <div class="panel-group" id="keyaccordion">
                     <div class="panel panel-default">
                         <div class="panel-heading" style="background-color:#dff0d8; text-align:left;">
@@ -53,23 +55,23 @@
 
                                     <label for="datetime" class="col-sm-1 control-label">创建日期</label>
                                     <div class="col-sm-2">
-                                        <input type="date" class="form-control" id="createdatetime" placeholder="createdatetime">
+                                        <input type="date" class="form-control" id="createdatetime" name="createdatetime" placeholder="createdatetime">
                                     </div>
                                     <label for="datetime" class="col-sm-1 control-label">创建日期2</label>
                                     <div class="col-sm-2">
-                                        <input type="datetime-local" class="form-control" id="createdatetime5" placeholder="createdatetime">
+                                        <input type="datetime-local" class="form-control" id="createdatetime5" name="createdatetime5" placeholder="createdatetime">
                                     </div>
 
                                     <label for="datetime" class="col-sm-1 control-label">创建日期3</label>
                                     <div class="col-sm-2">
-                                        <input type="datetime-local" class="form-control" id="createdatetime9" placeholder="createdatetime9">
+                                        <input type="datetime-local" class="form-control" id="createdatetime9" name="createdatetime9" placeholder="createdatetime9">
                                     </div>
 
                                 </div>
                                 <div class="form-group">
                                     <label for="datetime" class="col-sm-1 control-label">创建日期</label>
                                     <div class="col-sm-2">
-                                        <input type="datetime" class="form-control" id="datetime2" placeholder="datetime2">
+                                        <input type="datetime" class="form-control" id="datetime2" name="datetime2" placeholder="datetime2">
                                     </div>
 
                                     <label for="billType" class="col-sm-1 control-label">单据类型</label>
@@ -86,7 +88,7 @@
                                     <div class="form-group">
                                         <label for="inputPassword3" class="col-sm-1 control-label">Password</label>
                                         <div class="col-sm-11">
-                                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                                            <input type="password" class="form-control" id="inputPassword3" name="inputPassword3" placeholder="Password">
                                         </div>
                                     </div>
                                 </fieldset>
@@ -212,7 +214,8 @@
                     </div>
                 </div>
 
-            </form>
+            @*</form>*@
+            }
             @*<div class="form-group text-right" style="margin-top:20px">
                     <button type="submit" class="btn btn-default">提交</button>
                     <button type="submit" class="btn btn-primary">暂存</button>
@@ -323,6 +326,7 @@
 </div>
 <script type="text/javascript">
     $(function () {
+        $('#bwysdp_progid').val("SaleOrder");
         $('#saleordercollapse').collapse('show');
 
         var tb = new LibTable("table");
@@ -676,5 +680,21 @@
         }).mouseup(function () {
             isclik = 0;
         });
+    }
+    function testajax()
+    {
+        $.ajax({
+            url: "/SaleOrder/TestAjax",
+            data: "test=1",
+                    type: 'Post',
+                    async: false,
+                    success: function (obj) {
+                       
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        debugger
+                        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+                    }
+                });
     }
 </script>

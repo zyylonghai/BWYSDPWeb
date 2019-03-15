@@ -21,6 +21,7 @@
 
         function Initilmenus()
         {
+            debugger
             var mdata = localStorage.getItem("m_data");
             if (mdata != "" && mdata != undefined && mdata != null) {
                 loadmenuData(mdata);
@@ -78,6 +79,8 @@
     @Scripts.Render("~/bundles/bootstrap")
 </head>
 <body class="cm-no-transition cm-1-navbar">
+    <input type="hidden" id="bwysdp_progid"/>
+    @*<input type="hidden" id="package"/>*@
     <div id="cm-menu">
         <nav class="cm-navbar cm-navbar-primary">
             <div class="cm-flex"><a href="/" class="cm-logo"></a></div>

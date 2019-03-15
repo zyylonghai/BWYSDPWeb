@@ -28,7 +28,8 @@ namespace BWYSDPWeb
                       "~/Scripts/lib/fastclick.min.js",
                       //"~/Scripts/lib/bootstrap.min.js",
                       "~/Scripts/lib/clearmin.min.js",
-                      "~/Scripts/lib/home.js"
+                      "~/Scripts/lib/home.js",
+                      "~/Scripts/lib/ajaxBus.js"
                       //"~/Scripts/lib/bootstrap-table.js",
                       //"~/Scripts/lib/bootstrap-table-zh-CN.js",
                       //"~/Scripts/lib/colResizable-1.6.js",
