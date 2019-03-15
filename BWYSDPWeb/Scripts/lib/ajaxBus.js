@@ -1,7 +1,6 @@
 ﻿var _ajax = $.ajax;
 //重写jquery的ajax方法
 $.ajax = function (opt) {
-    debugger
     var fn = {
         data:"",
         error: function (XMLHttpRequest, textStatus, errorThrown) { },
@@ -32,7 +31,6 @@ $.ajax = function (opt) {
             fn.data += "&sdp_pageid=" + $('#bwysdp_progid').val() + "";
         }
     }
-    debugger
     //扩展增强处理 
     var _opt = $.extend(opt, {
        
@@ -51,7 +49,6 @@ $.ajax = function (opt) {
             fn.complete(data);
         },
         beforeSend: function (xhr, o) {
-            debugger
             fn.beforeSend(xhr, o);
 
         },

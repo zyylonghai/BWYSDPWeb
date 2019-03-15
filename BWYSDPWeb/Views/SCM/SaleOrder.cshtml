@@ -14,7 +14,7 @@
             </div>
             <br />
             <br />
-            @using(Html.BeginForm("Save", "DataBase",FormMethod.Post,new {@class="form-horizontal" }))
+            @using(Html.BeginForm("Save", "DataBase",new { sdp_pageid = "SaleOrder" }, FormMethod.Post,new {@class="form-horizontal" }))
             {
             @*<form class="form-horizontal" action="Save" method="post">*@
                 <div class="panel-group" id="keyaccordion">

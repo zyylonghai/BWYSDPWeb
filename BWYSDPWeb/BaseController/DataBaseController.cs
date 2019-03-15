@@ -129,6 +129,8 @@ namespace BWYSDPWeb.BaseController
                 string packagepath = this.Request.Url.Segments[1];
                 if (!string.IsNullOrEmpty(packagepath))
                 {
+                    this.ProgID = progId;
+                    this.Package = packagepath.Replace("/", "");
                     this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, packagepath.Replace("/", ""));
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     FileOperation fileoperation = new FileOperation();
