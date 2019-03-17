@@ -1,0 +1,241 @@
+<?xml version="1.0"?>
+<LibDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" DSID="CheckBill" DataSourceName="检验单" Package="com">
+  <DefTables>
+    <LibDefineTable ID="1c026bf7-7127-4971-b856-9bf37129892c" TableName="CheckBill" DisplayName="检验单">
+      <TableStruct>
+        <LibDataTableStruct ID="63168793-04b6-4e3d-9845-d692a54d5aab">
+          <Name>CheckBill</Name>
+          <DisplayName>数据表-CheckBill</DisplayName>
+          <Ignore>false</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields>
+            <string>CompanyId</string>
+            <string>departmentId</string>
+          </JoinFields>
+          <PrimaryKey />
+          <Fields>
+            <LibField>
+              <ID>f72667d5-8fb6-4913-94c2-e00ff4e0d857</ID>
+              <Name>BillNo</Name>
+              <AliasName />
+              <DisplayName>单据号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>7bbea319-818a-43ab-8fe9-37819451e3eb</ID>
+              <Name>Checker</Name>
+              <AliasName />
+              <DisplayName>检验人</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>dd645512-9498-445a-b300-3f4e24844c48</ID>
+              <Name>matId</Name>
+              <AliasName />
+              <DisplayName>物料编号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <SourceField>
+                <ID>4a402ed9-ae7d-49ac-8de4-415f8f4abaf1</ID>
+                <FromDataSource>Materials</FromDataSource>
+                <FromDefindTableNm>material</FromDefindTableNm>
+                <FromStructTableNm>mats</FromStructTableNm>
+                <FromFieldNm>matid</FromFieldNm>
+                <RelateFieldNm />
+              </SourceField>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>8bb312e7-9bc7-4426-98d9-b80aecf3ab4e</ID>
+              <Name>Qty</Name>
+              <AliasName />
+              <DisplayName>数量</DisplayName>
+              <OrignNm />
+              <FieldType>Decimal</FieldType>
+              <FieldLength>18</FieldLength>
+              <Decimalpoint>3</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>4212e68b-76e3-4782-937c-fd6f54e40fd0</ID>
+              <Name>CheckDT</Name>
+              <AliasName />
+              <DisplayName>检验日期</DisplayName>
+              <OrignNm />
+              <FieldType>Date</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>178473c4-34b2-4937-a6de-51b96d8a5728</ID>
+              <Name>CompanyId</Name>
+              <AliasName />
+              <DisplayName>公司</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>23bd01b4-80c2-46ea-b144-60da6426a93f</ID>
+              <Name>departmentId</Name>
+              <AliasName />
+              <DisplayName>部门</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>cbbff794-428e-4d2b-8261-81fe2de7abbb</ID>
+              <Name>remark</Name>
+              <AliasName />
+              <DisplayName>备注</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>71e00fdc-a93d-4986-818d-cace638ad334</ID>
+              <Name>billStatus</Name>
+              <AliasName />
+              <DisplayName>单据状态</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>2</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <SourceField>
+                <ID>1e8d1239-bfef-492b-b2c2-ba7ed892d23a</ID>
+                <RelateFieldNm />
+              </SourceField>
+              <Items>
+                <LibKeyValue>
+                  <ID>285fc3e0-66b9-4c2c-a448-b111ab3b561f</ID>
+                  <Key xsi:type="xsd:string">1</Key>
+                  <Value xsi:type="xsd:string">关闭</Value>
+                  <Remark />
+                </LibKeyValue>
+                <LibKeyValue>
+                  <ID>6798838a-d47c-4871-9a16-c5e4d1a80577</ID>
+                  <Key xsi:type="xsd:string">2</Key>
+                  <Value xsi:type="xsd:string">打开</Value>
+                  <Remark />
+                </LibKeyValue>
+              </Items>
+            </LibField>
+            <LibField>
+              <ID>211e5ae9-5c89-4a3c-9675-b3f8a7425367</ID>
+              <Name>CheckBill_Field10</Name>
+              <AliasName />
+              <DisplayName>CheckBill_Field10</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+        <LibDataTableStruct ID="14f2e5d3-e94f-4154-9fc5-27714f6b1f8e">
+          <Name>CheckBillDetail</Name>
+          <DisplayName>检验单明细</DisplayName>
+          <Ignore>true</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey />
+          <Fields>
+            <LibField>
+              <ID>0c809987-1de7-47c7-894a-69911f24b9a1</ID>
+              <Name>BillNo</Name>
+              <AliasName />
+              <DisplayName>单据号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>93be8fd6-a3d7-4f59-bfcc-d5ac0329262f</ID>
+              <Name>RowNo</Name>
+              <AliasName />
+              <DisplayName>行号</DisplayName>
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>40098af7-3bf5-4ae2-8d6c-f12e5a0fb7d5</ID>
+              <Name>check1</Name>
+              <AliasName />
+              <DisplayName>检验部位1</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>1007ec5c-440e-4de9-9061-db0d58412dd2</ID>
+              <Name>check2</Name>
+              <AliasName />
+              <DisplayName>检验部位2</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </LibDefineTable>
+  </DefTables>
+</LibDataSource>

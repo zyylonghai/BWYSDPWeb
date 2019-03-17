@@ -19,7 +19,8 @@ namespace Bll
                 {
                     cn.Open();
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                 }
                 using (SQLiteCommand cmd = new SQLiteCommand())
                 {
@@ -70,7 +71,7 @@ namespace Bll
                             info.accountid,
                             info.accountname,
                             info.IsCurrentServer);
-                        cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery(); 
                         return true;
                     }
                     catch (Exception ex)
@@ -208,6 +209,48 @@ namespace Bll
                     }
                 }
             }
+        }
+    }
+
+    public class SQLiteHelp
+    {
+        public string ConnectStr = null;
+        public SQLiteHelp(string dbNm)
+        {
+            ConnectStr = string.Format("Data Source=|DataDirectory|{0}.db;providerName=\"System.Data.SQLite\"; Pooling=true;FailIfMissing=false", dbNm);
+        }
+
+        public void Insert(List<string> commandtextlst)
+        {
+            using (SQLiteConnection cn = new SQLiteConnection(ConnectStr))
+            {
+                cn.Open();
+                SQLiteTransaction transaction = cn.BeginTransaction();
+                
+                using (SQLiteCommand cmd = new SQLiteCommand())
+                {
+                    cmd.Connection = cn;
+                    try
+                    {
+                        foreach (string command in commandtextlst)
+                        {
+                            cmd.CommandText = command;
+                            cmd.ExecuteNonQuery();
+                        }
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+        }
+
+        public Dictionary<string, List<string>> SelectFormfield(string progid, string tablenm)
+        {
+
         }
     }
 

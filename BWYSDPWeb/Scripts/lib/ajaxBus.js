@@ -4,7 +4,10 @@ $.ajax = function (opt) {
     var fn = {
         data:"",
         error: function (XMLHttpRequest, textStatus, errorThrown) { },
-        success: function (data, textStatus) { },
+        success: function (data, textStatus)
+        {
+            debugger
+        },
         complete: function (data) { },
         beforeSend: function (xhr, o) { },
     }
@@ -20,17 +23,19 @@ $.ajax = function (opt) {
     if (opt.beforeSend) {
         fn.beforeSend = opt.beforeSend;
     }
-    if (opt.data)
-    {
+    //if (opt.data)
+    //{
         fn.data = opt.data;
         if (Object.prototype.toString.call(fn.data) != '[object String]') {
             fn.data.sdp_pageid = $('#bwysdp_progid').val();
+            fn.data.sdp_dsid = $('#bwysdp_dsid').val();
         }
         else
         {
             fn.data += "&sdp_pageid=" + $('#bwysdp_progid').val() + "";
+            fn.data += "&sdp_dsid=" + $('#bwysdp_dsid').val() + "";
         }
-    }
+    //}
     //扩展增强处理 
     var _opt = $.extend(opt, {
        
@@ -40,6 +45,7 @@ $.ajax = function (opt) {
             fn.error(XMLHttpRequest, textStatus, errorThrown);
         },
         success: function (data, textStatus) {
+            debugger
             //成功回调方法增强处理 
             fn.success(data, textStatus);
 

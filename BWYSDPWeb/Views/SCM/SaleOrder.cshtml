@@ -327,6 +327,7 @@
 <script type="text/javascript">
     $(function () {
         $('#bwysdp_progid').val("SaleOrder");
+        $('#bwysdp_dsid').val("SaleOrder");
         $('#saleordercollapse').collapse('show');
 
         var tb = new LibTable("table");
@@ -683,18 +684,8 @@
     }
     function testajax()
     {
-        $.ajax({
-            url: "/SaleOrder/TestAjax",
-            data: "test=1",
-                    type: 'Post',
-                    async: false,
-                    success: function (obj) {
-                       
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        debugger
-                        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
-                    }
+        $.ajax({url: "/SaleOrder/TestAjax",data: "test=1",type: 'Post',async: false,success: function (obj) {},
+                error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);}
                 });
     }
 </script>

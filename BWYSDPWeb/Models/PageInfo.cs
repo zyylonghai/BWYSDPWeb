@@ -10,4 +10,10 @@ namespace BWYSDPWeb.Models
         public string ProgId { get; set; }
         public string Package { get; set; }
     }
+
+    public class FormFields
+    {
+        public string ProgId { get; set; }
+        public List<string> Fields { get; set; }
+    }
 }

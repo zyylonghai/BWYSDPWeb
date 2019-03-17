@@ -12,6 +12,7 @@ using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using BWYSDPWeb.Com;
 using SDPCRL.CORE;
+using SDPCRL.COM;
 
 namespace BWYSDPWeb.BaseController
 {
@@ -119,7 +120,7 @@ namespace BWYSDPWeb.BaseController
         /// <summary>
         /// 菜单跳转功能页
         /// </summary>
-        /// <param name="progId">排班模型ID</param>
+        /// <param name="progId">排版模型ID</param>
         /// <returns></returns>
         [HttpGet]
         public ActionResult ConverToPage(string progId)
@@ -131,15 +132,14 @@ namespace BWYSDPWeb.BaseController
                 {
                     this.ProgID = progId;
                     this.Package = packagepath.Replace("/", "");
-                    this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, packagepath.Replace("/", ""));
+                    this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, this.Package);
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     FileOperation fileoperation = new FileOperation();
                     
                     fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", Server.MapPath("/").Replace("//", ""), packagepath, progId);
-
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
-                        LibFormPage formpage= ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, packagepath.Replace("/", ""));
+                        LibFormPage formpage= ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, this.Package);
                         if (formpage != null)
                         {
                             #region 旧代码
@@ -158,6 +158,9 @@ namespace BWYSDPWeb.BaseController
 
                             #region 根据排版模型对象 创建功能视图。
                             ViewFactory factory = new ViewFactory(progId);
+                            factory.ControlClassNm = formpage.ControlClassNm;
+                            factory.DSID = formpage.DSID;
+                            factory.Package = this.Package;
                             factory.BeginPage(formpage .FormName);
                             factory.CreateBody();
                             factory.CreateForm();
@@ -178,13 +181,30 @@ namespace BWYSDPWeb.BaseController
                                 {
                                     if (grid.GdGroupFields != null)
                                     {
-                                        factory.CreateGridGroup(grid, packagepath.Replace("/", ""));
+                                        factory.CreateGridGroup(grid);
                                     }
                                 }
                             }
                             factory.EndPage();
 
                             fileoperation.WritText(factory.PageHtml);
+                            #endregion
+
+                            #region 保存Formgroupfields
+                            string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            Bll.SQLiteHelp sQLiteHelp = new Bll.SQLiteHelp("TempData");
+                            string b= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            List<string> commandtextlst = new List<string>();
+                            foreach (KeyValuePair<string, List<string>> item in factory.Formfields)
+                            {
+                                foreach (string f in item.Value)
+                                {
+                                    commandtextlst.Add(string.Format("insert into formfields values('{0}','{1}','{2}')", progId, item.Key, f));
+                                }
+                            }
+                            string c= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff"); 
+                            sQLiteHelp.Insert(commandtextlst);
+                            string d= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                             #endregion
                         }
                         else
@@ -197,6 +217,15 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             return View(progId);
+        }
+
+        [HttpPost]
+        public virtual ActionResult PageLoad()
+        {
+
+            this.CreateTableSchema();
+
+            return LibJson();
         }
         /// <summary>
         /// 功能搜索

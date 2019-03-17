@@ -17,8 +17,17 @@ namespace BWYSDPWeb.Com
         private List<string> _dateElemlst = null;
         private List<string> _tableScriptlst = null;
         private string _progid = null;
+        //private string _dsid = null;
         private bool _hasSearchModal = false;// 是否有搜索控件。
-        //private Dictionary<string, bool> _fomGroupdic=null;
+                                             //private Dictionary<string, bool> _fomGroupdic=null;
+
+        #region 公开属性
+        public string ControlClassNm { get; set; }
+        public string DSID { get; set; }
+        public string Package { get; set; }
+
+        public Dictionary<string ,List<string>> Formfields { get; set; }
+        #endregion
         public ViewFactory()
         {
             _page = new StringBuilder();
@@ -27,6 +36,7 @@ namespace BWYSDPWeb.Com
             _panelgroupdic = new Dictionary<string, bool>();
             _gridGroupdic = new Dictionary<string, bool>();
             _tableScriptlst = new List<string>();
+            Formfields = new Dictionary<string, List<string>>();
             //_fomGroupdic = new Dictionary<string, bool>();
         }
         public ViewFactory(string progid) 
@@ -34,6 +44,12 @@ namespace BWYSDPWeb.Com
         {
             this._progid = progid;
         }
+        //public ViewFactory(string progid,string dsid)
+        //    : this()
+        //{
+        //    this._progid = progid;
+        //    this._dsid = dsid;
+        //}
 
         public string PageHtml {
             get {
@@ -85,7 +101,7 @@ namespace BWYSDPWeb.Com
         public void CreateForm()
         {
             //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
-            _page.Append("@using(Html.BeginForm(\"Save\", \"DataBase\",FormMethod.Post,new{@class=\"form-horizontal\" }))");
+            _page.Append("@using(Html.BeginForm(\"Save\", \"DataBase\",new { sdp_pageid =\""+this._progid+"\" },FormMethod.Post,new{@class=\"form-horizontal\" }))");
             _page.Append("{");
         }
 
@@ -154,8 +170,15 @@ namespace BWYSDPWeb.Com
         public void AddFormGroupFields(LibCollection<LibFormGroupField> fields)
         {
             int colcout = 0;
+            List<string> valus = null;
             foreach (LibFormGroupField field in fields)
             {
+                if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
+                {
+                    valus = new List<string>();
+                    this.Formfields.Add(field.FromTableNm,valus);
+                }
+                valus.Add(field.Name);
                 if (colcout%12 == 0)
                 {
                     if (colcout != 0)
@@ -205,7 +228,7 @@ namespace BWYSDPWeb.Com
         /// 创建表格组
         /// </summary>
         /// <param name="title"></param>
-        public void CreateGridGroup(LibGridGroup grid,string package)
+        public void CreateGridGroup(LibGridGroup grid)
         {
             EndprePanel();
             string id = string.Format("GridGroup_{0}", grid.GridGroupName);
@@ -240,18 +263,18 @@ namespace BWYSDPWeb.Com
             _page.Append("<table id=\""+ grid.GridGroupName + "\"></table>");
 
             _gridGroupdic.Add(id, false);
-            AddGridColumns(grid, package);
+            AddGridColumns(grid);
         }
         /// <summary>
         /// 添加表格列
         /// </summary>
         /// <param name="fields"></param>
-        private void AddGridColumns(LibGridGroup grid,string package)
+        private void AddGridColumns(LibGridGroup grid)
         {
             StringBuilder table = new StringBuilder();
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
             table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
-            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?progid ={2}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? package: grid.ControlClassNm,this._progid));
+            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?progid ={2}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package: grid.ControlClassNm,this._progid));
             table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";",param,grid.GridGroupName));
             if (grid.HasSummary)
             {
@@ -350,6 +373,14 @@ namespace BWYSDPWeb.Com
             _script.Append("<script type=\"text/javascript\">");
             _script.Append("$(function (){");
 
+            _script.Append("$('#bwysdp_progid').val(\""+this._progid+"\");");
+            _script.Append("$('#bwysdp_dsid').val(\"" + this.DSID + "\");");
+
+            #region pageload
+            _script.Append("$.ajax({url: \" /"+(string.IsNullOrEmpty(this.ControlClassNm)?this.Package :this .ControlClassNm) + "/PageLoad\",data: \"\",type: 'Post',async: false,success: function (obj) {},");
+            _script.Append("error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + \":\" + XMLHttpRequest.readyState.toString() + \", \" + textStatus + errorThrown);}");
+            _script.Append(" });");
+            #endregion
             #region 表格脚本
             foreach (string script in _tableScriptlst)
             {

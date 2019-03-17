@@ -54,7 +54,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\library\SDPCRL.BLL.BUS.dll</HintPath>
     </Reference>
-    <Reference Include="SDPCRL.COM">
+    <Reference Include="SDPCRL.COM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\library\SDPCRL.COM.dll</HintPath>
     </Reference>
     <Reference Include="SDPCRL.CORE">
@@ -155,6 +156,7 @@
     <Compile Include="BaseController\BaseController.cs" />
     <Compile Include="BaseController\DataBaseController.cs" />
     <Compile Include="BllAuthorControllers\HomeController.cs" />
+    <Compile Include="BllComController\CheckBillController.cs" />
     <Compile Include="BllComController\ComController.cs" />
     <Compile Include="BllSCMController\SaleOrderController.cs" />
     <Compile Include="BllSCMController\SCMController.cs" />
@@ -1961,7 +1963,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
-      <Project>{2441dbeb-9445-4a17-bac3-39e6a4299b6a}</Project>
+      <Project>{415116f1-316c-4977-b659-a9da96990b5c}</Project>
       <Name>Bll</Name>
     </ProjectReference>
   </ItemGroup>
