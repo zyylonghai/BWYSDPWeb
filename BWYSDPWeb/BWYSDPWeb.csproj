@@ -64,6 +64,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -163,6 +164,7 @@
     <Compile Include="BllStockController\StockController.cs" />
     <Compile Include="BllStockController\stocktestController.cs" />
     <Compile Include="BllsysSettingController\ServerController.cs" />
+    <Compile Include="Com\CachHelp.cs" />
     <Compile Include="Com\ViewFactory.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

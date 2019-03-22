@@ -237,8 +237,8 @@ namespace BWYSDPWeb.BaseController
             //Bll.DelegateFactory df = new Bll.DelegateFactory();
             //df.ClearTempDataByProgid(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
 
-            TempHelp sQLiteHelp = new TempHelp("TempData");
-            sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+            //TempHelp sQLiteHelp = new TempHelp("TempData");
+            //sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
 
             #endregion
             PageLoad();

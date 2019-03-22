@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Runtime.Caching;
+using BWYSDPWeb.Com;
 
 namespace BWYSDPWeb.BaseController
 {
@@ -64,21 +66,21 @@ namespace BWYSDPWeb.BaseController
             var action =System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             this.OperatAction = action==null ?OperatAction.None :(OperatAction)action;
             this.LibTables = GetTableSchema(this.DSID);
-            if (this.LibTables != null)
-            {
-                foreach (LibTable item in this.LibTables)
-                {
-                    foreach (DataTable dt in item.Tables)
-                    {
-                        dt.RowChanged += Dt_RowChanged;
-                    }
-                }
-            }
+            //if (this.LibTables != null)
+            //{
+            //    foreach (LibTable item in this.LibTables)
+            //    {
+            //        foreach (DataTable dt in item.Tables)
+            //        {
+            //            dt.RowChanged += Dt_RowChanged;
+            //        }
+            //    }
+            //}
             #region get temp data from db
-            TempHelp sQLiteHelp = new TempHelp("TempData");
-            DataTable result= sQLiteHelp.GetTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
-            string str = JsonConvert.SerializeObject(result);
-            DataTable table = JsonConvert.DeserializeObject<DataTable>(str);
+            //TempHelp sQLiteHelp = new TempHelp("TempData");
+            //DataTable result= sQLiteHelp.GetTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+            //string str = JsonConvert.SerializeObject(result);
+            //DataTable table = JsonConvert.DeserializeObject<DataTable>(str);
             //if (result.Rows.Count > 0)
             //{
             //    foreach (LibTable item in this.LibTables)
@@ -156,41 +158,63 @@ namespace BWYSDPWeb.BaseController
         #region TableSchema
         public void CreateTableSchema()
         {
-            LibTable[] tbs= System.Web.HttpContext.Current.Session[this.DSID] as LibTable[];
-            //this.Tables= System.Web.HttpContext.Current.Session[this.DSID] as DataTable[];
+            #region
+            //LibTable[] tbs = System.Web.HttpContext.Current.Session[this.DSID] as LibTable[];
+            ////this.Tables= System.Web.HttpContext.Current.Session[this.DSID] as DataTable[];
+            //if (tbs == null)
+            //{
+            //    #region
+            //    //CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
+            //    //tbs = createTable.CreateTableSchema(this.DSID, this.Package);
+            //    //Session[this.DSID] = tbs;
+            //    //this.LibTables = new LibTable[tbs.Length];
+            //    ////for (int i = 0; i < tbs.Length; i++)
+            //    ////{
+            //    ////    CopyTablesSchema(tbs[i].Tables, this.Tables[i].Tables);
+            //    ////}
+            //    //CopyTablesSchema(tbs, this.LibTables);
+
+
+            //    //if (this.LibTables != null)
+            //    //{
+            //    //    foreach (LibTable item in this.LibTables)
+            //    //    {
+            //    //        foreach (DataTable dt in item.Tables)
+            //    //        {
+            //    //            dt.RowChanged += Dt_RowChanged;
+            //    //        }
+            //    //    }
+            //    //}
+            //    #endregion
+
+            //    #region 直接存session
+            //    CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
+            //    tbs = createTable.CreateTableSchema(this.DSID, this.Package);
+            //    Session[this.DSID] = tbs;
+            //    this.LibTables = tbs;
+            //    #endregion
+
+            //}
+            //else
+            //{
+            //    foreach (var item in tbs)
+            //    {
+            //        foreach (DataTable d in item.Tables)
+            //        {
+            //            d.Clear();
+            //        }
+            //    }
+            //}
+            #endregion
+            #region 存cache
+            CachHelp cachelp = new CachHelp();
+            LibTable[] tbs =cachelp .GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID,this.ProgID)) as LibTable[];
             if (tbs == null)
             {
-                #region
                 CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
                 tbs = createTable.CreateTableSchema(this.DSID, this.Package);
-                Session[this.DSID] = tbs;
-                this.LibTables = new LibTable[tbs.Length];
-                //for (int i = 0; i < tbs.Length; i++)
-                //{
-                //    CopyTablesSchema(tbs[i].Tables, this.Tables[i].Tables);
-                //}
-                CopyTablesSchema(tbs, this.LibTables);
-
-
-                if (this.LibTables != null)
-                {
-                    foreach (LibTable item in this.LibTables)
-                    {
-                        foreach (DataTable dt in item.Tables)
-                        {
-                            dt.RowChanged += Dt_RowChanged;
-                        }
-                    }
-                }
-                #endregion
-
-                #region 直接存session
-                //CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
-                //tbs = createTable.CreateTableSchema(this.DSID, this.Package);
-                //Session[this.DSID] = tbs;
-                //this.LibTables = tbs;
-                #endregion
-
+                cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs);
+                this.LibTables = tbs;
             }
             else
             {
@@ -202,26 +226,33 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
             }
+            #endregion
 
         }
 
         public LibTable[] GetTableSchema(string key)
         {
             #region
-            LibTable[] tbs = System.Web.HttpContext.Current.Session[key] as LibTable[];
-            if (tbs == null) return null;
-            LibTable[] result = new LibTable[tbs.Length];
-            //for (int i = 0; i < tbs.Length; i++)
-            //{
-            //    CopyTablesSchema(tbs[i].Tables, result[i].Tables);
-            //}
-            CopyTablesSchema(tbs, result);
+            //LibTable[] tbs = System.Web.HttpContext.Current.Session[key] as LibTable[];
+            //if (tbs == null) return null;
+            //LibTable[] result = new LibTable[tbs.Length];
+            ////for (int i = 0; i < tbs.Length; i++)
+            ////{
+            ////    CopyTablesSchema(tbs[i].Tables, result[i].Tables);
+            ////}
+            //CopyTablesSchema(tbs, result);
             #endregion
 
             #region 直接存session
             //LibTable[] tbs = System.Web.HttpContext.Current.Session[key] as LibTable[];
             //if (tbs == null) return null;
             //LibTable[] result = tbs;
+            #endregion
+            #region 存cache
+            CachHelp cachelp = new CachHelp();
+            LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID)) as LibTable[];
+            if (tbs == null) return null;
+            LibTable[] result = tbs;
             #endregion
             return result;
         }
