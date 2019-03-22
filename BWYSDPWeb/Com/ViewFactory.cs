@@ -376,6 +376,13 @@ namespace BWYSDPWeb.Com
             _script.Append("<script type=\"text/javascript\">");
             _script.Append("$(function (){");
 
+            #region 禁用页面的enter建
+            _script.Append("$(window).keydown(function (e) {");
+            _script.Append("var key = window.event ? e.keyCode : e.which;");
+            _script.Append("if (key.toString() == \"13\") {");
+            _script.Append(" return false;}});");
+            #endregion
+
             _script.Append("$('#bwysdp_progid').val(\"" + this._progid + "\");");
             _script.Append("$('#bwysdp_dsid').val(\"" + this.DSID + "\");");
 
