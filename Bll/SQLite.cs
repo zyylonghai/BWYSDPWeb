@@ -214,8 +214,11 @@ namespace Bll
 
     public class SQLiteHelp
     {
-        private static SQLiteConnection _cn;
+        private static SQLiteConnection[] _cnpool = null;
+        //private static SQLiteConnection _cn = null;
         private static readonly object locker = new object();
+        private static readonly object locker2 = new object();
+        private static readonly object locker3 = new object();
         public static string DBNm { get; set; }
         public static string ConnectStr
         {
@@ -231,12 +234,63 @@ namespace Bll
         {
             get
             {
+                SQLiteConnection _cn = null;
+                //if (_cnpool == null)
+                //{
+                //    lock (locker2)
+                //    {
+                //        if (_cnpool == null)
+                //            _cnpool = new SQLiteConnection[20];
+                //    }
+                //}
+                //lock (locker3)
+                //{
+                //    for (int i = 0; i < _cnpool.Length; i++)
+                //    {
+                //        //_cn = _cnpool[i];
+                //        if (_cnpool[i] == null)
+                //        {
+                //            lock (locker)
+                //            {
+                //                if (_cnpool[i] == null)
+                //                {
+                //                    _cnpool[i] = new SQLiteConnection(ConnectStr);
+
+                //                }
+                //                switch (_cnpool[i].State)
+                //                {
+                //                    case System.Data.ConnectionState.Broken:
+                //                        _cnpool[i].Close();
+                //                        _cnpool[i].Open();
+                //                        return _cnpool[i];
+                //                    case System.Data.ConnectionState.Closed:
+                //                        _cnpool[i].Open();
+                //                        return _cnpool[i];
+                //                    case System.Data.ConnectionState.Connecting:
+                //                    //break;
+                //                    case System.Data.ConnectionState.Executing:
+                //                    //break;
+                //                    case System.Data.ConnectionState.Fetching:
+                //                    //break;
+                //                    case System.Data.ConnectionState.Open:
+                //                        continue;
+                //                        //break;
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+                //return null;
+
                 if (_cn == null)
                 {
                     lock (locker)
                     {
                         if (_cn == null)
+                        {
                             _cn = new SQLiteConnection(ConnectStr);
+
+                        }
                     }
                 }
                 switch (_cn.State)
@@ -245,11 +299,16 @@ namespace Bll
                         _cn.Close();
                         _cn.Open();
                         break;
+                    case System.Data.ConnectionState.Closed:
+                        _cn.Open();
+                        break;
                     case System.Data.ConnectionState.Connecting:
-                        break;
+                    //break;
                     case System.Data.ConnectionState.Executing:
-                        break;
+                    //break;
                     case System.Data.ConnectionState.Fetching:
+                    //break;
+                    case System.Data.ConnectionState.Open:
                         break;
                 }
                 return _cn;
@@ -262,15 +321,18 @@ namespace Bll
             ConnectStr = string.Format("Data Source=|DataDirectory|{0}.db;providerName=\"System.Data.SQLite\"; Pooling=true;FailIfMissing=false", dbNm);
         }
 
-        public void Insert(List<string> commandtextlst)
+        public void Insert(List<string > commandtextlst)
         {
-            //using (SQLiteConnection cn = new SQLiteConnection(ConnectStr))
-            //{
-            SQLiteTransaction transaction = Connect.BeginTransaction();
-
-            using (SQLiteCommand cmd = new SQLiteCommand())
+            using (SQLiteConnection cn = new SQLiteConnection(ConnectStr))
             {
-                cmd.Connection = Connect;
+                cn.Open();
+                SQLiteTransaction transaction = Connect.BeginTransaction();
+            //StringBuilder str = new StringBuilder();
+            //str.Append("begin;");
+            using (SQLiteCommand cmd = new SQLiteCommand(cn))
+            {
+                    //cmd.Connection = Connect;
+                    cmd.Transaction = transaction;
                 try
                 {
                     foreach (string command in commandtextlst)
@@ -278,15 +340,49 @@ namespace Bll
                         cmd.CommandText = command;
                         cmd.ExecuteNonQuery();
                     }
+                    //foreach (KeyValuePair<string, List<string>> item in fields)
+                    //{
+                    //    foreach (string f in item.Value)
+                    //    {
+                    //        cmd.CommandText =string.Format("insert into formfields values('{0}','{1}','{2}');", progid, item.Key, f);
+                    //        //commandtextlst.Append(string.Format("insert into formfields values('{0}','{1}','{2}');", progId, item.Key, f));
+                    //        cmd.ExecuteNonQuery();
+                    //    }
+                    //}
+                    //str.Append("commit;");
+                    //cmd.CommandText = str.ToString();
+                    //cmd.ExecuteNonQuery();
                     transaction.Commit();
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
                 }
+                //cmd.Connection.Close();
             }
-            //}
 
+            }
+
+        }
+
+        public void Delete(string commandtext)
+        {
+            using (SQLiteConnection cn = new SQLiteConnection(ConnectStr))
+            {
+                cn.Open();
+                using (SQLiteCommand cmd = new SQLiteCommand(cn))
+                {
+                    try
+                    {
+                        cmd.CommandText = commandtext;
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                    //cmd.Connection.Close();
+                }
+            }
         }
 
         public Dictionary<string, List<string>> SelectFormfield(string progid)
@@ -299,10 +395,6 @@ namespace Bll
                 try
                 {
                     cmd.CommandText = string.Format("select tableNm,fieldNm from formfields where progid='{0}'", progid);
-
-                }
-                catch (Exception ex)
-                {
                     using (SQLiteDataReader read = cmd.ExecuteReader())
                     {
                         string tbnm = null;
@@ -312,12 +404,19 @@ namespace Bll
                             if (!dic.TryGetValue(tbnm, out values))
                             {
                                 values = new List<string>();
-                                values.Add(read["fieldNm"].ToString());
                                 dic.Add(tbnm, values);
                             }
+                            values.Add(read["fieldNm"].ToString());
+                            
                         }
                     }
+
                 }
+                catch (Exception ex)
+                {
+                    
+                }
+                //cmd.Connection.Close();
             }
             return dic;
         }

@@ -13,7 +13,9 @@
             <string>CompanyId</string>
             <string>departmentId</string>
           </JoinFields>
-          <PrimaryKey />
+          <PrimaryKey>
+            <string>BillNo</string>
+          </PrimaryKey>
           <Fields>
             <LibField>
               <ID>f72667d5-8fb6-4913-94c2-e00ff4e0d857</ID>
@@ -173,13 +175,16 @@
           </Fields>
         </LibDataTableStruct>
         <LibDataTableStruct ID="14f2e5d3-e94f-4154-9fc5-27714f6b1f8e">
-          <Name>CheckBillDetail</Name>
-          <DisplayName>检验单明细</DisplayName>
+          <Name>CheckBillMap</Name>
+          <DisplayName>检验单扩展表</DisplayName>
           <Ignore>true</Ignore>
           <TableIndex>0</TableIndex>
           <JoinTableIndex>0</JoinTableIndex>
           <JoinFields />
-          <PrimaryKey />
+          <PrimaryKey>
+            <string>BillNo</string>
+            <string>RowNo</string>
+          </PrimaryKey>
           <Fields>
             <LibField>
               <ID>0c809987-1de7-47c7-894a-69911f24b9a1</ID>
@@ -232,6 +237,91 @@
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
               <Items />
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </LibDefineTable>
+    <LibDefineTable ID="1c59f92c-c2e6-424c-b6a9-23ed9f89e206" TableName="checkDetail" DisplayName="检验单明细表">
+      <TableStruct>
+        <LibDataTableStruct ID="82a3445a-e27b-4a4c-af6e-8750236afa7a">
+          <Name>checkDetail</Name>
+          <DisplayName>检验明细表</DisplayName>
+          <Ignore>true</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <Fields>
+            <LibField>
+              <ID>80b4b3ca-33e2-4469-b864-523b3422744d</ID>
+              <Name>BillNo</Name>
+              <AliasName />
+              <DisplayName>检验单号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>b7d04eac-0587-4631-a8ee-bd7169d29289</ID>
+              <Name>RowNo</Name>
+              <AliasName />
+              <DisplayName>行号</DisplayName>
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>4af0ce0b-1bf7-42ce-ad98-36c7c8748592</ID>
+              <Name>yingdu</Name>
+              <AliasName />
+              <DisplayName>物料硬度</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>0a5605e3-c030-4738-aeb9-053aef1ca456</ID>
+              <Name>naiwendu</Name>
+              <AliasName />
+              <DisplayName>耐温度</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>29050725-73b8-4152-8c3c-f29660389cd1</ID>
+              <Name>xingzhuang</Name>
+              <AliasName />
+              <DisplayName>形状</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>21501bb7-2ee2-44af-9295-3902625927d2</ID>
+              <Name>midu</Name>
+              <AliasName />
+              <DisplayName>密度</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
             </LibField>
           </Fields>
         </LibDataTableStruct>

@@ -1,18 +1,16 @@
-﻿using BWYSDPWeb.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using SDPCRL.CORE.FileUtils;
-using System.Text;
-using System.Data;
+﻿using Bll;
+using BWYSDPWeb.Com;
+using BWYSDPWeb.Models;
 using Newtonsoft.Json;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
-using BWYSDPWeb.Com;
 using SDPCRL.CORE;
-using SDPCRL.COM;
+using SDPCRL.CORE.FileUtils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace BWYSDPWeb.BaseController
 {
@@ -192,9 +190,11 @@ namespace BWYSDPWeb.BaseController
 
                             #region 保存Formgroupfields
                             string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                            Bll.SQLiteHelp sQLiteHelp = new Bll.SQLiteHelp("TempData");
-                            string b= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            //Bll.SQLiteHelp sQLiteHelp = new Bll.SQLiteHelp("TempData");
+                            TempHelp sQLiteHelp = new TempHelp("TempData");
+                            string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                             List<string> commandtextlst = new List<string>();
+                            //commandtextlst.Append("begin;");
                             foreach (KeyValuePair<string, List<string>> item in factory.Formfields)
                             {
                                 foreach (string f in item.Value)
@@ -202,9 +202,17 @@ namespace BWYSDPWeb.BaseController
                                     commandtextlst.Add(string.Format("insert into formfields values('{0}','{1}','{2}')", progId, item.Key, f));
                                 }
                             }
-                            string c= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff"); 
-                            sQLiteHelp.Insert(commandtextlst);
-                            string d= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+
+                            //for (int i = 0; i < 1000; i++)
+                            //{
+                            //    commandtextlst.Add(string.Format("insert into formfields values('{0}','{1}','{2}')", progId,"test",string.Format("field{0}",i)));
+                            //}
+
+                            //commandtextlst.Append("commit;");
+                            string c = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            sQLiteHelp.Delete(string.Format("delete from formfields where progid='{0}'",progId));
+                            sQLiteHelp.Update(commandtextlst);
+                            string d = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                             #endregion
                         }
                         else
@@ -220,11 +228,20 @@ namespace BWYSDPWeb.BaseController
         }
 
         [HttpPost]
-        public virtual ActionResult PageLoad()
+        public virtual ActionResult BasePageLoad()
         {
-
             this.CreateTableSchema();
+            this.OperatAction = OperatAction.Add;
+            Session[SysConstManage .OperateAction] = this.OperatAction;
+            #region delete temp data(重新加载页面，需清除temp表中的session数据)
+            //Bll.DelegateFactory df = new Bll.DelegateFactory();
+            //df.ClearTempDataByProgid(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
 
+            TempHelp sQLiteHelp = new TempHelp("TempData");
+            sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+
+            #endregion
+            PageLoad();
             return LibJson();
         }
         /// <summary>
@@ -241,74 +258,120 @@ namespace BWYSDPWeb.BaseController
         public ActionResult Save()
         {
             //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
-            return RedirectToAction("ConverToPage",this.Package, new { progId = this.ProgID });
+            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
 
-        public string BindTableData(string progid,int page, int rows,string Mobile)
+        public string BindTableData(string gridid,string deftb, int page, int rows,string Mobile)
         {
-            DataTable dt = new DataTable();
-            DataColumn col = new DataColumn();
-            col.ColumnName = "Name";
-            col.Caption = "姓名";
-            dt.Columns.Add(col);
+            #region 旧代码
+            //DataTable dt = new DataTable();
 
-            col = new DataColumn();
-            col.ColumnName = "Mobile";
-            col.Caption = "手机";
-            dt.Columns.Add(col);
+            //DataColumn col = new DataColumn();
+            //col.ColumnName = "Name";
+            //col.Caption = "姓名";
+            //dt.Columns.Add(col);
 
-            col = new DataColumn();
-            col.ColumnName = "Email";
-            col.Caption = "邮箱";
-            dt.Columns.Add(col);
+            //col = new DataColumn();
+            //col.ColumnName = "Mobile";
+            //col.Caption = "手机";
+            //dt.Columns.Add(col);
 
-            col = new DataColumn();
-            col.ColumnName = "Gender";
-            col.Caption = "性别";
-            dt.Columns.Add(col);
+            //col = new DataColumn();
+            //col.ColumnName = "Email";
+            //col.Caption = "邮箱";
+            //dt.Columns.Add(col);
 
-            col = new DataColumn();
-            col.ColumnName = "Age";
-            col.Caption = "年龄";
-            dt.Columns.Add(col);
+            //col = new DataColumn();
+            //col.ColumnName = "Gender";
+            //col.Caption = "性别";
+            //dt.Columns.Add(col);
 
-            for (int i = 0; i < 20; i++)
+            //col = new DataColumn();
+            //col.ColumnName = "Age";
+            //col.Caption = "年龄";
+            //dt.Columns.Add(col);
+
+            //dt.PrimaryKey =new DataColumn[] { dt.Columns["Name"] };
+
+            //DataTable dt2 = new DataTable();
+
+            //col = new DataColumn();
+            //col.ColumnName = "Name";
+            //col.Caption = "姓名";
+            //dt2.Columns.Add(col);
+
+            //col = new DataColumn();
+            //col.ColumnName = "extral1";
+            //col.Caption = "额外字段1";
+            //dt2.Columns.Add(col);
+
+            //col = new DataColumn();
+            //col.ColumnName = "extral2";
+            //col.Caption = "额外字段2";
+            //dt2.Columns.Add(col);
+
+            //dt2.PrimaryKey = new DataColumn[] { dt2.Columns["Name"] };
+
+            //DataRow r = dt2.NewRow();
+            //r["Name"] = "Name0";
+            //r["extral1"] = "extral1";
+            //r["extral2"] = "extral2";
+            //dt2.Rows.Add(r);
+
+
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    DataRow row = dt.NewRow();
+            //    row["Name"] = "Name" + i.ToString();
+            //    row["Mobile"] = "123456789";
+            //    row["Email"] = "896501235@qq.com";
+            //    row["Gender"] = "男";
+            //    row["Age"] = i;
+            //    dt.Rows.Add(row);
+            //}
+
+            //dt.Merge(dt2, false);
+
+            ////List<TestInfo> testlist = new List<TestInfo>();
+            ////for (int n = 0; n < 6; n++)
+            ////{
+            ////    TestInfo t = new TestInfo();
+            ////    t.Name = "test" + n.ToString();
+            ////    t.Mobile = "123456789";
+            ////    t.Email = "869650231@qq.com";
+            ////    t.Gender = "nv";
+            ////    t.Age = n;
+            ////    testlist.Add(t);
+            ////}
+            #endregion
+            var table = this.LibTables.FirstOrDefault(i => i.Name == deftb);
+            DataTable dt = table.Tables[0].Copy();
+            foreach (DataTable item in table.Tables)
             {
-                DataRow row = dt.NewRow();
-                row["Name"] = "Name" + i.ToString();
-                row["Mobile"] = "123456789";
-                row["Email"] = "896501235@qq.com";
-                row["Gender"] = "男";
-                row["Age"] = i;
-                dt.Rows.Add(row);
+                dt.Merge(item, false);
             }
-            List<TestInfo> testlist = new List<TestInfo>();
-            for (int n = 0; n < 6; n++)
-            {
-                TestInfo t = new TestInfo();
-                t.Name = "test" + n.ToString();
-                t.Mobile = "123456789";
-                t.Email = "869650231@qq.com";
-                t.Gender = "nv";
-                t.Age = n;
-                testlist.Add(t);
-            }
-            GetTableDataExt(dt);
-            DataTable dt2 = dt.Copy();
+
+            GetGridDataExt(gridid,dt);
+            //DataTable dt2 = dt.Copy();
             //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
             //foreach (DataRow dr in drs)
             //{
             //    dt2.Rows.Remove(dr);
             //}
-            var result = new { total=dt.Rows.Count ,rows=dt2};
+            var result = new { total=dt.Rows.Count ,rows=dt};
             //return Json(new { total = testlist.Count , rows = testlist }, JsonRequestBehavior.AllowGet);
             return JsonConvert.SerializeObject(result);
         }
 
-        protected virtual void GetTableDataExt(DataTable dt)
+        #region 受保护方法
+        protected virtual void GetGridDataExt(string gridid,DataTable dt)
         {
-
+           
         }
 
+        protected virtual void PageLoad()
+        {
+        }
+        #endregion
     }
 }

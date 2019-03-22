@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="CheckBill" FormName="检验单" DSID="CheckBill" ControlClassNm="CheckBill" CssFile="" ScriptFile="" Package="com">
   <FormGroups>
-    <LibFormGroup FormGroupID="916182df-f290-4277-8499-c8ecbdb8029d" FormGroupName="FormGroup1" FormGroupDisplayNm="页面信息组1">
+    <LibFormGroup FormGroupID="e668f52e-62c7-4f8c-95a3-012cc80bc3c1" FormGroupName="FormGroup1" FormGroupDisplayNm="关键信息">
       <FmGroupFields>
-        <LibFormGroupField ID="c2dbead2-55bd-47f3-b518-ebf74dbb53b0">
+        <LibFormGroupField ID="490cf9ee-10dc-4e86-be79-7d05d4955489">
           <Name>BillNo</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
@@ -12,7 +12,7 @@
           <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="a9f7e81e-7b39-4617-9ed1-2f2390e9c370">
+        <LibFormGroupField ID="59b401a1-fb66-4d05-a1a6-881a22054adb">
           <Name>Checker</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
@@ -21,7 +21,7 @@
           <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="5941aca0-cce2-463e-b5a6-7495ae953fdb">
+        <LibFormGroupField ID="9dede0ce-f7c8-4076-9b17-e00df2672418">
           <Name>matId</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
@@ -30,7 +30,7 @@
           <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="daf6d636-9797-4248-8069-e4ed3c570502">
+        <LibFormGroupField ID="03af1899-9b93-4cd7-b184-d0671e884df0">
           <Name>Qty</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
@@ -39,7 +39,7 @@
           <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="4173904b-8cff-45e8-a4bd-01a8c43504c7">
+        <LibFormGroupField ID="3ad7ee8e-97aa-4a19-b12f-d08f37de6383">
           <Name>CheckDT</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
@@ -48,11 +48,7 @@
           <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-      </FmGroupFields>
-    </LibFormGroup>
-    <LibFormGroup FormGroupID="acbeba22-7dfe-43c2-af33-333bfaf7624b" FormGroupName="FormGroup2" FormGroupDisplayNm="页面信息组2">
-      <FmGroupFields>
-        <LibFormGroupField ID="b6b31ead-8da1-427e-9e7b-4772e6a65435">
+        <LibFormGroupField ID="d48e17a0-0f12-451f-a120-8da3d4cb6d24">
           <Name>CompanyId</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
@@ -61,7 +57,7 @@
           <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="7a203b8c-a04c-45ba-baec-27792d2d0953">
+        <LibFormGroupField ID="e8269451-3034-48a1-8a6d-124a59156a32">
           <Name>departmentId</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
@@ -72,23 +68,32 @@
         </LibFormGroupField>
       </FmGroupFields>
     </LibFormGroup>
-    <LibFormGroup FormGroupID="a9864af4-536b-4841-9f2f-da8165fd9005" FormGroupName="FormGroup3" FormGroupDisplayNm="页面信息组3">
+    <LibFormGroup FormGroupID="034f1a45-dc8b-4d98-b6fe-c0acdb1ccd8f" FormGroupName="FormGroup2" FormGroupDisplayNm="扩展信息">
       <FmGroupFields>
-        <LibFormGroupField ID="10aac04f-c1be-41d0-88dd-69b6cf659811">
+        <LibFormGroupField ID="a32560dc-cbcb-4d48-94fd-b337b11a76fa">
           <Name>remark</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>备注</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>11</Width>
+          <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="5f846b61-80c1-4ee9-b38b-33f8525afbeb">
-          <Name>billStatus</Name>
-          <FromTableNm>CheckBill</FromTableNm>
+        <LibFormGroupField ID="808d222e-d749-4cf2-9839-f02e4edf52ee">
+          <Name>check1</Name>
+          <FromTableNm>CheckBillMap</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
-          <DisplayName>单据状态</DisplayName>
-          <ElemType>Search</ElemType>
+          <DisplayName>检验部位1</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="af4ed17c-614d-4326-a93f-532f4f49144f">
+          <Name>check2</Name>
+          <FromTableNm>CheckBillMap</FromTableNm>
+          <FromDefTableNm>CheckBill</FromDefTableNm>
+          <DisplayName>检验部位2</DisplayName>
+          <ElemType>Text</ElemType>
           <Width>2</Width>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
@@ -96,40 +101,58 @@
     </LibFormGroup>
   </FormGroups>
   <GridGroups>
-    <LibGridGroup GridGroupID="3e2959e7-7957-4823-8437-088b4adf835c" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1" ControlClassNm="" HasSummary="false">
+    <LibGridGroup GridGroupID="7f7451ea-57f6-4bb6-8aeb-f1b185815dfb" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1" ControlClassNm="CheckBill" HasSummary="false">
       <GdGroupFields>
-        <LibGridGroupField ID="6826ab4a-06d9-40e7-ae4e-50f2c321a06b">
+        <LibGridGroupField ID="73a04f8e-ca38-47e4-a4a7-3e8aa764263d">
           <Name>BillNo</Name>
-          <FromTableNm>CheckBillDetail</FromTableNm>
-          <FromDefTableNm>CheckBill</FromDefTableNm>
-          <DisplayName>单据号</DisplayName>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>检验单号</DisplayName>
           <Width>0</Width>
           <HasSort>false</HasSort>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
-        <LibGridGroupField ID="3ef4bf6e-d6f8-400a-b2f3-8ee4c2c490eb">
+        <LibGridGroupField ID="46adacf9-24bb-4dd6-8f85-eec13087c55a">
           <Name>RowNo</Name>
-          <FromTableNm>CheckBillDetail</FromTableNm>
-          <FromDefTableNm>CheckBill</FromDefTableNm>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>行号</DisplayName>
           <Width>0</Width>
           <HasSort>false</HasSort>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
-        <LibGridGroupField ID="5bfe3997-fb93-40b1-a3c2-bdcdaeaa3ef9">
-          <Name>check1</Name>
-          <FromTableNm>CheckBillDetail</FromTableNm>
-          <FromDefTableNm>CheckBill</FromDefTableNm>
-          <DisplayName>检验部位1</DisplayName>
+        <LibGridGroupField ID="55d04914-06fc-460f-a50c-38d2bf406f5e">
+          <Name>yingdu</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>物料硬度</DisplayName>
           <Width>0</Width>
           <HasSort>false</HasSort>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
-        <LibGridGroupField ID="d47535bc-9ad8-47c3-8534-1b9a164b4c60">
-          <Name>check2</Name>
-          <FromTableNm>CheckBillDetail</FromTableNm>
-          <FromDefTableNm>CheckBill</FromDefTableNm>
-          <DisplayName>检验部位2</DisplayName>
+        <LibGridGroupField ID="4ea0b100-25dd-4f4a-8fb8-27be1216650a">
+          <Name>naiwendu</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>耐温度</DisplayName>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="f1d1223e-eda6-4a30-b0f2-c8ca06885a8b">
+          <Name>xingzhuang</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>形状</DisplayName>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="78500f9c-049c-4dda-82ab-d1782cd56645">
+          <Name>midu</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>密度</DisplayName>
           <Width>0</Width>
           <HasSort>false</HasSort>
           <DealfValue xsi:type="xsd:string" />

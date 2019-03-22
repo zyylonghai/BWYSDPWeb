@@ -174,7 +174,7 @@ LibTable.prototype = {
             showRefresh: this.$table.showRefresh,                  //是否显示刷新按钮
             minimumCountColumns: this.$table.minimumCountColumns,             //最少允许的列数
             clickToSelect: this.$table.clickToSelect,                //是否启用点击选中行
-            height: this.$table.height,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            //height: this.$table.height,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
             uniqueId: this.$table.uniqueId,                     //每一行的唯一标识，一般为主键列
             showToggle: this.$table.showToggle,                   //是否显示详细视图和列表视图的切换按钮
             cardView: this.$table.cardView,                    //是否显示详细视图
@@ -197,8 +197,8 @@ LibTable.prototype = {
                     rows: params.limit,                         //页面大小
                     page: (params.offset / params.limit) + 1,   //页码
                     sort: params.sort,      //排序列名  
-                    sortOrder: params.order, //排位命令（desc，asc） 
-                    defindfield:"zyy"
+                    sortOrder: params.order //排位命令（desc，asc） 
+                    //defindfield:"zyy"
                 };
                 return temp;
             },

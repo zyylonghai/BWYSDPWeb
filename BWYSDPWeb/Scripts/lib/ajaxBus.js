@@ -46,6 +46,19 @@ $.ajax = function (opt) {
         },
         success: function (data, textStatus) {
             debugger
+            if (data != null && (data.sdp_flag != null && data.sdp_flag != undefined))
+            {
+                //for (var n = 0; n < data.sdp_data.length; n++)
+                //{
+
+                    $.each(data.sdp_data, function (index, o) {
+
+                        debugger
+                        $('#' + o.FieldNm).val(o.FieldValue);
+                    });
+                //}
+               
+            }
             //成功回调方法增强处理 
             fn.success(data, textStatus);
 
@@ -62,3 +75,7 @@ $.ajax = function (opt) {
     return _ajax(_opt).done(function (e) {
     });
 }
+
+//function FillVale(obj) {
+
+//}

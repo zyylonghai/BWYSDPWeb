@@ -10,9 +10,9 @@ namespace BWYSDPWeb.Com
 {
     public class ViewFactory
     {
-        private StringBuilder _page=null;
-        private StringBuilder _script=null;
-        private Dictionary<string, bool> _panelgroupdic=null;
+        private StringBuilder _page = null;
+        private StringBuilder _script = null;
+        private Dictionary<string, bool> _panelgroupdic = null;
         private Dictionary<string, bool> _gridGroupdic = null;
         private List<string> _dateElemlst = null;
         private List<string> _tableScriptlst = null;
@@ -26,7 +26,7 @@ namespace BWYSDPWeb.Com
         public string DSID { get; set; }
         public string Package { get; set; }
 
-        public Dictionary<string ,List<string>> Formfields { get; set; }
+        public Dictionary<string, List<string>> Formfields { get; set; }
         #endregion
         public ViewFactory()
         {
@@ -39,7 +39,7 @@ namespace BWYSDPWeb.Com
             Formfields = new Dictionary<string, List<string>>();
             //_fomGroupdic = new Dictionary<string, bool>();
         }
-        public ViewFactory(string progid) 
+        public ViewFactory(string progid)
             : this()
         {
             this._progid = progid;
@@ -51,8 +51,10 @@ namespace BWYSDPWeb.Com
         //    this._dsid = dsid;
         //}
 
-        public string PageHtml {
-            get {
+        public string PageHtml
+        {
+            get
+            {
                 StringBuilder jsandcss = new StringBuilder();
                 if (_gridGroupdic.Count > 0)
                 {
@@ -101,7 +103,7 @@ namespace BWYSDPWeb.Com
         public void CreateForm()
         {
             //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
-            _page.Append("@using(Html.BeginForm(\"Save\", \"DataBase\",new { sdp_pageid =\""+this._progid+"\" },FormMethod.Post,new{@class=\"form-horizontal\" }))");
+            _page.Append("@using(Html.BeginForm(\"Save\", \"DataBase\",new { sdp_pageid =\"" + this._progid + "\" },FormMethod.Post,new{@class=\"form-horizontal\" }))");
             _page.Append("{");
         }
 
@@ -176,10 +178,10 @@ namespace BWYSDPWeb.Com
                 if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
                 {
                     valus = new List<string>();
-                    this.Formfields.Add(field.FromTableNm,valus);
+                    this.Formfields.Add(field.FromTableNm, valus);
                 }
                 valus.Add(field.Name);
-                if (colcout%12 == 0)
+                if (colcout % 12 == 0)
                 {
                     if (colcout != 0)
                     {
@@ -188,7 +190,7 @@ namespace BWYSDPWeb.Com
                     _page.Append("<div class=\"form-group\">");
                 }
                 string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
-                string name=string.Format("{0}.{1}", field.FromTableNm, field.Name);
+                string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
                 _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName + "</label>");
                 _page.Append("<div class=\"col-sm-" + field.Width + "\">");
                 switch (field.ElemType)
@@ -248,7 +250,7 @@ namespace BWYSDPWeb.Com
             _page.Append("<div class=\"panel-body\">");
 
             #region toolbar
-            _page.Append("<div id=\""+grid .GridGroupName+"_toolbar\" class=\"btn-group\">");
+            _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
             _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"tablerefresh()\">");
             _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>");
             _page.Append("</button>");
@@ -260,7 +262,7 @@ namespace BWYSDPWeb.Com
             _page.Append("</button>");
             _page.Append("</div>");
             #endregion
-            _page.Append("<table id=\""+ grid.GridGroupName + "\"></table>");
+            _page.Append("<table id=\"" + grid.GridGroupName + "\"></table>");
 
             _gridGroupdic.Add(id, false);
             AddGridColumns(grid);
@@ -272,32 +274,33 @@ namespace BWYSDPWeb.Com
         private void AddGridColumns(LibGridGroup grid)
         {
             StringBuilder table = new StringBuilder();
+            if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
             table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
-            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?progid ={2}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package: grid.ControlClassNm,this._progid));
-            table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";",param,grid.GridGroupName));
+            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm));
+            table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";", param, grid.GridGroupName));
             if (grid.HasSummary)
             {
-                table.Append(string.Format("{0}.$table.showFooter={1};",param,grid .HasSummary ? "true" : "false"));
+                table.Append(string.Format("{0}.$table.showFooter={1};", param, grid.HasSummary ? "true" : "false"));
             }
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
-            if (grid.GdGroupFields != null)
+            //if (grid.GdGroupFields != null)
+            //{
+            //bool flag = false;//用于标识是否已设置了 汇总行。
+            foreach (LibGridGroupField field in grid.GdGroupFields)
             {
-                //bool flag = false;//用于标识是否已设置了 汇总行。
-                foreach (LibGridGroupField field in grid.GdGroupFields)
+                table.Append(",{");
+                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2}", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                if (grid.HasSummary)
                 {
-                    table.Append(",{");
-                    table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2}", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
-                    if (grid .HasSummary)
-                    {
-                        //设置汇总行，
-                        table.Append(",footerFormatter: function() {return '汇总'}");
-                        grid.HasSummary = false;
-                    }
-                    table.Append("}");
+                    //设置汇总行，
+                    table.Append(",footerFormatter: function() {return '汇总'}");
+                    grid.HasSummary = false;
                 }
+                table.Append("}");
             }
+            //}
             table.Append("];");
             table.Append(string.Format("{0}.initialTable();", param));
             _tableScriptlst.Add(table.ToString());
@@ -356,7 +359,7 @@ namespace BWYSDPWeb.Com
                 _page.Append("</div>");
                 _page.Append("</div>");
             }
-            
+
             #endregion
             _page.Append("</div>");//panel - body
             _page.Append("</div>");//panel panel - default
@@ -364,7 +367,7 @@ namespace BWYSDPWeb.Com
 
             CreateJavaScript();
             _page.Append(_script.ToString());
-            
+
         }
 
         #region 私有函数
@@ -373,11 +376,11 @@ namespace BWYSDPWeb.Com
             _script.Append("<script type=\"text/javascript\">");
             _script.Append("$(function (){");
 
-            _script.Append("$('#bwysdp_progid').val(\""+this._progid+"\");");
+            _script.Append("$('#bwysdp_progid').val(\"" + this._progid + "\");");
             _script.Append("$('#bwysdp_dsid').val(\"" + this.DSID + "\");");
 
             #region pageload
-            _script.Append("$.ajax({url: \" /"+(string.IsNullOrEmpty(this.ControlClassNm)?this.Package :this .ControlClassNm) + "/PageLoad\",data: \"\",type: 'Post',async: false,success: function (obj) {},");
+            _script.Append("$.ajax({url: \" /" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"\",type: 'Post',async: false,success: function (obj) {},");
             _script.Append("error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + \":\" + XMLHttpRequest.readyState.toString() + \", \" + textStatus + errorThrown);}");
             _script.Append(" });");
             #endregion
@@ -396,9 +399,9 @@ namespace BWYSDPWeb.Com
             {
                 _script.AppendLine();
                 _script.Append("laydate.render({");
-                _script.Append("elem: '#"+id+"'");
+                _script.Append("elem: '#" + id + "'");
                 _script.Append(",format: 'yyyy-MM-dd'");
-                _script.Append(",value: new Date().toLocaleDateString().replace(new RegExp(\"/\", \"g\"),'-')");
+                //_script.Append(",value: new Date().toLocaleDateString().replace(new RegExp(\"/\", \"g\"),'-')");
                 _script.Append("});");
             }
             #endregion

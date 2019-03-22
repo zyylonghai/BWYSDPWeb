@@ -608,7 +608,7 @@
         elem: '#billdate' //或 elem: document.getElementById('test')、elem: lay('#test') 等（类型：String/DOM，默认值：无必填项，用于绑定执行日期渲染的元素，值一般为选择器，或DOM对象）
         //, type: 'year'//year-只提供年列表选择||month-只提供年、月选择||date-可选择：年、月、日。type默认值，一般可不填||time-只提供时、分、秒选择||datetime-可选择：年、月、日、时、分、秒
         //, range: true //或 range: '~' 来自定义分割字符
-        , format: 'yyyy-MM-dd' //可任意组合 yyyy年MM月dd日 HH时mm分ss秒===2017年08月18日 20时08分08秒，'yyyy/mm/dd'
+        , format: 'yyyy-MM-dd HH:mm:ss' //可任意组合 yyyy年MM月dd日 HH时mm分ss秒===2017年08月18日 20时08分08秒，'yyyy/mm/dd'
         , value: new Date().toLocaleDateString().replace(new RegExp("/", "g"), '-') //必须遵循format参数设定的格式String，默认值：new Date()
         //, min: '1900-1-1'//min/max - 最小/大范围内的日期时间值 类型：string，默认值：min: '1900-1-1'、max: '2099-12-31'
         //, max: '2099-12-31'
@@ -684,7 +684,8 @@
     }
     function testajax()
     {
-        $.ajax({url: "/SaleOrder/TestAjax",data: "test=1",type: 'Post',async: false,success: function (obj) {},
+        $.ajax({
+            url: "/SaleOrder/TestAjax", data: "test=1", type: 'Post', async: false, success: function (obj) { alert(obj); },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);}
                 });
     }

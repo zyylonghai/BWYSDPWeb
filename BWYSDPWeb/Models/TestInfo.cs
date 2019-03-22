@@ -13,4 +13,5 @@ namespace BWYSDPWeb.Models
         public string Gender { get; set; }
         public int Age { get; set; }
     }
+
 }

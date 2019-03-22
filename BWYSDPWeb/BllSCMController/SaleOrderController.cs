@@ -11,15 +11,15 @@ namespace BWYSDPWeb.BllSCMController
     {
         // GET: SaleOrder
 
-        protected override void GetTableDataExt(DataTable dt)
+        protected override void GetGridDataExt(string gridid, DataTable dt)
         {
-            base.GetTableDataExt(dt);
+            base.GetGridDataExt(gridid, dt);
         }
 
 
-        public ActionResult TestAjax()
+        public void TestAjax()
         {
-            return Json(new {data="test" }, JsonRequestBehavior.AllowGet);
+            //return Json(new {data="test" }, JsonRequestBehavior.AllowGet);
         }
     }
 }
