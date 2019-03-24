@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Bll
 {
-   public class DelegateFactory
+    public class DelegateFactory
     {
         public delegate void TempDataDelegate(string sessionid, string progid, DataRow dr, DataRowAction action, int operataction);
         delegate void TempDataClearDelegate(string sessionid, string progid);
-        public  string _sessionid = string.Empty;
-        public  string _progid = string.Empty;
+        public string _sessionid = string.Empty;
+        public string _progid = string.Empty;
         public DataRow _dr = null;
         public DataRowAction _action;
         public int _operataction = -1;
@@ -63,10 +63,10 @@ namespace Bll
             this._progid = progid;
             TempDataClearDelegate compressfile = new TempDataClearDelegate(ClearTempData);
             AsyncCallback callback = new AsyncCallback(ClearCallBackMethod);
-            IAsyncResult iar = compressfile.BeginInvoke(sessionid, progid,callback, compressfile);
+            IAsyncResult iar = compressfile.BeginInvoke(sessionid, progid, callback, compressfile);
         }
 
-        private void InsertTemp(string sessionid, string progid, DataRow dr, DataRowAction action,int operataction)
+        private void InsertTemp(string sessionid, string progid, DataRow dr, DataRowAction action, int operataction)
         {
             List<string> commandlst = new List<string>();
             //string sessionid = System.Web.HttpContext.Current.Session.SessionID;
@@ -87,16 +87,41 @@ namespace Bll
                         //    sessionid, progid, tbNm, rowindex, col.ColumnName, dr[col].ToString(),operataction));
                         commandlst.Add(string.Format("EXEC sp_executesql N'" +
                             "insert into [temp] values(@sessionid,@progid,@tbnm,@rwindx,@fieldnm,@fieldvalu,@actions)   '," +
-                            "N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int,@fieldnm nvarchar(35),@fieldvalu ntext,@actions bit'," +
+                            "N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int,@fieldnm nvarchar(35),@fieldvalu ntext,@actions smallint'," +
+                            "@sessionid='{0}',@progid='{1}',@tbnm='{2}',@rwindx={3},@fieldnm='{4}',@fieldvalu=N'{5}',@actions={6}  ",
+                            sessionid, progid, tbNm, rowindex, col.ColumnName, dr[col].ToString(), operataction == 1 ? 0 : operataction));
+                    }
+                    break;
+                case DataRowAction.Change:
+                    //commandlst.Add(string.Format("EXEC sp_executesql N'" +
+                    //       "delete from  [temp] where sessionid=@sessionid and progid=@progid and tableNm=@tbnm and rowid=@rwindx   '," +
+                    //       "N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int'," +
+                    //       "@sessionid='{0}',@progid='{1}',@tbnm='{2}',@rwindx={3}  ",
+                    //       sessionid, progid, tbNm, rowindex));
+                    foreach (DataColumn col in dr.Table.Columns)
+                    {
+                        //commandlst.Add(string.Format("EXEC sp_executesql N' " +
+                        //   "insert into [temp] values(@sessionid,@progid,@tbnm,@rwindx,@fieldnm,@fieldvalu,@actions)   '," +
+                        //   "N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int,@fieldnm nvarchar(35),@fieldvalu ntext,@actions smallint'," +
+                        //   "@sessionid='{0}',@progid='{1}',@tbnm='{2}',@rwindx={3},@fieldnm='{4}',@fieldvalu=N'{5}',@actions={6}  ",
+                        //   sessionid, progid, tbNm, rowindex, col.ColumnName, dr[col].ToString(), operataction));
+
+                        commandlst.Add(string.Format("EXEC sp_executesql N'" +
+                            "update [temp] set fieldvalue=@fieldvalu,actions=@actions where sessionid=@sessionid and progid=@progid and tableNm=@tbnm and rowid=@rwindx and fieldnm=@fieldnm   '," +
+                            "N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int,@fieldnm nvarchar(35),@fieldvalu ntext,@actions smallint'," +
                             "@sessionid='{0}',@progid='{1}',@tbnm='{2}',@rwindx={3},@fieldnm='{4}',@fieldvalu=N'{5}',@actions={6}  ",
                             sessionid, progid, tbNm, rowindex, col.ColumnName, dr[col].ToString(), operataction));
                     }
                     break;
-                case DataRowAction.Change:
-
-                    break;
                 case DataRowAction.Delete:
-
+                    foreach (DataColumn col in dr.Table.Columns)
+                    {
+                        commandlst.Add(string.Format("EXEC sp_executesql N'" +
+                            "update [temp] set actions=@actions where sessionid=@sessionid and progid=@progid and tableNm=@tbnm and rowid=@rwindx and fieldnm=@fieldnm   '," +
+                            "N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int,@fieldnm nvarchar(35),@actions smallint'," +
+                            "@sessionid='{0}',@progid='{1}',@tbnm='{2}',@rwindx={3},@fieldnm='{4}',@actions={5}  ",
+                            sessionid, progid, tbNm, rowindex, col.ColumnName, 2));
+                    }
                     break;
             }
             sQLiteHelp.Update(commandlst);

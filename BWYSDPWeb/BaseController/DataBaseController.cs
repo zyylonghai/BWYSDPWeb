@@ -133,11 +133,11 @@ namespace BWYSDPWeb.BaseController
                     this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, this.Package);
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     FileOperation fileoperation = new FileOperation();
-                    
+
                     fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", Server.MapPath("/").Replace("//", ""), packagepath, progId);
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
-                        LibFormPage formpage= ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, this.Package);
+                        LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, this.Package);
                         if (formpage != null)
                         {
                             #region 旧代码
@@ -159,7 +159,7 @@ namespace BWYSDPWeb.BaseController
                             factory.ControlClassNm = formpage.ControlClassNm;
                             factory.DSID = formpage.DSID;
                             factory.Package = this.Package;
-                            factory.BeginPage(formpage .FormName);
+                            factory.BeginPage(formpage.FormName);
                             factory.CreateBody();
                             factory.CreateForm();
                             if (formpage.FormGroups != null)
@@ -167,7 +167,7 @@ namespace BWYSDPWeb.BaseController
                                 foreach (LibFormGroup formg in formpage.FormGroups)
                                 {
                                     factory.CreatePanelGroup(formg.FormGroupDisplayNm);
-                                    if (formg.FmGroupFields != null && formg.FmGroupFields .Count >0)
+                                    if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
                                     {
                                         factory.AddFormGroupFields(formg.FmGroupFields);
                                     }
@@ -210,7 +210,7 @@ namespace BWYSDPWeb.BaseController
 
                             //commandtextlst.Append("commit;");
                             string c = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                            sQLiteHelp.Delete(string.Format("delete from formfields where progid='{0}'",progId));
+                            sQLiteHelp.Delete(string.Format("delete from formfields where progid='{0}'", progId));
                             sQLiteHelp.Update(commandtextlst);
                             string d = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                             #endregion
@@ -219,7 +219,7 @@ namespace BWYSDPWeb.BaseController
                         {
                             return View("NotFindPage");
                         }
-                        
+
                     }
                     //Server.MapPath("/")
                 }
@@ -230,15 +230,15 @@ namespace BWYSDPWeb.BaseController
         [HttpPost]
         public virtual ActionResult BasePageLoad()
         {
-            this.CreateTableSchema();
             this.OperatAction = OperatAction.Add;
-            Session[SysConstManage .OperateAction] = this.OperatAction;
+            Session[SysConstManage.OperateAction] = this.OperatAction;
+            this.CreateTableSchema();
             #region delete temp data(重新加载页面，需清除temp表中的session数据)
             //Bll.DelegateFactory df = new Bll.DelegateFactory();
             //df.ClearTempDataByProgid(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
 
-            //TempHelp sQLiteHelp = new TempHelp("TempData");
-            //sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+            TempHelp sQLiteHelp = new TempHelp("TempData");
+            sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
 
             #endregion
             PageLoad();
@@ -261,7 +261,7 @@ namespace BWYSDPWeb.BaseController
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
 
-        public string BindTableData(string gridid,string deftb, int page, int rows,string Mobile)
+        public string BindTableData(string gridid, string deftb, int page, int rows, string Mobile)
         {
             #region 旧代码
             //DataTable dt = new DataTable();
@@ -351,22 +351,22 @@ namespace BWYSDPWeb.BaseController
                 dt.Merge(item, false);
             }
 
-            GetGridDataExt(gridid,dt);
+            GetGridDataExt(gridid, dt);
             //DataTable dt2 = dt.Copy();
             //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
             //foreach (DataRow dr in drs)
             //{
             //    dt2.Rows.Remove(dr);
             //}
-            var result = new { total=dt.Rows.Count ,rows=dt};
+            var result = new { total = dt.Rows.Count, rows = dt };
             //return Json(new { total = testlist.Count , rows = testlist }, JsonRequestBehavior.AllowGet);
             return JsonConvert.SerializeObject(result);
         }
 
         #region 受保护方法
-        protected virtual void GetGridDataExt(string gridid,DataTable dt)
+        protected virtual void GetGridDataExt(string gridid, DataTable dt)
         {
-           
+
         }
 
         protected virtual void PageLoad()

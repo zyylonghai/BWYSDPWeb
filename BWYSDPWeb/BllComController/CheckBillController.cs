@@ -22,12 +22,12 @@ namespace BWYSDPWeb.BllComController
             row["Checker"] = "zyy33";
             row["CheckDT"] = new Date("2018-2-9");
             row["Qty"] = 10;
-            foreach (DataRow dr in this.LibTables[0].Tables[0].Rows)
-            {
+            //foreach (DataRow dr in this.LibTables[0].Tables[0].Rows)
+            //{
 
-            }
+            //}
             this.LibTables[0].Tables[0].Rows.Add(row);
-            row["Qty"] = 110;
+            row["Qty"] = 10;
             row["Checker"] = "zyy653";
             row["CheckDT"] = new Date("2018-3-9");
 
@@ -44,9 +44,9 @@ namespace BWYSDPWeb.BllComController
             row["check1"] = "部位2";
             row["check2"] = "不为2";
             this.LibTables[0].Tables[1].Rows.Add(row);
-            row["check1"] = "jjjjjjjjj";
-            string str = JsonConvert.SerializeObject(this.LibTables[0].Tables[1]);
-            DataTable dr2 = JsonConvert.DeserializeObject<DataTable>(str);
+            //row["check1"] = "jjjjjjjjj";
+            //string str = JsonConvert.SerializeObject(this.LibTables[0].Tables[1]);
+            //DataTable dr2 = JsonConvert.DeserializeObject<DataTable>(str);
             //return LibJson();
         }
         protected override void GetGridDataExt(string gridid, DataTable dt)
@@ -63,7 +63,29 @@ namespace BWYSDPWeb.BllComController
 
         public ActionResult Test(string staffid)
         {
-            return Json(new {message="",Flag=0 }, JsonRequestBehavior.AllowGet);
+
+            int i = 0;
+            //string a = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            //int n = 1;
+            while (i < 2)
+            {
+                DataRow row = this.LibTables[0].Tables[0].NewRow();
+                row["BillNo"] = "T201903160001";
+                row["Checker"] = "test3";
+                row["CheckDT"] = new Date("2018-2-12");
+                row["Qty"] = i++;
+                this.LibTables[0].Tables[0].Rows.Add(row);
+                //i++;
+            }
+            //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+
+
+            //this.LibTables[0].Tables[1].Rows[0]["check1"] = "修改后部位1";
+            //this.LibTables[0].Tables[1].Rows[0]["check2"] = "修改后不为1";
+            //this.LibTables[0].Tables[1].AcceptChanges();
+
+            //this.LibTables[0].Tables[1].Rows[1].Delete();
+            return Json(new { message = "", Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
     }

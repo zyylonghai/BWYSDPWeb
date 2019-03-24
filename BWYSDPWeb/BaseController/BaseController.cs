@@ -17,6 +17,9 @@ namespace BWYSDPWeb.BaseController
 {
     public class BaseController : Controller
     {
+        #region 私有属性
+        private string _rootPath = string.Empty;
+        #endregion
         #region 公开属性
 
         public LibTable[] LibTables;
@@ -60,11 +63,12 @@ namespace BWYSDPWeb.BaseController
         public BaseController()
         {
             var request = System.Web.HttpContext.Current.Request;
+            this._rootPath = request.PhysicalApplicationPath;
             this.ProgID = request.Params["sdp_pageid"] ?? string.Empty;
             this.DSID = request.Params["sdp_dsid"] ?? string.Empty;
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
-            var action =System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
-            this.OperatAction = action==null ?OperatAction.None :(OperatAction)action;
+            var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
+            this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
             this.LibTables = GetTableSchema(this.DSID);
             //if (this.LibTables != null)
             //{
@@ -77,29 +81,11 @@ namespace BWYSDPWeb.BaseController
             //    }
             //}
             #region get temp data from db
-            //TempHelp sQLiteHelp = new TempHelp("TempData");
-            //DataTable result= sQLiteHelp.GetTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
-            //string str = JsonConvert.SerializeObject(result);
-            //DataTable table = JsonConvert.DeserializeObject<DataTable>(str);
-            //if (result.Rows.Count > 0)
-            //{
-            //    foreach (LibTable item in this.LibTables)
-            //    {
-            //        foreach (DataTable tb in item.Tables)
-            //        {
-            //            DataRow[] rows = result.Select(string.Format("tableNm='{0}'", tb.TableName));
-            //            DataRow newdr = tb.NewRow();
-            //            int rowid = 0;
-            //            foreach (DataRow dr in rows)
-            //            {
-            //                if ((int)dr["rowid"] == rowid)
-            //                {
-            //                    newdr[dr["fieldnm"].ToString()] = dr["fieldvalue"];
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            if (this.LibTables == null && !request.Url.ToString().Contains("BasePageLoad"))
+            {
+                this.LibTables = DoCreateTableSchema();
+                GetTempDataFromDB();
+            }
             #endregion
             //this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, SysConstManage.PackageCookieKey);
             //this.ProgID = GetCookievalue(SysConstManage.PageinfoCookieNm, SysConstManage.ProgidCookieKey);
@@ -109,7 +95,7 @@ namespace BWYSDPWeb.BaseController
         {
 
             Bll.DelegateFactory df = new Bll.DelegateFactory();
-            df.SaveRowChange(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, e.Row, e.Action,(int)this.OperatAction);
+            df.SaveRowChange(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, e.Row, e.Action, (int)this.OperatAction);
             //TempDataDelegate compressfile = new TempDataDelegate(InsertTemp);
             //AsyncCallback callback = new AsyncCallback(CallBackMethod);
             //IAsyncResult iar = compressfile.BeginInvoke(e.Row ,e.Action , callback, compressfile);
@@ -208,12 +194,15 @@ namespace BWYSDPWeb.BaseController
             #endregion
             #region 存cache
             CachHelp cachelp = new CachHelp();
-            LibTable[] tbs =cachelp .GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID,this.ProgID)) as LibTable[];
+            LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID)) as LibTable[];
             if (tbs == null)
             {
-                CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
-                tbs = createTable.CreateTableSchema(this.DSID, this.Package);
-                cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs);
+                //CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
+                //tbs = createTable.CreateTableSchema(this.DSID, this.Package);
+                //cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs,this.ProgID);
+                //this.LibTables = tbs;
+                tbs = DoCreateTableSchema();
+                cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
                 this.LibTables = tbs;
             }
             else
@@ -253,6 +242,8 @@ namespace BWYSDPWeb.BaseController
             LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID)) as LibTable[];
             if (tbs == null) return null;
             LibTable[] result = tbs;
+            //LibTable[] result = new LibTable[tbs.Length];
+            //CopyTablesSchema(tbs, result);
             #endregion
             return result;
         }
@@ -288,8 +279,8 @@ namespace BWYSDPWeb.BaseController
                         col = dt.Columns[s];
                         f = new FormFields();
                         f.ProgId = this.ProgID;
-                        f.FieldNm =string.Format("{0}_{1}",item.Key,s);
-                        if (col.DataType.Equals(typeof(DateTime))|| col.DataType.Equals(typeof(Date)))
+                        f.FieldNm = string.Format("{0}_{1}", item.Key, s);
+                        if (col.DataType.Equals(typeof(DateTime)) || col.DataType.Equals(typeof(Date)))
                         {
                             f.FieldValue = dt.Rows[0][col].ToString();
 
@@ -306,7 +297,7 @@ namespace BWYSDPWeb.BaseController
             }
             #endregion
 
-            return Json(new { sdp_flag=0, sdp_data= fieldlst },JsonRequestBehavior.AllowGet);
+            return Json(new { sdp_flag = 0, sdp_data = fieldlst }, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -320,11 +311,76 @@ namespace BWYSDPWeb.BaseController
             {
                 targDT[i] = new LibTable(srcDT[i].Name);
                 targDT[i].Tables = new DataTable[srcDT[i].Tables.Length];
-                for(int n=0;n< srcDT[i].Tables.Length;n++)
+                for (int n = 0; n < srcDT[i].Tables.Length; n++)
                 {
                     targDT[i].Tables[n] = srcDT[i].Tables[n].Copy();
                 }
                 //targDT[i] = srcDT[i].Copy();
+            }
+        }
+
+        private LibTable[] DoCreateTableSchema()
+        {
+            if (string.IsNullOrEmpty(this.DSID)) return null;
+            CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", this._rootPath.Replace("//", "")));
+            LibTable[] tbs = createTable.CreateTableSchema(this.DSID, this.Package);
+            //cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
+            return tbs;
+        }
+
+        //private void ClearLibTableData(LibTable libTable)
+        //{
+        //    foreach (var item in tbs)
+        //    {
+        //        foreach (DataTable d in item.Tables)
+        //        {
+        //            d.Clear();
+        //        }
+        //    }
+        //}
+
+        private void GetTempDataFromDB()
+        {
+            int rowcout = 0;
+            TempHelp sQLiteHelp = new TempHelp("TempData");
+            DataTable result = null;
+
+            if (this.LibTables != null)
+            {
+                try
+                {
+                    DataRow newrow = null;
+                    int rowindex = -1;
+                    DataTable tb = null;
+                    foreach (LibTable item in this.LibTables)
+                    {
+                        for (int i = 0; i < item.Tables.Length; i++)
+                        {
+                            tb = item.Tables[i];
+                            result = sQLiteHelp.GetTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, tb.TableName, ref rowcout);
+                            if (result != null)
+                            {
+                                rowindex = -1;
+                                foreach (DataRow dr in result.Rows)
+                                {
+                                    if (rowindex != (int)dr["rowid"])
+                                    {
+                                        newrow = tb.NewRow();
+                                        tb.Rows.Add(newrow);
+                                        rowindex = (int)dr["rowid"];
+                                    }
+                                    newrow[dr["fieldnm"].ToString()] = dr["fieldvalue"];
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+                CachHelp cachelp = new CachHelp();
+                cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), this.LibTables, this.ProgID);
             }
         }
 
@@ -360,9 +416,9 @@ namespace BWYSDPWeb.BaseController
 
     public enum OperatAction
     {
-        None=-1,
-        Add=0,
-        Edit=1,
-        Delet=2
+        None = -1,
+        Add = 0,
+        Edit = 1,
+        Delet = 2
     }
 }

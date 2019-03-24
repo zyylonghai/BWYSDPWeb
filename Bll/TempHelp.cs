@@ -118,7 +118,7 @@ namespace Bll
             return dic;
         }
 
-        public void ClearTempData(string sessionid,string progid)
+        public void ClearTempData(string sessionid, string progid)
         {
             SqlParameter[] parameters = {
                 new SqlParameter("@sessionid",System.Data.SqlDbType.VarChar),
@@ -147,15 +147,19 @@ namespace Bll
             }
         }
 
-        public DataTable GetTempData(string sessionid, string progid)
+        public DataTable GetTempData(string sessionid, string progid, string tbNm, ref int rowcout)
         {
             DataTable dt = new DataTable();
             SqlParameter[] parameters = {
                 new SqlParameter("@sessionid",System.Data.SqlDbType.VarChar),
-                new SqlParameter("@progid",System.Data.SqlDbType.VarChar)
+                new SqlParameter("@progid",System.Data.SqlDbType.VarChar),
+                new SqlParameter("@tbNm",System.Data.SqlDbType.VarChar),
+                new SqlParameter ("@rowCout",System.Data.SqlDbType .Int)
             };
             parameters[0].Value = sessionid;
             parameters[1].Value = progid;
+            parameters[2].Value = tbNm;
+            parameters[3].Direction = ParameterDirection.Output;
             using (SqlConnection cn = new SqlConnection(ConnectStr))
             {
                 cn.Open();
@@ -169,6 +173,7 @@ namespace Bll
                         cmd.Parameters.AddRange(parameters);
                         SqlDataAdapter dbAdapter = new SqlDataAdapter(cmd);
                         dbAdapter.Fill(dt);
+                        rowcout = (int)parameters[3].Value;
                     }
                     catch (Exception ex)
                     {
@@ -176,6 +181,35 @@ namespace Bll
                 }
             }
             return dt;
+        }
+
+        public void SqlBulkUpdate(DataTable dt)
+        {
+            using (SqlConnection cn = new SqlConnection(ConnectStr))
+            {
+                cn.Open();
+                using (SqlTransaction transaction = cn.BeginTransaction())
+                {
+
+
+                    SqlBulkCopy bulkCopy = new SqlBulkCopy(cn, SqlBulkCopyOptions.Default, transaction);
+
+                    bulkCopy.DestinationTableName = "temp";
+                    bulkCopy.BatchSize = dt.Rows.Count;
+                    try
+                    {
+                        if (dt != null && dt.Rows.Count > 0)
+                        {
+                            bulkCopy.WriteToServer(dt);
+                            transaction.Commit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
         }
 
     }
