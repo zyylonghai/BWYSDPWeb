@@ -379,7 +379,7 @@ namespace BWYSDPWeb.Com
             #region 禁用页面的enter建
             _script.Append("$(window).keydown(function (e) {");
             _script.Append("var key = window.event ? e.keyCode : e.which;");
-            _script.Append("if (key.toString() == \"13\") {");
+            _script.Append("if (key.toString()== \"13\") {");
             _script.Append(" return false;}});");
             #endregion
 

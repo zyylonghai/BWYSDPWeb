@@ -34,10 +34,10 @@ namespace BWYSDPWeb.BllsysSettingController
             info.accountid = this.Request.Params["accountid"] ?? string.Empty;
             info.accountname = dic[info.accountid];
             info.ipAddress = this.Request.Params["ipAddress"] ?? string.Empty;
-            //info.point = Convert.ToInt32(this.Request.Params["point"] ?? "0");
+            info.point = Convert.ToInt32(this.Request.Params["point"] ?? "0");
             info.serverNm = this.Request.Params["serverNm"] ?? string.Empty;
             SQLite sqlite = new SQLite();
-            var dt= sqlite.SelectAllServer();
+            //var dt= sqlite.SelectAllServer();
             sqlite.Insert(info);
             return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
         }

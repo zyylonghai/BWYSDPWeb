@@ -167,6 +167,7 @@ namespace BWYSDPWeb.Com
                 //sQLiteHelp.Update(commandlst);
                 sQLiteHelp.SqlBulkUpdate(temp);
                 string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+
             }
         }
 

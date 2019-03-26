@@ -147,6 +147,33 @@ namespace Bll
             }
         }
 
+        public void ClearTempBysessionid(string sessionid)
+        {
+            SqlParameter[] parameters = {
+                new SqlParameter("@sessionid",System.Data.SqlDbType.VarChar)
+            };
+            parameters[0].Value = sessionid;
+            using (SqlConnection cn = new SqlConnection(ConnectStr))
+            {
+                cn.Open();
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    try
+                    {
+                        cmd.Connection = cn;
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.CommandText = "p_clearSessionData";
+                        cmd.Parameters.AddRange(parameters);
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                    //cmd.Connection.Close();
+                }
+            }
+        }
+
         public DataTable GetTempData(string sessionid, string progid, string tbNm, ref int rowcout)
         {
             DataTable dt = new DataTable();

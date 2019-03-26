@@ -257,6 +257,14 @@ namespace BWYSDPWeb.BaseController
 
         public ActionResult Save()
         {
+            BeforeSave();
+            this.LibTables[0].Tables[0].Rows[0].AcceptChanges();
+            this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
+            string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
+            object resut= this.ExecuteSaveMethod("Save", this.LibTables);
+            string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            AfterSave();
             //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
@@ -345,20 +353,32 @@ namespace BWYSDPWeb.BaseController
             ////}
             #endregion
             var table = this.LibTables.FirstOrDefault(i => i.Name == deftb);
-            DataTable dt = table.Tables[0].Copy();
-            foreach (DataTable item in table.Tables)
-            {
-                dt.Merge(item, false);
-            }
+            if (table == null) { var result2 = new { total = 0, rows =DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+                DataTable dt = table.Tables[0].Copy();
+                //foreach (DataTable item in table.Tables)
+                //{
+                //    dt.Merge(item, false);
+                //}
+                for (int i = 1; i < table.Tables.Length; i++)
+                {
+                    dt.Merge(table.Tables[i], false);
+                }
 
-            GetGridDataExt(gridid, dt);
-            //DataTable dt2 = dt.Copy();
-            //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
-            //foreach (DataRow dr in drs)
-            //{
-            //    dt2.Rows.Remove(dr);
-            //}
-            var result = new { total = dt.Rows.Count, rows = dt };
+                GetGridDataExt(gridid, dt);
+                //DataTable dt2 = dt.Copy();
+                //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
+                //foreach (DataRow dr in drs)
+                //{
+                //    dt2.Rows.Remove(dr);
+                //}
+                DataTable resultdt = dt.Clone();
+                for (int index = (page - 1) * rows; index < page * rows; index++)
+                {
+                    if (index >= dt.Rows.Count) break;
+                    resultdt.ImportRow(dt.Rows[index]);
+                }
+            var result = new { total = dt.Rows.Count, rows = resultdt };
+
             //return Json(new { total = testlist.Count , rows = testlist }, JsonRequestBehavior.AllowGet);
             return JsonConvert.SerializeObject(result);
         }
@@ -371,6 +391,16 @@ namespace BWYSDPWeb.BaseController
 
         protected virtual void PageLoad()
         {
+        }
+
+        protected virtual void BeforeSave()
+        {
+
+        }
+
+        protected virtual void AfterSave()
+        {
+
         }
         #endregion
     }

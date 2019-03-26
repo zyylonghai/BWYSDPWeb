@@ -38,14 +38,12 @@ $.ajax = function (opt) {
     //}
     //扩展增强处理 
     var _opt = $.extend(opt, {
-       
         data: fn.data,
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             //错误方法增强处理 
             fn.error(XMLHttpRequest, textStatus, errorThrown);
         },
         success: function (data, textStatus) {
-            debugger
             if (data != null && (data.sdp_flag != null && data.sdp_flag != undefined))
             {
                 //for (var n = 0; n < data.sdp_data.length; n++)
@@ -68,14 +66,15 @@ $.ajax = function (opt) {
             fn.complete(data);
         },
         beforeSend: function (xhr, o) {
+            showMask();
             fn.beforeSend(xhr, o);
 
         },
     });
     return _ajax(_opt).done(function (e) {
+        hideMask();
     });
 }
-
 //function FillVale(obj) {
 
 //}

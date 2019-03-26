@@ -67,15 +67,24 @@ namespace BWYSDPWeb.BllComController
             int i = 0;
             //string a = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             //int n = 1;
-            while (i < 2)
+            while (i < 10)
             {
-                DataRow row = this.LibTables[0].Tables[0].NewRow();
-                row["BillNo"] = "T201903160001";
-                row["Checker"] = "test3";
-                row["CheckDT"] = new Date("2018-2-12");
-                row["Qty"] = i++;
-                this.LibTables[0].Tables[0].Rows.Add(row);
-                //i++;
+                //DataRow row = this.LibTables[0].Tables[0].NewRow();
+                //row["BillNo"] = "T201903160001";
+                //row["Checker"] = "test3";
+                //row["CheckDT"] = new Date("2018-2-12");
+                //row["Qty"] = i++;
+                //this.LibTables[0].Tables[0].Rows.Add(row);
+
+                DataRow dr = this.LibTables[1].Tables[0].NewRow();
+                dr["RowNo"] = i++;
+                dr["BillNo"] = "T201903160001";
+                dr["yingdu"] = "9563";
+                dr["naiwendu"] = "555";
+                dr["xingzhuang"] = "777";
+                dr["midu"] = "666";
+                this.LibTables[1].Tables[0].Rows.Add(dr);
+
             }
             //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
 

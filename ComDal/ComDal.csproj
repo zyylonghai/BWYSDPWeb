@@ -4,15 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{415116F1-316C-4977-B659-A9DA96990B5C}</ProjectGuid>
+    <ProjectGuid>{BAE97AC1-7162-4C73-B243-DE8EEFC5DE79}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Bll</RootNamespace>
-    <AssemblyName>Bll</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>ComDal</RootNamespace>
+    <AssemblyName>ComDal</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,19 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SDPCRL.BLL.BUS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\library\SDPCRL.BLL.BUS.dll</HintPath>
-    </Reference>
-    <Reference Include="SDPCRL.COM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SDPCRL.COM">
       <HintPath>..\library\SDPCRL.COM.dll</HintPath>
+    </Reference>
+    <Reference Include="SDPCRL.DAL.BUS">
+      <HintPath>..\library\Dal\SDPCRL.DAL.BUS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\library\System.Data.SQLite.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,11 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BllDataBase.cs" />
-    <Compile Include="DelegateFactory.cs" />
+    <Compile Include="CheckBillDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQLite.cs" />
-    <Compile Include="TempHelp.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BWYSDPBaseDal\BWYSDPBaseDal.csproj">
+      <Project>{7b5b2245-b567-4121-b01b-aa46fade496c}</Project>
+      <Name>BWYSDPBaseDal</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

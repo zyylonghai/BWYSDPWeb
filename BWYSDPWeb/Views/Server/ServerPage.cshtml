@@ -9,12 +9,70 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <style type="text/css">
+        .masklayer {
+            position: absolute;
+            top: 0px;
+            filter: alpha(opacity=60);
+            background-color: #777;
+            z-index: 1002;
+            left: 0px;
+            opacity: 0.5;
+            -moz-opacity: 0.5;
+        }
+    </style>
     <title>ServerPage</title>
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+
+    <script type="text/javascript">
+        $(function () {
+
+        });
+
+            function GetAccout()
+            {
+                $.ajax({
+                    url: "@Url.Action("GetAccout")",
+                    data: "conntype=" + $('#conectType').val() + "&ip=" + $('#ipAddress').val() + "&point=" + $('#point').val()+"",
+                    type: 'Get',
+                    async: false,
+                    success: function (obj) {
+                        if (obj.Flag == 1) {
+
+                        }
+                        else {
+                            debugger
+                            if (obj.data != null || obj.data != undefined) {
+                                $('#accountid').children().remove();
+                                //var o = JSON.parse(obj.data);
+                                jQuery.each(obj.data, function (i, val) {
+                                    $('#accountid').append(" <option value='" + val.accountid + "'>" + val.accountname + "</option>");
+                                });
+
+                            }
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+                    }
+                });
+        }
+            function showMask() {
+                debugger
+                $("#masklayer").css("height", $(document).height());
+                $("#masklayer").css("width", $(document).width());
+                $("#masklayer").show();
+            }
+            //隐藏遮罩层
+            function hideMask() {
+
+                $("#masklayer").hide();
+            }
+    </script>
 </head>
 <body>
     <div class="container" style="background-color:antiquewhite">
@@ -69,39 +127,6 @@
             </div>
         </form>
     </div>
-    <script type="text/javascript">
-        $(function () {
-
-        });
-
-            function GetAccout()
-            {
-                $.ajax({
-                    url: "@Url.Action("GetAccout")",
-                    data: "conntype=" + $('#conectType').val() + "&ip=" + $('#ipAddress').val() + "&point=" + $('#point').val()+"",
-                    type: 'Get',
-                    async: false,
-                    success: function (obj) {
-                        if (obj.Flag == 1) {
-
-                        }
-                        else {
-                            debugger
-                            if (obj.data != null || obj.data != undefined) {
-                                $('#accountid').children().remove();
-                                //var o = JSON.parse(obj.data);
-                                jQuery.each(obj.data, function (i, val) {
-                                    $('#accountid').append(" <option value='" + val.accountid + "'>" + val.accountname + "</option>");
-                                });
-                                
-                            }
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
-                    }
-                });
-            }
-    </script>
+    <div id="masklayer" class="masklayer"></div>
 </body>
 </html>

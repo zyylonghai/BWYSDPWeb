@@ -19,6 +19,7 @@ namespace BWYSDPWeb.BaseController
     {
         #region 私有属性
         private string _rootPath = string.Empty;
+        private BllDataBase _bll = null;
         #endregion
         #region 公开属性
 
@@ -205,7 +206,7 @@ namespace BWYSDPWeb.BaseController
                 cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
                 this.LibTables = tbs;
             }
-            else
+            if (tbs !=null)
             {
                 foreach (var item in tbs)
                 {
@@ -350,30 +351,73 @@ namespace BWYSDPWeb.BaseController
                 try
                 {
                     DataRow newrow = null;
-                    int rowindex = -1;
+                    int rowindex = -2;
                     DataTable tb = null;
+                    DataColumnCollection cols = null;
+                    Dictionary<int, int> rowstate = null;
+                    //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                     foreach (LibTable item in this.LibTables)
                     {
                         for (int i = 0; i < item.Tables.Length; i++)
                         {
                             tb = item.Tables[i];
+                            cols = tb.Columns;
                             result = sQLiteHelp.GetTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, tb.TableName, ref rowcout);
                             if (result != null)
                             {
-                                rowindex = -1;
+                                rowindex = -2;
+                                DataColumn colrowid = result.Columns["rowid"];
+                                DataColumn colfieldnm = result.Columns["fieldnm"];
+                                DataColumn colaction = result.Columns["actions"];
+                                rowstate = new Dictionary<int, int>();
                                 foreach (DataRow dr in result.Rows)
                                 {
-                                    if (rowindex != (int)dr["rowid"])
+                                    if (rowindex != (int)dr[colrowid])
                                     {
                                         newrow = tb.NewRow();
                                         tb.Rows.Add(newrow);
-                                        rowindex = (int)dr["rowid"];
+                                        rowindex = (int)dr[colrowid];
+                                        switch ((int)dr[colaction])
+                                        {
+                                            case 0: //新增状态
+                                                break;
+                                            case 1: //修改状态
+                                                newrow.AcceptChanges();
+                                                break;
+                                            case 2: //删除状态
+                                                rowstate.Add(rowindex, 2);
+                                                break;
+                                            case -1: //未更改状态
+                                                rowstate.Add(rowindex, -1);
+                                                break;
+                                        }
                                     }
-                                    newrow[dr["fieldnm"].ToString()] = dr["fieldvalue"];
+                                    #region 赋值
+                                    if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+                                    {
+                                        newrow[dr[colfieldnm].ToString()] = new Date(dr["fieldvalue"].ToString());
+                                    }
+                                    else
+                                        newrow[dr[colfieldnm].ToString()] = dr["fieldvalue"];
+                                    #endregion
+                                }
+                                foreach (KeyValuePair<int,int> keyval in rowstate)
+                                {
+                                    switch (keyval.Value)
+                                    {
+                                        case 2:
+                                            tb.Rows[keyval.Key].AcceptChanges();
+                                            tb.Rows[keyval.Key].Delete();
+                                            break;
+                                        case -1:
+                                            tb.Rows[keyval.Key].AcceptChanges();
+                                            break;
+                                    }
                                 }
                             }
                         }
                     }
+                    //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                 }
                 catch (Exception ex)
                 {
@@ -411,6 +455,28 @@ namespace BWYSDPWeb.BaseController
         //{
 
         //}
+        #endregion
+
+        #region 公开函数
+        public object ExecuteMethod(string method, params object[] param)
+        {
+            if (_bll == null) this._bll = new BllDataBase();
+            return _bll.ExecuteMethod(this.ProgID, method, param);
+        }
+
+
+
+        public object ExecuteDalMethod(string funcId, string method, params object[] param)
+        {
+            if (_bll == null) this._bll = new BllDataBase();
+            return _bll.ExecuteMethod(funcId, method, param);
+        }
+
+        public object ExecuteSaveMethod(string method, LibTable[] tables)
+        {
+            if (_bll == null) this._bll = new BllDataBase();
+           return _bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
+        }
         #endregion
     }
 
