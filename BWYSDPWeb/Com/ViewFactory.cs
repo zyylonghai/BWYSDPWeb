@@ -61,6 +61,8 @@ namespace BWYSDPWeb.Com
                     jsandcss.Append("@Styles.Render(\"~/Content/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/TableModal\")");
                 }
                 if (_dateElemlst.Count > 0) //加载日期控件的js，css
                 {
@@ -68,6 +70,8 @@ namespace BWYSDPWeb.Com
                 }
                 if (_hasSearchModal)
                 {
+                    if (_gridGroupdic.Count == 0)
+                        jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
                 }
                 return jsandcss.Append(_page.ToString()).ToString();
@@ -251,14 +255,15 @@ namespace BWYSDPWeb.Com
 
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"tablerefresh()\">");
-            _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>");
+            //_page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tableModal\" data-gridid=\""+grid.GridGroupName+"\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-controlnm=\""+ControlClassNm+"\"  data-cmd=\"add\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"AddRow('"+grid.GridGroupName+"')\">");
+            _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>新增");
             _page.Append("</button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>");
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>编辑");
             _page.Append("</button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>");
+            _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>删除");
             _page.Append("</button>");
             _page.Append("</div>");
             #endregion
@@ -274,6 +279,7 @@ namespace BWYSDPWeb.Com
         private void AddGridColumns(LibGridGroup grid)
         {
             StringBuilder table = new StringBuilder();
+            //List<string> valus = null;
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
             table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
@@ -290,8 +296,15 @@ namespace BWYSDPWeb.Com
             //bool flag = false;//用于标识是否已设置了 汇总行。
             foreach (LibGridGroupField field in grid.GdGroupFields)
             {
+                //if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
+                //{
+                //    valus = new List<string>();
+                //    this.Formfields.Add(field.FromTableNm, valus);
+                //}
+                //valus.Add(field.Name);
+
                 table.Append(",{");
-                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2}", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible:{3}", field.Name, field.DisplayName, field.HasSort ? "true" : "false",field .Hidden ? "false" : "true"));
                 if (grid.HasSummary)
                 {
                     //设置汇总行，
@@ -331,9 +344,9 @@ namespace BWYSDPWeb.Com
             _page.Append("</div>");
             #endregion
             //_page.Append("</form>");//
-            _page.Append("}");
+            _page.Append("}");//form  结束
 
-            #region 添加模态框。
+            #region 添加搜索控件的模态框。
             if (this._hasSearchModal)
             {
                 //用于搜索控件的模态框
@@ -360,6 +373,34 @@ namespace BWYSDPWeb.Com
                 _page.Append("</div>");
             }
 
+            #endregion
+
+            #region 添加表格模态框
+            if (this._gridGroupdic.Count > 0)
+            {
+                //用于表格新增，编辑等操作的模态框
+                _page.Append(" <div class=\"modal fade\" id=\"sdp_tableModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"sdp_tableModalLabel\">");
+                _page.Append("<div class=\"modal-dialog\" role=\"document\">");
+                _page.Append("<div class=\"modal-content\">");
+                _page.Append("<div class=\"modal-header\" style=\"background-color:#dff0d8\">");
+                _page.Append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">");
+                _page.Append("<span aria-hidden=\"true\">×</span>");
+                _page.Append("</button>");
+                _page.Append("<h4 class=\"modal-title\" id=\"sdp_tableModalLabel\">来源主数据</h4>");
+                _page.Append("</div>");
+                _page.Append("<div class=\"modal-body\">");
+                _page.Append("<form id=\"tbmodal_form\">");
+
+                _page.Append("</form>");
+                _page.Append("</div>");
+                _page.Append("<div class=\"modal-footer\">");
+                _page.Append("<button type=\"button\" class=\"btn btn-primary\">确定</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+                _page.Append("</div>");
+            }
             #endregion
             _page.Append("</div>");//panel - body
             _page.Append("</div>");//panel panel - default

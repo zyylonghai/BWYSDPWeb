@@ -57,7 +57,7 @@ namespace BWYSDPWeb.BllComController
             dr["yingdu"] = "zyy";
             dr["naiwendu"] = "888";
             dr["xingzhuang"] = "skdjf";
-            dr["midu"] = "kdkkdkdkk";
+            dr["midu"]="kdkkdkdkk";
             dt.Rows.Add(dr);
         }
 

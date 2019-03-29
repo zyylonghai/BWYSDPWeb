@@ -156,7 +156,7 @@
                         <div id="saleordercollapse" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <div id="toolbar" class="btn-group">
-                                    <button type="button" class="btn btn-default" onclick="tablerefresh()">
+                                    <button type="button" class="btn btn-default" onclick="AddRow('table')">
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </button>
                                     <button type="button" class="btn btn-default">
@@ -235,7 +235,7 @@
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header" style="background-color:#dff0d8">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                 ×
                             </button>
@@ -268,7 +268,7 @@
                             <h4 class="modal-title" id="exampleModalLabel">New message</h4>
                         </div>
                         <div class="modal-body">
-                            <form>
+                            <form id="modalform">
                                 <div class="row">
                                     <div>
                                         <label class="form-inline">
@@ -278,9 +278,9 @@
                                                 <option value="2">大于</option>
                                                 <option value="3">小于</option>
                                             </select>
-                                            <input type="text" class="form-control" />
-                                            <input type="text" class="form-control" />
-                                            <select class="form-control" name="billType">
+                                            <input type="text" class="form-control"  name="input1"/>
+                                            <input type="text" class="form-control" name="input2"/>
+                                            <select class="form-control" name="fuhao1">
                                                 <option value="1">and</option>
                                                 <option value="2">or</option>
                                             </select>
@@ -288,14 +288,14 @@
 
                                         <label class="form-inline">
                                             参加单位：
-                                            <select class="form-control" name="billType">
+                                            <select class="form-control" name="fuhao2">
                                                 <option value="1">等于</option>
                                                 <option value="2">大于</option>
                                                 <option value="3">小于</option>
                                             </select>
                                             <input type="text" class="form-control" />
                                             <input type="text" class="form-control" />
-                                            <select class="form-control" name="billType">
+                                            <select class="form-control" name="fuhao3">
                                                 <option value="1">and</option>
                                                 <option value="2">or</option>
                                             </select>
@@ -318,6 +318,9 @@
                                         </label>
                                     </div>
                                 </div>
+                                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal" data-whatever="55555">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
                                 <table id="matdata"></table>
                                 @*</div>*@
 
@@ -325,7 +328,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Send message</button>
+                            <button type="button" class="btn btn-primary" onclick="btnsubmit()">Send message</button>
                         </div>
                     </div>
                 </div>
@@ -348,16 +351,19 @@
             visible: true                  //是否显示复选框
         }, {
             field: 'Name',
-            title: '姓名',
+            title: '姓名1',
             align: 'center',
+            hidden: true,
+            //visible: false,
             //width:200,
             //valign: 'middle',
             sortable: true
         }, {
             field: 'Mobile',
-            title: '手机',
+            title: '手机1',
             align: 'center',
             sortable: true,
+            hidden: true,
             footerFormatter: function () {
                 return '汇总'
             }
@@ -366,8 +372,10 @@
             field: 'Email',
             align: 'center',
             title: '邮箱',
-            sortable: true
-            //formatter: emailFormatter
+            sortable: true,
+            formatter: function (value, row, index) {
+                return "<div readonly  zyyatr='kkk'>" + value + "</div>";
+            }
         }, {
             field: 'Homepage',
             align: 'center',
@@ -422,7 +430,7 @@
         }];
         tb.initialTable();
 
-
+        $('#table').bootstrapTable('hideColumn', 'Name');
         var tb2 = new LibTable("table2");
         tb2.$table.url = "/SaleOrder/BindTableData?progid=2";
         tb2.$table.toolbar = "#toolbar2";
@@ -612,7 +620,30 @@
             tb3.initialTable();
 
         });
+
+        $('#myModal').on('show.bs.modal', function (e) {
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
+            $(this).css('display', 'block');
+            if ($(window).width() > 780) {
+                $('#myModal .modal-dialog').width($(window).width() - 400);
+            }
+            var modalHeight = $(window).height() / 2 - $('#myModal .modal-dialog').height() / 2;
+            var modalWidth = $('#myModal .modal-dialog').width() / 2;
+            if ($(window).width() > 780) {
+                $(this).find('.modal-dialog').css({
+                    'margin-top': modalHeight,
+                    'margin-left': -modalWidth
+                });
+            }
+
+            //var button = $(e.relatedTarget); // 触发事件的按钮
+            //var param = button.data('whatever') // 解析出data-whatever内容
+
+            //$('#billno').val($(window).height() + "-" + $(window).width());
+
+        });
         drag("exampleModal");
+        drag("myModal");
     });
     laydate.render({
         elem: '#billdate' //或 elem: document.getElementById('test')、elem: lay('#test') 等（类型：String/DOM，默认值：无必填项，用于绑定执行日期渲染的元素，值一般为选择器，或DOM对象）
@@ -698,5 +729,21 @@
             url: "/SaleOrder/TestAjax", data: "test=1", type: 'Post', async: false, success: function (obj) { alert(obj); },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);}
                 });
+    }
+    function btnsubmit()
+    {
+        $.ajax({
+            async: false,
+            type: "POST",
+            //url: '${pageContext.request.contextPath}/link/apply',
+            url: '/SaleOrder/TestAjax',
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            data: '',
+            dataType: "text",
+            success: function () {
+            },
+            error: function () {
+            }
+        });
     }
 </script>

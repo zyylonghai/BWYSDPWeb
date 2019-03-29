@@ -383,6 +383,11 @@ namespace BWYSDPWeb.BaseController
             return JsonConvert.SerializeObject(result);
         }
 
+        public ActionResult TableAction(string gridid, string tbnm, string cmd)
+        {
+            return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
+        }
+
         #region 受保护方法
         protected virtual void GetGridDataExt(string gridid, DataTable dt)
         {

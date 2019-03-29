@@ -62,6 +62,16 @@ namespace BWYSDPWeb
                      "~/Scripts/lib/SearchModal.js"
 
                ));
+            //sdp_com.js
+            bundles.Add(new ScriptBundle("~/bundles/sdp_com").Include(
+                     "~/Scripts/lib/sdp_com.js"
+
+               ));
+            //TableModal.js
+            bundles.Add(new ScriptBundle("~/bundles/TableModal").Include(
+                     "~/Scripts/lib/TableModal.js"
+
+               ));
             #endregion
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
