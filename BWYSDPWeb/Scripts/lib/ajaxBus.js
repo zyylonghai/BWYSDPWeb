@@ -6,7 +6,6 @@ $.ajax = function (opt) {
         error: function (XMLHttpRequest, textStatus, errorThrown) { },
         success: function (data, textStatus)
         {
-            debugger
         },
         complete: function (data) { },
         beforeSend: function (xhr, o) { },
@@ -50,8 +49,6 @@ $.ajax = function (opt) {
                 //{
 
                     $.each(data.sdp_data, function (index, o) {
-
-                        debugger
                         $('#' + o.FieldNm).val(o.FieldValue);
                     });
                 //}

@@ -43,7 +43,8 @@ namespace BWYSDPWeb
             bundles.Add(new ScriptBundle("~/bundles/bootstrapTable").Include(
                       "~/Scripts/lib/bootstrap-table.js",
                       "~/Scripts/lib/bootstrap-table-zh-CN.js",
-                      "~/Scripts/lib/colResizable-1.6.js",
+                      //"~/Scripts/lib/bootstrap-table-resizable.js",
+                      "~/Scripts/lib/colResizable-1.6.min.js",
                       "~/Scripts/lib/TableSetting.js"
                       
                 ));

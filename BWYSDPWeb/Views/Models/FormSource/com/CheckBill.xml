@@ -101,15 +101,17 @@
     </LibFormGroup>
   </FormGroups>
   <GridGroups>
-    <LibGridGroup GridGroupID="7f7451ea-57f6-4bb6-8aeb-f1b185815dfb" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1" ControlClassNm="CheckBill" HasSummary="false">
+    <LibGridGroup GridGroupID="7f7451ea-57f6-4bb6-8aeb-f1b185815dfb" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1" ControlClassNm="CheckBill" HasSummary="true">
       <GdGroupFields>
         <LibGridGroupField ID="73a04f8e-ca38-47e4-a4a7-3e8aa764263d">
           <Name>BillNo</Name>
           <FromTableNm>checkDetail</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>检验单号</DisplayName>
+          <ElemType>Text</ElemType>
           <Width>0</Width>
           <HasSort>false</HasSort>
+          <Hidden>true</Hidden>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="46adacf9-24bb-4dd6-8f85-eec13087c55a">
@@ -117,8 +119,10 @@
           <FromTableNm>checkDetail</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>行号</DisplayName>
+          <ElemType>Text</ElemType>
           <Width>0</Width>
           <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="55d04914-06fc-460f-a50c-38d2bf406f5e">
@@ -126,8 +130,10 @@
           <FromTableNm>checkDetail</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>物料硬度</DisplayName>
+          <ElemType>Text</ElemType>
           <Width>0</Width>
           <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="4ea0b100-25dd-4f4a-8fb8-27be1216650a">
@@ -135,8 +141,10 @@
           <FromTableNm>checkDetail</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>耐温度</DisplayName>
+          <ElemType>Text</ElemType>
           <Width>0</Width>
           <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="f1d1223e-eda6-4a30-b0f2-c8ca06885a8b">
@@ -144,8 +152,10 @@
           <FromTableNm>checkDetail</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>形状</DisplayName>
+          <ElemType>Text</ElemType>
           <Width>0</Width>
           <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="78500f9c-049c-4dda-82ab-d1782cd56645">
@@ -153,8 +163,10 @@
           <FromTableNm>checkDetail</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>密度</DisplayName>
+          <ElemType>Text</ElemType>
           <Width>0</Width>
           <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
       </GdGroupFields>

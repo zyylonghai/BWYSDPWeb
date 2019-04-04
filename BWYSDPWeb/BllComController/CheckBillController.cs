@@ -53,6 +53,7 @@ namespace BWYSDPWeb.BllComController
         {
             base.GetGridDataExt(gridid, dt);
             DataRow dr = dt.NewRow();
+            dr["RowNo"] = "1";
             dr["BillNo"] = "T201903160001";
             dr["yingdu"] = "zyy";
             dr["naiwendu"] = "888";

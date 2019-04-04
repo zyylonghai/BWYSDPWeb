@@ -156,7 +156,7 @@
                         <div id="saleordercollapse" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <div id="toolbar" class="btn-group">
-                                    <button type="button" class="btn btn-default" onclick="AddRow('table')">
+                                    <button id="table_sdp_addrow" type="button" class="btn btn-default">
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </button>
                                     <button type="button" class="btn btn-default">
@@ -182,7 +182,7 @@
                         <div id="saleordercollapse2" class="panel-collapse in">
                             <div class="panel-body">
                                 <div id="toolbar2" class="btn-group">
-                                    <button type="button" class="btn btn-default">
+                                    <button id="table2_sdp_addrow"  type="button" class="btn btn-default">
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </button>
                                     <button type="button" class="btn btn-default">
@@ -346,14 +346,15 @@
         var tb = new LibTable("table");
         tb.$table.url = "/SaleOrder/BindTableData?progid=1";
         tb.$table.toolbar = "#toolbar";
+        tb.$table.showFooter = true;
         tb.$table.columns = [{
             checkbox: true,
             visible: true                  //是否显示复选框
-        }, {
+        },{
             field: 'Name',
             title: '姓名1',
             align: 'center',
-            hidden: true,
+            //hidden: true,
             //visible: false,
             //width:200,
             //valign: 'middle',
@@ -362,11 +363,7 @@
             field: 'Mobile',
             title: '手机1',
             align: 'center',
-            sortable: true,
-            hidden: true,
-            footerFormatter: function () {
-                return '汇总'
-            }
+            sortable: true
 
         }, {
             field: 'Email',
@@ -374,12 +371,15 @@
             title: '邮箱',
             sortable: true,
             formatter: function (value, row, index) {
-                return "<div readonly  zyyatr='kkk'>" + value + "</div>";
+                return "<div readonly max='11'>" + value + "</div>";
             }
         }, {
             field: 'Homepage',
             align: 'center',
-            title: '主页'
+            title: '主页',
+            footerFormatter: function () {
+                return '汇总'
+            }
             //formatter: linkFormatter
         }, {
             field: 'Hobby',
@@ -429,8 +429,11 @@
             //formatter: dateFormatter
         }];
         tb.initialTable();
+        $('#table_sdp_addrow').click(function () {
+            tb.AddRow();
+        });
 
-        $('#table').bootstrapTable('hideColumn', 'Name');
+        //$('#table').bootstrapTable('hideColumn', 'Name');
         var tb2 = new LibTable("table2");
         tb2.$table.url = "/SaleOrder/BindTableData?progid=2";
         tb2.$table.toolbar = "#toolbar2";
@@ -512,6 +515,10 @@
             //formatter: dateFormatter
         }];
         tb2.initialTable();
+
+        $('#table2_sdp_addrow').click(function () {
+            tb2.AddRow();
+        });
 
         $('#exampleModal').on('show.bs.modal', function (e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零

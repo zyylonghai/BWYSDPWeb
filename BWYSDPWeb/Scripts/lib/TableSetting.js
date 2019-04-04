@@ -139,6 +139,7 @@ function LibTable(id)
         columns: []
     };
     this.testid = id;
+    this.RowsOfAdd = [];
 }
 
 LibTable.prototype = {
@@ -214,11 +215,17 @@ LibTable.prototype = {
                 //EditViewById(id, 'view');
             },
             onClickCell: function (field, value, row, $element) {
+                var o = $(value);
+                if (o.attr('readonly') == 'readonly')
+                {
+                    return;
+                }
+                var max = o.attr('max');
                 $element.css("background-color", "#c1ffc1");
                 $element.attr('contenteditable', true);
-                var init = $($element).children();
-                var v = init.attr('readonly');
-                var v2 = init.attr('zyyatr');
+                //var init = $($element).children();
+                //var v = init.attr('readonly');
+                //var v2 = init.attr('zyyatr');
                 $element.blur(function () {
                     let index = $element.parent().data('index');
                     let tdValue = $element.html();
@@ -231,10 +238,25 @@ LibTable.prototype = {
 
         $('#' + this.$table.ElemtableID).colResizable({
             liveDrag: true,
-            gripInnerHtml: "",
+            gripInnerHtml: "<div class='grip'></div>",
             draggingClass: "dragging",
+            postbackSafe: true,
+            headerOnly: true,
             resizeMode: 'overflow'//overflow,flex,fit
         });
+    },
+    AddRow: function () {
+        var arrselections = $('#' + this.$table.ElemtableID).bootstrapTable('getSelections');
+        var datas = $('#' + this.$table.ElemtableID).bootstrapTable('getData');
+        var newdr = jQuery.extend(true, {}, datas[0]);
+        $.each(newdr, function (name, value) {
+            newdr[name] = '';
+        });
+        $('#' + this.$table.ElemtableID).bootstrapTable('insertRow', {
+            index: datas.length + 1,
+            row: newdr
+        });
+        this.RowsOfAdd.push(newdr);
     }
 }
 
@@ -253,24 +275,40 @@ function EditViewById(id)
     alert(id);
 }
 
-function AddRow(gridid)
-{
-    var arrselections = $('#' + gridid).bootstrapTable('getSelections');
-    var datas = $('#' + gridid).bootstrapTable('getData');
-    var newdr = jQuery.extend(true, {}, datas[0]);
-    $.each(newdr, function (name, value) {
-        newdr[name] = '';
-    });
-    $('#' + gridid).bootstrapTable('insertRow', {
-        index: datas.length + 1,
-        row: newdr
-    });
-}
+//function AddRow(gridid)
+//{
+//    var arrselections = $('#' + gridid).bootstrapTable('getSelections');
+//    var datas = $('#' + gridid).bootstrapTable('getData');
+//    var newdr = jQuery.extend(true, {}, datas[0]);
+//    $.each(newdr, function (name, value) {
+//        newdr[name] = '';
+//    });
+//    $('#' + gridid).bootstrapTable('insertRow', {
+//        index: datas.length + 1,
+//        row: newdr
+//    });
+//}
+
 
 function DeleteByIds(gridid, index) {
     $('#' + gridid).bootstrapTable('remove', {
         filed: 'Num',
         value: [parseInt(index)]
+    });
+}
+
+function delrow(gridid)
+{
+    var ids = $.map($('#' + gridid).bootstrapTable('getSelections'), function (row) {
+        return row.id;
+    });
+    if(ids.length !=1){
+        alert("请选择一行删除!");
+        return;
+    }
+    $('#' + gridid).bootstrapTable('remove', {
+        field: 'id',
+        values: ids
     });
 }
 var newrows = [];

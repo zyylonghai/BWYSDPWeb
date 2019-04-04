@@ -256,13 +256,13 @@ namespace BWYSDPWeb.Com
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
             //_page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tableModal\" data-gridid=\""+grid.GridGroupName+"\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-controlnm=\""+ControlClassNm+"\"  data-cmd=\"add\">");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"AddRow('"+grid.GridGroupName+"')\">");
+            _page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>新增");
             _page.Append("</button>");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>编辑");
             _page.Append("</button>");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>删除");
             _page.Append("</button>");
             _page.Append("</div>");
@@ -279,6 +279,7 @@ namespace BWYSDPWeb.Com
         private void AddGridColumns(LibGridGroup grid)
         {
             StringBuilder table = new StringBuilder();
+            StringBuilder hidecolumns = new StringBuilder();
             //List<string> valus = null;
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
@@ -304,7 +305,7 @@ namespace BWYSDPWeb.Com
                 //valus.Add(field.Name);
 
                 table.Append(",{");
-                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible:{3}", field.Name, field.DisplayName, field.HasSort ? "true" : "false",field .Hidden ? "false" : "true"));
+                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2}", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
                 if (grid.HasSummary)
                 {
                     //设置汇总行，
@@ -312,10 +313,16 @@ namespace BWYSDPWeb.Com
                     grid.HasSummary = false;
                 }
                 table.Append("}");
+                if (field.Hidden)
+                {
+                    hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', '{1}');", grid.GridGroupName, field.Name));
+                }
             }
             //}
             table.Append("];");
             table.Append(string.Format("{0}.initialTable();", param));
+            table.Append(hidecolumns);
+            table.Append("$('#"+grid .GridGroupName+"_sdp_addrow').click(function () {"+param+".AddRow();});");
             _tableScriptlst.Add(table.ToString());
 
         }

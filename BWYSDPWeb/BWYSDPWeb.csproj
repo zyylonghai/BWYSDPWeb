@@ -1893,6 +1893,7 @@
     <Content Include="Scripts\lib\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\lib\bootstrap-datetimepicker.zh-CN.js" />
     <Content Include="Scripts\lib\bootstrap-table-export.js" />
+    <Content Include="Scripts\lib\bootstrap-table-resizable.js" />
     <Content Include="Scripts\lib\bootstrap-table-zh-CN.js" />
     <Content Include="Scripts\lib\bootstrap-table.js" />
     <Content Include="Scripts\lib\c3.min.js" />
