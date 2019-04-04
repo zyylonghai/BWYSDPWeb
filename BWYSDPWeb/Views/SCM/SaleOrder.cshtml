@@ -384,7 +384,10 @@
         }, {
             field: 'Hobby',
             align: 'center',
-            title: '兴趣爱好'
+            title: '兴趣爱好',
+            formatter: function (value, row, index) {
+                return "<div >" + value + "</div>";
+            }
         }, {
             field: 'Gender',
             align: 'center',

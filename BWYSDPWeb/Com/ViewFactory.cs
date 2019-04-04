@@ -305,7 +305,10 @@ namespace BWYSDPWeb.Com
                 //valus.Add(field.Name);
 
                 table.Append(",{");
-                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2}", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                table.Append("formatter: function (value, row, index) {");
+                table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                table.Append("}");
                 if (grid.HasSummary)
                 {
                     //设置汇总行，

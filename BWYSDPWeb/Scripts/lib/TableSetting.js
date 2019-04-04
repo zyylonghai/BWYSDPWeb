@@ -215,7 +215,9 @@ LibTable.prototype = {
                 //EditViewById(id, 'view');
             },
             onClickCell: function (field, value, row, $element) {
-                var o = $(value);
+                if (field == 'Operate') return;
+                //var o = $(value);
+                var o = $($element).children().first();
                 if (o.attr('readonly') == 'readonly')
                 {
                     return;
@@ -223,12 +225,13 @@ LibTable.prototype = {
                 var max = o.attr('max');
                 $element.css("background-color", "#c1ffc1");
                 $element.attr('contenteditable', true);
+
                 //var init = $($element).children();
                 //var v = init.attr('readonly');
                 //var v2 = init.attr('zyyatr');
                 $element.blur(function () {
                     let index = $element.parent().data('index');
-                    let tdValue = $element.html();
+                    let tdValue = $.trim($element.text());
 
                     saveData(id, index, field, tdValue);
                     $element.css("background-color", "");
