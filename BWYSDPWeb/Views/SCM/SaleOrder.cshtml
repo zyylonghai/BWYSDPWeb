@@ -7,16 +7,16 @@
         <div class="panel-heading">销售订单功能</div>
         <div class="panel-body">
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default" onclick="testajax()"><i class="fa fa-fw fa-save"></i></button>
-                <button type="button" class="btn btn-default"><i class="fa fa-fw fa-cut"></i></button>
+                <button id="sdp_btnsubmit" type="button" class="btn btn-default"><i class="fa fa-fw fa-save"></i></button>
+                <button id="sdp_btnedit" type="button" class="btn btn-default"><i class="fa fa-fw fa-cut"></i></button>
                 <button type="button" class="btn btn-default"><i class="fa fa-fw fa-copy"></i></button>
                 <button type="button" class="btn btn-default"><i class="fa fa-fw fa-clipboard"></i></button>
             </div>
             <br />
             <br />
-            @using(Html.BeginForm("Save", "DataBase",new { sdp_pageid = "SaleOrder" }, FormMethod.Post,new {@class="form-horizontal" }))
+            @using (Html.BeginForm("Save", "DataBase", new { sdp_pageid = "SaleOrder" }, FormMethod.Post, new { @class = "form-horizontal" }))
             {
-            @*<form class="form-horizontal" action="Save" method="post">*@
+                @*<form class="form-horizontal" action="Save" method="post">*@
                 <div class="panel-group" id="keyaccordion">
                     <div class="panel panel-default">
                         <div class="panel-heading" style="background-color:#dff0d8; text-align:left;">
@@ -159,8 +159,8 @@
                                     <button id="table_sdp_addrow" type="button" class="btn btn-default">
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </button>
-                                    <button type="button" class="btn btn-default">
-                                        <i class="glyphicon glyphicon-heart"></i>
+                                    <button id="table_sdp_editrow" type="button" class="btn btn-default">
+                                        <i class="glyphicon glyphicon-pencil"></i>
                                     </button>
                                     <button type="button" class="btn btn-default">
                                         <i class="glyphicon glyphicon-trash"></i>
@@ -182,11 +182,11 @@
                         <div id="saleordercollapse2" class="panel-collapse in">
                             <div class="panel-body">
                                 <div id="toolbar2" class="btn-group">
-                                    <button id="table2_sdp_addrow"  type="button" class="btn btn-default">
+                                    <button id="table2_sdp_addrow" type="button" class="btn btn-default">
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </button>
                                     <button type="button" class="btn btn-default">
-                                        <i class="glyphicon glyphicon-heart"></i>
+                                        <i class="glyphicon glyphicon-pencil"></i>
                                     </button>
                                     <button type="button" class="btn btn-default">
                                         <i class="glyphicon glyphicon-trash"></i>
@@ -198,24 +198,24 @@
                     </div>
                 </div>
                 @*<table data-toggle="table" data-url="data1.json">
-                        <thead>
-                            <tr>
-                                <th data-field="id">Item ID</th>
-                                <th data-field="name">Item Name</th>
-                                <th data-field="price">Item Price</th>
-                            </tr>
-                        </thead>
-                    </table>*@
+                <thead>
+                    <tr>
+                        <th data-field="id">Item ID</th>
+                        <th data-field="name">Item Name</th>
+                        <th data-field="price">Item Price</th>
+                    </tr>
+                </thead>
+            </table>*@
                 @*<div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox">
-                                    Remember me
-                                </label>
-                            </div>
-                        </div>
-                    </div>*@
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox">
+                            Remember me
+                        </label>
+                    </div>
+                </div>
+            </div>*@
                 <div class="form-group" style="margin-bottom:0">
                     <div class="col-sm-offset-2 col-sm-10 text-right">
                         <button type="submit" class="btn btn-default">提交</button>
@@ -224,12 +224,12 @@
                     </div>
                 </div>
 
-            @*</form>*@
+                @*</form>*@
             }
             @*<div class="form-group text-right" style="margin-top:20px">
-                    <button type="submit" class="btn btn-default">提交</button>
-                    <button type="submit" class="btn btn-primary">暂存</button>
-                </div>*@
+            <button type="submit" class="btn btn-default">提交</button>
+            <button type="submit" class="btn btn-primary">暂存</button>
+        </div>*@
 
             @*模态框*@
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -278,8 +278,8 @@
                                                 <option value="2">大于</option>
                                                 <option value="3">小于</option>
                                             </select>
-                                            <input type="text" class="form-control"  name="input1"/>
-                                            <input type="text" class="form-control" name="input2"/>
+                                            <input type="text" class="form-control" name="input1" />
+                                            <input type="text" class="form-control" name="input2" />
                                             <select class="form-control" name="fuhao1">
                                                 <option value="1">and</option>
                                                 <option value="2">or</option>
@@ -334,6 +334,13 @@
                 </div>
             </div>
 
+            <div id="sdp_errorinfo" class="container navbar-fixed-top">
+                <div  class="alert alert-danger">
+                    <a class="close" href="#" onclick="closemsg()">&times;</a>
+                    <p>显示了错误信息提示框</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -342,12 +349,13 @@
         $('#bwysdp_progid').val("SaleOrder");
         $('#bwysdp_dsid').val("SaleOrder");
         $('#saleordercollapse').collapse('show');
-
-        var tb = new LibTable("table");
-        tb.$table.url = "/SaleOrder/BindTableData?progid=1";
-        tb.$table.toolbar = "#toolbar";
-        tb.$table.showFooter = true;
-        tb.$table.columns = [{
+        $('#sdp_errorinfo').hide();
+        //var aa = ''; if (aa.length)
+        var tb1 = new LibTable("table");
+        tb1.$table.url = "/SaleOrder/BindTableData?progid=1";
+        tb1.$table.toolbar = "#toolbar";
+        tb1.$table.showFooter = true;
+        tb1.$table.columns = [{
             checkbox: true,
             visible: true                  //是否显示复选框
         },{
@@ -431,10 +439,28 @@
             title: '出生日期'
             //formatter: dateFormatter
         }];
-        tb.initialTable();
+        tb1.initialTable();
         $('#table_sdp_addrow').click(function () {
-            tb.AddRow();
+            tb1.AddRow();
         });
+
+        $('#table_sdp_editrow').click(function () {
+            $('#sdp_errorinfo').show();
+
+            //tb1.EditRow('table_sdp_editrow');
+        });
+          //$('#table_sdp_editrow').popover({
+        //    trigger: 'click',//设置如何触发提示条：click | hover | focus | manual。可以传入多个触发方式，以空格分隔
+        //    placement: 'top', //top, bottom, left or right
+        //    title: '警告',
+        //    html: 'true',
+        //    container:'body',
+        //    content: function () {
+        //        return '测试警告';
+        //    }
+
+        //});
+        var rws = tb1.RowsOfAdd;
 
         //$('#table').bootstrapTable('hideColumn', 'Name');
         var tb2 = new LibTable("table2");
@@ -521,6 +547,10 @@
 
         $('#table2_sdp_addrow').click(function () {
             tb2.AddRow();
+        });
+
+        $('#sdp_btnsubmit').click(function () {
+            var rws = tb1.RowsOfAdd;
         });
 
         $('#exampleModal').on('show.bs.modal', function (e) {
@@ -634,6 +664,8 @@
         $('#myModal').on('show.bs.modal', function (e) {
             // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
             $(this).css('display', 'block');
+            var zindex = $('#exampleModal').css("z-index");
+            $(this).css('z-index', parseInt(zindex) + 2);
             if ($(window).width() > 780) {
                 $('#myModal .modal-dialog').width($(window).width() - 400);
             }
@@ -755,5 +787,9 @@
             error: function () {
             }
         });
+    }
+
+    function closemsg() {
+        $('#sdp_errorinfo').hide();
     }
 </script>

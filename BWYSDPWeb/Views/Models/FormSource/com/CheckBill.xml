@@ -112,6 +112,7 @@
           <Width>0</Width>
           <HasSort>false</HasSort>
           <Hidden>true</Hidden>
+          <ReadOnly>false</ReadOnly>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="46adacf9-24bb-4dd6-8f85-eec13087c55a">
@@ -123,6 +124,7 @@
           <Width>0</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
+          <ReadOnly>true</ReadOnly>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="55d04914-06fc-460f-a50c-38d2bf406f5e">
@@ -134,6 +136,7 @@
           <Width>0</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="4ea0b100-25dd-4f4a-8fb8-27be1216650a">
@@ -145,6 +148,7 @@
           <Width>0</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="f1d1223e-eda6-4a30-b0f2-c8ca06885a8b">
@@ -156,6 +160,7 @@
           <Width>0</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
         <LibGridGroupField ID="78500f9c-049c-4dda-82ab-d1782cd56645">
@@ -167,6 +172,131 @@
           <Width>0</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+      </GdGroupFields>
+    </LibGridGroup>
+    <LibGridGroup GridGroupID="6736a860-8768-4173-b172-6ab25980cb8f" GridGroupName="GridGroup2" GridGroupDisplayNm="页面表格组2" ControlClassNm="" HasSummary="false">
+      <GdGroupFields>
+        <LibGridGroupField ID="1f46736b-7218-4e62-ade5-346da95cf298">
+          <Name>BillNo</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>检验单号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="e82835a9-4af5-40a5-8745-4fbe4cfb83a7">
+          <Name>RowNo</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>行号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="fdfbc63a-83d9-4c7b-b0fe-2042b996afb4">
+          <Name>yingdu</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>物料硬度</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="3f04168a-1555-48e7-a360-230f3eaf0e38">
+          <Name>naiwendu</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>耐温度</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="1320bdac-00c5-4eeb-baf8-6b8828fc21ad">
+          <Name>xingzhuang</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>形状</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="8e2ad477-1d93-4b27-9013-b6a6bcccd258">
+          <Name>midu</Name>
+          <FromTableNm>checkDetail</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>密度</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="160bd113-b43e-4da9-ab1a-cd9f51987604">
+          <Name>BillNo</Name>
+          <FromTableNm>checkDetail_TableStruct2</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>检验单号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="03cec7e3-c0f1-4c31-a94c-dae150d0b1c5">
+          <Name>FromRowNo</Name>
+          <FromTableNm>checkDetail_TableStruct2</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>行号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="730b08be-1a53-4e1f-bbbe-96f83b197569">
+          <Name>RowNo</Name>
+          <FromTableNm>checkDetail_TableStruct2</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>行号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="284c39bb-5c13-4fbe-a4ac-92adc39aad9b">
+          <Name>testfield</Name>
+          <FromTableNm>checkDetail_TableStruct2</FromTableNm>
+          <FromDefTableNm>checkDetail</FromDefTableNm>
+          <DisplayName>测试字段</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>0</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
       </GdGroupFields>

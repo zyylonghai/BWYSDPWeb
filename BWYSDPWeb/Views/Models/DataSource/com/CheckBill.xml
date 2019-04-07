@@ -250,6 +250,8 @@
           <Ignore>true</Ignore>
           <TableIndex>0</TableIndex>
           <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey />
           <Fields>
             <LibField>
               <ID>80b4b3ca-33e2-4469-b864-523b3422744d</ID>
@@ -262,6 +264,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>b7d04eac-0587-4631-a8ee-bd7169d29289</ID>
@@ -274,6 +277,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>4af0ce0b-1bf7-42ce-ad98-36c7c8748592</ID>
@@ -286,6 +290,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>0a5605e3-c030-4738-aeb9-053aef1ca456</ID>
@@ -298,6 +303,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>29050725-73b8-4152-8c3c-f29660389cd1</ID>
@@ -310,12 +316,71 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>21501bb7-2ee2-44af-9295-3902625927d2</ID>
               <Name>midu</Name>
               <AliasName />
               <DisplayName>密度</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <Items />
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+        <LibDataTableStruct ID="f9eab9b1-45f3-41b1-92ea-aec574cb5a27">
+          <Name>checkDetail_TableStruct2</Name>
+          <DisplayName>checkDetail_TableStruct2</DisplayName>
+          <Ignore>true</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <Fields>
+            <LibField>
+              <ID>6e76d8cc-425c-426b-b357-948a6ac13037</ID>
+              <Name>BillNo</Name>
+              <AliasName />
+              <DisplayName>检验单号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>67ada309-9fbc-4912-8fdb-6cb7b7aa5534</ID>
+              <Name>FromRowNo</Name>
+              <AliasName />
+              <DisplayName>行号</DisplayName>
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>5086233f-415b-42d2-8e1b-91f22cbba4ab</ID>
+              <Name>RowNo</Name>
+              <AliasName />
+              <DisplayName>行号</DisplayName>
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+            </LibField>
+            <LibField>
+              <ID>1666d15b-656c-4670-bdcc-4af83a278dc4</ID>
+              <Name>testfield</Name>
+              <AliasName />
+              <DisplayName>测试字段</DisplayName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>0</FieldLength>

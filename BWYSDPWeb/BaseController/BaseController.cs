@@ -377,7 +377,7 @@ namespace BWYSDPWeb.BaseController
                                         newrow = tb.NewRow();
                                         tb.Rows.Add(newrow);
                                         rowindex = (int)dr[colrowid];
-                                        switch ((int)dr[colaction])
+                                        switch ((short)dr[colaction])
                                         {
                                             case 0: //新增状态
                                                 break;

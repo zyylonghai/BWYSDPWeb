@@ -140,12 +140,18 @@ function LibTable(id)
     };
     this.testid = id;
     this.RowsOfAdd = [];
+    this.RowsOfEdit = [];
+    this.RowsOfRemov = [];
 }
 
 LibTable.prototype = {
     constructor: LibTable,
     initialTable: function () {
         var id = this.$table.ElemtableID;
+        var tbobj = this;
+        //var _addrows = this.RowsOfAdd;
+        //var _editrows = this.RowsOfEdit;
+        //var _removrows = this.RowsOfRemov;
         if (this.$table.hasoperation) {
 
             this.$table.columns.push({
@@ -205,7 +211,29 @@ LibTable.prototype = {
                 return temp;
             },
             columns: this.$table.columns,
-            onLoadSuccess: function () {
+            onPreBody: function (data) {
+
+            },
+            onPostBody: function (data) {
+
+            },
+            onLoadSuccess: function (data) {
+                //_addrows.splice(0, _addrows.length);
+                //_editrows.splice(0, _editrows.length);
+                tbobj.RowsOfAdd.splice(0, tbobj.RowsOfAdd.length);
+                tbobj.RowsOfEdit.splice(0, tbobj.RowsOfEdit.length);
+                if (data.total>0 && data.rows.length > 0) {
+                    $.each(data.rows, function (index, row) {
+                        eval("row.sdp_rowid=" + index+1 + "");
+                        saveData(id, index, "sdp_rowid", index + 1);
+                        //$('#' + id).bootstrapTable('updateCell', {
+                        //    index: index,       //行索引
+                        //    field: "sdp_rowid",       //列名
+                        //    value: index        //cell值
+                        //});
+                    });
+
+                }
             },
             onLoadError: function () {
                 showTips("数据加载失败！");
@@ -215,14 +243,30 @@ LibTable.prototype = {
                 //EditViewById(id, 'view');
             },
             onClickCell: function (field, value, row, $element) {
-                if (field == 'Operate') return;
+                let isedit = false;
+                $.each(tbobj.RowsOfAdd, function (index, rw) {
+                    if (rw.sdp_rowid == row.sdp_rowid) {
+                        isedit = true;
+                        return false;
+                    }
+                });
+                if (!isedit) {
+                    $.each(tbobj.RowsOfEdit, function (index, rw) {
+                        if (rw.sdp_rowid == row.sdp_rowid) {
+                            isedit = true;
+                            return false;
+                        }
+                    });
+                }
+                if (!isedit) return;
+                if (field == '0' || field == 'Operate' || field == 'sdp_rowid') return;
                 //var o = $(value);
                 var o = $($element).children().first();
                 if (o.attr('readonly') == 'readonly')
                 {
                     return;
                 }
-                var max = o.attr('max');
+                //var max = o.attr('max');
                 $element.css("background-color", "#c1ffc1");
                 $element.attr('contenteditable', true);
 
@@ -239,28 +283,88 @@ LibTable.prototype = {
             }
         });
 
-        $('#' + this.$table.ElemtableID).colResizable({
-            liveDrag: true,
-            gripInnerHtml: "<div class='grip'></div>",
-            draggingClass: "dragging",
-            postbackSafe: true,
-            headerOnly: true,
-            resizeMode: 'overflow'//overflow,flex,fit
-        });
+        //$('#' + this.$table.ElemtableID).colResizable({
+        //    liveDrag: true,
+        //    gripInnerHtml: "<div class='grip'></div>",
+        //    draggingClass: "dragging",
+        //    postbackSafe: true,
+        //    headerOnly: true,
+        //    resizeMode: 'overflow'//overflow,flex,fit
+        //});
     },
     AddRow: function () {
-        var arrselections = $('#' + this.$table.ElemtableID).bootstrapTable('getSelections');
+        //var arrselections = $('#' + this.$table.ElemtableID).bootstrapTable('getSelections');
         var datas = $('#' + this.$table.ElemtableID).bootstrapTable('getData');
-        var newdr = jQuery.extend(true, {}, datas[0]);
+        let newdr;
+        let removcout = this.RowsOfRemov.length;
+        if (datas.length == 0) {
+            newdr = jQuery.extend(true, {}, datas[0]);
+            eval("newdr.sdp_rowid=0");
+        }
+        else
+            newdr = jQuery.extend(true, {}, datas[datas.length - 1]);
         $.each(newdr, function (name, value) {
-            newdr[name] = '';
+            if (name == "sdp_rowid") {
+                newdr[name] = datas.length + removcout + 1;
+            }
+            else
+                newdr[name] = '';
         });
         $('#' + this.$table.ElemtableID).bootstrapTable('insertRow', {
             index: datas.length + 1,
             row: newdr
         });
         this.RowsOfAdd.push(newdr);
+    },
+    EditRow: function () {
+        let isexist = false;
+        var seletdr = $('#' + this.$table.ElemtableID).bootstrapTable('getSelections');
+        if (seletdr == null || seletdr.length == 0) {
+            ShowMsg('未选择要编辑的行', 'error');
+            return;
+        }
+        if (seletdr.length > 1) {
+            ShowMsg('只能编辑一行', 'error');
+            return;
+        }
+        $.each(this.RowsOfAdd, function (index, rw) {
+            if (rw.sdp_rowid == seletdr[0].sdp_rowid) {
+                isexist = true;
+                return false;
+            }
+        });
+        $.each(this.RowsOfEdit, function (index, row) {
+            if (row.sdp_rowid == seletdr[0].sdp_rowid) {
+                isexist = true;
+                return false;
+            }
+        });
+        if (!isexist) {
+            this.RowsOfEdit.push(seletdr[0]);
+        }
+
+    },
+    DeleteRow: function () {
+        let gridid = this.$table.ElemtableID;
+        let vals = [];
+        let thisobj = this;
+        //let removrows = this.RowsOfRemov;
+        let seldr = $('#' + gridid).bootstrapTable('getSelections');
+        if (seldr == null || seldr.length == 0) {
+            ShowMsg('未选择要删除的行', 'error');
+            return;
+        }
+        $.each(seldr, function (index, row) {
+            vals.push(row.sdp_rowid);
+            thisobj.RowsOfRemov.push(row);
+        });
+        $('#' + gridid).bootstrapTable('remove', {
+            field: 'sdp_rowid',
+            values: vals
+        });
+
     }
+    
 }
 
 //操作栏的格式化

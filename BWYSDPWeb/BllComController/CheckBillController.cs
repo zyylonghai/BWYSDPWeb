@@ -44,6 +44,14 @@ namespace BWYSDPWeb.BllComController
             row["check1"] = "部位2";
             row["check2"] = "不为2";
             this.LibTables[0].Tables[1].Rows.Add(row);
+
+            row = this.LibTables[1].Tables[0].NewRow();
+            row["BillNo"] = "T201903160001";
+            row["RowNo"] = 1;
+            row["yingdu"] = "jjjj";
+            row["naiwendu"] = "dsfsd";
+            row["xingzhuang"] = "dlkfj";
+            this.LibTables[1].Tables[0].Rows.Add(row);
             //row["check1"] = "jjjjjjjjj";
             //string str = JsonConvert.SerializeObject(this.LibTables[0].Tables[1]);
             //DataTable dr2 = JsonConvert.DeserializeObject<DataTable>(str);
@@ -53,12 +61,12 @@ namespace BWYSDPWeb.BllComController
         {
             base.GetGridDataExt(gridid, dt);
             DataRow dr = dt.NewRow();
-            dr["RowNo"] = "1";
-            dr["BillNo"] = "T201903160001";
-            dr["yingdu"] = "zyy";
-            dr["naiwendu"] = "888";
-            dr["xingzhuang"] = "skdjf";
-            dr["midu"]="kdkkdkdkk";
+            //dr["RowNo"] = "1";
+            //dr["BillNo"] = "T201903160001";
+            //dr["yingdu"] = "zyy";
+            //dr["naiwendu"] = "888";
+            //dr["xingzhuang"] = "skdjf";
+            //dr["midu"] = "kdkkdkdkk";
             dt.Rows.Add(dr);
         }
 

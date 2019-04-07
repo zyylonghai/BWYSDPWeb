@@ -61,7 +61,7 @@ namespace BWYSDPWeb.Com
                     jsandcss.Append("@Styles.Render(\"~/Content/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
-                    jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
+                    //jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/TableModal\")");
                 }
                 if (_dateElemlst.Count > 0) //加载日期控件的js，css
@@ -94,7 +94,7 @@ namespace BWYSDPWeb.Com
         {
             _page.Append("<div class=\"panel-body\">");
             _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i></button>");
+            _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i></button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-cut\"></i></button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i></button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-clipboard\"></i></button>");
@@ -292,6 +292,10 @@ namespace BWYSDPWeb.Com
             }
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
+            #region sdp_rowid 列
+            table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: true}");
+            //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
+            #endregion
             //if (grid.GdGroupFields != null)
             //{
             //bool flag = false;//用于标识是否已设置了 汇总行。
@@ -325,7 +329,13 @@ namespace BWYSDPWeb.Com
             table.Append("];");
             table.Append(string.Format("{0}.initialTable();", param));
             table.Append(hidecolumns);
+
+            #region toobar 按钮事件
             table.Append("$('#"+grid .GridGroupName+"_sdp_addrow').click(function () {"+param+".AddRow();});");
+            table.Append("$('#" + grid.GridGroupName + "_sdp_editrow').click(function () {" + param + ".EditRow();});");
+            table.Append("$('#" + grid.GridGroupName + "_sdp_deletrow').click(function () {" + param + ".DeleteRow();});");
+            #endregion
+
             _tableScriptlst.Add(table.ToString());
 
         }
@@ -448,6 +458,24 @@ namespace BWYSDPWeb.Com
                 _script.Append(script);
                 _script.AppendLine();
             }
+            #endregion
+
+            #region 页面按钮组 事件绑定
+            string tbs = "[";
+            for (int i = 1; i <=_tableScriptlst.Count; i++)
+            {
+                if (i == 1)
+                { tbs += string.Format("tb{0}", i); continue; }
+                tbs += string.Format(",tb{0}",i);
+            }
+            tbs += "]";
+            _script.Append("$('#bwysdp_btnsave').click(function (){" +
+                "var objs="+tbs+ "; " +
+                "var datastr='['; " +
+                "$.each(objs,function(index,o){if(datastr.length==1){ datastr+=Serialobj(o);}else{datastr+=\",\"+Serialobj(o);}});" +
+                "datastr+=']';" +
+                "Save(datastr);" +
+                "});");
             #endregion
 
             _script.Append("})");

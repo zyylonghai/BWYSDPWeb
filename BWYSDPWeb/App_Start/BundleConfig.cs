@@ -29,7 +29,8 @@ namespace BWYSDPWeb
                       //"~/Scripts/lib/bootstrap.min.js",
                       "~/Scripts/lib/clearmin.min.js",
                       "~/Scripts/lib/home.js",
-                      "~/Scripts/lib/ajaxBus.js"
+                      "~/Scripts/lib/ajaxBus.js",
+                      "~/Scripts/lib/sdp_com.js"
                       //"~/Scripts/lib/bootstrap-table.js",
                       //"~/Scripts/lib/bootstrap-table-zh-CN.js",
                       //"~/Scripts/lib/colResizable-1.6.js",
@@ -44,7 +45,7 @@ namespace BWYSDPWeb
                       "~/Scripts/lib/bootstrap-table.js",
                       "~/Scripts/lib/bootstrap-table-zh-CN.js",
                       //"~/Scripts/lib/bootstrap-table-resizable.js",
-                      "~/Scripts/lib/colResizable-1.6.min.js",
+                      //"~/Scripts/lib/colResizable-1.6.min.js",
                       "~/Scripts/lib/TableSetting.js"
                       
                 ));
@@ -64,10 +65,10 @@ namespace BWYSDPWeb
 
                ));
             //sdp_com.js
-            bundles.Add(new ScriptBundle("~/bundles/sdp_com").Include(
-                     "~/Scripts/lib/sdp_com.js"
+            //bundles.Add(new ScriptBundle("~/bundles/sdp_com").Include(
+            //         "~/Scripts/lib/sdp_com.js"
 
-               ));
+            //   ));
             //TableModal.js
             bundles.Add(new ScriptBundle("~/bundles/TableModal").Include(
                      "~/Scripts/lib/TableModal.js"

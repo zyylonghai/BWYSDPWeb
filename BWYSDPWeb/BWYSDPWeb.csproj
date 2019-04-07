@@ -171,6 +171,7 @@
     </Compile>
     <Compile Include="Models\Menu.cs" />
     <Compile Include="Models\PageInfo.cs" />
+    <Compile Include="Models\TableObj.cs" />
     <Compile Include="Models\TestInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -1914,6 +1915,7 @@
     <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.woff" />
     <Content Include="Scripts\lib\laydate\theme\default\laydate.css" />
+    <Content Include="Scripts\lib\MsgDialog.js" />
     <Content Include="Scripts\lib\notepad.js" />
     <Content Include="Scripts\lib\popovers-tooltips.js" />
     <Content Include="Scripts\lib\sdp_com.js" />

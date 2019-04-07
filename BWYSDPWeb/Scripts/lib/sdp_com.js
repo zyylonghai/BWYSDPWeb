@@ -1,4 +1,14 @@
-﻿function drag(id) {
+﻿$(function () {
+    $('body').append("<div id=\"sdp_errorinfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-danger\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_error_content\">显示了错误信息提示框</p></div></div>");
+    //$('body').append("<div  class=\"alert alert-danger\">");
+    //$('body').append("<a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a>");
+    //$('body').append("<p>显示了错误信息提示框</p>");
+    //$('body').append("</div>");
+    //$('body').append("</div>");
+
+    $('#sdp_errorinfo').hide();
+});
+function drag(id) {
     var x1, y1, x2, y2, offleft, offtop, isclik = 0;
     var wmax = $("#" + id).find('.modal-dialog').width();
     var hmax = $("#" + id).find('.modal-dialog').height();
@@ -28,5 +38,42 @@
 
     }).mouseup(function () {
         isclik = 0;
+    });
+}
+
+function ShowMsg(msg, msgtype) {
+    if (msgtype == "error") {
+        $('#sdp_error_content').text(msg);
+        $('#sdp_errorinfo').show();
+    }
+    else if (msgtype == "warning") {
+
+    }
+}
+
+function closemsg() {
+    $('#sdp_errorinfo').hide();
+}
+
+function Serialobj(obj) {
+    var o = { grid:obj.testid, addrows:obj.RowsOfAdd, editRows:obj.RowsOfEdit };
+    return JSON.stringify(o);
+}
+
+function Save(datastr) {
+    $.ajax({
+        url: "/DataBase/Save",
+        data: $('form').serialize() + "&datastr=" + datastr + "",
+        type: 'Post',
+        async: false,
+        dataType: "json",
+        success: function (obj)
+        {
+            alert(obj);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown)
+        {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
     });
 }

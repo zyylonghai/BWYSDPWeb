@@ -2,6 +2,7 @@
 using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
@@ -257,6 +258,23 @@ namespace BWYSDPWeb.BaseController
 
         public ActionResult Save()
         {
+            #region 处理前端传回的数据
+            var formdata = this.Request.Form;
+            List<TableObj> tables = JsonConvert.DeserializeObject<List<TableObj>>(formdata["datastr"]);
+            foreach (TableObj obj in tables)
+            {
+                foreach (var jarray in obj.addrows)
+                {
+                    JObject jobj = jarray as JObject;
+                    foreach (JToken jkon in jobj.AsEnumerable<JToken>())
+                    {
+                        string name = ((JProperty)(jkon)).Name;
+                        string value = ((JProperty)(jkon)).Value.ToString();
+                    }
+                
+                }
+            }
+            #endregion
             BeforeSave();
             this.LibTables[0].Tables[0].Rows[0].AcceptChanges();
             this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
