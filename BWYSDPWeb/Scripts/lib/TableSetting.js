@@ -222,6 +222,7 @@ LibTable.prototype = {
                 //_editrows.splice(0, _editrows.length);
                 tbobj.RowsOfAdd.splice(0, tbobj.RowsOfAdd.length);
                 tbobj.RowsOfEdit.splice(0, tbobj.RowsOfEdit.length);
+                tbobj.RowsOfRemov.splice(0, tbobj.RowsOfRemov.length);
                 if (data.total>0 && data.rows.length > 0) {
                     $.each(data.rows, function (index, row) {
                         eval("row.sdp_rowid=" + index+1 + "");
@@ -347,6 +348,7 @@ LibTable.prototype = {
     DeleteRow: function () {
         let gridid = this.$table.ElemtableID;
         let vals = [];
+        //let addindexs = [], editindexs = [];
         let thisobj = this;
         //let removrows = this.RowsOfRemov;
         let seldr = $('#' + gridid).bootstrapTable('getSelections');
@@ -357,12 +359,32 @@ LibTable.prototype = {
         $.each(seldr, function (index, row) {
             vals.push(row.sdp_rowid);
             thisobj.RowsOfRemov.push(row);
+            $.each(thisobj.RowsOfAdd, function (n, dr) {
+                if (dr.sdp_rowid == row.sdp_rowid)
+                {
+                    //addindexs.push(n);
+                    thisobj.RowsOfAdd.splice(n, 1);
+                    return false;
+                }
+            });
+            $.each(thisobj.RowsOfEdit, function (i, r) {
+                if (r.sdp_rowid == row.sdp_rowid) {
+                    //editindexs.push(i);
+                    thisobj.RowsOfEdit.splice(i, 1);
+                    return false;
+                }
+            });
         });
         $('#' + gridid).bootstrapTable('remove', {
             field: 'sdp_rowid',
             values: vals
         });
-
+        //$.each(addindexs, function (index) {
+        //    thisobj.RowsOfAdd.splice(index, 1);
+        //});
+        //$.each(editindexs, function (index) {
+        //    thisobj.RowsOfEdit.splice(index, 1);
+        //});
     }
     
 }

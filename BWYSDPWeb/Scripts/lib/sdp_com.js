@@ -56,7 +56,7 @@ function closemsg() {
 }
 
 function Serialobj(obj) {
-    var o = { grid:obj.testid, addrows:obj.RowsOfAdd, editRows:obj.RowsOfEdit };
+    var o = { grid: obj.testid, addrows: obj.RowsOfAdd, editRows: obj.RowsOfEdit, removrows: obj.RowsOfRemov };
     return JSON.stringify(o);
 }
 

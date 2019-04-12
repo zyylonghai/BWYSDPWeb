@@ -14,6 +14,7 @@ namespace BWYSDPWeb.Com
         private StringBuilder _script = null;
         private Dictionary<string, bool> _panelgroupdic = null;
         private Dictionary<string, bool> _gridGroupdic = null;
+        private Dictionary<string, string> _tbmodalFormfields = null;
         private List<string> _dateElemlst = null;
         private List<string> _tableScriptlst = null;
         private string _progid = null;
@@ -37,6 +38,7 @@ namespace BWYSDPWeb.Com
             _gridGroupdic = new Dictionary<string, bool>();
             _tableScriptlst = new List<string>();
             Formfields = new Dictionary<string, List<string>>();
+            _tbmodalFormfields = new Dictionary<string, string>();
             //_fomGroupdic = new Dictionary<string, bool>();
         }
         public ViewFactory(string progid)
@@ -255,8 +257,8 @@ namespace BWYSDPWeb.Com
 
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
-            //_page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tableModal\" data-gridid=\""+grid.GridGroupName+"\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-controlnm=\""+ControlClassNm+"\"  data-cmd=\"add\">");
-            _page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"add\">");
+            //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>新增");
             _page.Append("</button>");
             _page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
@@ -280,6 +282,8 @@ namespace BWYSDPWeb.Com
         {
             StringBuilder table = new StringBuilder();
             StringBuilder hidecolumns = new StringBuilder();
+            StringBuilder tbformfield = new StringBuilder();
+            int colcout = 0;
             //List<string> valus = null;
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
@@ -324,7 +328,52 @@ namespace BWYSDPWeb.Com
                 {
                     hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', '{1}');", grid.GridGroupName, field.Name));
                 }
+
+                #region 模态框 的控件
+                if (colcout % 9 == 0)
+                {
+                    if (colcout != 0)
+                    {
+                        tbformfield.Append("</div>");
+                    }
+                    tbformfield.Append("<div class=\"form-group\">");
+                }
+                string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
+                string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+                tbformfield.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName + "</label>");
+                tbformfield.Append("<div class=\"col-sm-" + field.Width + "\">");
+                switch (field.ElemType)
+                {
+                    case ElementType.Date:
+                        _dateElemlst.Add(id);
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        break;
+                    case ElementType.DateTime:
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        break;
+                    case ElementType.Select:
+                        break;
+                    case ElementType.Text:
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        break;
+                    case ElementType.Search:
+                        tbformfield.Append("<div class=\"input-group\">");
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        tbformfield.Append("<span class=\"input-group-btn\">");
+                        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-whatever=\"" + field.DisplayName + "\">");
+                        tbformfield.Append("<i class=\"glyphicon glyphicon-search\"></i>");
+                        tbformfield.Append("</button>");
+                        tbformfield.Append("</span>");
+                        tbformfield.Append("</div>");
+                        this._hasSearchModal = true;
+                        break;
+                }
+                //_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
+                tbformfield.Append("</div>");//结束 col-sm
+                colcout += field.Width + 1;
+                #endregion
             }
+            tbformfield.Append("</div>");// 结束 form-group
             //}
             table.Append("];");
             table.Append(string.Format("{0}.initialTable();", param));
@@ -337,6 +386,7 @@ namespace BWYSDPWeb.Com
             #endregion
 
             _tableScriptlst.Add(table.ToString());
+            _tbmodalFormfields.Add(string.Format("GridGroup_{0}", grid.GridGroupName), tbformfield.ToString());
 
         }
 
@@ -398,28 +448,31 @@ namespace BWYSDPWeb.Com
             #region 添加表格模态框
             if (this._gridGroupdic.Count > 0)
             {
-                //用于表格新增，编辑等操作的模态框
-                _page.Append(" <div class=\"modal fade\" id=\"sdp_tableModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"sdp_tableModalLabel\">");
-                _page.Append("<div class=\"modal-dialog\" role=\"document\">");
-                _page.Append("<div class=\"modal-content\">");
-                _page.Append("<div class=\"modal-header\" style=\"background-color:#dff0d8\">");
-                _page.Append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">");
-                _page.Append("<span aria-hidden=\"true\">×</span>");
-                _page.Append("</button>");
-                _page.Append("<h4 class=\"modal-title\" id=\"sdp_tableModalLabel\">来源主数据</h4>");
-                _page.Append("</div>");
-                _page.Append("<div class=\"modal-body\">");
-                _page.Append("<form id=\"tbmodal_form\">");
-
-                _page.Append("</form>");
-                _page.Append("</div>");
-                _page.Append("<div class=\"modal-footer\">");
-                _page.Append("<button type=\"button\" class=\"btn btn-primary\">确定</button>");
-                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>");
-                _page.Append("</div>");
-                _page.Append("</div>");
-                _page.Append("</div>");
-                _page.Append("</div>");
+                foreach (KeyValuePair<string, bool> keyval in this._gridGroupdic)
+                {
+                    //用于表格新增，编辑等操作的模态框
+                    _page.Append(" <div class=\"modal fade\" id=\"sdp_tbmdl_"+keyval.Key+ "\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"sdp_tbmdlbody_"+ keyval.Key + "\">");
+                    _page.Append("<div class=\"modal-dialog\" role=\"document\">");
+                    _page.Append("<div class=\"modal-content\">");
+                    _page.Append("<div class=\"modal-header\" style=\"background-color:#dff0d8\">");
+                    _page.Append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">");
+                    _page.Append("<span aria-hidden=\"true\">×</span>");
+                    _page.Append("</button>");
+                    _page.Append("<h4 class=\"modal-title\" id=\"sdp_tbmdlbody_" + keyval.Key + "\">来源主数据</h4>");
+                    _page.Append("</div>");
+                    _page.Append("<div class=\"modal-body\">");
+                    _page.Append("<form id=\"sdp_"+keyval .Key+"_form\">");
+                    _page.Append(_tbmodalFormfields[keyval.Key]);
+                    _page.Append("</form>");
+                    _page.Append("</div>");
+                    _page.Append("<div class=\"modal-footer\">");
+                    _page.Append("<button type=\"button\" class=\"btn btn-primary\">确定</button>");
+                    _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>");
+                    _page.Append("</div>");
+                    _page.Append("</div>");
+                    _page.Append("</div>");
+                    _page.Append("</div>");
+                }
             }
             #endregion
             _page.Append("</div>");//panel - body

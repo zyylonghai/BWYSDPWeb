@@ -109,7 +109,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>检验单号</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>true</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -121,7 +121,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>行号</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>true</ReadOnly>
@@ -133,7 +133,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>物料硬度</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -145,7 +145,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>耐温度</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -157,7 +157,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>形状</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -169,7 +169,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>密度</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -185,7 +185,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>检验单号</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -197,7 +197,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>行号</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -209,7 +209,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>物料硬度</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -221,7 +221,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>耐温度</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -233,7 +233,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>形状</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -245,7 +245,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>密度</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -257,7 +257,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>检验单号</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -269,7 +269,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>行号</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -281,7 +281,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>行号</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
@@ -293,7 +293,7 @@
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>测试字段</DisplayName>
           <ElemType>Text</ElemType>
-          <Width>0</Width>
+          <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
           <ReadOnly>false</ReadOnly>
