@@ -156,7 +156,7 @@
           <FromTableNm>checkDetail</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>形状</DisplayName>
-          <ElemType>Text</ElemType>
+          <ElemType>Search</ElemType>
           <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>
@@ -292,7 +292,7 @@
           <FromTableNm>checkDetail_TableStruct2</FromTableNm>
           <FromDefTableNm>checkDetail</FromDefTableNm>
           <DisplayName>测试字段</DisplayName>
-          <ElemType>Text</ElemType>
+          <ElemType>Date</ElemType>
           <Width>2</Width>
           <HasSort>false</HasSort>
           <Hidden>false</Hidden>

@@ -168,6 +168,7 @@ namespace Bll
                     }
                     catch (Exception ex)
                     {
+
                     }
                     //cmd.Connection.Close();
                 }

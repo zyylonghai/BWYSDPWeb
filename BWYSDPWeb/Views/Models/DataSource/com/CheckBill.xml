@@ -178,7 +178,7 @@
           <Name>CheckBillMap</Name>
           <DisplayName>检验单扩展表</DisplayName>
           <Ignore>true</Ignore>
-          <TableIndex>0</TableIndex>
+          <TableIndex>1</TableIndex>
           <JoinTableIndex>0</JoinTableIndex>
           <JoinFields />
           <PrimaryKey>
@@ -248,10 +248,13 @@
           <Name>checkDetail</Name>
           <DisplayName>检验明细表</DisplayName>
           <Ignore>true</Ignore>
-          <TableIndex>0</TableIndex>
+          <TableIndex>2</TableIndex>
           <JoinTableIndex>0</JoinTableIndex>
           <JoinFields />
-          <PrimaryKey />
+          <PrimaryKey>
+            <string>BillNo</string>
+            <string>RowNo</string>
+          </PrimaryKey>
           <Fields>
             <LibField>
               <ID>80b4b3ca-33e2-4469-b864-523b3422744d</ID>
@@ -337,8 +340,14 @@
           <Name>checkDetail_TableStruct2</Name>
           <DisplayName>checkDetail_TableStruct2</DisplayName>
           <Ignore>true</Ignore>
-          <TableIndex>0</TableIndex>
-          <JoinTableIndex>0</JoinTableIndex>
+          <TableIndex>3</TableIndex>
+          <JoinTableIndex>2</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey>
+            <string>BillNo</string>
+            <string>FromRowNo</string>
+            <string>RowNo</string>
+          </PrimaryKey>
           <Fields>
             <LibField>
               <ID>6e76d8cc-425c-426b-b357-948a6ac13037</ID>
@@ -351,6 +360,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>67ada309-9fbc-4912-8fdb-6cb7b7aa5534</ID>
@@ -363,6 +373,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>5086233f-415b-42d2-8e1b-91f22cbba4ab</ID>
@@ -375,6 +386,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
             <LibField>
               <ID>1666d15b-656c-4670-bdcc-4af83a278dc4</ID>
@@ -387,6 +399,7 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <Items />
             </LibField>
           </Fields>
         </LibDataTableStruct>

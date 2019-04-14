@@ -27,7 +27,7 @@ namespace BWYSDPWeb
         void Session_End(object sender, EventArgs e)
         {
             TempHelp sQLiteHelp = new TempHelp("TempData");
-            sQLiteHelp.ClearTempBysessionid(System.Web.HttpContext.Current.Session.SessionID);
+            sQLiteHelp.ClearTempBysessionid(Session.SessionID);
         }
     }
 }

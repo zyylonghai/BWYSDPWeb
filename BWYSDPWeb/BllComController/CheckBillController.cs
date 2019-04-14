@@ -52,6 +52,20 @@ namespace BWYSDPWeb.BllComController
             row["naiwendu"] = "dsfsd";
             row["xingzhuang"] = "dlkfj";
             this.LibTables[1].Tables[0].Rows.Add(row);
+
+            row = this.LibTables[1].Tables[1].NewRow();
+            row["BillNo"] = "T201903160001";
+            row["RowNo"] = 3;
+            row["FromRowNo"] = 1;
+            row["testfield"] = "测试字段";
+            this.LibTables[1].Tables[1].Rows.Add(row);
+
+            //row = this.LibTables[1].Tables[1].NewRow();
+            //row["BillNo"] = "T201903160001";
+            //row["RowNo"] = 2;
+            //row["FromRowNo"] = 1;
+            //row["testfield"] = "测试字段2";
+            //this.LibTables[1].Tables[1].Rows.Add(row);
             //row["check1"] = "jjjjjjjjj";
             //string str = JsonConvert.SerializeObject(this.LibTables[0].Tables[1]);
             //DataTable dr2 = JsonConvert.DeserializeObject<DataTable>(str);

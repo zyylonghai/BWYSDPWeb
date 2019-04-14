@@ -380,11 +380,18 @@ namespace BWYSDPWeb.Com
             table.Append(hidecolumns);
 
             #region toobar 按钮事件
-            table.Append("$('#"+grid .GridGroupName+"_sdp_addrow').click(function () {"+param+".AddRow();});");
-            table.Append("$('#" + grid.GridGroupName + "_sdp_editrow').click(function () {" + param + ".EditRow();});");
-            table.Append("$('#" + grid.GridGroupName + "_sdp_deletrow').click(function () {" + param + ".DeleteRow();});");
+            //table.Append("$('#"+grid .GridGroupName+"_sdp_addrow').click(function () {"+param+".AddRow();});");
+            //table.Append("$('#" + grid.GridGroupName + "_sdp_editrow').click(function () {" + param + ".EditRow();});");
+            //table.Append("$('#" + grid.GridGroupName + "_sdp_deletrow').click(function () {" + param + ".DeleteRow();});");
             #endregion
 
+            #region tablemodal脚本
+            string mdparam = string.Format("tbmodal{0}", _tableScriptlst.Count + 1);
+            string gridid = string.Format("GridGroup_{0}", grid.GridGroupName);
+            table.Append(string.Format("var {0}=new libTableModal(\"{1}\");", mdparam, string.Format("sdp_tbmdl_{0}",gridid)));
+            table.Append(string.Format("{0}.initialModal();", mdparam));
+            table.Append("$('#sdp_tbmodalbtn" + gridid + "').click(function () {" + mdparam + ".Confirm();});");
+            #endregion
             _tableScriptlst.Add(table.ToString());
             _tbmodalFormfields.Add(string.Format("GridGroup_{0}", grid.GridGroupName), tbformfield.ToString());
 
@@ -461,12 +468,12 @@ namespace BWYSDPWeb.Com
                     _page.Append("<h4 class=\"modal-title\" id=\"sdp_tbmdlbody_" + keyval.Key + "\">来源主数据</h4>");
                     _page.Append("</div>");
                     _page.Append("<div class=\"modal-body\">");
-                    _page.Append("<form id=\"sdp_"+keyval .Key+"_form\">");
+                    _page.Append("<form id=\"sdp_"+keyval .Key+ "_form\" class=\"form-horizontal\">");
                     _page.Append(_tbmodalFormfields[keyval.Key]);
                     _page.Append("</form>");
                     _page.Append("</div>");
                     _page.Append("<div class=\"modal-footer\">");
-                    _page.Append("<button type=\"button\" class=\"btn btn-primary\">确定</button>");
+                    _page.Append("<button id=\"sdp_tbmodalbtn"+ keyval.Key + "\" type=\"button\" class=\"btn btn-primary\">确定</button>");
                     _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>");
                     _page.Append("</div>");
                     _page.Append("</div>");

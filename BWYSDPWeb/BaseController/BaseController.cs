@@ -242,11 +242,12 @@ namespace BWYSDPWeb.BaseController
             CachHelp cachelp = new CachHelp();
             LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID)) as LibTable[];
             if (tbs == null) return null;
-            LibTable[] result = tbs;
+            //LibTable[] result = tbs;
             //LibTable[] result = new LibTable[tbs.Length];
             //CopyTablesSchema(tbs, result);
             #endregion
-            return result;
+            //return result;
+            return tbs;
         }
         #endregion
 

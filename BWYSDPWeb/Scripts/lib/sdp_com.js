@@ -8,6 +8,7 @@
 
     $('#sdp_errorinfo').hide();
 });
+var sdp_globModalzindex = 0;
 function drag(id) {
     var x1, y1, x2, y2, offleft, offtop, isclik = 0;
     var wmax = $("#" + id).find('.modal-dialog').width();

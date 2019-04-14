@@ -3,6 +3,7 @@ using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
@@ -372,17 +373,61 @@ namespace BWYSDPWeb.BaseController
             #endregion
             var table = this.LibTables.FirstOrDefault(i => i.Name == deftb);
             if (table == null) { var result2 = new { total = 0, rows =DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-                DataTable dt = table.Tables[0].Copy();
-                //foreach (DataTable item in table.Tables)
-                //{
-                //    dt.Merge(item, false);
-                //}
-                for (int i = 1; i < table.Tables.Length; i++)
+            Dictionary<int, DataTable> dic = new Dictionary<int, DataTable>();
+            DataTable mastdt = null;
+            foreach (DataTable item in table.Tables)
+            {
+                dic.Add(((TableExtendedProperties)item.ExtendedProperties["extProp"]).TableIndex, item);
+            }
+            foreach (DataTable itm in table.Tables)
+            {
+                if (dic.TryGetValue(((TableExtendedProperties)itm.ExtendedProperties["extProp"]).RelateTableIndex, out mastdt))
                 {
-                    dt.Merge(table.Tables[i], false);
+                    break;
                 }
+            }
+            DataTable dt = mastdt.Copy();
+            DataTable dt2 = null;
+            DataColumn[] cols=null;
+            foreach (DataTable d in table.Tables)
+            {
+                if (d.TableName == mastdt.TableName) continue;
+                dt2 = d.Copy();
+                dt2.PrimaryKey = null;
+                dt.Merge(dt2, false);
+                //cols = new DataColumn[d.Columns .Count];
+                //d.Columns.CopyTo(cols, 0);
 
-                GetGridDataExt(gridid, dt);
+                //foreach (DataColumn c in cols)
+                //{
+                //    if (!d.PrimaryKey.Contains(c))
+                //    {
+                //        dt.Columns.Add(c);
+                //    }
+                //}
+                //foreach (DataColumn col in d.Columns)
+                //{
+                //    if (!d.PrimaryKey.Contains(col))
+                //    {
+                //        dt.Columns.Add(col);
+                //    }
+                //}
+                //dt.Merge(d, false);
+            }
+            //foreach (DataTable tb in table.Tables)
+            //{
+            //    var q = from m in dt.AsEnumerable().
+            //            join d in tb.AsEnumerable() on m.Field<Nullable>("") equals d.Field("")
+            //            select 
+            //}
+
+            //var query =
+            //   from rHead in dt.AsEnumerable()
+            //   join rTail in dtTail.AsEnumerable()
+            //   on rHead.Field<Int32>("GoodID") equals rTail.Field<Int32>("GoodID")
+            //   select rHead.ItemArray.Concat(rTail.ItemArray.Skip(1));
+
+            GetGridDataExt(gridid, dt);
                 //DataTable dt2 = dt.Copy();
                 //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
                 //foreach (DataRow dr in drs)
@@ -403,6 +448,38 @@ namespace BWYSDPWeb.BaseController
 
         public ActionResult TableAction(string gridid, string tbnm, string cmd)
         {
+            var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
+            if (libtable != null)
+            {
+                var formparams = this.Request.Form;
+                string[] array;
+                DataTable[] dts = libtable.Tables;
+                DataRow[] newrows = new DataRow[dts.Length];
+                DataRow dr = null;
+                for (int i = 0; i < newrows.Length; i++)
+                {
+                    newrows[i] = dts[i].NewRow();
+                    dts[i].Rows.Add(newrows[i]);
+                }
+                foreach (string nm in formparams.AllKeys)
+                {
+                    if (nm.Contains("."))
+                    {
+                        array = nm.Split('.');
+                        if (array.Length < 2) continue;
+                        dr= newrows.FirstOrDefault(i => i != null && i.Table.TableName == array[0]);
+                        if (dr != null)
+                        {
+                            dr[array[1]] = formparams[nm];
+                        }
+                        //if (dt == null || dt.TableName != array[0])
+                        //    dt = libtable.Tables.FirstOrDefault(i => i.TableName == array[0]);
+                        
+                            
+
+                    }
+                }
+            }
             return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
         }
 
@@ -425,6 +502,10 @@ namespace BWYSDPWeb.BaseController
         {
 
         }
+        #endregion
+
+        #region 私有函数
+
         #endregion
     }
 }
