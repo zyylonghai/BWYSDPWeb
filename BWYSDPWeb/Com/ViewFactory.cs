@@ -288,7 +288,7 @@ namespace BWYSDPWeb.Com
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
             table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
-            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm));
+            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm,grid.GdGroupFields[0].FromTableNm));
             table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";", param, grid.GridGroupName));
             if (grid.HasSummary)
             {
@@ -508,7 +508,7 @@ namespace BWYSDPWeb.Com
             _script.Append("$('#bwysdp_dsid').val(\"" + this.DSID + "\");");
 
             #region pageload
-            _script.Append("$.ajax({url: \" /" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"\",type: 'Post',async: false,success: function (obj) {},");
+            _script.Append("$.ajax({url: \"/" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"\",type: 'Post',async: false,success: function (obj) {},");
             _script.Append("error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + \":\" + XMLHttpRequest.readyState.toString() + \", \" + textStatus + errorThrown);}");
             _script.Append(" });");
             #endregion

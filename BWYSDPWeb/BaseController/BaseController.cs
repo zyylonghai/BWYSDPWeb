@@ -371,27 +371,32 @@ namespace BWYSDPWeb.BaseController
                                 DataColumn colfieldnm = result.Columns["fieldnm"];
                                 DataColumn colaction = result.Columns["actions"];
                                 rowstate = new Dictionary<int, int>();
+                                DataRow prerow = null;
                                 foreach (DataRow dr in result.Rows)
                                 {
                                     if (rowindex != (int)dr[colrowid])
                                     {
-                                        newrow = tb.NewRow();
-                                        tb.Rows.Add(newrow);
-                                        rowindex = (int)dr[colrowid];
-                                        switch ((short)dr[colaction])
+                                        if (newrow != null)
                                         {
-                                            case 0: //新增状态
-                                                break;
-                                            case 1: //修改状态
-                                                newrow.AcceptChanges();
-                                                break;
-                                            case 2: //删除状态
-                                                rowstate.Add(rowindex, 2);
-                                                break;
-                                            case -1: //未更改状态
-                                                rowstate.Add(rowindex, -1);
-                                                break;
+                                            tb.Rows.Add(newrow);
+                                            switch ((short)prerow[colaction])
+                                            {
+                                                case 0: //新增状态
+                                                    break;
+                                                case 1: //修改状态
+                                                    newrow.AcceptChanges();
+                                                    break;
+                                                case 2: //删除状态
+                                                    rowstate.Add(rowindex, 2);
+                                                    break;
+                                                case -1: //未更改状态
+                                                    rowstate.Add(rowindex, -1);
+                                                    break;
+                                            }
                                         }
+                                        newrow = tb.NewRow();
+                                        rowindex = (int)dr[colrowid];
+                                       
                                     }
                                     #region 赋值
                                     if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
@@ -401,6 +406,7 @@ namespace BWYSDPWeb.BaseController
                                     else
                                         newrow[dr[colfieldnm].ToString()] = dr["fieldvalue"];
                                     #endregion
+                                    prerow = dr;
                                 }
                                 foreach (KeyValuePair<int,int> keyval in rowstate)
                                 {
