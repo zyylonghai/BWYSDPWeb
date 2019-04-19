@@ -267,7 +267,6 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
-              <MapPrimaryKey />
               <Items />
             </LibField>
             <LibField>
@@ -347,7 +346,7 @@
           <PrimaryKey>
             <string>BillNo</string>
             <string>FromRowNo</string>
-            <string>DRowNo</string>
+            <string>RowNo</string>
           </PrimaryKey>
           <Fields>
             <LibField>
@@ -374,12 +373,11 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
-              <MapPrimaryKey>RowNo</MapPrimaryKey>
               <Items />
             </LibField>
             <LibField>
               <ID>5086233f-415b-42d2-8e1b-91f22cbba4ab</ID>
-              <Name>DRowNo</Name>
+              <Name>RowNo</Name>
               <AliasName />
               <DisplayName>行号</DisplayName>
               <OrignNm />
@@ -388,7 +386,6 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
-              <MapPrimaryKey />
               <Items />
             </LibField>
             <LibField>

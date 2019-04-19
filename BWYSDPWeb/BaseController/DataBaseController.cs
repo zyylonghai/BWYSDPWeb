@@ -272,23 +272,23 @@ namespace BWYSDPWeb.BaseController
                         string name = ((JProperty)(jkon)).Name;
                         string value = ((JProperty)(jkon)).Value.ToString();
                     }
-
+                
                 }
             }
             #endregion
             BeforeSave();
             this.LibTables[0].Tables[0].Rows[0].AcceptChanges();
-            this.LibTables[0].Tables[0].Rows[0]["Checker"] = "66";
+            this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
             string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
-            object resut = this.ExecuteSaveMethod("Save", this.LibTables);
+            object resut= this.ExecuteSaveMethod("Save", this.LibTables);
             string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
             //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
 
-        public string BindTableData(string gridid, string deftb, string tableNm, int page, int rows, string Mobile)
+        public string BindTableData(string gridid, string deftb, int page, int rows, string Mobile)
         {
             #region 旧代码
             //DataTable dt = new DataTable();
@@ -372,80 +372,74 @@ namespace BWYSDPWeb.BaseController
             ////}
             #endregion
             var table = this.LibTables.FirstOrDefault(i => i.Name == deftb);
-            if (table == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-            #region 旧代码
-            //Dictionary<int, DataTable> dic = new Dictionary<int, DataTable>();
-            //DataTable mastdt = null;
-            //foreach (DataTable item in table.Tables)
-            //{
-            //    dic.Add(((TableExtendedProperties)item.ExtendedProperties["extProp"]).TableIndex, item);
-            //}
-            //foreach (DataTable itm in table.Tables)
-            //{
-            //    if (dic.TryGetValue(((TableExtendedProperties)itm.ExtendedProperties["extProp"]).RelateTableIndex, out mastdt))
-            //    {
-            //        break;
-            //    }
-            //}
-            //DataTable dt = mastdt.Copy();
-            //DataTable dt2 = null;
-            ////DataColumn[] cols=null;
-            //foreach (DataTable d in table.Tables)
-            //{
-            //    if (d.TableName == mastdt.TableName) continue;
-            //    dt2 = d.Copy();
-            //    dt2.PrimaryKey = null;
-            //    foreach (DataColumn c in dt2.Columns)
-            //    {
-            //        ColExtendedProperties pro = c.ExtendedProperties["extProp"] as ColExtendedProperties;
-            //        if (!string.IsNullOrEmpty(pro.MapPrimarykey))
-            //        {
-            //            c.ColumnName = pro.MapPrimarykey;
-            //        }
-            //    }
-            //    dt.Merge(dt2,false);
-            //    //cols = new DataColumn[d.Columns .Count];
-            //    //d.Columns.CopyTo(cols, 0);
-
-            //    //foreach (DataColumn c in cols)
-            //    //{
-            //    //    if (!d.PrimaryKey.Contains(c))
-            //    //    {
-            //    //        dt.Columns.Add(c);
-            //    //    }
-            //    //}
-            //    //foreach (DataColumn col in d.Columns)
-            //    //{
-            //    //    if (!d.PrimaryKey.Contains(col))
-            //    //    {
-            //    //        dt.Columns.Add(col);
-            //    //    }
-            //    //}
-            //    //dt.Merge(d, false);
-            //}
-            ////foreach (DataTable tb in table.Tables)
-            ////{
-            ////    var q = from m in dt.AsEnumerable().
-            ////            join d in tb.AsEnumerable() on m.Field<Nullable>("") equals d.Field("")
-            ////            select 
-            ////}
-
-            ////var query =
-            ////   from rHead in dt.AsEnumerable()
-            ////   join rTail in dtTail.AsEnumerable()
-            ////   on rHead.Field<Int32>("GoodID") equals rTail.Field<Int32>("GoodID")
-            ////   select rHead.ItemArray.Concat(rTail.ItemArray.Skip(1));
-            #endregion
-
-            DataTable dt = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
-            if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-            GetGridDataExt(gridid, dt);
-            DataTable resultdt = dt.Clone();
-            for (int index = (page - 1) * rows; index < page * rows; index++)
+            if (table == null) { var result2 = new { total = 0, rows =DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+            Dictionary<int, DataTable> dic = new Dictionary<int, DataTable>();
+            DataTable mastdt = null;
+            foreach (DataTable item in table.Tables)
             {
-                if (index >= dt.Rows.Count) break;
-                resultdt.ImportRow(dt.Rows[index]);
+                dic.Add(((TableExtendedProperties)item.ExtendedProperties["extProp"]).TableIndex, item);
             }
+            foreach (DataTable itm in table.Tables)
+            {
+                if (dic.TryGetValue(((TableExtendedProperties)itm.ExtendedProperties["extProp"]).RelateTableIndex, out mastdt))
+                {
+                    break;
+                }
+            }
+            DataTable dt = mastdt.Copy();
+            DataTable dt2 = null;
+            DataColumn[] cols=null;
+            foreach (DataTable d in table.Tables)
+            {
+                if (d.TableName == mastdt.TableName) continue;
+                dt2 = d.Copy();
+                dt2.PrimaryKey = null;
+                dt.Merge(dt2, false);
+                //cols = new DataColumn[d.Columns .Count];
+                //d.Columns.CopyTo(cols, 0);
+
+                //foreach (DataColumn c in cols)
+                //{
+                //    if (!d.PrimaryKey.Contains(c))
+                //    {
+                //        dt.Columns.Add(c);
+                //    }
+                //}
+                //foreach (DataColumn col in d.Columns)
+                //{
+                //    if (!d.PrimaryKey.Contains(col))
+                //    {
+                //        dt.Columns.Add(col);
+                //    }
+                //}
+                //dt.Merge(d, false);
+            }
+            //foreach (DataTable tb in table.Tables)
+            //{
+            //    var q = from m in dt.AsEnumerable().
+            //            join d in tb.AsEnumerable() on m.Field<Nullable>("") equals d.Field("")
+            //            select 
+            //}
+
+            //var query =
+            //   from rHead in dt.AsEnumerable()
+            //   join rTail in dtTail.AsEnumerable()
+            //   on rHead.Field<Int32>("GoodID") equals rTail.Field<Int32>("GoodID")
+            //   select rHead.ItemArray.Concat(rTail.ItemArray.Skip(1));
+
+            GetGridDataExt(gridid, dt);
+                //DataTable dt2 = dt.Copy();
+                //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
+                //foreach (DataRow dr in drs)
+                //{
+                //    dt2.Rows.Remove(dr);
+                //}
+                DataTable resultdt = dt.Clone();
+                for (int index = (page - 1) * rows; index < page * rows; index++)
+                {
+                    if (index >= dt.Rows.Count) break;
+                    resultdt.ImportRow(dt.Rows[index]);
+                }
             var result = new { total = dt.Rows.Count, rows = resultdt };
 
             //return Json(new { total = testlist.Count , rows = testlist }, JsonRequestBehavior.AllowGet);
@@ -473,15 +467,15 @@ namespace BWYSDPWeb.BaseController
                     {
                         array = nm.Split('.');
                         if (array.Length < 2) continue;
-                        dr = newrows.FirstOrDefault(i => i != null && i.Table.TableName == array[0]);
+                        dr= newrows.FirstOrDefault(i => i != null && i.Table.TableName == array[0]);
                         if (dr != null)
                         {
                             dr[array[1]] = formparams[nm];
                         }
                         //if (dt == null || dt.TableName != array[0])
                         //    dt = libtable.Tables.FirstOrDefault(i => i.TableName == array[0]);
-
-
+                        
+                            
 
                     }
                 }

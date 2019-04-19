@@ -55,18 +55,17 @@ namespace BWYSDPWeb.BllComController
 
             row = this.LibTables[1].Tables[1].NewRow();
             row["BillNo"] = "T201903160001";
-            row["DRowNo"] = 1;
+            row["RowNo"] = 3;
             row["FromRowNo"] = 1;
             row["testfield"] = "测试字段";
             this.LibTables[1].Tables[1].Rows.Add(row);
 
-            row = this.LibTables[1].Tables[1].NewRow();
-            row["BillNo"] = "T201903160001";
-            row["DRowNo"] = 2;
-            row["FromRowNo"] = 1;
-            row["testfield"] = "测试字段2";
-            this.LibTables[1].Tables[1].Rows.Add(row);
-
+            //row = this.LibTables[1].Tables[1].NewRow();
+            //row["BillNo"] = "T201903160001";
+            //row["RowNo"] = 2;
+            //row["FromRowNo"] = 1;
+            //row["testfield"] = "测试字段2";
+            //this.LibTables[1].Tables[1].Rows.Add(row);
             //row["check1"] = "jjjjjjjjj";
             //string str = JsonConvert.SerializeObject(this.LibTables[0].Tables[1]);
             //DataTable dr2 = JsonConvert.DeserializeObject<DataTable>(str);
@@ -75,14 +74,14 @@ namespace BWYSDPWeb.BllComController
         protected override void GetGridDataExt(string gridid, DataTable dt)
         {
             base.GetGridDataExt(gridid, dt);
-            //DataRow dr = dt.NewRow();
+            DataRow dr = dt.NewRow();
             //dr["RowNo"] = "1";
             //dr["BillNo"] = "T201903160001";
             //dr["yingdu"] = "zyy";
             //dr["naiwendu"] = "888";
             //dr["xingzhuang"] = "skdjf";
             //dr["midu"] = "kdkkdkdkk";
-            //dt.Rows.Add(dr);
+            dt.Rows.Add(dr);
         }
 
         public ActionResult Test(string staffid)
