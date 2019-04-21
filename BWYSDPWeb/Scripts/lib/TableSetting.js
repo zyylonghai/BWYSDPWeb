@@ -237,7 +237,7 @@ LibTable.prototype = {
                 }
             },
             onLoadError: function () {
-                showTips("数据加载失败！");
+                ShowMsg("数据加载失败！", 'error');
             },
             onDblClickRow: function (row, $element) {
                 var id = row.ID;

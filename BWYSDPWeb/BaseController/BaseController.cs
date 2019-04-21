@@ -15,7 +15,7 @@ using BWYSDPWeb.Com;
 
 namespace BWYSDPWeb.BaseController
 {
-    public class BaseController : Controller
+    public class BaseController : Controller,IlibException 
     {
         #region 私有属性
         private string _rootPath = string.Empty;
@@ -206,7 +206,7 @@ namespace BWYSDPWeb.BaseController
                 cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
                 this.LibTables = tbs;
             }
-            if (tbs !=null)
+            if (tbs != null)
             {
                 foreach (var item in tbs)
                 {
@@ -355,7 +355,12 @@ namespace BWYSDPWeb.BaseController
                     int rowindex = -2;
                     DataTable tb = null;
                     DataColumnCollection cols = null;
+                    DataColumn[] primarykeycols = null;
                     Dictionary<int, int> rowstate = null;
+
+                    DataColumn colrowid;
+                    DataColumn colfieldnm;
+                    DataColumn colaction;
                     //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                     foreach (LibTable item in this.LibTables)
                     {
@@ -363,19 +368,30 @@ namespace BWYSDPWeb.BaseController
                         {
                             tb = item.Tables[i];
                             cols = tb.Columns;
+                            primarykeycols = tb.PrimaryKey;
                             result = sQLiteHelp.GetTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, tb.TableName, ref rowcout);
                             if (result != null)
                             {
                                 rowindex = -2;
-                                DataColumn colrowid = result.Columns["rowid"];
-                                DataColumn colfieldnm = result.Columns["fieldnm"];
-                                DataColumn colaction = result.Columns["actions"];
+                                colrowid = result.Columns["rowid"];
+                                colfieldnm = result.Columns["fieldnm"];
+                                colaction = result.Columns["actions"];
                                 rowstate = new Dictionary<int, int>();
                                 foreach (DataRow dr in result.Rows)
                                 {
                                     if (rowindex != (int)dr[colrowid])
                                     {
                                         newrow = tb.NewRow();
+                                        foreach (var c in primarykeycols)
+                                        {
+                                            if (c.DataType.Equals(typeof(int)) || c.DataType.Equals(typeof(decimal)) || c.DataType.Equals(typeof(long)))
+                                            {
+                                                newrow[c] = 0;
+                                                continue;
+                                            }
+                                            newrow[c] = new object();
+                                            
+                                        }
                                         tb.Rows.Add(newrow);
                                         rowindex = (int)dr[colrowid];
                                         switch ((short)dr[colaction])
@@ -402,7 +418,7 @@ namespace BWYSDPWeb.BaseController
                                         newrow[dr[colfieldnm].ToString()] = dr["fieldvalue"];
                                     #endregion
                                 }
-                                foreach (KeyValuePair<int,int> keyval in rowstate)
+                                foreach (KeyValuePair<int, int> keyval in rowstate)
                                 {
                                     switch (keyval.Value)
                                     {
@@ -476,7 +492,37 @@ namespace BWYSDPWeb.BaseController
         public object ExecuteSaveMethod(string method, LibTable[] tables)
         {
             if (_bll == null) this._bll = new BllDataBase();
-           return _bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
+            return _bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
+        }
+
+        public void ThrowErrorException(string msg)
+        {
+            ExceptionHelp help = new ExceptionHelp();
+            help.ThrowError(this, msg);
+        }
+        #endregion
+
+        #region 受保护方法
+        protected override void EndExecute(IAsyncResult asyncResult)
+        {
+            base.EndExecute(asyncResult);
+        }
+
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            base.OnActionExecuted(filterContext);
+        }
+
+        protected override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            base.OnResultExecuted(filterContext);
+        }
+        #endregion
+
+        #region IlibException
+        public void BeforeThrow()
+        {
+            
         }
         #endregion
     }

@@ -53,13 +53,17 @@ namespace BWYSDPWeb.BllComController
             row["xingzhuang"] = "dlkfj";
             this.LibTables[1].Tables[0].Rows.Add(row);
 
-            row = this.LibTables[1].Tables[1].NewRow();
-            row["BillNo"] = "T201903160001";
-            row["RowNo"] = 3;
-            row["FromRowNo"] = 1;
-            row["testfield"] = "测试字段";
-            this.LibTables[1].Tables[1].Rows.Add(row);
-
+            string a= System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
+            for (int i = 1; i < 10000; i++)
+            {
+                row = this.LibTables[1].Tables[1].NewRow();
+                row["BillNo"] = "T201903160001";
+                row["RowNo"] = i;
+                row["FromRowNo"] = 1;
+                row["testfield"] =string.Format("测试字段{0}",i);
+                this.LibTables[1].Tables[1].Rows.Add(row);
+            }
+            string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
             //row = this.LibTables[1].Tables[1].NewRow();
             //row["BillNo"] = "T201903160001";
             //row["RowNo"] = 2;
@@ -74,14 +78,15 @@ namespace BWYSDPWeb.BllComController
         protected override void GetGridDataExt(string gridid, DataTable dt)
         {
             base.GetGridDataExt(gridid, dt);
-            DataRow dr = dt.NewRow();
-            //dr["RowNo"] = "1";
-            //dr["BillNo"] = "T201903160001";
-            //dr["yingdu"] = "zyy";
-            //dr["naiwendu"] = "888";
-            //dr["xingzhuang"] = "skdjf";
-            //dr["midu"] = "kdkkdkdkk";
-            dt.Rows.Add(dr);
+            this.ThrowErrorException("抛出异常测试");
+            //DataRow dr = dt.NewRow();
+            ////dr["RowNo"] = "1";
+            ////dr["BillNo"] = "T201903160001";
+            ////dr["yingdu"] = "zyy";
+            ////dr["naiwendu"] = "888";
+            ////dr["xingzhuang"] = "skdjf";
+            ////dr["midu"] = "kdkkdkdkk";
+            //dt.Rows.Add(dr);
         }
 
         public ActionResult Test(string staffid)

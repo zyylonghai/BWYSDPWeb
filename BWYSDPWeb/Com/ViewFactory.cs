@@ -257,7 +257,7 @@ namespace BWYSDPWeb.Com
 
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"add\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tableNm=\""+grid .GdGroupFields[0].FromTableNm+"\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"add\">");
             //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>新增");
             _page.Append("</button>");
@@ -288,7 +288,7 @@ namespace BWYSDPWeb.Com
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
             table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
-            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm));
+            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm,grid.GdGroupFields[0].FromTableNm));
             table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";", param, grid.GridGroupName));
             if (grid.HasSummary)
             {

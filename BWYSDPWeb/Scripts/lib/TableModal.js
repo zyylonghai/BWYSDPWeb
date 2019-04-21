@@ -33,6 +33,8 @@ function libTableModal(id) {
     this.ControlNm = "";
     this.GridId = "";
     this.DeftbNm = "";
+    this.TableNm = "";
+    this.Cmd = "";
 }
 
 libTableModal.prototype = {
@@ -63,7 +65,8 @@ libTableModal.prototype = {
             thisobj.DeftbNm = button.data('deftbnm'); // 解析出data-whatever内容
             thisobj.ControlNm = button.data('controlnm');//
             thisobj.GridId = button.data("gridid");
-            //var cmd = button.data("cmd");
+            thisobj.Cmd = button.data("cmd");
+            thisobj.TableNm = button.data("tableNm");
             $('#' + id + ' .modal-title').text(thisobj.DeftbNm + "新增");
             if (thisobj.ControlNm == "" || thisobj.ControlNm == undefined) {
                 thisobj.ControlNm = "DataBase";
@@ -79,7 +82,7 @@ libTableModal.prototype = {
             type: "POST",
             //url: '${pageContext.request.contextPath}/link/apply',
             url: '/' + this.ControlNm + '/TableAction',
-            data: $('#' + formid).serialize() + '&gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&cmd=add',
+            data: $('#' + formid).serialize() + '&gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '',
             dataType: "text",
             success: function () {
             },

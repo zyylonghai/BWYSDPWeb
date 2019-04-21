@@ -61,6 +61,7 @@ $.ajax = function (opt) {
         },
         complete: function (data) {
             fn.complete(data);
+            hideMask();
         },
         beforeSend: function (xhr, o) {
             showMask();
