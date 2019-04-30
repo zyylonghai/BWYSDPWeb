@@ -78,7 +78,7 @@ namespace BWYSDPWeb.BllComController
         protected override void GetGridDataExt(string gridid, DataTable dt)
         {
             base.GetGridDataExt(gridid, dt);
-            this.ThrowErrorException("抛出异常测试");
+            //this.ThrowErrorException("抛出异常测试");
             //DataRow dr = dt.NewRow();
             ////dr["RowNo"] = "1";
             ////dr["BillNo"] = "T201903160001";
@@ -88,32 +88,33 @@ namespace BWYSDPWeb.BllComController
             ////dr["midu"] = "kdkkdkdkk";
             //dt.Rows.Add(dr);
         }
-
+        
         public ActionResult Test(string staffid)
         {
 
             int i = 0;
+            this.ThrowErrorException("异常测试");
             //string a = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             //int n = 1;
-            while (i < 10)
-            {
-                //DataRow row = this.LibTables[0].Tables[0].NewRow();
-                //row["BillNo"] = "T201903160001";
-                //row["Checker"] = "test3";
-                //row["CheckDT"] = new Date("2018-2-12");
-                //row["Qty"] = i++;
-                //this.LibTables[0].Tables[0].Rows.Add(row);
+            //while (i < 10)
+            //{
+            //    //DataRow row = this.LibTables[0].Tables[0].NewRow();
+            //    //row["BillNo"] = "T201903160001";
+            //    //row["Checker"] = "test3";
+            //    //row["CheckDT"] = new Date("2018-2-12");
+            //    //row["Qty"] = i++;
+            //    //this.LibTables[0].Tables[0].Rows.Add(row);
 
-                DataRow dr = this.LibTables[1].Tables[0].NewRow();
-                dr["RowNo"] = i++;
-                dr["BillNo"] = "T201903160001";
-                dr["yingdu"] = "9563";
-                dr["naiwendu"] = "555";
-                dr["xingzhuang"] = "777";
-                dr["midu"] = "666";
-                this.LibTables[1].Tables[0].Rows.Add(dr);
+            //    DataRow dr = this.LibTables[1].Tables[0].NewRow();
+            //    dr["RowNo"] = i++;
+            //    dr["BillNo"] = "T201903160001";
+            //    dr["yingdu"] = "9563";
+            //    dr["naiwendu"] = "555";
+            //    dr["xingzhuang"] = "777";
+            //    dr["midu"] = "666";
+            //    this.LibTables[1].Tables[0].Rows.Add(dr);
 
-            }
+            //}
             //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
 
 

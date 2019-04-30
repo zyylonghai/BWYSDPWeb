@@ -49,7 +49,7 @@ namespace BWYSDPWeb.BaseController
             set;
         }
         /// <summary>
-        /// 操作动作（新增Add，编辑Edit，删除Delete）
+        /// 功能操作动作（新增Add，编辑Edit，删除Delete）
         /// </summary>
         public OperatAction OperatAction
         {
@@ -92,15 +92,15 @@ namespace BWYSDPWeb.BaseController
             //this.ProgID = GetCookievalue(SysConstManage.PageinfoCookieNm, SysConstManage.ProgidCookieKey);
         }
 
-        private void Dt_RowChanged(object sender, DataRowChangeEventArgs e)
-        {
+        //private void Dt_RowChanged(object sender, DataRowChangeEventArgs e)
+        //{
 
-            Bll.DelegateFactory df = new Bll.DelegateFactory();
-            df.SaveRowChange(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, e.Row, e.Action, (int)this.OperatAction);
-            //TempDataDelegate compressfile = new TempDataDelegate(InsertTemp);
-            //AsyncCallback callback = new AsyncCallback(CallBackMethod);
-            //IAsyncResult iar = compressfile.BeginInvoke(e.Row ,e.Action , callback, compressfile);
-        }
+        //    Bll.DelegateFactory df = new Bll.DelegateFactory();
+        //    df.SaveRowChange(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, e.Row, e.Action, (int)this.OperatAction);
+        //    //TempDataDelegate compressfile = new TempDataDelegate(InsertTemp);
+        //    //AsyncCallback callback = new AsyncCallback(CallBackMethod);
+        //    //IAsyncResult iar = compressfile.BeginInvoke(e.Row ,e.Action , callback, compressfile);
+        //}
 
         // GET: Base
         //public ActionResult Index()
@@ -287,10 +287,6 @@ namespace BWYSDPWeb.BaseController
                             f.FieldValue = dt.Rows[0][col].ToString();
 
                         }
-                        //else if (col.DataType.Equals(typeof(Date)))
-                        //{
-                        //    f.FieldValue = dt.Rows[0][col].ToString();
-                        //}
                         else
                             f.FieldValue = dt.Rows[0][col];
                         fieldlst.Add(f);
@@ -503,20 +499,20 @@ namespace BWYSDPWeb.BaseController
         #endregion
 
         #region 受保护方法
-        protected override void EndExecute(IAsyncResult asyncResult)
-        {
-            base.EndExecute(asyncResult);
-        }
+        //protected override void EndExecute(IAsyncResult asyncResult)
+        //{
+        //    base.EndExecute(asyncResult);
+        //}
 
-        protected override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            base.OnActionExecuted(filterContext);
-        }
+        //protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        //{
+        //    base.OnActionExecuted(filterContext);
+        //}
 
-        protected override void OnResultExecuted(ResultExecutedContext filterContext)
-        {
-            base.OnResultExecuted(filterContext);
-        }
+        //protected override void OnResultExecuted(ResultExecutedContext filterContext)
+        //{
+        //    base.OnResultExecuted(filterContext);
+        //}
         #endregion
 
         #region IlibException

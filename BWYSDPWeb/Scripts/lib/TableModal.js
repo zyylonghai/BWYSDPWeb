@@ -66,7 +66,7 @@ libTableModal.prototype = {
             thisobj.ControlNm = button.data('controlnm');//
             thisobj.GridId = button.data("gridid");
             thisobj.Cmd = button.data("cmd");
-            thisobj.TableNm = button.data("tableNm");
+            thisobj.TableNm = button.data("tablenm");
             $('#' + id + ' .modal-title').text(thisobj.DeftbNm + "新增");
             if (thisobj.ControlNm == "" || thisobj.ControlNm == undefined) {
                 thisobj.ControlNm = "DataBase";
@@ -77,6 +77,7 @@ libTableModal.prototype = {
     },
     Confirm: function () {
         var formid = $('#' + this.ModalID + ' form').attr("id");
+        let thisobj = this;
         $.ajax({
             async: false,
             type: "POST",
@@ -84,7 +85,9 @@ libTableModal.prototype = {
             url: '/' + this.ControlNm + '/TableAction',
             data: $('#' + formid).serialize() + '&gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '',
             dataType: "text",
-            success: function () {
+            success: function (data) {
+                $("#" + thisobj.ModalID).modal('hide');
+                $('#' + thisobj.GridId).bootstrapTable('refresh');
             },
             error: function () {
             }

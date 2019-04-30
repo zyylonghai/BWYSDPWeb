@@ -257,7 +257,7 @@ namespace BWYSDPWeb.Com
 
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tableNm=\""+grid .GdGroupFields[0].FromTableNm+"\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"add\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\""+grid .GdGroupFields[0].FromTableNm+"\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Add\">");
             //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>新增");
             _page.Append("</button>");
@@ -297,7 +297,7 @@ namespace BWYSDPWeb.Com
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
             #region sdp_rowid 列
-            table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: true}");
+            //table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: true}");
             //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
             #endregion
             //if (grid.GdGroupFields != null)
@@ -330,6 +330,7 @@ namespace BWYSDPWeb.Com
                 }
 
                 #region 模态框 的控件
+                if (field.Hidden) continue;
                 if (colcout % 9 == 0)
                 {
                     if (colcout != 0)

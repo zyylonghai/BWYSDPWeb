@@ -128,6 +128,7 @@ namespace BWYSDPWeb.BaseController
             if (this.Request.Url.Segments.Length > 2)
             {
                 string packagepath = this.Request.Url.Segments[1];
+                //this.ThrowErrorException("加载异常");
                 if (!string.IsNullOrEmpty(packagepath))
                 {
                     this.ProgID = progId;
@@ -454,8 +455,25 @@ namespace BWYSDPWeb.BaseController
             return JsonConvert.SerializeObject(result);
         }
 
+        public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string cmd)
+        {
+            switch (cmd)
+            {
+                case "Add":
+
+                    break;
+                case "Edit":
+
+                    break;
+                case "Delet":
+                    break;
+            }
+            return Json(new { });
+        }
+
         public ActionResult TableAction(string gridid, string tbnm,string tableNm, string cmd)
         {
+            DataRow dr = null;
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
             if (libtable != null)
             {
@@ -463,22 +481,69 @@ namespace BWYSDPWeb.BaseController
                 string[] array;
                 //DataTable[] dts = libtable.Tables;
                 //DataRow[] newrows = new DataRow[dts.Length];
-                DataRow dr = null;
                 DataTable tb;
-                //for (int i = 0; i < newrows.Length; i++)
-                //{
-                //    newrows[i] = dts[i].NewRow();
-                //    dts[i].Rows.Add(newrows[i]);
-                //}
+                DataTable relatetb=null;
                 if (libtable.Tables != null)
                 {
                     tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
                     switch (cmd)
                     {
                         case "Add":
-                            
+                            dr = tb.NewRow();
+                            TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                            if (extprop != null)
+                            {
+                                #region 获取关联的表
+                                foreach (var item in this.LibTables)
+                                {
+                                    for (int n = 0; n < item.Tables.Length; n++)
+                                    {
+                                        if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).TableIndex == extprop.RelateTableIndex)
+                                        {
+                                            relatetb = item.Tables[n];
+                                            break;
+                                        }
+                                    }
+                                    if (relatetb != null)
+                                    {
+                                        break;
+                                    } 
+                                }
+                                #endregion
+                                #region 填充主键列的值
+                                if (relatetb != null && extprop .RelateTableIndex ==0)
+                                {
+                                    ColExtendedProperties colextprop = null;
+                                    DataColumn relatecol = null;
+                                    foreach (var col in tb.PrimaryKey)
+                                    {
+                                        colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                                        if (string.IsNullOrEmpty(colextprop.MapPrimarykey))
+                                        {
+                                            relatecol = relatetb.Columns[col.ColumnName];
+                                            if (relatecol != null)
+                                                dr[col] = relatetb.Rows[0][relatecol];
+                                            else
+                                            {
+                                                if (col.DataType.Equals(typeof(int)) || col.DataType.Equals(typeof(decimal)) || col.DataType.Equals(typeof(long)))
+                                                {
+                                                    dr[col] = 0;
+                                                    continue;
+                                                }
+                                                dr[col] = new object();
+                                            }
+                                        }
+                                        else
+                                            dr[col] = relatetb.Rows[0][colextprop.MapPrimarykey];
+
+                                    }
+                                }
+                                #endregion
+                            }
+                            tb.Rows.Add(dr);
                             break;
                         case "Edit":
+
                             break;
                         case "Delet":
                             break;
@@ -488,22 +553,17 @@ namespace BWYSDPWeb.BaseController
                 {
                     if (nm.Contains("."))
                     {
-                        //array = nm.Split('.');
-                        //if (array.Length < 2) continue;
-                        //dr= newrows.FirstOrDefault(i => i != null && i.Table.TableName == array[0]);
-                        //if (dr != null)
-                        //{
-                        //    dr[array[1]] = formparams[nm];
-                        //}
-                        //if (dt == null || dt.TableName != array[0])
-                        //    dt = libtable.Tables.FirstOrDefault(i => i.TableName == array[0]);
-                        
-                            
-
+                        array = nm.Split('.');
+                        if (array.Length < 2) continue;
+                        if (dr != null)
+                        {
+                            dr[array[1]] = formparams[nm];
+                        }
                     }
                 }
+                UpdateTableAction(gridid, dr, cmd);
             }
-            return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
+            return Json(new { message="" }, JsonRequestBehavior.AllowGet);
         }
 
         #region 受保护方法
@@ -522,6 +582,11 @@ namespace BWYSDPWeb.BaseController
         }
 
         protected virtual void AfterSave()
+        {
+
+        }
+
+        protected virtual void UpdateTableAction(string gridid,DataRow row, string cmd)
         {
 
         }

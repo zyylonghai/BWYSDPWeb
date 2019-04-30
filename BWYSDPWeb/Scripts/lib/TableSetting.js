@@ -218,23 +218,23 @@ LibTable.prototype = {
 
             },
             onLoadSuccess: function (data) {
-                //_addrows.splice(0, _addrows.length);
-                //_editrows.splice(0, _editrows.length);
-                tbobj.RowsOfAdd.splice(0, tbobj.RowsOfAdd.length);
-                tbobj.RowsOfEdit.splice(0, tbobj.RowsOfEdit.length);
-                tbobj.RowsOfRemov.splice(0, tbobj.RowsOfRemov.length);
-                if (data.total>0 && data.rows.length > 0) {
-                    $.each(data.rows, function (index, row) {
-                        eval("row.sdp_rowid=" + index+1 + "");
-                        saveData(id, index, "sdp_rowid", index + 1);
-                        //$('#' + id).bootstrapTable('updateCell', {
-                        //    index: index,       //行索引
-                        //    field: "sdp_rowid",       //列名
-                        //    value: index        //cell值
-                        //});
-                    });
+                ////_addrows.splice(0, _addrows.length);
+                ////_editrows.splice(0, _editrows.length);
+                //tbobj.RowsOfAdd.splice(0, tbobj.RowsOfAdd.length);
+                //tbobj.RowsOfEdit.splice(0, tbobj.RowsOfEdit.length);
+                //tbobj.RowsOfRemov.splice(0, tbobj.RowsOfRemov.length);
+                //if (data.total>0 && data.rows.length > 0) {
+                //    $.each(data.rows, function (index, row) {
+                //        eval("row.sdp_rowid=" + index+1 + "");
+                //        saveData(id, index, "sdp_rowid", index + 1);
+                //        //$('#' + id).bootstrapTable('updateCell', {
+                //        //    index: index,       //行索引
+                //        //    field: "sdp_rowid",       //列名
+                //        //    value: index        //cell值
+                //        //});
+                //    });
 
-                }
+                //}
             },
             onLoadError: function () {
                 ShowMsg("数据加载失败！", 'error');

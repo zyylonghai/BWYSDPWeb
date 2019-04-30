@@ -10,7 +10,16 @@ namespace BWYSDPWeb.App_Start
     {
         public override void OnException(ExceptionContext filterContext)
         {
-            base.OnException(filterContext);
+            filterContext.Result = new JsonResult
+            {
+
+                Data = new { success = false, code = 520, msg = filterContext.Exception.Message },
+
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+
+            };
+            //filterContext.ExceptionHandled = false;
+            //base.OnException(filterContext);
         }
     }
 }

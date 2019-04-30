@@ -3,7 +3,9 @@
 $.ajax = function (opt) {
     var fn = {
         data:"",
-        error: function (XMLHttpRequest, textStatus, errorThrown) { },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+           
+        },
         success: function (data, textStatus)
         {
         },
@@ -39,6 +41,9 @@ $.ajax = function (opt) {
     var _opt = $.extend(opt, {
         data: fn.data,
         error: function (XMLHttpRequest, textStatus, errorThrown) {
+            var responseobj = JSON.parse(XMLHttpRequest.responseText);
+            ShowMsg(responseobj.msg, 'error');
+
             //错误方法增强处理 
             fn.error(XMLHttpRequest, textStatus, errorThrown);
         },
