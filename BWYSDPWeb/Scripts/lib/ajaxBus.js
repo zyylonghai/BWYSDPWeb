@@ -48,7 +48,7 @@ $.ajax = function (opt) {
             fn.error(XMLHttpRequest, textStatus, errorThrown);
         },
         success: function (data, textStatus) {
-            if (data != null && (data.sdp_flag != null && data.sdp_flag != undefined))
+            if (data != null && (data.sdp_flag != null && data.sdp_flag != undefined && data.sdp_flag==0))
             {
                 //for (var n = 0; n < data.sdp_data.length; n++)
                 //{

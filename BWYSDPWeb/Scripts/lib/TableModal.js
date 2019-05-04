@@ -35,6 +35,7 @@ function libTableModal(id) {
     this.DeftbNm = "";
     this.TableNm = "";
     this.Cmd = "";
+    this.Currentrow = null;
 }
 
 libTableModal.prototype = {
@@ -71,9 +72,33 @@ libTableModal.prototype = {
             if (thisobj.ControlNm == "" || thisobj.ControlNm == undefined) {
                 thisobj.ControlNm = "DataBase";
             }
+            thisobj.GetTableRow();
             //TableAction(gid, thisobj.DeftbNm, controlnm, cmd);
         });
         drag(id);
+    },
+    GetTableRow: function () {
+        var thisobj = this;
+        $.ajax({
+            async: false,
+            type: "POST",
+            //url: '${pageContext.request.contextPath}/link/apply',
+            url: '/' + this.ControlNm + '/GetTableRow',
+            data:'gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '',
+            //dataType: "text",
+            success: function (data) {
+                thisobj.Currentrow = data.sdp_data;
+                //$.each(data.sdp_data, function (index, o) {
+                //    var reg = RegExp(/sdp_rowid/);
+                //    if (reg.test(o.FieldNm)) {
+                //        thisobj.Currentsdpid = o.FieldValue;
+                //    }
+                //});
+            },
+            error: function () {
+
+            }
+        });
     },
     Confirm: function () {
         var formid = $('#' + this.ModalID + ' form').attr("id");
@@ -83,7 +108,7 @@ libTableModal.prototype = {
             type: "POST",
             //url: '${pageContext.request.contextPath}/link/apply',
             url: '/' + this.ControlNm + '/TableAction',
-            data: $('#' + formid).serialize() + '&gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '',
+            data: $('#' + formid).serialize() + '&gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '&row=' + JSON.stringify(thisobj.Currentrow)+ '',
             dataType: "text",
             success: function (data) {
                 $("#" + thisobj.ModalID).modal('hide');

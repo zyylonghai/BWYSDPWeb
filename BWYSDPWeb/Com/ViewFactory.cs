@@ -297,8 +297,8 @@ namespace BWYSDPWeb.Com
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
             #region sdp_rowid 列
-            //table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: true}");
-            //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
+            table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: true}");
+            hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
             #endregion
             //if (grid.GdGroupFields != null)
             //{

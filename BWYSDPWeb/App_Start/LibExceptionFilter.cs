@@ -18,6 +18,7 @@ namespace BWYSDPWeb.App_Start
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
 
             };
+            //filterContext.ExceptionHandled = true;
             //filterContext.ExceptionHandled = false;
             //base.OnException(filterContext);
         }

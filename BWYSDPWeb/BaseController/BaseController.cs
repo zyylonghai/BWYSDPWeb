@@ -281,7 +281,7 @@ namespace BWYSDPWeb.BaseController
                         col = dt.Columns[s];
                         f = new FormFields();
                         f.ProgId = this.ProgID;
-                        f.FieldNm = string.Format("{0}_{1}", item.Key, s);
+                        f.FieldNm = string.Format("{0}{2}{1}", item.Key, s,SysConstManage .Underline);
                         if (col.DataType.Equals(typeof(DateTime)) || col.DataType.Equals(typeof(Date)))
                         {
                             f.FieldValue = dt.Rows[0][col].ToString();
@@ -295,6 +295,30 @@ namespace BWYSDPWeb.BaseController
             }
             #endregion
 
+            return Json(new { sdp_flag = 0, sdp_data = fieldlst }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult LibJson(DataRow row)
+        {
+            List<FormFields> fieldlst = new List<FormFields>();
+            FormFields f = null;
+            if (row != null)
+            {
+                foreach (DataColumn col in row.Table.Columns)
+                {
+                    f = new FormFields();
+                    f.ProgId = this.ProgID;
+                    f.FieldNm = string.Format("{0}{2}{1}", row.Table.TableName, col.ColumnName, SysConstManage.Underline);
+                    if (col.DataType.Equals(typeof(DateTime)) || col.DataType.Equals(typeof(Date)))
+                    {
+                        f.FieldValue = row[col].ToString();
+
+                    }
+                    else
+                        f.FieldValue = row[col];
+                    fieldlst.Add(f);
+                }
+            }
             return Json(new { sdp_flag = 0, sdp_data = fieldlst }, JsonRequestBehavior.AllowGet);
         }
         #endregion

@@ -28,6 +28,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -41,6 +44,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -54,6 +60,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <SourceField>
                 <ID>4a402ed9-ae7d-49ac-8de4-415f8f4abaf1</ID>
                 <FromDataSource>Materials</FromDataSource>
@@ -75,6 +84,9 @@
               <Decimalpoint>3</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -88,6 +100,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -101,6 +116,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -114,6 +132,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -127,6 +148,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -140,6 +164,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <SourceField>
                 <ID>1e8d1239-bfef-492b-b2c2-ba7ed892d23a</ID>
                 <RelateFieldNm />
@@ -170,6 +197,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
           </Fields>
@@ -197,6 +227,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -208,8 +241,12 @@
               <FieldType>Interger</FieldType>
               <FieldLength>0</FieldLength>
               <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>true</AutoIncrement>
+              <AutoIncrementSeed>10</AutoIncrementSeed>
+              <AutoIncrementStep>10</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -223,6 +260,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -236,6 +276,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
           </Fields>
@@ -265,8 +308,12 @@
               <FieldType>String</FieldType>
               <FieldLength>0</FieldLength>
               <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -278,8 +325,12 @@
               <FieldType>Interger</FieldType>
               <FieldLength>0</FieldLength>
               <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>true</AutoIncrement>
+              <AutoIncrementSeed>10</AutoIncrementSeed>
+              <AutoIncrementStep>10</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -293,6 +344,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -306,6 +360,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -319,6 +376,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -332,6 +392,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
           </Fields>
@@ -360,6 +423,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -373,6 +439,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -386,6 +455,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
             <LibField>
@@ -399,6 +471,9 @@
               <Decimalpoint>0</Decimalpoint>
               <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
               <Items />
             </LibField>
           </Fields>

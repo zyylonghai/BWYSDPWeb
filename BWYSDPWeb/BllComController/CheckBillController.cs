@@ -47,7 +47,7 @@ namespace BWYSDPWeb.BllComController
 
             row = this.LibTables[1].Tables[0].NewRow();
             row["BillNo"] = "T201903160001";
-            row["RowNo"] = 1;
+            //row["RowNo"] = 1;
             row["yingdu"] = "jjjj";
             row["naiwendu"] = "dsfsd";
             row["xingzhuang"] = "dlkfj";

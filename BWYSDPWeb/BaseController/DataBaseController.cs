@@ -457,32 +457,12 @@ namespace BWYSDPWeb.BaseController
 
         public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string cmd)
         {
-            switch (cmd)
-            {
-                case "Add":
-
-                    break;
-                case "Edit":
-
-                    break;
-                case "Delet":
-                    break;
-            }
-            return Json(new { });
-        }
-
-        public ActionResult TableAction(string gridid, string tbnm,string tableNm, string cmd)
-        {
             DataRow dr = null;
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
             if (libtable != null)
             {
-                var formparams = this.Request.Form;
-                string[] array;
-                //DataTable[] dts = libtable.Tables;
-                //DataRow[] newrows = new DataRow[dts.Length];
                 DataTable tb;
-                DataTable relatetb=null;
+                DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
                     tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
@@ -507,16 +487,17 @@ namespace BWYSDPWeb.BaseController
                                     if (relatetb != null)
                                     {
                                         break;
-                                    } 
+                                    }
                                 }
                                 #endregion
                                 #region 填充主键列的值
-                                if (relatetb != null && extprop .RelateTableIndex ==0)
+                                if (relatetb != null && extprop.RelateTableIndex == 0)
                                 {
                                     ColExtendedProperties colextprop = null;
                                     DataColumn relatecol = null;
                                     foreach (var col in tb.PrimaryKey)
                                     {
+                                        if (col.AutoIncrement) continue;
                                         colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
                                         if (string.IsNullOrEmpty(colextprop.MapPrimarykey))
                                         {
@@ -540,7 +521,105 @@ namespace BWYSDPWeb.BaseController
                                 }
                                 #endregion
                             }
+                            //tb.Rows.Add(dr);
+                            break;
+                        case "Edit":
+
+                            break;
+                        case "Delet":
+
+                            break;
+                    }
+                }
+            }
+            UpdateTableRow(gridid, dr, cmd);
+            return LibJson(dr);
+        }
+
+        public ActionResult TableAction(string gridid, string tbnm,string tableNm, string cmd,string row)
+        {
+            DataRow dr = null;
+            var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
+            if (libtable != null)
+            {
+                var formparams = this.Request.Form;
+                string[] array;
+                DataTable tb;
+                DataTable relatetb=null;
+                if (libtable.Tables != null)
+                {
+                    tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
+                    if (tb == null)
+                        this.ThrowErrorException(string.Format("未找到表{0}",tableNm));
+                    if (string.IsNullOrEmpty(row))
+                        this.ThrowErrorException("error! not data");
+                    List<FormFields> fieldlst = JsonConvert.DeserializeObject<List<FormFields>>(row);
+                    if (fieldlst == null)
+                        this.ThrowErrorException(string.Format("反序列化后数据为空"));
+
+                    switch (cmd)
+                    {
+                        case "Add":
+                            dr = tb.NewRow();
+                            foreach (FormFields f in fieldlst)
+                            {
+                                dr[f.FieldNm.Replace(string.Format("{0}{1}",tableNm ,SysConstManage .Underline), "")] = f.FieldValue;
+                            }
                             tb.Rows.Add(dr);
+                            #region 旧代码
+                            //dr = tb.NewRow();
+                            //TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                            //if (extprop != null)
+                            //{
+                            //    #region 获取关联的表
+                            //    foreach (var item in this.LibTables)
+                            //    {
+                            //        for (int n = 0; n < item.Tables.Length; n++)
+                            //        {
+                            //            if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).TableIndex == extprop.RelateTableIndex)
+                            //            {
+                            //                relatetb = item.Tables[n];
+                            //                break;
+                            //            }
+                            //        }
+                            //        if (relatetb != null)
+                            //        {
+                            //            break;
+                            //        } 
+                            //    }
+                            //    #endregion
+                            //    #region 填充主键列的值
+                            //    if (relatetb != null && extprop .RelateTableIndex ==0)
+                            //    {
+                            //        ColExtendedProperties colextprop = null;
+                            //        DataColumn relatecol = null;
+                            //        foreach (var col in tb.PrimaryKey)
+                            //        {
+                            //            colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                            //            if (string.IsNullOrEmpty(colextprop.MapPrimarykey))
+                            //            {
+                            //                relatecol = relatetb.Columns[col.ColumnName];
+                            //                if (relatecol != null)
+                            //                    dr[col] = relatetb.Rows[0][relatecol];
+                            //                else
+                            //                {
+                            //                    if (col.DataType.Equals(typeof(int)) || col.DataType.Equals(typeof(decimal)) || col.DataType.Equals(typeof(long)))
+                            //                    {
+                            //                        dr[col] = 0;
+                            //                        continue;
+                            //                    }
+                            //                    dr[col] = new object();
+                            //                }
+                            //            }
+                            //            else
+                            //                dr[col] = relatetb.Rows[0][colextprop.MapPrimarykey];
+
+                            //        }
+                            //    }
+                            //    #endregion
+                            //}
+                            //tb.Rows.Add(dr);
+                            #endregion
                             break;
                         case "Edit":
 
@@ -587,6 +666,10 @@ namespace BWYSDPWeb.BaseController
         }
 
         protected virtual void UpdateTableAction(string gridid,DataRow row, string cmd)
+        {
+
+        }
+        protected virtual void UpdateTableRow(string gridid,DataRow row, string cmd)
         {
 
         }
