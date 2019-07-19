@@ -280,10 +280,10 @@ namespace BWYSDPWeb.BaseController
             BeforeSave();
             this.LibTables[0].Tables[0].Rows[0].AcceptChanges();
             this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
-            string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-            object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
-            object resut= this.ExecuteSaveMethod("Save", this.LibTables);
-            string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            //object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
+            //object resut= this.ExecuteSaveMethod("Save", this.LibTables);
+            //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
             //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
@@ -433,18 +433,19 @@ namespace BWYSDPWeb.BaseController
             DataTable dt = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
             if(dt==null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
             GetGridDataExt(gridid, dt);
-                //DataTable dt2 = dt.Copy();
-                //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
-                //foreach (DataRow dr in drs)
-                //{
-                //    dt2.Rows.Remove(dr);
-                //}
-                DataTable resultdt = dt.Clone();
-                for (int index = (page - 1) * rows; index < page * rows; index++)
-                {
-                    if (index >= dt.Rows.Count) break;
-                    resultdt.ImportRow(dt.Rows[index]);
-                }
+            //DataTable dt2 = dt.Copy();
+            //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
+            //foreach (DataRow dr in drs)
+            //{
+            //    dt2.Rows.Remove(dr);
+            //}
+            DataTable resultdt = dt.Clone();
+            for (int index = (page - 1) * rows; index < page * rows; index++)
+            {
+                if (index >= dt.Rows.Count) break;
+                if (dt.Rows[index].RowState == DataRowState.Deleted) continue;
+                resultdt.ImportRow(dt.Rows[index]);
+            }
             var result = new { total = dt.Rows.Count, rows = resultdt };
             //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
 
@@ -455,7 +456,7 @@ namespace BWYSDPWeb.BaseController
             return JsonConvert.SerializeObject(result);
         }
 
-        public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string cmd)
+        public ActionResult GetTableRow(string gridid, string tbnm, string tableNm,string rowid, string cmd)
         {
             DataRow dr = null;
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
@@ -465,10 +466,11 @@ namespace BWYSDPWeb.BaseController
                 DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
-                    tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
+                    tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm).Copy() ;
                     switch (cmd)
                     {
                         case "Add":
+
                             dr = tb.NewRow();
                             TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
                             if (extprop != null)
@@ -524,7 +526,12 @@ namespace BWYSDPWeb.BaseController
                             //tb.Rows.Add(dr);
                             break;
                         case "Edit":
-
+                            if (!string.IsNullOrEmpty(rowid))
+                            {
+                                DataRow[] drs = tb.Select(string.Format("{0}={1}", SysConstManage.sdp_rowid, rowid));
+                                if (drs != null && drs.Length > 0)
+                                    dr = drs[0];
+                            }
                             break;
                         case "Delet":
 
@@ -622,7 +629,15 @@ namespace BWYSDPWeb.BaseController
                             #endregion
                             break;
                         case "Edit":
-
+                            var sdprowid = fieldlst.FirstOrDefault(i => i.FieldNm.Contains(SysConstManage.sdp_rowid));
+                            if(sdprowid !=null )
+                            {
+                                DataRow[] rows = tb.Select(string.Format("{0}={1}", SysConstManage.sdp_rowid, sdprowid .FieldValue));
+                                if (rows != null && rows.Length > 0)
+                                {
+                                    dr = rows[0];
+                                }
+                            }
                             break;
                         case "Delet":
                             break;

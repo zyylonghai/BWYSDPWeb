@@ -231,6 +231,7 @@ namespace Bll
                             bulkCopy.WriteToServer(dt);
                             transaction.Commit();
                         }
+                      
                     }
                     catch (Exception ex)
                     {

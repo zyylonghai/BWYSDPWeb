@@ -53,8 +53,19 @@ namespace BWYSDPWeb.BllComController
             row["xingzhuang"] = "dlkfj";
             this.LibTables[1].Tables[0].Rows.Add(row);
 
+            row = this.LibTables[1].Tables[0].NewRow();
+            row["BillNo"] = "T201903160001";
+            //row["RowNo"] = 1;
+            row["yingdu"] = "jjjj2";
+            row["naiwendu"] = "dsfsd2";
+            row["xingzhuang"] = "dlkfj2";
+            this.LibTables[1].Tables[0].Rows.Add(row);
+            this.LibTables[1].Tables[0].AcceptChanges();
+            this.LibTables[1].Tables[0].Rows[1].Delete();
+
+
             string a= System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
-            for (int i = 1; i < 10000; i++)
+            for (int i = 1; i < 2000; i++)
             {
                 row = this.LibTables[1].Tables[1].NewRow();
                 row["BillNo"] = "T201903160001";
@@ -88,7 +99,17 @@ namespace BWYSDPWeb.BllComController
             ////dr["midu"] = "kdkkdkdkk";
             //dt.Rows.Add(dr);
         }
-        
+
+        protected override void UpdateTableRow(string gridid, DataRow row, string cmd)
+        {
+            base.UpdateTableRow(gridid, row, cmd);
+            if (string.Compare(gridid, "GridGroup1") == 0 && cmd== "Add")
+            {
+                row["yingdu"] = "zyylonghai";
+                row["xingzhuang"] = "88888888";
+            }
+        }
+
         public ActionResult Test(string staffid)
         {
 

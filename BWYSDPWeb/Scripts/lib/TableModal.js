@@ -68,7 +68,16 @@ libTableModal.prototype = {
             thisobj.GridId = button.data("gridid");
             thisobj.Cmd = button.data("cmd");
             thisobj.TableNm = button.data("tablenm");
-            $('#' + id + ' .modal-title').text(thisobj.DeftbNm + "新增");
+            if (thisobj.Cmd == "Add") {
+                $('#' + id + ' .modal-title').text(thisobj.DeftbNm + "新增");
+            }
+            else if (thisobj.Cmd == "Edit") {
+                $('#' + id + ' .modal-title').text(thisobj.DeftbNm + "编辑");
+            }
+            else if (thisobj.Cmd == "Delet")
+            {
+                $('#' + id + ' .modal-title').text(thisobj.DeftbNm + "删除");
+            }
             if (thisobj.ControlNm == "" || thisobj.ControlNm == undefined) {
                 thisobj.ControlNm = "DataBase";
             }
@@ -79,12 +88,17 @@ libTableModal.prototype = {
     },
     GetTableRow: function () {
         var thisobj = this;
+        var selectrowid="";
+        if (this.Cmd == "Edit")
+        {
+            var seletdr = $('#' + thisobj.GridId).bootstrapTable('getSelections');
+            selectrowid = seletdr[0].sdp_rowid;
+        }
         $.ajax({
             async: false,
             type: "POST",
-            //url: '${pageContext.request.contextPath}/link/apply',
             url: '/' + this.ControlNm + '/GetTableRow',
-            data:'gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '',
+            data: 'gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&rowid=' + selectrowid + '&cmd=' + this.Cmd + '',
             //dataType: "text",
             success: function (data) {
                 thisobj.Currentrow = data.sdp_data;

@@ -68,13 +68,32 @@ function Save(datastr) {
         type: 'Post',
         async: false,
         dataType: "json",
-        success: function (obj)
-        {
+        success: function (obj) {
             alert(obj);
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown)
-        {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
         }
     });
+}
+
+function TableBtnEdit(obj, grid) {
+    let exist = $(obj).attr("data-toggle");
+    if (!exist)
+    {
+        $(obj).attr("data-toggle", "modal");
+    }
+    var seletdr = $('#' + grid).bootstrapTable('getSelections');
+    if (seletdr == null || seletdr.length == 0) {
+        ShowMsg('未选择要编辑的行', 'error');
+        $(obj).removeAttr("data-toggle");
+        return false;
+    }
+    if (seletdr.length > 1) {
+        ShowMsg('只能选择一行进行编辑', 'error');
+        $(obj).removeAttr("data-toggle");
+        return;
+    }
+    
+    return false;
 }

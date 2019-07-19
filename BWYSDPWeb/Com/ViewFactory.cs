@@ -261,10 +261,12 @@ namespace BWYSDPWeb.Com
             //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>新增");
             _page.Append("</button>");
-            _page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnEdit(this,'" + grid.GridGroupName + "')\" data-toggle=\"modal\"  data-target=\"#sdp_tbmdl_" + id + "\"  data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Edit\">");
+            //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>编辑");
             _page.Append("</button>");
-            _page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+            //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>删除");
             _page.Append("</button>");
             _page.Append("</div>");

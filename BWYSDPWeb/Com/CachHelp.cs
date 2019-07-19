@@ -111,7 +111,9 @@ namespace BWYSDPWeb.Com
           new DataColumn("rowid",typeof(int)),
         new DataColumn("fieldnm",typeof(string)),
         new DataColumn("fieldvalue",typeof(string)),
-          new DataColumn("actions",typeof(int))      });
+          new DataColumn("actions",typeof(int)),
+                new DataColumn ("oldfieldvalue",typeof(string))
+                });
                 DataRow row = null;
                 #endregion
                 string a = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
@@ -121,52 +123,60 @@ namespace BWYSDPWeb.Com
                            "@sessionid='{0}',@progid='{1}' ",
                            sessionid, this._progid));
                 sQLiteHelp.Update(commandlst);
-                foreach (var tb in this._table)
+                try
                 {
-                    foreach (var t in tb.Tables)
+                    foreach (var tb in this._table)
                     {
-                        foreach (DataRow dr in t.Rows)
+                        foreach (var t in tb.Tables)
                         {
-                            rowindex = t.Rows.IndexOf(dr);
-                            switch (dr.RowState)
+                            foreach (DataRow dr in t.Rows)
                             {
-                                case DataRowState.Added:
-                                    action = 0;
-                                    break;
-                                case DataRowState.Deleted:
-                                    action = 2;
-                                    break;
-                                case DataRowState.Modified:
-                                    action = 1;
-                                    break;
-                                case DataRowState.Unchanged:
-                                    action = -1;
-                                    break;
-                            }
-                            foreach (DataColumn col in t.Columns)
-                            {
-                                row = temp.NewRow();
-                                row[0] = sessionid;
-                                row[1] = _progid;
-                                row[2] = t.TableName;
-                                row[3] = rowindex;
-                                row[4] = col.ColumnName;
-                                row[5] = action == -1 ? "" : dr[col].ToString();
-                                row[6] = action;
-                                temp.Rows.Add(row);
-                                //     commandlst.Add(string.Format("EXEC sp_executesql N'" +
-                                //"insert into [temp] values(@sessionid,@progid,@tbnm,@rwindx,@fieldnm,@fieldvalu,@actions)   '," +
-                                //"N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int,@fieldnm nvarchar(35),@fieldvalu ntext,@actions smallint'," +
-                                //"@sessionid='{0}',@progid='{1}',@tbnm='{2}',@rwindx={3},@fieldnm='{4}',@fieldvalu=N'{5}',@actions={6}  ",
-                                //sessionid, this._progid, t.TableName, rowindex, col.ColumnName, action==-1?"":dr[col].ToString(), action));
+                                rowindex = t.Rows.IndexOf(dr);
+                                switch (dr.RowState)
+                                {
+                                    case DataRowState.Added:
+                                        action = 0;
+                                        break;
+                                    case DataRowState.Deleted:
+                                        action = 2;
+                                        break;
+                                    case DataRowState.Modified:
+                                        action = 1;
+                                        break;
+                                    case DataRowState.Unchanged:
+                                        action = -1;
+                                        break;
+                                }
+                                foreach (DataColumn col in t.Columns)
+                                {
+                                    row = temp.NewRow();
+                                    row[0] = sessionid;
+                                    row[1] = _progid;
+                                    row[2] = t.TableName;
+                                    row[3] = rowindex;
+                                    row[4] = col.ColumnName;
+                                    row[5] = action == 2? dr[col, DataRowVersion.Original].ToString(): dr[col].ToString();
+                                    row[6] = action;
+                                    row[7] = (action == 1 || action == 2) ? dr[col, DataRowVersion.Original].ToString() : dr[col].ToString();
+                                    temp.Rows.Add(row);
+                                    //     commandlst.Add(string.Format("EXEC sp_executesql N'" +
+                                    //"insert into [temp] values(@sessionid,@progid,@tbnm,@rwindx,@fieldnm,@fieldvalu,@actions)   '," +
+                                    //"N'@sessionid nchar(35),@progid nvarchar(35),@tbnm nvarchar(35),@rwindx int,@fieldnm nvarchar(35),@fieldvalu ntext,@actions smallint'," +
+                                    //"@sessionid='{0}',@progid='{1}',@tbnm='{2}',@rwindx={3},@fieldnm='{4}',@fieldvalu=N'{5}',@actions={6}  ",
+                                    //sessionid, this._progid, t.TableName, rowindex, col.ColumnName, action==-1?"":dr[col].ToString(), action));
+                                }
                             }
                         }
                     }
+                    string j = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                    //sQLiteHelp.Update(commandlst);
+                    sQLiteHelp.SqlBulkUpdate(temp);
+                    string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                 }
-                string j = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                //sQLiteHelp.Update(commandlst);
-                sQLiteHelp.SqlBulkUpdate(temp);
-                string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                catch (Exception ex)
+                {
+
+                }
 
             }
         }

@@ -196,26 +196,31 @@ namespace BWYSDPWeb.BaseController
             #region 存cache
             CachHelp cachelp = new CachHelp();
             LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID)) as LibTable[];
-            if (tbs == null)
-            {
-                //CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
-                //tbs = createTable.CreateTableSchema(this.DSID, this.Package);
-                //cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs,this.ProgID);
-                //this.LibTables = tbs;
-                tbs = DoCreateTableSchema();
-                cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
-                this.LibTables = tbs;
-            }
-            if (tbs != null)
-            {
-                foreach (var item in tbs)
-                {
-                    foreach (DataTable d in item.Tables)
-                    {
-                        d.Clear();
-                    }
-                }
-            }
+
+            tbs = DoCreateTableSchema();
+            cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
+            this.LibTables = tbs;
+            //if (tbs == null)
+            //{
+            //    //CreateTableSchemaHelp createTable = new CreateTableSchemaHelp(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")));
+            //    //tbs = createTable.CreateTableSchema(this.DSID, this.Package);
+            //    //cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs,this.ProgID);
+            //    //this.LibTables = tbs;
+            //    tbs = DoCreateTableSchema();
+            //    cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
+            //    this.LibTables = tbs;
+            //}
+            //if (tbs != null)
+            //{
+            //    foreach (var item in tbs)
+            //    {
+            //        foreach (DataTable d in item.Tables)
+            //        {
+            //            //d.Reset();
+            //            d.Clear();
+            //        }
+            //    }
+            //}
             #endregion
 
         }
@@ -381,6 +386,8 @@ namespace BWYSDPWeb.BaseController
                     DataColumn colrowid;
                     DataColumn colfieldnm;
                     DataColumn colaction;
+                    DataColumn colvalue;
+                    DataColumn cololdvalue;
                     //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                     foreach (LibTable item in this.LibTables)
                     {
@@ -397,6 +404,8 @@ namespace BWYSDPWeb.BaseController
                                 colfieldnm = result.Columns["fieldnm"];
                                 colaction = result.Columns["actions"];
                                 rowstate = new Dictionary<int, int>();
+                                colvalue = result.Columns["fieldvalue"];
+                                cololdvalue = result.Columns["oldfieldvalue"];
                                 foreach (DataRow dr in result.Rows)
                                 {
                                     if (rowindex != (int)dr[colrowid])
@@ -419,9 +428,25 @@ namespace BWYSDPWeb.BaseController
                                             case 0: //新增状态
                                                 break;
                                             case 1: //修改状态
+                                                #region 赋值
+                                                if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+                                                {
+                                                    newrow[dr[colfieldnm].ToString()] = new Date(dr[cololdvalue].ToString());
+                                                }
+                                                else
+                                                    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
+                                                #endregion
                                                 newrow.AcceptChanges();
                                                 break;
                                             case 2: //删除状态
+                                                #region 赋值
+                                                if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+                                                {
+                                                    newrow[dr[colfieldnm].ToString()] = new Date(dr[cololdvalue].ToString());
+                                                }
+                                                else
+                                                    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
+                                                #endregion
                                                 rowstate.Add(rowindex, 2);
                                                 break;
                                             case -1: //未更改状态
@@ -432,10 +457,10 @@ namespace BWYSDPWeb.BaseController
                                     #region 赋值
                                     if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
                                     {
-                                        newrow[dr[colfieldnm].ToString()] = new Date(dr["fieldvalue"].ToString());
+                                        newrow[dr[colfieldnm].ToString()] = new Date(dr[colvalue].ToString());
                                     }
                                     else
-                                        newrow[dr[colfieldnm].ToString()] = dr["fieldvalue"];
+                                        newrow[dr[colfieldnm].ToString()] = dr[colvalue];
                                     #endregion
                                 }
                                 foreach (KeyValuePair<int, int> keyval in rowstate)
