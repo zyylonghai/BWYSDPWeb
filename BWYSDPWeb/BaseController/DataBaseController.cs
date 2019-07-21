@@ -261,29 +261,29 @@ namespace BWYSDPWeb.BaseController
         public ActionResult Save()
         {
             #region 处理前端传回的数据
-            var formdata = this.Request.Form;
-            List<TableObj> tables = JsonConvert.DeserializeObject<List<TableObj>>(formdata["datastr"]);
-            foreach (TableObj obj in tables)
-            {
-                foreach (var jarray in obj.addrows)
-                {
-                    JObject jobj = jarray as JObject;
-                    foreach (JToken jkon in jobj.AsEnumerable<JToken>())
-                    {
-                        string name = ((JProperty)(jkon)).Name;
-                        string value = ((JProperty)(jkon)).Value.ToString();
-                    }
+            //var formdata = this.Request.Form;
+            //List<TableObj> tables = JsonConvert.DeserializeObject<List<TableObj>>(formdata["datastr"]);
+            //foreach (TableObj obj in tables)
+            //{
+            //    foreach (var jarray in obj.addrows)
+            //    {
+            //        JObject jobj = jarray as JObject;
+            //        foreach (JToken jkon in jobj.AsEnumerable<JToken>())
+            //        {
+            //            string name = ((JProperty)(jkon)).Name;
+            //            string value = ((JProperty)(jkon)).Value.ToString();
+            //        }
                 
-                }
-            }
+            //    }
+            //}
             #endregion
             BeforeSave();
             this.LibTables[0].Tables[0].Rows[0].AcceptChanges();
             this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
-            //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-            //object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
-            //object resut= this.ExecuteSaveMethod("Save", this.LibTables);
-            //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
+            object resut = this.ExecuteSaveMethod("Save", this.LibTables);
+            string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
             //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });

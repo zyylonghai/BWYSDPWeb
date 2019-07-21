@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SDPCRL.CORE;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,14 +11,17 @@ namespace BWYSDPWeb.App_Start
     {
         public override void OnException(ExceptionContext filterContext)
         {
-            filterContext.Result = new JsonResult
+            if (filterContext.Exception.GetType().Equals(typeof(LibExceptionBase)))
             {
+                filterContext.Result = new JsonResult
+                {
 
-                Data = new { success = false, code = 520, msg = filterContext.Exception.Message },
+                    Data = new { success = false, code = 520, msg = filterContext.Exception.Message },
 
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
 
-            };
+                };
+            }
             //filterContext.ExceptionHandled = true;
             //filterContext.ExceptionHandled = false;
             //base.OnException(filterContext);

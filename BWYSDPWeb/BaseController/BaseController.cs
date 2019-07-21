@@ -483,7 +483,7 @@ namespace BWYSDPWeb.BaseController
                 }
                 catch (Exception ex)
                 {
-
+                    ThrowErrorException(ex.Message);
                 }
                 CachHelp cachelp = new CachHelp();
                 cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), this.LibTables, this.ProgID);
@@ -543,7 +543,7 @@ namespace BWYSDPWeb.BaseController
         public void ThrowErrorException(string msg)
         {
             ExceptionHelp help = new ExceptionHelp();
-            help.ThrowError(this, msg);
+            help.ThrowError(this, msg); 
         }
         #endregion
 
