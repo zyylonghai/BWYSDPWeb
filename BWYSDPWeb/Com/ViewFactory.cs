@@ -213,8 +213,10 @@ namespace BWYSDPWeb.Com
                         break;
                     case ElementType.Select:
                         _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\">");
-                       
-                        //foreach (var keyval in )
+                        LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                        foreach (LibKeyValue keyval in libField.Items) {
+                            _page.Append("<option value=\""+keyval.Key+"\">"+keyval .Value+"</option>");
+                        }
                         _page.Append("</select>");
                         break;
                     case ElementType.Text:
