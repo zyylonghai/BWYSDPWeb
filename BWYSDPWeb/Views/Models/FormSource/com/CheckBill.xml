@@ -3,67 +3,100 @@
   <FormGroups>
     <LibFormGroup FormGroupID="e668f52e-62c7-4f8c-95a3-012cc80bc3c1" FormGroupName="FormGroup1" FormGroupDisplayNm="关键信息">
       <FmGroupFields>
-        <LibFormGroupField ID="490cf9ee-10dc-4e86-be79-7d05d4955489">
+        <LibFormGroupField ID="c09040fd-eeb0-4e86-b3a3-0e758b95cb26">
           <Name>BillNo</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>单据号</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>20</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="59b401a1-fb66-4d05-a1a6-881a22054adb">
+        <LibFormGroupField ID="0d733f0a-3ad1-46cc-b135-5172d28a5d4d">
           <Name>Checker</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>检验人</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>20</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="9dede0ce-f7c8-4076-9b17-e00df2672418">
+        <LibFormGroupField ID="c510e1f6-5b34-403b-983c-52d1fd7e4872">
           <Name>matId</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>物料编号</DisplayName>
           <ElemType>Search</ElemType>
           <Width>2</Width>
+          <FieldLength>30</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="03af1899-9b93-4cd7-b184-d0671e884df0">
+        <LibFormGroupField ID="f7246bdc-32c9-43a4-841c-d887d17edc24">
           <Name>Qty</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>数量</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>18</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>true</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="3ad7ee8e-97aa-4a19-b12f-d08f37de6383">
+        <LibFormGroupField ID="c58adc60-bd1d-4c06-9086-e0d4cc8b94be">
           <Name>CheckDT</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>检验日期</DisplayName>
           <ElemType>Date</ElemType>
           <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="d48e17a0-0f12-451f-a120-8da3d4cb6d24">
+        <LibFormGroupField ID="f56b7a01-5f22-4255-a2e7-155a428ff733">
           <Name>CompanyId</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>公司</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>20</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="e8269451-3034-48a1-8a6d-124a59156a32">
+        <LibFormGroupField ID="dd5e4903-35bc-4a98-a258-a965574f1b3e">
           <Name>departmentId</Name>
           <FromTableNm>CheckBill</FromTableNm>
           <FromDefTableNm>CheckBill</FromDefTableNm>
           <DisplayName>部门</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>20</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="eb60f776-321e-4fa9-b58e-c93e1392c28d">
+          <Name>billStatus</Name>
+          <FromTableNm>CheckBill</FromTableNm>
+          <FromDefTableNm>CheckBill</FromDefTableNm>
+          <DisplayName>单据状态</DisplayName>
+          <ElemType>Select</ElemType>
+          <Width>2</Width>
+          <FieldLength>2</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
       </FmGroupFields>
@@ -77,6 +110,9 @@
           <DisplayName>备注</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>false</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
         <LibFormGroupField ID="808d222e-d749-4cf2-9839-f02e4edf52ee">
@@ -86,6 +122,9 @@
           <DisplayName>检验部位1</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>false</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
         <LibFormGroupField ID="af4ed17c-614d-4326-a93f-532f4f49144f">
@@ -95,6 +134,9 @@
           <DisplayName>检验部位2</DisplayName>
           <ElemType>Text</ElemType>
           <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>false</IsAllowNull>
+          <IsNumber>false</IsNumber>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
       </FmGroupFields>

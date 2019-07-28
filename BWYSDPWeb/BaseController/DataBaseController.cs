@@ -141,6 +141,7 @@ namespace BWYSDPWeb.BaseController
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
                         LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, this.Package);
+                        LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), formpage.DSID, this.Package);
                         if (formpage != null)
                         {
                             #region 旧代码
@@ -159,6 +160,7 @@ namespace BWYSDPWeb.BaseController
 
                             #region 根据排版模型对象 创建功能视图。
                             ViewFactory factory = new ViewFactory(progId);
+                            factory.LibDataSource = dataSource;
                             factory.ControlClassNm = formpage.ControlClassNm;
                             factory.DSID = formpage.DSID;
                             factory.Package = this.Package;

@@ -1,4 +1,5 @@
-﻿using SDPCRL.COM.ModelManager.FormTemplate;
+﻿using SDPCRL.COM.ModelManager;
+using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ namespace BWYSDPWeb.Com
         public string Package { get; set; }
 
         public Dictionary<string, List<string>> Formfields { get; set; }
+
+        public LibDataSource LibDataSource { get; set; }
         #endregion
         public ViewFactory()
         {
@@ -209,6 +212,10 @@ namespace BWYSDPWeb.Com
                         _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
                         break;
                     case ElementType.Select:
+                        _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\">");
+                       
+                        //foreach (var keyval in )
+                        _page.Append("</select>");
                         break;
                     case ElementType.Text:
                         _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
@@ -580,6 +587,14 @@ namespace BWYSDPWeb.Com
                 _page.Append("</div>");
                 _gridGroupdic[griditem.Key] = true;
             }
+        }
+
+        private LibField GetField(string deftable, string table, string fieldNm)
+        {
+           var deftb= this.LibDataSource.DefTables.FindFirst("TableName", deftable);
+            var tbstruct = deftb.TableStruct.FindFirst("Name", table);
+            var field = tbstruct.Fields.FindFirst("Name", fieldNm);
+            return field;
         }
         #endregion
     }
