@@ -61,9 +61,9 @@ function Serialobj(obj) {
     return JSON.stringify(o);
 }
 
-function Save(datastr) {
+function Save(datastr,ctrNm) {
     $.ajax({
-        url: "/DataBase/Save",
+        url: "/" + ctrNm + "/Save",
         data: $('form').serialize() + "&datastr=" + datastr + "",
         type: 'Post',
         async: false,

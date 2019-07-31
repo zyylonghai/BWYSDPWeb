@@ -546,7 +546,7 @@ namespace BWYSDPWeb.Com
                 "var datastr='['; " +
                 "$.each(objs,function(index,o){if(datastr.length==1){ datastr+=Serialobj(o);}else{datastr+=\",\"+Serialobj(o);}});" +
                 "datastr+=']';" +
-                "Save(datastr);" +
+                "Save(datastr," + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + ");" +
                 "});");
             #endregion
 

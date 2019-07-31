@@ -22,11 +22,11 @@ namespace ComDal
         }
 
 
-        //public override void Save(LibTable[] libtables)
-        //{
-        //    this.AddErrorMessage("error test");
-        //    base.Save(libtables);
-        //}
+        public override void Save(LibTable[] libtables)
+        {
+            this.AddErrorMessage("error test");
+            base.Save(libtables);
+        }
 
         public string Test(string a,int b)
         {
