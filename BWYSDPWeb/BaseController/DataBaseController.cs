@@ -282,10 +282,10 @@ namespace BWYSDPWeb.BaseController
             BeforeSave();
             this.LibTables[0].Tables[0].Rows[0].AcceptChanges();
             this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
-            string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-            object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
-            object resut = this.ExecuteSaveMethod("Save", this.LibTables);
-            string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+            //object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
+            //object resut = this.ExecuteSaveMethod("Save", this.LibTables);
+            //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
             //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });

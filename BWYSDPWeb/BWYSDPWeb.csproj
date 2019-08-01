@@ -1906,6 +1906,7 @@
     <Content Include="Scripts\lib\dashboard.js" />
     <Content Include="Scripts\lib\fastclick.min.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />
+    <Content Include="Scripts\lib\FormValidator.js" />
     <Content Include="Scripts\lib\home.js" />
     <Content Include="Scripts\lib\jquery.base64.js" />
     <Content Include="Scripts\lib\jquery.cookie.min.js" />

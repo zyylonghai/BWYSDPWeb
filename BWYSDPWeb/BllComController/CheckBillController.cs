@@ -22,6 +22,7 @@ namespace BWYSDPWeb.BllComController
             row["Checker"] = "zyy33";
             row["CheckDT"] = new Date("2018-2-9");
             row["Qty"] = 10;
+            //row["billStatus"] = 2;
             //foreach (DataRow dr in this.LibTables[0].Tables[0].Rows)
             //{
 
@@ -103,6 +104,7 @@ namespace BWYSDPWeb.BllComController
         protected override void UpdateTableRow(string gridid, DataRow row, string cmd)
         {
             base.UpdateTableRow(gridid, row, cmd);
+            //this.ThrowErrorException("抛出异常测试");
             if (string.Compare(gridid, "GridGroup1") == 0 && cmd== "Add")
             {
                 row["yingdu"] = "zyylonghai";

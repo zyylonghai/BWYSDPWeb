@@ -200,7 +200,7 @@ namespace BWYSDPWeb.Com
                 }
                 string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
                 string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
-                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName + "</label>");
+                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName +(field .IsAllowNull?"<font color=\"red\">*</font>":"")+ "</label>");
                 _page.Append("<div class=\"col-sm-" + field.Width + "\">");
                 switch (field.ElemType)
                 {
@@ -220,7 +220,7 @@ namespace BWYSDPWeb.Com
                         _page.Append("</select>");
                         break;
                     case ElementType.Text:
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" required=\""+(field.IsAllowNull? "required" : "")+"\" placeholder=\"" + field.DisplayName + "\">");
                         break;
                     case ElementType.Search:
                         _page.Append("<div class=\"input-group\">");
@@ -546,7 +546,7 @@ namespace BWYSDPWeb.Com
                 "var datastr='['; " +
                 "$.each(objs,function(index,o){if(datastr.length==1){ datastr+=Serialobj(o);}else{datastr+=\",\"+Serialobj(o);}});" +
                 "datastr+=']';" +
-                "Save(datastr," + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + ");" +
+                "Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
                 "});");
             #endregion
 

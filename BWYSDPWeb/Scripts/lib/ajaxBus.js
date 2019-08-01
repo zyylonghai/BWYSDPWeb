@@ -41,9 +41,11 @@ $.ajax = function (opt) {
     var _opt = $.extend(opt, {
         data: fn.data,
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            var responseobj = JSON.parse(XMLHttpRequest.responseText);
-            ShowMsg(responseobj.msg, 'error');
-
+            if (XMLHttpRequest.status == 500) {
+                var responseobj = JSON.parse(XMLHttpRequest.responseText)
+                if (responseobj != undefined || responseobj != null)
+                    ShowMsg(responseobj.msg, 'error');
+            }
             //错误方法增强处理 
             fn.error(XMLHttpRequest, textStatus, errorThrown);
         },
