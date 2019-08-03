@@ -1926,6 +1926,7 @@
     <Content Include="Scripts\lib\tableExport.js" />
     <Content Include="Scripts\lib\TableModal.js" />
     <Content Include="Scripts\lib\TableSetting.js" />
+    <Content Include="Scripts\Message_zh.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />

@@ -28,6 +28,9 @@ namespace BWYSDPWeb.Com
         public string DSID { get; set; }
         public string Package { get; set; }
 
+        /// <summary>
+        /// 用于存储 信息组的字段。
+        /// </summary>
         public Dictionary<string, List<string>> Formfields { get; set; }
 
         public LibDataSource LibDataSource { get; set; }
@@ -112,7 +115,7 @@ namespace BWYSDPWeb.Com
         public void CreateForm()
         {
             //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
-            _page.Append("@using(Html.BeginForm(\"Save\", \"DataBase\",new { sdp_pageid =\"" + this._progid + "\" },FormMethod.Post,new{@class=\"form-horizontal\" }))");
+            _page.Append("@using(Html.BeginForm(\"Save\", \""+(string.IsNullOrEmpty(this.ControlClassNm )? "DataBase" : this.ControlClassNm )+"\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\""+this.DSID+"\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\"sdp_form\" }))");
             _page.Append("{");
         }
 
@@ -182,6 +185,7 @@ namespace BWYSDPWeb.Com
         {
             int colcout = 0;
             List<string> valus = null;
+            StringBuilder validatorAttr = null;
             foreach (LibFormGroupField field in fields)
             {
                 if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
@@ -200,19 +204,24 @@ namespace BWYSDPWeb.Com
                 }
                 string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
                 string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+                #region 字段属性验证设置
+                validatorAttr = new StringBuilder();
+                validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
+                validatorAttr.AppendFormat("maxlength=\"{0}\"", field.FieldLength);
+                #endregion
                 _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName +(field .IsAllowNull?"<font color=\"red\">*</font>":"")+ "</label>");
                 _page.Append("<div class=\"col-sm-" + field.Width + "\">");
                 switch (field.ElemType)
                 {
                     case ElementType.Date:
                         _dateElemlst.Add(id);
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" "+validatorAttr.ToString ()+">");
                         break;
                     case ElementType.DateTime:
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Select:
-                        _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\">");
+                        _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" " + validatorAttr.ToString() + ">");
                         LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         foreach (LibKeyValue keyval in libField.Items) {
                             _page.Append("<option value=\""+keyval.Key+"\">"+keyval .Value+"</option>");
@@ -220,11 +229,11 @@ namespace BWYSDPWeb.Com
                         _page.Append("</select>");
                         break;
                     case ElementType.Text:
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" required=\""+(field.IsAllowNull? "required" : "")+"\" placeholder=\"" + field.DisplayName + "\">");
+                        _page.Append("<input type=\""+(field.IsNumber? "number" : "text") +"\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Search:
                         _page.Append("<div class=\"input-group\">");
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\">");
+                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         _page.Append("<span class=\"input-group-btn\">");
                         _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-whatever=\"" + field.DisplayName + "\">");
                         _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
@@ -507,8 +516,13 @@ namespace BWYSDPWeb.Com
         private void CreateJavaScript()
         {
             _script.Append("<script type=\"text/javascript\">");
+            #region 表单验证
+            //_script.Append("$.validator.setDefaults({ submitHandler: function() {alert(\"提交事件!\")} });");
+            _script.Append("$().ready(function() { $('#sdp_form').validate();});");
+            #endregion
             _script.Append("$(function (){");
 
+            //_script.Append("$('form').validate();");
             #region 禁用页面的enter建
             _script.Append("$(window).keydown(function (e) {");
             _script.Append("var key = window.event ? e.keyCode : e.which;");

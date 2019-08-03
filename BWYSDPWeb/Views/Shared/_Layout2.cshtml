@@ -14,11 +14,15 @@
             opacity: 0.5;
             -moz-opacity: 0.5;
         }
-    </style> 
+        .error{
+	color:red;
+}
+    </style>
     <title>Clearmin template</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryvalidate")
     <script type="text/javascript">
         $(function () {
             Initilmenus();
@@ -32,7 +36,6 @@
 
         function Initilmenus()
         {
-            debugger
             var mdata = localStorage.getItem("m_data");
             if (mdata != "" && mdata != undefined && mdata != null) {
                 loadmenuData(mdata);
@@ -90,11 +93,11 @@
             $("#masklayer").css("width", $(document).width());
             $("#masklayer").show();
         }
-        //隐藏遮罩层  
+        //隐藏遮罩层
         function hideMask() {
 
             $("#masklayer").hide();
-        }  
+        }
     </script>
     @Scripts.Render("~/bundles/bootstrap")
 </head>

@@ -61,20 +61,23 @@ function Serialobj(obj) {
     return JSON.stringify(o);
 }
 
-function Save(datastr,ctrNm) {
-    $.ajax({
-        url: "/" + ctrNm + "/Save",
-        data: $('form').serialize() + "&datastr=" + datastr + "",
-        type: 'Post',
-        async: false,
-        dataType: "json",
-        success: function (obj) {
-            alert(obj);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
-        }
-    });
+function Save(datastr, ctrNm) {
+    
+    //$.ajax({
+    //    url: "/" + ctrNm + "/Save",
+    //    data: $('form').serialize() + "&datastr=" + datastr + "",
+    //    type: 'Post',
+    //    async: false,
+    //    dataType: "json",
+    //    success: function (obj) {
+    //        alert(obj);
+    //    },
+    //    error: function (XMLHttpRequest, textStatus, errorThrown) {
+    //        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+    //    }
+    //});
+
+    $('#sdp_form').submit();
 }
 
 function TableBtnEdit(obj, grid) {
