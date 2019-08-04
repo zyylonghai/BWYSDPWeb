@@ -17,14 +17,16 @@ namespace ComDal
 
         protected override void BeforeUpdate()
         {
-            this.AddErrorMessage("BeforeUpdate  error test");
+            this.AddErrorMessage("BeforeUpdate  error test",LibMessageType.Warning);
             base.BeforeUpdate();
         }
 
 
         public override void Save(LibTable[] libtables)
         {
-            this.AddErrorMessage("error test");
+            //int a =0;
+            //int b = 8 / a;
+            this.AddErrorMessage("error test",LibMessageType.Warning);
             base.Save(libtables);
         }
 

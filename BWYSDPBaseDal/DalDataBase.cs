@@ -17,7 +17,7 @@ namespace BWYSDPBaseDal
 
         protected override void AfterUpdate()
         {
-            this.AddErrorMessage("AfterUpdate has do run error");
+            this.AddErrorMessage("AfterUpdate has do run error",LibMessageType.Warning);
             base.AfterUpdate();
         }
     }

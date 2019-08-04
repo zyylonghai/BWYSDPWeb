@@ -64,7 +64,16 @@ namespace BWYSDPWeb.BllComController
             this.LibTables[1].Tables[0].AcceptChanges();
             this.LibTables[1].Tables[0].Rows[1].Delete();
 
-
+            for (int n = 1; n < 5000; n++)
+            {
+                row = this.LibTables[1].Tables[0].NewRow();
+                row["BillNo"] = "T201903160001";
+                //row["RowNo"] = n;
+                row["yingdu"] = "jjjj2";
+                row["naiwendu"] = "dsfsd2";
+                row["xingzhuang"] = "dlkfj2";
+                this.LibTables[1].Tables[0].Rows.Add(row);
+            }
             string a= System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
             for (int i = 1; i < 2000; i++)
             {

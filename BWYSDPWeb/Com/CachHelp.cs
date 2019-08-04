@@ -26,12 +26,10 @@ namespace BWYSDPWeb.Com
             {
                 var policy = new CacheItemPolicy() { AbsoluteExpiration = DateTime.Now.AddSeconds(30) };
                 policy.ChangeMonitors.Add(new LibTableChangeMonitor(key, val, progid, policy));
-
-                cache.Set(key, val, policy);
                 //policy.UpdateCallback = updatecallback;
-
-
+                cache.Set(key, val, policy);
             }
+
         }
 
         public object GetCach(string key)
@@ -41,6 +39,11 @@ namespace BWYSDPWeb.Com
             //    return cache[key];
             //}
             return cache[key];
+        }
+
+        public void RemoveCache(string key)
+        {
+            cache.Remove(key);
         }
     }
 

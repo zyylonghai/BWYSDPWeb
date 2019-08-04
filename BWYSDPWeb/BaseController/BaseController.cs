@@ -195,10 +195,12 @@ namespace BWYSDPWeb.BaseController
             #endregion
             #region 存cache
             CachHelp cachelp = new CachHelp();
-            LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID)) as LibTable[];
+            string key = string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+            LibTable[] tbs = cachelp.GetCach(key) as LibTable[];
 
             tbs = DoCreateTableSchema();
-            cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), tbs, this.ProgID);
+            cachelp.RemoveCache(key);
+            cachelp.AddCachItem(key, tbs, this.ProgID);
             this.LibTables = tbs;
             //if (tbs == null)
             //{
