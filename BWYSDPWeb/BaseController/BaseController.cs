@@ -20,6 +20,7 @@ namespace BWYSDPWeb.BaseController
         #region 私有属性
         private string _rootPath = string.Empty;
         private BllDataBase _bll = null;
+        private List<LibMessage> MsgList = null;
         #endregion
         #region 公开属性
 
@@ -433,7 +434,7 @@ namespace BWYSDPWeb.BaseController
                                                 #region 赋值
                                                 if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
                                                 {
-                                                    newrow[dr[colfieldnm].ToString()] = new Date(dr[cololdvalue].ToString());
+                                                    newrow[dr[colfieldnm].ToString()] = new Date { value= dr[cololdvalue].ToString() };
                                                 }
                                                 else
                                                     newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
@@ -444,7 +445,7 @@ namespace BWYSDPWeb.BaseController
                                                 #region 赋值
                                                 if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
                                                 {
-                                                    newrow[dr[colfieldnm].ToString()] = new Date(dr[cololdvalue].ToString());
+                                                    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
                                                 }
                                                 else
                                                     newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
@@ -459,7 +460,7 @@ namespace BWYSDPWeb.BaseController
                                     #region 赋值
                                     if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
                                     {
-                                        newrow[dr[colfieldnm].ToString()] = new Date(dr[colvalue].ToString());
+                                        newrow[dr[colfieldnm].ToString()] = new Date { value = dr[colvalue].ToString() };
                                     }
                                     else
                                         newrow[dr[colfieldnm].ToString()] = dr[colvalue];
@@ -546,6 +547,11 @@ namespace BWYSDPWeb.BaseController
         {
             ExceptionHelp help = new ExceptionHelp();
             help.ThrowError(this, msg); 
+        }
+
+        public void AddMessage(string msg,LibMessageType msgtype)
+        {
+            this.MsgList.Add(new LibMessage { Message = msg, MsgType = msgtype });
         }
         #endregion
 

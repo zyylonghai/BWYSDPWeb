@@ -20,7 +20,7 @@ namespace BWYSDPWeb.BllComController
             DataRow row = this.LibTables[0].Tables[0].NewRow();
             row["BillNo"] = "T201903160001";
             row["Checker"] = "zyy33";
-            row["CheckDT"] = new Date("2018-2-9");
+            row["CheckDT"] = new Date { value = "2018-2-9" };
             row["Qty"] = 10;
             //row["billStatus"] = 2;
             //foreach (DataRow dr in this.LibTables[0].Tables[0].Rows)
@@ -30,7 +30,7 @@ namespace BWYSDPWeb.BllComController
             this.LibTables[0].Tables[0].Rows.Add(row);
             row["Qty"] = 10;
             row["Checker"] = "zyy653";
-            row["CheckDT"] = new Date("2018-3-9");
+            row["CheckDT"] = new Date { value = "2018-3-9" };
 
             row = this.LibTables[0].Tables[1].NewRow();
             row["BillNo"] = "T201903160001";

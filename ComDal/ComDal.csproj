@@ -33,6 +33,10 @@
     <Reference Include="SDPCRL.COM">
       <HintPath>..\library\SDPCRL.COM.dll</HintPath>
     </Reference>
+    <Reference Include="SDPCRL.CORE, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\library\SDPCRL.CORE.dll</HintPath>
+    </Reference>
     <Reference Include="SDPCRL.DAL.BUS">
       <HintPath>..\library\Dal\SDPCRL.DAL.BUS.dll</HintPath>
     </Reference>

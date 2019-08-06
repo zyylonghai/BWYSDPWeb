@@ -263,6 +263,7 @@ namespace BWYSDPWeb.BaseController
         public ActionResult Save()
         {
             #region 处理前端传回的数据
+            #region 旧代码
             //var formdata = this.Request.Form;
             //List<TableObj> tables = JsonConvert.DeserializeObject<List<TableObj>>(formdata["datastr"]);
             //foreach (TableObj obj in tables)
@@ -275,9 +276,61 @@ namespace BWYSDPWeb.BaseController
             //            string name = ((JProperty)(jkon)).Name;
             //            string value = ((JProperty)(jkon)).Value.ToString();
             //        }
-                
+
             //    }
             //}
+            #endregion
+            var formdata = this.Request.Form;
+            string[] array;
+            DataTable dt = null;
+            foreach (string key in formdata.AllKeys)
+            {
+                if (key.Contains(SysConstManage.Point))
+                {
+                    array = key.Split(SysConstManage.Point);
+                    if (array.Length < 2)
+                        continue;
+                    if (dt != null && dt.TableName == array[0])
+                    {
+                        if (dt.Columns[array[1]].DataType == typeof(Date))
+                        {
+                            dt.Rows[0][array[1]] = new Date { value = formdata[key].ToString() };
+                        }
+                        else
+                            dt.Rows[0][array[1]] = formdata[key];
+                    }
+                    foreach (LibTable libtb in this.LibTables)
+                    {
+                        string tbnm = array[0];
+                        dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                        if (dt != null)
+                        {
+                            if (dt.Columns[array[1]].DataType == typeof(Date))
+                            {
+                                dt.Rows[0][array[1]] = new Date { value = formdata[key] };
+                            }
+                            else
+                                dt.Rows[0][array[1]] = formdata[key];
+                            break;
+                        }
+                        //for (int i = 0; i < libtb.Tables.Length; i++)
+                        //{
+                        //    if (dt.TableName == array[0])
+                        //    {
+                        //        dt = libtb.Tables[i];
+                        //        if (dt.Columns[array[1]].DataType == typeof(Date))
+                        //        {
+                        //            dt.Rows[0][array[1]] = new Date(formdata[key]);
+                        //        }
+                        //        else
+                        //            dt.Rows[0][array[1]] = formdata[key];
+                        //        break;
+                        //    }
+                        //}
+                    }
+                    
+                }
+            }
             #endregion
             BeforeSave();
             TableExtendedProperties tbext = new TableExtendedProperties();
@@ -649,9 +702,9 @@ namespace BWYSDPWeb.BaseController
                 }
                 foreach (string nm in formparams.AllKeys)
                 {
-                    if (nm.Contains("."))
+                    if (nm.Contains(SysConstManage.Point))
                     {
-                        array = nm.Split('.');
+                        array = nm.Split(SysConstManage.Point);
                         if (array.Length < 2) continue;
                         if (dr != null)
                         {
