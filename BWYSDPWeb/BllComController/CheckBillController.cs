@@ -18,7 +18,7 @@ namespace BWYSDPWeb.BllComController
         {
             //this.Tables[0].Columns["CheckDT"].DataType = typeof(Date);
             DataRow row = this.LibTables[0].Tables[0].NewRow();
-            row["BillNo"] = "T201903160001";
+            row["BillNo"] = "T201903160002";
             row["Checker"] = "zyy33";
             row["CheckDT"] = new Date { value = "2018-2-9" };
             row["Qty"] = 10;
@@ -33,21 +33,21 @@ namespace BWYSDPWeb.BllComController
             row["CheckDT"] = new Date { value = "2018-3-9" };
 
             row = this.LibTables[0].Tables[1].NewRow();
-            row["BillNo"] = "T201903160001";
+            row["BillNo"] = "T201903160002";
             row["RowNo"] = 1;
             row["check1"] = "部位1";
             row["check2"] = "不为1";
             this.LibTables[0].Tables[1].Rows.Add(row);
 
             row = this.LibTables[0].Tables[1].NewRow();
-            row["BillNo"] = "T201903160001";
+            row["BillNo"] = "T201903160002";
             row["RowNo"] = 2;
             row["check1"] = "部位2";
             row["check2"] = "不为2";
             this.LibTables[0].Tables[1].Rows.Add(row);
 
             row = this.LibTables[1].Tables[0].NewRow();
-            row["BillNo"] = "T201903160001";
+            row["BillNo"] = "T201903160002";
             //row["RowNo"] = 1;
             row["yingdu"] = "jjjj";
             row["naiwendu"] = "dsfsd";
@@ -55,7 +55,7 @@ namespace BWYSDPWeb.BllComController
             this.LibTables[1].Tables[0].Rows.Add(row);
 
             row = this.LibTables[1].Tables[0].NewRow();
-            row["BillNo"] = "T201903160001";
+            row["BillNo"] = "T201903160002";
             //row["RowNo"] = 1;
             row["yingdu"] = "jjjj2";
             row["naiwendu"] = "dsfsd2";
@@ -64,10 +64,10 @@ namespace BWYSDPWeb.BllComController
             this.LibTables[1].Tables[0].AcceptChanges();
             this.LibTables[1].Tables[0].Rows[1].Delete();
 
-            for (int n = 1; n < 5000; n++)
+            for (int n = 1; n < 5; n++)
             {
                 row = this.LibTables[1].Tables[0].NewRow();
-                row["BillNo"] = "T201903160001";
+                row["BillNo"] = "T201903160002";
                 //row["RowNo"] = n;
                 row["yingdu"] = "jjjj2";
                 row["naiwendu"] = "dsfsd2";
@@ -75,10 +75,10 @@ namespace BWYSDPWeb.BllComController
                 this.LibTables[1].Tables[0].Rows.Add(row);
             }
             string a= System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
-            for (int i = 1; i < 2000; i++)
+            for (int i = 1; i < 20; i++)
             {
                 row = this.LibTables[1].Tables[1].NewRow();
-                row["BillNo"] = "T201903160001";
+                row["BillNo"] = "T201903160002";
                 row["RowNo"] = i;
                 row["FromRowNo"] = 1;
                 row["testfield"] =string.Format("测试字段{0}",i);

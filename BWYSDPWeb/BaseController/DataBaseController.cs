@@ -746,7 +746,7 @@ namespace BWYSDPWeb.BaseController
                             cond.DefTableNm = deftb.Name;
                             cond.TableNm = dt.TableName;
                             cond.FieldNm = col.ColumnName;
-                            cond.AliasNm = (char)(tbextprop.TableIndex+65);
+                            cond.AliasNm = LibSysUtils .ToCharByTableIndex(tbextprop.TableIndex);
                             condcollection.Add(cond);
                         }
                     }
@@ -777,6 +777,7 @@ namespace BWYSDPWeb.BaseController
         public ActionResult DoSearchData(int flag)
         {
             var formdata = this.Request.Form;
+            DalResult result = null;
             if (flag == 1)
             {
                 string index = string.Empty;
@@ -797,13 +798,17 @@ namespace BWYSDPWeb.BaseController
 
                     conds.Add(cond);
                 }
-                DalResult result = this.ExecuteMethod("InternalSearch", tbnm, null, conds);
+                result = this.ExecuteMethod("InternalSearch", tbnm, null, conds);
             }
             else if (flag == 2)
             {
 
             }
-            return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+            if (result != null && result.Messagelist.Count == 0)
+            {
+                return Json(new { data =result .Value,flag=0  }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { data =result.Messagelist,flag=1  }, JsonRequestBehavior.AllowGet);
         }
         #endregion
         #region 受保护方法
