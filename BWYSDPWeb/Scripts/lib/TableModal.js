@@ -137,18 +137,18 @@ libTableModal.prototype = {
 }
 
 
-function TableAction(gridid, tbnm, controlnm,cmd)
-{
-    $.ajax({
-        async: false,
-        type: "POST",
-        //url: '${pageContext.request.contextPath}/link/apply',
-        url: '/' + controlnm + '/TableAction',
-        data: 'gridid=' + gridid + '&tbnm=' + tbnm + '&cmd=' + cmd + '',
-        dataType: "text",
-        success: function () {
-        },
-        error: function () {
-        }
-    });
-}
+//function TableAction(gridid, tbnm, controlnm,cmd)
+//{
+//    $.ajax({
+//        async: false,
+//        type: "POST",
+//        //url: '${pageContext.request.contextPath}/link/apply',
+//        url: '/' + controlnm + '/TableAction',
+//        data: 'gridid=' + gridid + '&tbnm=' + tbnm + '&cmd=' + cmd + '',
+//        dataType: "text",
+//        success: function () {
+//        },
+//        error: function () {
+//        }
+//    });
+//}

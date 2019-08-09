@@ -523,7 +523,7 @@ namespace BWYSDPWeb.BaseController
         #endregion
 
         #region 公开函数
-        public object ExecuteMethod(string method, params object[] param)
+        public DalResult ExecuteMethod(string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
             return _bll.ExecuteMethod(this.ProgID, method, param);
@@ -531,7 +531,7 @@ namespace BWYSDPWeb.BaseController
 
 
 
-        public object ExecuteDalMethod(string funcId, string method, params object[] param)
+        public DalResult ExecuteDalMethod(string funcId, string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
             return _bll.ExecuteMethod(funcId, method, param);

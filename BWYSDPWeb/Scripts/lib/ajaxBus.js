@@ -46,6 +46,9 @@ $.ajax = function (opt) {
                 if (responseobj != undefined || responseobj != null)
                     ShowMsg(responseobj.msg, 'error');
             }
+            else {
+                ShowMsg(XMLHttpRequest.status + textStatus + errorThrown, 'error');
+            }
             //错误方法增强处理 
             fn.error(XMLHttpRequest, textStatus, errorThrown);
         },

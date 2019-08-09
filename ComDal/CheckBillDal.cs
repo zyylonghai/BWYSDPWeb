@@ -9,7 +9,7 @@ using SDPCRL.CORE;
 
 namespace ComDal
 {
-    public class CheckBillDal: DalDataBase
+    public class CheckBillDal: ComDal
     {
         public CheckBillDal()
         {

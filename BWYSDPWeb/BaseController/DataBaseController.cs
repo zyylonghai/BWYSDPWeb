@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 
 namespace BWYSDPWeb.BaseController
@@ -345,7 +346,8 @@ namespace BWYSDPWeb.BaseController
             //return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
-        
+
+        #region grid 表格操作
         public string BindTableData(string gridid, string deftb,string tableNm, int page, int rows, string Mobile)
         {
             #region 旧代码
@@ -716,7 +718,94 @@ namespace BWYSDPWeb.BaseController
             }
             return Json(new { message="" }, JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
+        #region 搜索模态框 操作
+        [HttpGet]
+        public ActionResult GetSearchCondFields(string tbnm)
+        {
+            //var libtb= this.LibTables.FirstOrDefault(i => i.Name == tbnm);
+            SearchConditionField cond = null;
+            ColExtendedProperties colextprop = null;
+            TableExtendedProperties tbextprop = null;
+            int masttbindex = 0;
+            List<SearchConditionField> condcollection = new List<SearchConditionField>();
+            foreach (LibTable deftb in this.LibTables)
+            {
+                foreach (DataTable dt in deftb.Tables)
+                {
+                    tbextprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    if (dt.TableName == tbnm) masttbindex = tbextprop.TableIndex;
+                    if (tbextprop.TableIndex == masttbindex || tbextprop.RelateTableIndex == masttbindex)
+                    {
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                            if (!colextprop.IsActive) continue;
+                            cond = new SearchConditionField();
+                            cond.DefTableNm = deftb.Name;
+                            cond.TableNm = dt.TableName;
+                            cond.FieldNm = col.ColumnName;
+                            cond.AliasNm = (char)(tbextprop.TableIndex+65);
+                            condcollection.Add(cond);
+                        }
+                    }
+                }
+
+            }
+            //foreach (DataTable dt in libtb.Tables)
+            //{
+            //    foreach (DataColumn col in dt.Columns)
+            //    {
+            //        colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+            //        if (!colextprop.IsActive) continue;
+            //        cond = new SearchCondition();
+            //        cond.DefTableNm = deftb;
+            //        cond.TableNm = dt.TableName;
+            //        cond.FieldNm = col.ColumnName;
+            //        condcollection.Add(cond);
+            //    }
+            //}
+            return Json(new { data = condcollection, flag = 0 },JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult GetSmodalCondition(int index)
+        {
+            return Json(new {data=new ElementCollection ().SearchModalCondition(Convert .ToInt32(index)) }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult DoSearchData(int flag)
+        {
+            var formdata = this.Request.Form;
+            if (flag == 1)
+            {
+                string index = string.Empty;
+                string tbnm = formdata["tb"];
+                List<string> fieldkeys = formdata.AllKeys.Where(i => i.Contains(SysConstManage.sdp_smodalfield)).ToList();
+                List<LibSearchCondition> conds = new List<LibSearchCondition>();
+                LibSearchCondition cond = null;
+                foreach (string key in fieldkeys)
+                {
+                    index = key.Substring(key.Length - 1);
+                    cond = new LibSearchCondition();
+                    cond.Values = new object[2];
+                    cond.FieldNm= formdata[key];
+                    cond.Symbol =(SmodalSymbol)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodalsymbol, index)]);
+                    cond.Values[0] = formdata[string.Format("{0}{1}_1", SysConstManage.sdp_smodalval, index)];
+                    cond.Values[1] = formdata[string.Format("{0}{1}_2", SysConstManage.sdp_smodalval, index)];
+                    cond .Logic = (Smodallogic)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodallogic, index)]);
+
+                    conds.Add(cond);
+                }
+                DalResult result = this.ExecuteMethod("InternalSearch", tbnm, null, conds);
+            }
+            else if (flag == 2)
+            {
+
+            }
+            return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
         #region 受保护方法
         protected virtual void GetGridDataExt(string gridid, DataTable dt)
         {

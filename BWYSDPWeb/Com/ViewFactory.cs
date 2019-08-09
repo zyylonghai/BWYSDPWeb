@@ -1,11 +1,11 @@
-﻿using SDPCRL.COM.ModelManager;
+﻿using SDPCRL.COM;
+using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 
 namespace BWYSDPWeb.Com
 {
@@ -21,7 +21,8 @@ namespace BWYSDPWeb.Com
         private string _progid = null;
         //private string _dsid = null;
         private bool _hasSearchModal = false;// 是否有搜索控件。
-                                             //private Dictionary<string, bool> _fomGroupdic=null;
+        private string _pagetitle = string.Empty;
+       //private Dictionary<string, bool> _fomGroupdic=null;
 
         #region 公开属性
         public string ControlClassNm { get; set; }
@@ -91,6 +92,7 @@ namespace BWYSDPWeb.Com
         /// <param name="pagetitle"></param>
         public void BeginPage(string pagetitle)
         {
+            this._pagetitle = pagetitle;
             _page.Append("<div class=\"container-fluid\">");
             _page.Append("<div class=\"panel panel-default\">");
             _page.Append("<div class=\"panel-heading\">" + pagetitle + "</div>");
@@ -102,10 +104,16 @@ namespace BWYSDPWeb.Com
         {
             _page.Append("<div class=\"panel-body\">");
             _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
-            _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i></button>");
+            _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<i class=\"fa fa-fw fa-save\"></i></button>");
+
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-cut\"></i></button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i></button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-clipboard\"></i></button>");
+
+            _page.Append("<button id=\"bwysdp_btnSearch\" type=\"button\" class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + this._pagetitle + "\" data-progid=\"" + this._progid + "\" data-deftb=\"\" data-tbstruct=\"" + GetMastTable() + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\" data-flag=\"1\">");
+            _page.Append("<i class=\"glyphicon glyphicon-search\"></i></button>");
+
             _page.Append("</div>");
             _page.Append("<br /><br />");
         }
@@ -115,7 +123,7 @@ namespace BWYSDPWeb.Com
         public void CreateForm()
         {
             //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
-            _page.Append("@using(Html.BeginForm(\"Save\", \""+(string.IsNullOrEmpty(this.ControlClassNm )? "DataBase" : this.ControlClassNm )+"\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\""+this.DSID+"\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\"sdp_form\" }))");
+            _page.Append("@using(Html.BeginForm(\"Save\", \"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\"" + this.DSID + "\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\"sdp_form\" }))");
             _page.Append("{");
         }
 
@@ -209,13 +217,13 @@ namespace BWYSDPWeb.Com
                 validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
                 validatorAttr.AppendFormat("maxlength=\"{0}\"", field.FieldLength);
                 #endregion
-                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName +(field .IsAllowNull?"<font color=\"red\">*</font>":"")+ "</label>");
+                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName + (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
                 _page.Append("<div class=\"col-sm-" + field.Width + "\">");
                 switch (field.ElemType)
                 {
                     case ElementType.Date:
                         _dateElemlst.Add(id);
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" "+validatorAttr.ToString ()+">");
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.DateTime:
                         _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
@@ -223,19 +231,20 @@ namespace BWYSDPWeb.Com
                     case ElementType.Select:
                         _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" " + validatorAttr.ToString() + ">");
                         LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
-                        foreach (LibKeyValue keyval in libField.Items) {
-                            _page.Append("<option value=\""+keyval.Key+"\">"+keyval .Value+"</option>");
+                        foreach (LibKeyValue keyval in libField.Items)
+                        {
+                            _page.Append("<option value=\"" + keyval.Key + "\">" + keyval.Value + "</option>");
                         }
                         _page.Append("</select>");
                         break;
                     case ElementType.Text:
-                        _page.Append("<input type=\""+(field.IsNumber? "number" : "text") +"\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Search:
                         _page.Append("<div class=\"input-group\">");
                         _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         _page.Append("<span class=\"input-group-btn\">");
-                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-whatever=\"" + field.DisplayName + "\">");
+                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + field.DisplayName + "\" data-fromdsid=\" \" data-deftb=\"\" data-tbstruct=\"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                         _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
                         _page.Append("</button>");
                         _page.Append("</span>");
@@ -275,18 +284,21 @@ namespace BWYSDPWeb.Com
 
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\""+grid .GdGroupFields[0].FromTableNm+"\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Add\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Add\">");
             //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>新增");
             _page.Append("</button>");
+
             _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnEdit(this,'" + grid.GridGroupName + "')\" data-toggle=\"modal\"  data-target=\"#sdp_tbmdl_" + id + "\"  data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Edit\">");
             //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>编辑");
             _page.Append("</button>");
+
             _page.Append("<button type=\"button\" class=\"btn btn-default\">");
             //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
             _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>删除");
             _page.Append("</button>");
+
             _page.Append("</div>");
             #endregion
             _page.Append("<table id=\"" + grid.GridGroupName + "\"></table>");
@@ -308,7 +320,7 @@ namespace BWYSDPWeb.Com
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
             string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
             table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
-            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm,grid.GdGroupFields[0].FromTableNm));
+            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm, grid.GdGroupFields[0].FromTableNm));
             table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";", param, grid.GridGroupName));
             if (grid.HasSummary)
             {
@@ -400,7 +412,7 @@ namespace BWYSDPWeb.Com
             table.Append(string.Format("{0}.initialTable();", param));
             table.Append(hidecolumns);
 
-            #region toobar 按钮事件
+            #region toobar 按钮事件 旧代码
             //table.Append("$('#"+grid .GridGroupName+"_sdp_addrow').click(function () {"+param+".AddRow();});");
             //table.Append("$('#" + grid.GridGroupName + "_sdp_editrow').click(function () {" + param + ".EditRow();});");
             //table.Append("$('#" + grid.GridGroupName + "_sdp_deletrow').click(function () {" + param + ".DeleteRow();});");
@@ -409,7 +421,7 @@ namespace BWYSDPWeb.Com
             #region tablemodal脚本
             string mdparam = string.Format("tbmodal{0}", _tableScriptlst.Count + 1);
             string gridid = string.Format("GridGroup_{0}", grid.GridGroupName);
-            table.Append(string.Format("var {0}=new libTableModal(\"{1}\");", mdparam, string.Format("sdp_tbmdl_{0}",gridid)));
+            table.Append(string.Format("var {0}=new libTableModal(\"{1}\");", mdparam, string.Format("sdp_tbmdl_{0}", gridid)));
             table.Append(string.Format("{0}.initialModal();", mdparam));
             table.Append("$('#sdp_tbmodalbtn" + gridid + "').click(function () {" + mdparam + ".Confirm();});");
             #endregion
@@ -458,8 +470,43 @@ namespace BWYSDPWeb.Com
                 _page.Append("<h4 class=\"modal-title\" id=\"searchModalLabel\">来源主数据</h4>");
                 _page.Append("</div>");
                 _page.Append("<div class=\"modal-body\">");
-                _page.Append("<form>");
-                _page.Append("<table id=\"searchdata\"></table>");
+                _page.Append("<form id=\"sdp_smodalform\">");
+
+                _page.Append("<div id=\"sdp_smodalCondition\"  class=\"row\">");
+                #region 旧代码
+                //_page.Append("<label class=\"form-inline\"> 字段:");
+
+                //_page.Append("<select class=\"form-control\" name=\"sdp_smodalfield1\">");
+                //_page.Append("<option value=\"1\">默认选择</option>");
+                //_page.Append("</select>");
+
+                //_page.Append("<select class=\"form-control\" name=\"sdp_smodalsymbol1\">");
+                //_page.Append("<option value=\"1\">等于</option>");
+                //_page.Append("<option value=\"2\">大于</option>");
+                //_page.Append("<option value=\"3\">小于</option>");
+                //_page.Append("<option value=\"4\">包含</option>");
+                //_page.Append("<option value=\"5\">[a,b]之间</option>");
+                //_page.Append("</select>");
+
+                //_page.Append("<input type=\"text\" class=\"form-control\" name=\"sdp_smodalval1_1\"/>");
+                //_page.Append("<input type=\"text\" class=\"form-control\" name=\"sdp_smodalval1_2\"/>");
+
+                //_page.Append("<select class=\"form-control\" name=\"sdp_smodallogic1\">");
+                //_page.Append("<option value=\"1\">and</option>");
+                //_page.Append("<option value=\"2\">or</option>");
+                //_page.Append("</select>");
+
+                //_page.Append("<button id=\"sdp_smodalcondadd\" class=\"btn btn-default\" type=\"button\">");
+                //_page.Append(" <i class=\"glyphicon glyphicon-plus\"></i>");
+                //_page.Append("</button>");
+
+                //_page.Append("</label>");
+                #endregion
+                _page.Append(new ElementCollection().SearchModalCondition(1));
+                _page.Append("</div>");
+                _page.Append("<button id=\"sdp_smodalbtnSearch\" type=\"button\" class=\"btn btn-primary\">查询</button>");
+                _page.Append("<table id=\"sdp_smodaldata\"></table>");
+
                 _page.Append("</form>");
                 _page.Append("</div>");
                 _page.Append("<div class=\"modal-footer\">");
@@ -479,7 +526,7 @@ namespace BWYSDPWeb.Com
                 foreach (KeyValuePair<string, bool> keyval in this._gridGroupdic)
                 {
                     //用于表格新增，编辑等操作的模态框
-                    _page.Append(" <div class=\"modal fade\" id=\"sdp_tbmdl_"+keyval.Key+ "\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"sdp_tbmdlbody_"+ keyval.Key + "\">");
+                    _page.Append(" <div class=\"modal fade\" id=\"sdp_tbmdl_" + keyval.Key + "\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"sdp_tbmdlbody_" + keyval.Key + "\">");
                     _page.Append("<div class=\"modal-dialog\" role=\"document\">");
                     _page.Append("<div class=\"modal-content\">");
                     _page.Append("<div class=\"modal-header\" style=\"background-color:#dff0d8\">");
@@ -489,12 +536,12 @@ namespace BWYSDPWeb.Com
                     _page.Append("<h4 class=\"modal-title\" id=\"sdp_tbmdlbody_" + keyval.Key + "\">来源主数据</h4>");
                     _page.Append("</div>");
                     _page.Append("<div class=\"modal-body\">");
-                    _page.Append("<form id=\"sdp_"+keyval .Key+ "_form\" class=\"form-horizontal\">");
+                    _page.Append("<form id=\"sdp_" + keyval.Key + "_form\" class=\"form-horizontal\">");
                     _page.Append(_tbmodalFormfields[keyval.Key]);
                     _page.Append("</form>");
                     _page.Append("</div>");
                     _page.Append("<div class=\"modal-footer\">");
-                    _page.Append("<button id=\"sdp_tbmodalbtn"+ keyval.Key + "\" type=\"button\" class=\"btn btn-primary\">确定</button>");
+                    _page.Append("<button id=\"sdp_tbmodalbtn" + keyval.Key + "\" type=\"button\" class=\"btn btn-primary\">确定</button>");
                     _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>");
                     _page.Append("</div>");
                     _page.Append("</div>");
@@ -548,15 +595,15 @@ namespace BWYSDPWeb.Com
 
             #region 页面按钮组 事件绑定
             string tbs = "[";
-            for (int i = 1; i <=_tableScriptlst.Count; i++)
+            for (int i = 1; i <= _tableScriptlst.Count; i++)
             {
                 if (i == 1)
                 { tbs += string.Format("tb{0}", i); continue; }
-                tbs += string.Format(",tb{0}",i);
+                tbs += string.Format(",tb{0}", i);
             }
             tbs += "]";
             _script.Append("$('#bwysdp_btnsave').click(function (){" +
-                "var objs="+tbs+ "; " +
+                "var objs=" + tbs + "; " +
                 "var datastr='['; " +
                 "$.each(objs,function(index,o){if(datastr.length==1){ datastr+=Serialobj(o);}else{datastr+=\",\"+Serialobj(o);}});" +
                 "datastr+=']';" +
@@ -607,11 +654,79 @@ namespace BWYSDPWeb.Com
 
         private LibField GetField(string deftable, string table, string fieldNm)
         {
-           var deftb= this.LibDataSource.DefTables.FindFirst("TableName", deftable);
+            var deftb = this.LibDataSource.DefTables.FindFirst("TableName", deftable);
             var tbstruct = deftb.TableStruct.FindFirst("Name", table);
             var field = tbstruct.Fields.FindFirst("Name", fieldNm);
             return field;
         }
+
+        private string GetMastTable()
+        {
+            foreach (LibDefineTable deftb in this.LibDataSource.DefTables)
+            {
+                foreach (LibDataTableStruct dt in deftb.TableStruct)
+                {
+                    if (dt.TableIndex == 0)
+                        return dt.Name;
+                }
+            }
+            return string.Empty;
+        }
         #endregion
+    }
+
+    public class ElementCollection
+    {
+        /// <summary>
+        /// 搜索模态框的条件元素
+        /// </summary>
+        /// <param name="condindex"></param>
+        /// <returns></returns>
+        public string SearchModalCondition(int condindex)
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append("<label class=\"form-inline\"> 字段:");
+
+            str.AppendFormat("<select class=\"form-control\" name=\"{0}{1}\">", SysConstManage.sdp_smodalfield,condindex);
+            //str.Append("<option value=\"0\">默认选择</option>");
+            str.Append("</select>");
+
+            str.AppendFormat("<select class=\"form-control\" name=\"{0}{1}\">",SysConstManage .sdp_smodalsymbol, condindex);
+            foreach (var item in Enum.GetValues(typeof(SmodalSymbol)))
+            {
+                str.AppendFormat("<option value=\"{0}\">{1}</option>", (int)item, ReSourceManage.GetResource(item));
+            }
+            //str.Append("<option value=\"1\">等于</option>");
+            //str.Append("<option value=\"2\">大于</option>");
+            //str.Append("<option value=\"3\">小于</option>");
+            //str.Append("<option value=\"4\">包含</option>");
+            //str.Append("<option value=\"5\">[a,b]之间</option>");
+            str.Append("</select>");
+
+            str.AppendFormat("<input type=\"text\" class=\"form-control\" name=\"{0}{1}_1\"/>",SysConstManage .sdp_smodalval,condindex);
+            str.AppendFormat("<input type=\"text\" class=\"form-control\" name=\"{0}{1}_2\"/>", SysConstManage.sdp_smodalval, condindex);
+
+            str.AppendFormat("<select class=\"form-control\" name=\"{0}{1}\">",SysConstManage .sdp_smodallogic,condindex);
+            foreach (var item in Enum.GetValues(typeof(Smodallogic)))
+            {
+                str.AppendFormat("<option value=\"{0}\">{1}</option>",(int)item , ReSourceManage.GetResource(item));
+            }
+            //str.Append("<option value=\"1\">and</option>");
+            //str.Append("<option value=\"2\">or</option>");
+            str.Append("</select>");
+
+            str.AppendFormat("<button id=\"sdp_smodalcondadd{0}\" class=\"btn btn-default\" type=\"button\">", condindex);
+            str.Append(" <i class=\"glyphicon glyphicon-plus\"></i>");
+            str.Append("</button>");
+
+            if (condindex != 1)
+            {
+                str.AppendFormat("<button id=\"sdp_smodalconddelet{0}\" class=\"btn btn-default\" type=\"button\">", condindex);
+                str.Append(" <i class=\"glyphicon glyphicon-minus\"></i>");
+                str.Append("</button>");
+            }
+            str.Append("</label>");
+            return str.ToString();
+        }
     }
 }
