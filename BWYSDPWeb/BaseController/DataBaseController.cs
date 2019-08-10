@@ -1,6 +1,7 @@
 ﻿using Bll;
 using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
+using Com;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SDPCRL.COM;
@@ -347,6 +348,14 @@ namespace BWYSDPWeb.BaseController
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
 
+        [HttpPost]
+        public ActionResult FillAndEdit()
+        {
+            var parmas= this.Request.Params;
+            string tablenm = parmas["tablenm"];
+            return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
+        }
+
         #region grid 表格操作
         public string BindTableData(string gridid, string deftb,string tableNm, int page, int rows, string Mobile)
         {
@@ -505,7 +514,7 @@ namespace BWYSDPWeb.BaseController
                 if (dt.Rows[index].RowState == DataRowState.Deleted) continue;
                 resultdt.ImportRow(dt.Rows[index]);
             }
-            var result = new { total = dt.Rows.Count, rows = resultdt };
+            var result = new { total = AppSysUtils.CalculateTotal (dt), rows = resultdt };
             //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
 
             //string c = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
@@ -743,6 +752,7 @@ namespace BWYSDPWeb.BaseController
                             colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
                             if (!colextprop.IsActive) continue;
                             cond = new SearchConditionField();
+                            cond.DisplayNm = col.Caption;
                             cond.DefTableNm = deftb.Name;
                             cond.TableNm = dt.TableName;
                             cond.FieldNm = col.ColumnName;
@@ -777,7 +787,7 @@ namespace BWYSDPWeb.BaseController
         public ActionResult DoSearchData(int flag)
         {
             var formdata = this.Request.Form;
-            DalResult result = null;
+            //DalResult result = null;
             if (flag == 1)
             {
                 string index = string.Empty;
@@ -791,6 +801,7 @@ namespace BWYSDPWeb.BaseController
                     cond = new LibSearchCondition();
                     cond.Values = new object[2];
                     cond.FieldNm= formdata[key];
+                    if (cond.FieldNm == "0") continue;
                     cond.Symbol =(SmodalSymbol)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodalsymbol, index)]);
                     cond.Values[0] = formdata[string.Format("{0}{1}_1", SysConstManage.sdp_smodalval, index)];
                     cond.Values[1] = formdata[string.Format("{0}{1}_2", SysConstManage.sdp_smodalval, index)];
@@ -798,17 +809,30 @@ namespace BWYSDPWeb.BaseController
 
                     conds.Add(cond);
                 }
-                result = this.ExecuteMethod("InternalSearch", tbnm, null, conds);
+                Session[this.ProgID] = conds;
+                //result = this.ExecuteMethod("InternalSearch", tbnm, null, conds);
             }
             else if (flag == 2)
             {
 
             }
-            if (result != null && result.Messagelist.Count == 0)
+            //if (result != null && result.Messagelist.Count == 0)
+            //{
+            //    return Json(new { data =(DataTable)result.Value,flag=0  }, JsonRequestBehavior.AllowGet);
+            //}
+            return Json(new { data ="",flag=0  }, JsonRequestBehavior.AllowGet);
+        }
+
+        public string BindSmodalData(string tableNm, int page, int rows)
+        {
+            List<LibSearchCondition> conds = Session[this.ProgID] as List<LibSearchCondition>;
+            DalResult result = this.ExecuteMethod("InternalSearchByPage", tableNm, null, conds,page,rows);
+            if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
-                return Json(new { data =result .Value,flag=0  }, JsonRequestBehavior.AllowGet);
+                var resultdt = new { total = AppSysUtils.CalculateTotal((DataTable)result.Value), rows = result.Value }; ;
+                return JsonConvert.SerializeObject(resultdt);
             }
-            return Json(new { data =result.Messagelist,flag=1  }, JsonRequestBehavior.AllowGet);
+            return string.Empty;
         }
         #endregion
         #region 受保护方法

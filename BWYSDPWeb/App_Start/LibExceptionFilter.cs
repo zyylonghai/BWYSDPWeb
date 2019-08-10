@@ -22,6 +22,17 @@ namespace BWYSDPWeb.App_Start
 
                 };
             }
+            else
+            {
+                filterContext.Result = new JsonResult
+                {
+
+                    Data = new { success = false, code = 510, msg = filterContext.Exception.Message },
+
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+
+                };
+            }
             //filterContext.ExceptionHandled = true;
             //filterContext.ExceptionHandled = false;
             //base.OnException(filterContext);

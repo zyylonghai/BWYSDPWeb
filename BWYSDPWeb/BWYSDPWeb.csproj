@@ -1918,7 +1918,6 @@
     <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\lib\laydate\theme\default\font\iconfont.woff" />
     <Content Include="Scripts\lib\laydate\theme\default\laydate.css" />
-    <Content Include="Scripts\lib\MsgDialog.js" />
     <Content Include="Scripts\lib\notepad.js" />
     <Content Include="Scripts\lib\popovers-tooltips.js" />
     <Content Include="Scripts\lib\sdp_com.js" />
@@ -1980,6 +1979,10 @@
     <ProjectReference Include="..\Bll\Bll.csproj">
       <Project>{415116f1-316c-4977-b659-a9da96990b5c}</Project>
       <Name>Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Com\Com.csproj">
+      <Project>{00ee82ff-27f8-47a6-9a20-d368de88fd21}</Project>
+      <Name>Com</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

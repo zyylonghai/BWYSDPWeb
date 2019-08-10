@@ -235,12 +235,14 @@ LibTable.prototype = {
                 //    });
 
                 //}
+                closemsg();
             },
             onLoadError: function () {
                 ShowMsg("数据加载失败！", 'error');
             },
             onDblClickRow: function (row, $element) {
                 var id = row.ID;
+                tbobj.DbClickRow(row, $element, tbobj.testid);
                 //EditViewById(id, 'view');
             },
             onClickCell: function (field, value, row, $element) {
@@ -385,7 +387,8 @@ LibTable.prototype = {
         //$.each(editindexs, function (index) {
         //    thisobj.RowsOfEdit.splice(index, 1);
         //});
-    }
+    },
+    DbClickRow: function (row,elem,tbnm) { }
     
 }
 

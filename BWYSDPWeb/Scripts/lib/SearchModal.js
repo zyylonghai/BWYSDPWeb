@@ -30,9 +30,17 @@
         $('#searchModal .modal-title').text(Modalnm + "主数据");
 
         var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
-        o.children().remove();
+        o.children().remove(); //清空字段元素列表。
         o.append("<option value=\"0\">默认选择</option>");
         $('#sdp_smodalCondition').children().first().siblings().remove();//移除所有条件元素，除第一条外。
+
+        $('#sdp_smodalform').find("input").each(function () { $(this).val(""); });
+
+        $('#sdp_smodalform').find(".bootstrap-table").remove();//清空表格。
+        $('#sdp_smodalform').find(".clearfix").remove();
+        if ($('#sdp_smodaldata') == undefined || $('#sdp_smodaldata') == null || $('#sdp_smodaldata').length==0) {
+            $('#sdp_smodalform').append("<table id='sdp_smodaldata'></table>");
+        }
 
         $('#sdp_smodalcondadd1').unbind('click');
         $('#sdp_smodalcondadd1').click(function () {
@@ -43,8 +51,13 @@
         $('#sdp_smodalbtnSearch').click(function () {
             DoSearch(flag, controlnm, fromdsid, deftb, tbstruct);
         });
-        if (flag == 1)
+        if (flag == 1) {
+            $('#searchModal').find(".modal-footer").css("display","none");
             GetFields(tbstruct, controlnm);
+        }
+        else {
+            $('#searchModal').find(".modal-footer").css("display", "block");
+        }
     });
     drag("searchModal");
 });
@@ -61,7 +74,7 @@ function GetFields(tbnm,ctrnm) {
             if (obj.flag == 0) {
                 //o.children().remove();
                 $.each(obj.data, function (index, row) {
-                    o.append("<option value='" + row.AliasNm + "." + row.FieldNm + "'>" + row.TableNm + "." + row.FieldNm+"</option>");
+                    o.append("<option value='" + row.AliasNm + "." + row.FieldNm + "'>" + row.DisplayNm + "(" + row.TableNm+")</option>");
                 });
             }
         },
@@ -109,15 +122,47 @@ function DoSearch(flag, ctrnm,dsid,deftb,tbstruct) {
         data: $('#sdp_smodalform').serialize() + "&flag=" + flag + "&dsid=" + dsid + "&deftb=" + deftb + "&tb=" + tbstruct + "",
         dataType: "Json",
         success: function (obj) {
-            
+            if (obj.flag == 0) {
+                BindToTable(ctrnm, tbstruct);
+                $('#sdp_smodaldata').bootstrapTable('refresh');
+            }
         },
         error: function () {
         }
     });
 }
-//function BindClick(id,func) {
-//    $('#' + id).click(function () {
-//        if (func != null)
-//            func();
-//    });
-//}
+
+function BindToTable(ctrnm,tbnm) {
+    var sdp_searchtb = new LibTable("sdp_smodaldata");
+    sdp_searchtb.$table.url = "/" + ctrnm + "/BindSmodalData?tableNm=" + tbnm + "";
+    sdp_searchtb.$table.hasoperation = false;
+    var cols = [];
+    cols.push({
+        checkbox: true,
+        visible: true });
+    var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
+    $.each(o.children(), function (index, option) {
+        if (option.value != 0) {
+            let arrary = option.value.split('.');
+            cols.push({ field: arrary[1], title: option.outerText, align: 'center' });
+        }
+    });
+    sdp_searchtb.$table.columns = cols;
+    sdp_searchtb.initialTable();
+    sdp_searchtb.testid = tbnm;
+    sdp_searchtb.DbClickRow = function (row, elem, tbname) {
+        $.ajax({
+            async: false,
+            type: "Post",
+            url: '/DataBase/FillAndEdit',
+            data: { row, "tablenm":tbname },
+            dataType: "Json",
+            success: function (obj) {
+
+
+            },
+            error: function () {
+            }
+        });
+    }
+}

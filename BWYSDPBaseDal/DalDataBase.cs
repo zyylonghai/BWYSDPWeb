@@ -39,58 +39,74 @@ namespace BWYSDPBaseDal
         {
             object[] values = { };
             StringBuilder whereformat = new StringBuilder();
+            AnalyzeSearchCondition(conds, whereformat,ref values);
+            string sql = this.SQLBuilder.GetSQL(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString (), Values = values });
+            return this.DataAccess.GetDataTable(sql);
+            //return null;
+        }
+        public DataTable InternalSearchByPage(string tbnm, string[] fields, List<LibSearchCondition> conds, int pageindex, int pagesize)
+        {
+            object[] values = { };
+            StringBuilder whereformat = new StringBuilder();
+            AnalyzeSearchCondition(conds, whereformat,ref values);
+            string sql = this.SQLBuilder.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values },pageindex,pagesize);
+            return this.DataAccess.GetDataTable(sql);
+        }
+
+        #region 私有函数
+        private void AnalyzeSearchCondition(List<LibSearchCondition> conds, StringBuilder whereformat,ref object[] values)
+        {
             int n = 0;
-            
+            LibSearchCondition precond=null;
+            int len = 0;
             foreach (LibSearchCondition item in conds)
             {
                 if (whereformat.Length > 0)
                 {
-                    whereformat.AppendFormat(" {0} ", item.Logic .ToString());
-                    //switch (logic)
-                    //{
-                    //    case Smodallogic.And:
-
-                    //        break;
-                    //    case Smodallogic.Or:
-                    //        break;
-                    //}
+                    if (precond != null)
+                        whereformat.AppendFormat(" {0} ", precond.Logic.ToString());
                 }
                 switch (item.Symbol)
                 {
                     case SmodalSymbol.Equal:
                         whereformat.Append("" + item.FieldNm + "={" + n + "}");
+                        len = 1;
                         break;
                     case SmodalSymbol.MoreThan:
                         whereformat.Append("" + item.FieldNm + ">{" + n + "}");
+                        len = 1;
                         break;
                     case SmodalSymbol.LessThan:
                         whereformat.Append("" + item.FieldNm + "<{" + n + "}");
+                        len = 1;
                         break;
                     case SmodalSymbol.Contains:
                         whereformat.Append("" + item.FieldNm + " like {" + n + "}");
-                        item.Values[0] = string.Format ("%{0}%",item.Values[0]);
+                        item.Values[0] = string.Format("%{0}%", item.Values[0]);
+                        len = 1;
                         break;
                     case SmodalSymbol.Between:
-                        whereformat.Append("" + item.FieldNm + "between {" + n + "} and {" + (n++) + "}");
+                        whereformat.Append("" + item.FieldNm + " between {" + n + "} and {" +(n=n+1) + "}");
+                        len = 2;
                         break;
                     case SmodalSymbol.NoEqual:
                         whereformat.Append("" + item.FieldNm + "!={" + n + "}");
+                        len = 1;
                         break;
                 }
                 n++;
                 if (item.Values != null)
                 {
-                    foreach (object o in item.Values)
+                    for(int i=0;i<len;i++)
                     {
-                        if (LibSysUtils.IsNULLOrEmpty(o)) continue;
+                        //if (LibSysUtils.IsNULLOrEmpty(o)) continue;
                         Array.Resize(ref values, values.Length + 1);
-                        values[values.Length - 1] = o;
+                        values[values.Length - 1] =item .Values[i];
                     }
                 }
+                precond = item;
             }
-            string sql = this.SQLBuilder.GetSQL(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString (), Values = values });
-            return this.DataAccess.GetDataTable(sql);
-            //return null;
         }
+        #endregion
     }
 }
