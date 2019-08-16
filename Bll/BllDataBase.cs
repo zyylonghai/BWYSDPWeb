@@ -42,9 +42,9 @@ namespace Bll
             return this.ExecuteSaveMethod(funcId, method, tables);
         }
 
-        public DalResult ExecuteMethod(string funcId, string method, params object[] param)
+        public DalResult ExecuteMethod(string funcId, string method,LibTable[] libTables, params object[] param)
         {
-            return  (DalResult)this.ExecuteDalMethod(funcId, method, param);
+            return  (DalResult)this.ExecuteDalMethod(funcId, method,libTables, param);
         }
     }
 }

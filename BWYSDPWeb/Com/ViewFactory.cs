@@ -105,14 +105,17 @@ namespace BWYSDPWeb.Com
             _page.Append("<div class=\"panel-body\">");
             _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
             _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"fa fa-fw fa-save\"></i></button>");
+            _page.Append("<i class=\"fa fa-fw fa-save\"></i>保存</button>");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>编辑</button>");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>复制</button>");
 
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-cut\"></i></button>");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i></button>");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-clipboard\"></i></button>");
+            //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-cut\"></i></button>");
+            //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i></button>");
+            //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-clipboard\"></i></button>");
 
             _page.Append("<button id=\"bwysdp_btnSearch\" type=\"button\" class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + this._pagetitle + "\" data-progid=\"" + this._progid + "\" data-deftb=\"\" data-tbstruct=\"" + GetMastTable() + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\" data-flag=\"1\">");
-            _page.Append("<i class=\"glyphicon glyphicon-search\"></i></button>");
+            _page.Append("<i class=\"glyphicon glyphicon-search\"></i>搜索</button>");
 
             _page.Append("</div>");
             _page.Append("<br /><br />");
@@ -347,7 +350,11 @@ namespace BWYSDPWeb.Com
                 table.Append(",{");
                 table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
                 table.Append("formatter: function (value, row, index) {");
-                table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                if (field.ElemType == ElementType.Date) {
+                    table.Append(string.Format("return \"<div {0}>\" + TimeConverToStr(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                }
+                else
+                    table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                 table.Append("}");
                 if (grid.HasSummary)
                 {

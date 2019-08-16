@@ -173,6 +173,7 @@
     <Compile Include="Models\Menu.cs" />
     <Compile Include="Models\PageInfo.cs" />
     <Compile Include="Models\SearchCondition.cs" />
+    <Compile Include="Models\SessionInfo.cs" />
     <Compile Include="Models\TableObj.cs" />
     <Compile Include="Models\TestInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

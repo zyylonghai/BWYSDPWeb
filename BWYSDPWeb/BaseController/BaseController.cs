@@ -20,7 +20,8 @@ namespace BWYSDPWeb.BaseController
         #region 私有属性
         private string _rootPath = string.Empty;
         private BllDataBase _bll = null;
-        private List<LibMessage> MsgList = null;
+        //private List<LibMessage> MsgList = null;
+        private SessionInfo _sessionobj = null;
         #endregion
         #region 公开属性
 
@@ -57,9 +58,23 @@ namespace BWYSDPWeb.BaseController
             get;
             set;
         }
-
-
-
+        /// <summary>
+        /// 当前功能存储在Session的信息
+        /// </summary>
+        public SessionInfo SessionObj {
+            get {
+                _sessionobj = (SessionInfo)System.Web.HttpContext.Current.Session[this.ProgID];
+                if (_sessionobj == null) _sessionobj = new SessionInfo();
+                return _sessionobj;
+            }
+            //set {
+            //    Session[this.ProgID] = value;
+            //}
+        }
+        /// <summary>
+        /// 错误，警告等信息集
+        /// </summary>
+        public List<LibMessage> MsgList { get; set; }
         #endregion
 
         public BaseController()
@@ -69,8 +84,9 @@ namespace BWYSDPWeb.BaseController
             this.ProgID = request.Params["sdp_pageid"] ?? string.Empty;
             this.DSID = request.Params["sdp_dsid"] ?? string.Empty;
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
-            var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
-            this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
+            //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
+            //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
+            this.OperatAction = this.SessionObj.OperateAction;
             this.LibTables = GetTableSchema(this.DSID);
             //if (this.LibTables != null)
             //{
@@ -303,7 +319,8 @@ namespace BWYSDPWeb.BaseController
             }
             #endregion
 
-            return Json(new { sdp_flag = 0, sdp_data = fieldlst }, JsonRequestBehavior.AllowGet);
+            bool haserror =this.MsgList!=null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
+            return Json(new { sdp_flag = 0, sdp_data = fieldlst,sdp_msglist=this.MsgList,sdp_haserror=haserror }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult LibJson(DataRow row)
@@ -526,7 +543,7 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteMethod(string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            return _bll.ExecuteMethod(this.ProgID, method, param);
+            return _bll.ExecuteMethod(this.ProgID, method,this.LibTables, param);
         }
 
 
@@ -534,13 +551,15 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteDalMethod(string funcId, string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            return _bll.ExecuteMethod(funcId, method, param);
+            return _bll.ExecuteMethod(funcId, method,null, param);
         }
 
-        public object ExecuteSaveMethod(string method, LibTable[] tables)
+        public DalResult ExecuteSaveMethod(string method, LibTable[] tables)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            return _bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
+            DalResult dalResult=(DalResult )_bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
+            this.AddMessagelist(dalResult.Messagelist);
+            return dalResult;
         }
 
         public void ThrowErrorException(string msg)
@@ -549,27 +568,35 @@ namespace BWYSDPWeb.BaseController
             help.ThrowError(this, msg); 
         }
 
-        public void AddMessage(string msg,LibMessageType msgtype)
+        public void AddMessage(string msg,LibMessageType msgtype=LibMessageType.Error)
         {
+            if (this.MsgList == null) this.MsgList = new List<LibMessage>();
             this.MsgList.Add(new LibMessage { Message = msg, MsgType = msgtype });
+        }
+        public void AddMessagelist(List<LibMessage> msglist)
+        {
+            if (this.MsgList == null) this.MsgList = new List<LibMessage>();
+            this.MsgList.AddRange(msglist);
         }
         #endregion
 
         #region 受保护方法
-        //protected override void EndExecute(IAsyncResult asyncResult)
-        //{
-        //    base.EndExecute(asyncResult);
-        //}
+        protected override void EndExecute(IAsyncResult asyncResult)
+        {
+            base.EndExecute(asyncResult);
+        }
 
-        //protected override void OnActionExecuted(ActionExecutedContext filterContext)
-        //{
-        //    base.OnActionExecuted(filterContext);
-        //}
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            base.OnActionExecuted(filterContext);
+            if (this._sessionobj != null)
+                Session[this.ProgID] = this._sessionobj;
+        }
 
-        //protected override void OnResultExecuted(ResultExecutedContext filterContext)
-        //{
-        //    base.OnResultExecuted(filterContext);
-        //}
+        protected override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            base.OnResultExecuted(filterContext);
+        }
         #endregion
 
         #region IlibException
@@ -582,9 +609,22 @@ namespace BWYSDPWeb.BaseController
 
     public enum OperatAction
     {
-        None = -1,
-        Add = 0,
-        Edit = 1,
-        Delet = 2
+        None = 0,
+        /// <summary>
+        /// 功能处于新增状态
+        /// </summary>
+        Add = 1,
+        /// <summary>
+        /// 功能处于编辑状态
+        /// </summary>
+        Edit = 2,
+        /// <summary>
+        /// 
+        /// </summary>
+        Delet = 3,
+        /// <summary>
+        /// 功能处于预览状态
+        /// </summary>
+        Preview=4
     }
 }

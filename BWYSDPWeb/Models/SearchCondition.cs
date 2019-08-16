@@ -25,7 +25,16 @@ namespace BWYSDPWeb.Models
 
         //public int TableIndex { get; set; }
         /// <summary>根据TableIndex取别名</summary>
-        public char AliasNm { get; set; }
+        public char TBAliasNm { get; set; }
+
+        /// <summary>
+        /// 字段别名
+        /// </summary>
+        public string AliasNm { get; set; }
+
+        public bool Hidden { get; set; }
+
+        public bool IsDateType { get; set; }
     }
 
 }

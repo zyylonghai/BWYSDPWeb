@@ -53,6 +53,34 @@ namespace BWYSDPBaseDal
             return this.DataAccess.GetDataTable(sql);
         }
 
+        public DataTable[] InternalFillData(string whereformat,object[] valus )
+        {
+            StringBuilder sql = new StringBuilder();
+            DataTable[] dts = { };
+            //DataTable mdt = null;
+            //Dictionary<int, int> dic = new Dictionary<int, int>();
+            SDPCRL.DAL.COM.SQLBuilder sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder();
+            foreach (var libdt in this.LibTables)
+            {
+                foreach (DataTable dt in libdt.Tables)
+                {
+                    TableExtendedProperties tbextprop = this.JsonToObj<TableExtendedProperties>(dt.ExtendedProperties[SysConstManage.ExtProp].ToString());
+                    if (!tbextprop.Ignore) continue;
+                    Array.Resize(ref dts, dts.Length + 1);
+                    dts[dts.Length - 1] =new DataTable (dt.TableName);
+
+                    if (tbextprop.TableIndex == 0 || tbextprop .TableIndex !=tbextprop .RelateTableIndex)
+                    {
+                        sql.Append(sQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=whereformat,Values=valus }));
+                        sql.AppendLine();
+                    }
+                }
+            }
+            this.DataAccess.GetDatatTables(sql.ToString(), ref dts);
+            return dts;
+           
+        }
+
         #region 私有函数
         private void AnalyzeSearchCondition(List<LibSearchCondition> conds, StringBuilder whereformat,ref object[] values)
         {

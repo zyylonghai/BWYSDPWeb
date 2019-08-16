@@ -44,7 +44,7 @@ function drag(id) {
 
 function ShowMsg(msg, msgtype) {
     if (msgtype == "error") {
-        $('#sdp_error_content').text(msg);
+        $('#sdp_error_content').html(msg);
         $('#sdp_errorinfo').show();
     }
     else if (msgtype == "warning") {
@@ -99,4 +99,14 @@ function TableBtnEdit(obj, grid) {
     }
     
     return false;
+}
+
+function TimeConverToStr(tm) {
+    //var datetime = Date.parse(new Date(stringTime));
+    //datetime.setTime(time);
+    var datetm = new Date(tm);
+    var year = datetm.getFullYear();
+    var month = datetm.getMonth() + 1 < 10 ? "0" + (datetm.getMonth() + 1) : datetm.getMonth() + 1;
+    var day = datetm.getDate() < 10 ? "0" + datetm.getDate() : datetm.getDate();
+    return year + "-" + month + "-" + day;
 }

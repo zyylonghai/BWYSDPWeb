@@ -34,7 +34,7 @@
         o.append("<option value=\"0\">默认选择</option>");
         $('#sdp_smodalCondition').children().first().siblings().remove();//移除所有条件元素，除第一条外。
 
-        $('#sdp_smodalform').find("input").each(function () { $(this).val(""); });
+        $('#sdp_smodalform').find("input").each(function () { $(this).val(""); });//清空条件值输入框。
 
         $('#sdp_smodalform').find(".bootstrap-table").remove();//清空表格。
         $('#sdp_smodalform').find(".clearfix").remove();
@@ -74,7 +74,7 @@ function GetFields(tbnm,ctrnm) {
             if (obj.flag == 0) {
                 //o.children().remove();
                 $.each(obj.data, function (index, row) {
-                    o.append("<option value='" + row.AliasNm + "." + row.FieldNm + "'>" + row.DisplayNm + "(" + row.TableNm+")</option>");
+                    o.append("<option value='" + row.TBAliasNm + "." + row.FieldNm + "' hid='" + row.Hidden + "' aliasnm='" + row.AliasNm + "' isdate='" + row.IsDateType+"'>" + row.DisplayNm + "(" + row.TBAliasNm + "." + row.FieldNm + ")</option>");
                 });
             }
         },
@@ -114,7 +114,10 @@ function AddCondition() {
 function DeletCondition(obj) {
     obj.remove();
 }
-function DoSearch(flag, ctrnm,dsid,deftb,tbstruct) {
+function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
+    if ($('#sdp_smodaldata') != undefined || $('#sdp_smodaldata') != null || $('#sdp_smodaldata').length> 0) {
+        $('#sdp_smodaldata').bootstrapTable('refreshOptions', { pageNumber: 1 });
+    }
     $.ajax({
         async: false,
         type: "Post",
@@ -143,23 +146,33 @@ function BindToTable(ctrnm,tbnm) {
     var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
     $.each(o.children(), function (index, option) {
         if (option.value != 0) {
+            let vis = $(option).attr("hid") == "false" ? true : false;
+            let aliasnm = $(option).attr("aliasnm");
             let arrary = option.value.split('.');
-            cols.push({ field: arrary[1], title: option.outerText, align: 'center' });
+            let date = $(option).attr("isdate") == "false" ? false : true;
+            if (date) {
+                cols.push({ field: (aliasnm == "" || aliasnm == undefined) ? arrary[1] : aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis, formatter: function (value, row, index) { return TimeConverToStr(value); } });
+            }
+            else
+                cols.push({ field: (aliasnm == "" || aliasnm == undefined) ? arrary[1] : aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis });
         }
     });
     sdp_searchtb.$table.columns = cols;
     sdp_searchtb.initialTable();
     sdp_searchtb.testid = tbnm;
-    sdp_searchtb.DbClickRow = function (row, elem, tbname) {
+    sdp_searchtb.DbClickRow = function (dr, elem, tbname) {
         $.ajax({
             async: false,
             type: "Post",
             url: '/DataBase/FillAndEdit',
-            data: { row, "tablenm":tbname },
+            data: { dr, "tablenm":tbname },
             dataType: "Json",
             success: function (obj) {
-
-
+                $("#searchModal").modal('hide');
+                var grids = $("#sdp_form").find("table");
+                $.each(grids, function (index, o) {
+                    $('#' + o.id).bootstrapTable('refresh');
+                });
             },
             error: function () {
             }

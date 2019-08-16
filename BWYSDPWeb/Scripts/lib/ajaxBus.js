@@ -1,4 +1,5 @@
 ﻿var _ajax = $.ajax;
+var sdp_haserror = false;
 //重写jquery的ajax方法
 $.ajax = function (opt) {
     var fn = {
@@ -37,6 +38,8 @@ $.ajax = function (opt) {
             fn.data += "&sdp_dsid=" + $('#bwysdp_dsid').val() + "";
         }
     //}
+    //if (sdp_haserror)
+    //    return;
     //扩展增强处理 
     var _opt = $.extend(opt, {
         data: fn.data,
@@ -55,17 +58,23 @@ $.ajax = function (opt) {
         success: function (data, textStatus) {
             if (data != null && (data.sdp_flag != null && data.sdp_flag != undefined && data.sdp_flag==0))
             {
-                //for (var n = 0; n < data.sdp_data.length; n++)
-                //{
-
                     $.each(data.sdp_data, function (index, o) {
                         $('#' + o.FieldNm).val(o.FieldValue);
                     });
-                //}
                
             }
-            //成功回调方法增强处理 
-            fn.success(data, textStatus);
+            if (data != null && data.sdp_msglist != null && data.sdp_msglist != undefined) {
+                let _msg = "";
+                $.each(data.sdp_msglist, function (index, o) {
+                    _msg += o.Message + "<br/>";
+
+                });
+                ShowMsg(_msg, 'error');
+                sdp_haserror = true;
+            }
+            //else
+                //成功回调方法增强处理 
+                fn.success(data, textStatus);
 
 
         },
