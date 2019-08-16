@@ -619,9 +619,9 @@ namespace BWYSDPWeb.Com
                 "});");
             #endregion
 
-            #region msgforsave 函数
-            _script.Append("GetMsgForSave();");
-            #endregion
+            //#region msgforsave 函数
+            //_script.Append("GetMsgForSave();");
+            //#endregion
 
             _script.Append("})");
 

@@ -265,6 +265,16 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             PageLoad();
+            #region 处理MsgforSave
+            LibMessage[] msglist = null;
+            if (this.SessionObj.MsgforSave != null)
+            {
+                msglist = new LibMessage[this.SessionObj.MsgforSave.Count];
+                this.SessionObj.MsgforSave.CopyTo(msglist);
+                this.SessionObj.MsgforSave.Clear();
+                this.AddMessagelist(msglist);
+            }
+            #endregion 
             return LibJson();
         }
         /// <summary>
@@ -397,10 +407,15 @@ namespace BWYSDPWeb.BaseController
             DalResult result = (DalResult)this.ExecuteSaveMethod("Save", this.LibTables);
             //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
-            if (result.Messagelist != null && result.Messagelist.Count > 0)
+            if ((result.Messagelist != null && result.Messagelist.Count > 0))
             {
                 if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
                 this.SessionObj.MsgforSave.AddRange(result.Messagelist);
+            }
+            if (this.MsgList != null && this.MsgList.Count > 0)
+            {
+                if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
+                this.SessionObj.MsgforSave.AddRange(this.MsgList);
             }
             if (result.ErrorMsglst != null && result.ErrorMsglst.Count > 0)
             {
@@ -969,18 +984,18 @@ namespace BWYSDPWeb.BaseController
         #endregion
 
         #region Msgforsave信息取值
-        [HttpPost]
-        public ActionResult GetMsgforSave()
-        {
-            LibMessage[] msglist = null;
-            if (this.SessionObj.MsgforSave != null)
-            {
-                msglist = new LibMessage[this.SessionObj.MsgforSave.Count];
-                this.SessionObj.MsgforSave.CopyTo(msglist);
-                this.SessionObj.MsgforSave.Clear();
-            }
-            return Json(new {Messagelist=msglist }, JsonRequestBehavior.AllowGet);
-        }
+        //[HttpPost]
+        //public ActionResult GetMsgforSave()
+        //{
+        //    LibMessage[] msglist = null;
+        //    if (this.SessionObj.MsgforSave != null)
+        //    {
+        //        msglist = new LibMessage[this.SessionObj.MsgforSave.Count];
+        //        this.SessionObj.MsgforSave.CopyTo(msglist);
+        //        this.SessionObj.MsgforSave.Clear();
+        //    }
+        //    return Json(new { Messagelist = msglist }, JsonRequestBehavior.AllowGet);
+        //}
         #endregion 
         #region 受保护方法
         protected virtual void GetGridDataExt(string gridid, DataTable dt)

@@ -64,12 +64,22 @@ $.ajax = function (opt) {
                
             }
             if (data != null && data.sdp_msglist != null && data.sdp_msglist != undefined) {
-                let _msg = "";
+                let _errors = "";
+                let _warnings = "";
                 $.each(data.sdp_msglist, function (index, o) {
-                    _msg += o.Message + "<br/>";
+                    //_msg += o.Message + "<br/>";
+                    if (o.MsgType == 1) {
+                        _errors += o.Message + "<br/>";
+                    }
+                    else if (o.MsgType == 2) {
+                        _warnings += o.Message + "<br/>";
+                    }
 
                 });
-                ShowMsg(_msg, 'error');
+                if (_errors.length > 0)
+                    ShowMsg(_errors, 'error');
+                if (_warnings.length > 0)
+                    ShowMsg(_warnings, 'warning');
                 sdp_haserror = true;
             }
             //else

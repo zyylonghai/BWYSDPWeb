@@ -573,7 +573,7 @@ namespace BWYSDPWeb.BaseController
             if (this.MsgList == null) this.MsgList = new List<LibMessage>();
             this.MsgList.Add(new LibMessage { Message = msg, MsgType = msgtype });
         }
-        public void AddMessagelist(List<LibMessage> msglist)
+        public void AddMessagelist(IEnumerable<LibMessage> msglist)
         {
             if (this.MsgList == null) this.MsgList = new List<LibMessage>();
             this.MsgList.AddRange(msglist);
