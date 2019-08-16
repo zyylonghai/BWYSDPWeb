@@ -235,10 +235,10 @@ LibTable.prototype = {
                 //    });
 
                 //}
-                closemsg();
+                //closemsg();
             },
             onLoadError: function () {
-                ShowMsg("数据加载失败！", 'error');
+                //ShowMsg("数据加载失败！", 'error');
             },
             onDblClickRow: function (row, $element) {
                 var id = row.ID;

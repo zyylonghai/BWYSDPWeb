@@ -1,5 +1,6 @@
 ﻿$(function () {
-    $('body').append("<div id=\"sdp_errorinfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-danger\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_error_content\">显示了错误信息提示框</p></div></div>");
+    $('body').append("<div id=\"sdp_errorinfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-danger\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_error_content\"></p></div></div>");
+    $('body').append("<div id=\"sdp_warninginfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-warning\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_warning_content\"></p></div></div>");
     //$('body').append("<div  class=\"alert alert-danger\">");
     //$('body').append("<a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a>");
     //$('body').append("<p>显示了错误信息提示框</p>");
@@ -7,6 +8,7 @@
     //$('body').append("</div>");
 
     $('#sdp_errorinfo').hide();
+    $('#sdp_warninginfo').hide();
 });
 var sdp_globModalzindex = 0;
 function drag(id) {
@@ -48,12 +50,14 @@ function ShowMsg(msg, msgtype) {
         $('#sdp_errorinfo').show();
     }
     else if (msgtype == "warning") {
-
+        $('#sdp_warning_content').html(msg);
+        $('#sdp_warninginfo').show();
     }
 }
 
 function closemsg() {
     $('#sdp_errorinfo').hide();
+    $('#sdp_warninginfo').hide();
 }
 
 function Serialobj(obj) {
@@ -109,4 +113,38 @@ function TimeConverToStr(tm) {
     var month = datetm.getMonth() + 1 < 10 ? "0" + (datetm.getMonth() + 1) : datetm.getMonth() + 1;
     var day = datetm.getDate() < 10 ? "0" + datetm.getDate() : datetm.getDate();
     return year + "-" + month + "-" + day;
+}
+
+function GetMsgForSave() {
+    $.ajax({
+        url: "/DataBase/GetMsgforSave",
+        data:"" ,
+        type: 'Post',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            if (obj != null && obj != undefined && obj.Messagelist != null && obj.Messagelist != undefined) {
+                let _errors = "";
+                let _warnings = "";
+                $.each(obj.Messagelist, function (index, o) {
+                    if (o.MsgType == 1) {
+                        _errors += o.Message + "<br/>";
+                    }
+                    else if (o.MsgType == 2) {
+                        _warnings += o.Message + "<br/>";
+                    }
+                    
+
+                });
+                if (_errors.length > 0)
+                    ShowMsg(_errors, 'error');
+                if (_warnings.length > 0)
+                    ShowMsg(_warnings, 'warning');
+                
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
 }

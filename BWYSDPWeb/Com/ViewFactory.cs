@@ -562,6 +562,7 @@ namespace BWYSDPWeb.Com
             _page.Append("</div>");//container - fluid
 
             CreateJavaScript();
+            _page.AppendLine();
             _page.Append(_script.ToString());
 
         }
@@ -616,6 +617,10 @@ namespace BWYSDPWeb.Com
                 "datastr+=']';" +
                 "Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
                 "});");
+            #endregion
+
+            #region msgforsave 函数
+            _script.Append("GetMsgForSave();");
             #endregion
 
             _script.Append("})");

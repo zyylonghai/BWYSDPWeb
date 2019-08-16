@@ -394,12 +394,23 @@ namespace BWYSDPWeb.BaseController
             //this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
             //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             //object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
-            //DalResult result = (DalResult ) this.ExecuteSaveMethod("Save", this.LibTables);
+            DalResult result = (DalResult)this.ExecuteSaveMethod("Save", this.LibTables);
             //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
-            //if (result.Messagelist == null || result.Messagelist.Count == 0) {
-
-            //}
+            if (result.Messagelist != null && result.Messagelist.Count > 0)
+            {
+                if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
+                this.SessionObj.MsgforSave.AddRange(result.Messagelist);
+            }
+            if (result.ErrorMsglst != null && result.ErrorMsglst.Count > 0)
+            {
+                string _msg = string.Empty;
+                foreach (var m in result.ErrorMsglst)
+                {
+                    _msg += m.Message + m.Stack;
+                }
+                this.ThrowErrorException(_msg);
+            }
             //return Content("alert(\"sdfds\")");
             //return Json(new { message = "dfceshi" }, JsonRequestBehavior.AllowGet);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
@@ -955,6 +966,21 @@ namespace BWYSDPWeb.BaseController
             return string.Empty;
         }
         #endregion
+
+        #region Msgforsave信息取值
+        [HttpPost]
+        public ActionResult GetMsgforSave()
+        {
+            LibMessage[] msglist = null;
+            if (this.SessionObj.MsgforSave != null)
+            {
+                msglist = new LibMessage[this.SessionObj.MsgforSave.Count];
+                this.SessionObj.MsgforSave.CopyTo(msglist);
+                this.SessionObj.MsgforSave.Clear();
+            }
+            return Json(new {Messagelist=msglist }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion 
         #region 受保护方法
         protected virtual void GetGridDataExt(string gridid, DataTable dt)
         {

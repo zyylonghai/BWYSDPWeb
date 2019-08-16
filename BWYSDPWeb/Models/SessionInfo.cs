@@ -17,5 +17,10 @@ namespace BWYSDPWeb.Models
         /// 功能的搜索条件
         /// </summary>
         public List<LibSearchCondition> Conds { get; set; }
+
+        /// <summary>
+        /// 用于存储保存时产生的信息。
+        /// </summary>
+        public List<LibMessage> MsgforSave { get; set; }
     }
 }
