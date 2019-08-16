@@ -105,7 +105,7 @@ namespace BWYSDPWeb.BllComController
         protected override void GetGridDataExt(string gridid, DataTable dt)
         {
             base.GetGridDataExt(gridid, dt);
-            this.ThrowErrorException("抛出异常测试.....");
+            //this.ThrowErrorException("抛出异常测试.....");
             //DataRow dr = dt.NewRow();
             ////dr["RowNo"] = "1";
             ////dr["BillNo"] = "T201903160001";

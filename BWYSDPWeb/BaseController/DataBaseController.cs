@@ -409,7 +409,8 @@ namespace BWYSDPWeb.BaseController
                 {
                     _msg += m.Message + m.Stack;
                 }
-                this.ThrowErrorException(_msg);
+                //this.ThrowErrorException(_msg);
+                return View("Error");
             }
             //return Content("alert(\"sdfds\")");
             //return Json(new { message = "dfceshi" }, JsonRequestBehavior.AllowGet);
