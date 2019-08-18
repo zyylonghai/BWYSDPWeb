@@ -239,32 +239,34 @@ namespace BWYSDPWeb.BaseController
         [HttpPost]
         public virtual ActionResult BasePageLoad()
         {
-            //this.OperatAction = OperatAction.Add;
-            this.SessionObj.OperateAction = OperatAction.Add;
-            //Session[SysConstManage.OperateAction] = this.OperatAction;
-            this.CreateTableSchema();
-            #region delete temp data(重新加载页面，需清除temp表中的session数据)
-            //Bll.DelegateFactory df = new Bll.DelegateFactory();
-            //df.ClearTempDataByProgid(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
-
-            TempHelp sQLiteHelp = new TempHelp("TempData");
-            sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
-
-            #endregion
-            //DataRow row = null;
-            foreach (var def in this.LibTables)
+            if (this.SessionObj.MsgforSave == null || this.SessionObj.MsgforSave.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
-                foreach (DataTable dt in def.Tables)
-                {
-                    if ((dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
-                    {
-                        //row = dt.NewRow();
+                this.SessionObj.OperateAction = OperatAction.Add;
+                //Session[SysConstManage.OperateAction] = this.OperatAction;
+                this.CreateTableSchema();
+                #region delete temp data(重新加载页面，需清除temp表中的session数据)
+                //Bll.DelegateFactory df = new Bll.DelegateFactory();
+                //df.ClearTempDataByProgid(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
 
-                        dt.Rows.Add(dt.NewRow());
+                TempHelp sQLiteHelp = new TempHelp("TempData");
+                sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+
+                #endregion
+                //DataRow row = null;
+                foreach (var def in this.LibTables)
+                {
+                    foreach (DataTable dt in def.Tables)
+                    {
+                        if ((dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
+                        {
+                            //row = dt.NewRow();
+
+                            dt.Rows.Add(dt.NewRow());
+                        }
                     }
                 }
+                PageLoad();
             }
-            PageLoad();
             #region 处理MsgforSave
             LibMessage[] msglist = null;
             if (this.SessionObj.MsgforSave != null)
@@ -404,28 +406,33 @@ namespace BWYSDPWeb.BaseController
             //this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
             //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             //object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
-            DalResult result = (DalResult)this.ExecuteSaveMethod("Save", this.LibTables);
+            DalResult result = null;
+            if (this.MsgList == null || this.MsgList.FirstOrDefault(i=>i.MsgType==LibMessageType.Error )==null)
+            {
+                result = (DalResult)this.ExecuteSaveMethod("Save", this.LibTables);
+            }
             //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
-            if ((result.Messagelist != null && result.Messagelist.Count > 0))
-            {
-                if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
-                this.SessionObj.MsgforSave.AddRange(result.Messagelist);
-            }
+            //if ((result.Messagelist != null && result.Messagelist.Count > 0))
+            //{
+            //    if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
+            //    this.SessionObj.MsgforSave.AddRange(result.Messagelist);
+            //}
             if (this.MsgList != null && this.MsgList.Count > 0)
             {
                 if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
                 this.SessionObj.MsgforSave.AddRange(this.MsgList);
             }
-            if (result.ErrorMsglst != null && result.ErrorMsglst.Count > 0)
+            if (result !=null && result.ErrorMsglst != null && result.ErrorMsglst.Count > 0)
             {
-                string _msg = string.Empty;
-                foreach (var m in result.ErrorMsglst)
-                {
-                    _msg += m.Message + m.Stack;
-                }
-                //this.ThrowErrorException(_msg);
-                return View("Error");
+                //string _msg = string.Empty;
+                //foreach (var m in result.ErrorMsglst)
+                //{
+                //    _msg += m.Message + m.Stack;
+                //}
+                ////this.ThrowErrorException(_msg);
+                //return View("Error");
+                return LibReturnError(result.ErrorMsglst);
             }
             //return Content("alert(\"sdfds\")");
             //return Json(new { message = "dfceshi" }, JsonRequestBehavior.AllowGet);
@@ -897,6 +904,7 @@ namespace BWYSDPWeb.BaseController
                             colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
                             if (!colextprop.IsActive) continue;
                             cond = new SearchConditionField();
+                            cond.IsCondition = true;
                             cond.DisplayNm = col.Caption;
                             //cond.DefTableNm = deftb.Name;
                             cond.TableNm = dt.TableName;
@@ -920,7 +928,7 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             SetSearchField(condcollection);
-            return Json(new { data = condcollection, flag = 0 }, JsonRequestBehavior.AllowGet);
+            return Json(new { data = condcollection.Where (i=>i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult GetSmodalCondition(int index)
@@ -971,15 +979,19 @@ namespace BWYSDPWeb.BaseController
         public string BindSmodalData(string tableNm, int page, int rows)
         {
             List<LibSearchCondition> conds = this.SessionObj.Conds;
+            //this.AddMessage("jjjjjjjjjjjj");
             //List<LibSearchCondition> conds = Session[string.Format("{0}{1}", SysConstManage.sdp_Schcond, this.ProgID)] as List<LibSearchCondition>;
             DalResult result = this.ExecuteMethod("InternalSearchByPage", tableNm, null, conds, page, rows);
             if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
                 DataTable dt = ((DataTable)result.Value);
-                var resultdt = new { total = dt.Rows.Count > 0 ? dt.Rows[0][SysConstManage.sdp_total_row] : 0, rows = result.Value };
-                return JsonConvert.SerializeObject(resultdt);
+                BindSmodalDataExt(dt);
+                if (this.MsgList == null || this.MsgList.FirstOrDefault(i=>i.MsgType==LibMessageType.Error )==null)
+                    //var resultdt = new { total = dt.Rows.Count > 0 ? dt.Rows[0][SysConstManage.sdp_total_row] : 0, rows = result.Value,msg="jjjjjjjj" };
+                    //return JsonConvert.SerializeObject(resultdt);
+                    return LibReturnForGrid((dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), dt);
             }
-            return string.Empty;
+            return LibReturnForGrid(0, null);
         }
         #endregion
 
@@ -1027,6 +1039,11 @@ namespace BWYSDPWeb.BaseController
         }
 
         protected virtual void SetSearchField(List<SearchConditionField> fields) { }
+
+        protected virtual void BindSmodalDataExt(DataTable currpagedata)
+        {
+
+        }
         #endregion
 
         #region 私有函数

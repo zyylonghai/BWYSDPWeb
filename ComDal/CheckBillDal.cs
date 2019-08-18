@@ -18,18 +18,23 @@ namespace ComDal
 
         protected override void BeforeUpdate()
         {
-            this.AddErrorMessage("BeforeUpdate  error test",LibMessageType.Warning);
+            this.AddMessage("BeforeUpdate  error test",LibMessageType.Warning);
             base.BeforeUpdate();
         }
-
-
-        public override void Save(LibTable[] libtables)
+        protected override void AfterUpdate()
         {
-            //int a =0;
-            //int b = 8 / a;
-            this.AddErrorMessage("error test",LibMessageType.Warning);
-            base.Save(libtables);
+            base.AfterUpdate();
+            //this.AddMessage("error test", LibMessageType.Error);
         }
+
+
+        //public override void Save(LibTable[] libtables)
+        //{
+        //    //int a =0;
+        //    //int b = 8 / a;
+        //    this.AddErrorMessage("error test",LibMessageType.Warning);
+        //    base.Save(libtables);
+        //}
 
         public string Test(string a,int b)
         {

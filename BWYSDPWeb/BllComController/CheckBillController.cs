@@ -167,19 +167,51 @@ namespace BWYSDPWeb.BllComController
         protected override void SetSearchField(List<SearchConditionField> fields)
         {
             base.SetSearchField(fields);
+            //SearchConditionField[] rmvs = { };
+            //fields.Where(i => i.TableNm != "CheckBill").ToArray().CopyTo(rmvs, 0);
+            //foreach (var item in rmvs)
+            //{
+            //    fields.Remove(item);
+            //}
             //foreach (var f in fields)
             //{
             //    if (f.TableNm != "CheckBill")
             //    {
-            //        f.Hidden = true;
+            //        f.IsCondition = false;
             //    }
             //}
+        }
+        protected override void BindSmodalDataExt(DataTable currpagedata)
+        {
+            base.BindSmodalDataExt(currpagedata);
+            //DataTable dt = currpagedata.Copy();
+            //List<string> exists = new List<string>();
+            //DataRow[] drs = null;
+            //foreach (DataRow row in dt.Rows)
+            //{
+            //    if (exists.Contains(row["BillNo"]))
+            //    {
+            //        drs = currpagedata.Select(string.Format("BillNo='{0}'", row["BillNo"]));
+            //        if (drs != null && drs.Length > 0)
+            //            currpagedata.Rows.Remove(drs[0]);
+            //        //currpagedata.Rows.RemoveAt(dt.Rows.IndexOf(row));
+            //        continue;
+            //    }
+            //    exists.Add(row["BillNo"].ToString());
+            //}
+            //this.AddMessage("slkdjfdskljfkldsjfkldsjfkldsjfkljdkslfjklsd",SDPCRL.CORE.LibMessageType.Warning);
         }
 
         protected override void AfterSave()
         {
             base.AfterSave();
-            this.AddMessage("sdfjsdkjfkdj", SDPCRL.CORE.LibMessageType.Error);
+            //this.AddMessage("sdfjsdkjfkdj", SDPCRL.CORE.LibMessageType.Error);
+        }
+        protected override void BeforeSave()
+        {
+            base.BeforeSave();
+            //this.AddMessage("beforesave的错误信息", SDPCRL.CORE.LibMessageType.Error);
+            this.AddMessage("beforesave的警告信息", SDPCRL.CORE.LibMessageType.Warning);
         }
 
     }

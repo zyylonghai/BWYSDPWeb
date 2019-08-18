@@ -80,7 +80,7 @@ function Save(datastr, ctrNm) {
     //        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
     //    }
     //});
-
+    showMask();
     $('#sdp_form').submit();
 }
 

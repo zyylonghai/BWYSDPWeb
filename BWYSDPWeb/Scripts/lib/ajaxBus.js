@@ -50,7 +50,7 @@ $.ajax = function (opt) {
                     ShowMsg(responseobj.msg, 'error');
             }
             else {
-                ShowMsg(XMLHttpRequest.status + textStatus + errorThrown, 'error');
+                ShowMsg('ajax error: '+XMLHttpRequest.status+':' + textStatus+':' + errorThrown, 'error');
             }
             //错误方法增强处理 
             fn.error(XMLHttpRequest, textStatus, errorThrown);
@@ -78,8 +78,9 @@ $.ajax = function (opt) {
                 });
                 if (_errors.length > 0)
                     ShowMsg(_errors, 'error');
-                if (_warnings.length > 0)
+                else if (_warnings.length > 0)
                     ShowMsg(_warnings, 'warning');
+              
                 sdp_haserror = true;
             }
             //else

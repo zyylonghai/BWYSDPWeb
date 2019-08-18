@@ -128,6 +128,7 @@ function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
             if (obj.flag == 0) {
                 BindToTable(ctrnm, tbstruct);
                 $('#sdp_smodaldata').bootstrapTable('refresh');
+                closemsg();
             }
         },
         error: function () {

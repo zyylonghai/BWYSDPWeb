@@ -15,7 +15,7 @@ using BWYSDPWeb.Com;
 
 namespace BWYSDPWeb.BaseController
 {
-    public class BaseController : Controller,IlibException 
+    public class BaseController : Controller, IlibException
     {
         #region 私有属性
         private string _rootPath = string.Empty;
@@ -61,8 +61,11 @@ namespace BWYSDPWeb.BaseController
         /// <summary>
         /// 当前功能存储在Session的信息
         /// </summary>
-        public SessionInfo SessionObj {
-            get {
+        public SessionInfo SessionObj
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.ProgID)) return _sessionobj;
                 _sessionobj = (SessionInfo)System.Web.HttpContext.Current.Session[this.ProgID];
                 if (_sessionobj == null) _sessionobj = new SessionInfo();
                 return _sessionobj;
@@ -86,7 +89,7 @@ namespace BWYSDPWeb.BaseController
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
             //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
-            this.OperatAction = this.SessionObj.OperateAction;
+            this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;
             this.LibTables = GetTableSchema(this.DSID);
             //if (this.LibTables != null)
             //{
@@ -305,7 +308,7 @@ namespace BWYSDPWeb.BaseController
                         col = dt.Columns[s];
                         f = new FormFields();
                         f.ProgId = this.ProgID;
-                        f.FieldNm = string.Format("{0}{2}{1}", item.Key, s,SysConstManage .Underline);
+                        f.FieldNm = string.Format("{0}{2}{1}", item.Key, s, SysConstManage.Underline);
                         if (col.DataType.Equals(typeof(DateTime)) || col.DataType.Equals(typeof(Date)))
                         {
                             f.FieldValue = dt.Rows[0][col].ToString();
@@ -319,9 +322,14 @@ namespace BWYSDPWeb.BaseController
             }
             #endregion
 
-            bool haserror =this.MsgList!=null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
-            return Json(new { sdp_flag = 0, sdp_data = fieldlst,sdp_msglist=this.MsgList,sdp_haserror=haserror }, JsonRequestBehavior.AllowGet);
+            bool haserror = this.MsgList != null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
+            return Json(new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
         }
+        //public JsonResult LibJson(object result)
+        //{
+        //    bool haserror = this.MsgList != null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
+        //    return Json(new { sdp_flag = 0, sdp_Msg = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
+        //}
 
         public JsonResult LibJson(DataRow row)
         {
@@ -344,7 +352,26 @@ namespace BWYSDPWeb.BaseController
                     fieldlst.Add(f);
                 }
             }
-            return Json(new { sdp_flag = 0, sdp_data = fieldlst }, JsonRequestBehavior.AllowGet);
+            bool haserror = this.MsgList != null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
+            return Json(new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
+        }
+
+        public string LibReturnForGrid(int total, DataTable dt)
+        {
+            bool haserror = this.MsgList != null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
+            var o = new { total = total, rows = dt, sdp_msglist = this.MsgList, sdp_haserror = haserror };
+            return JsonConvert.SerializeObject(o);
+        }
+
+        public ViewResult LibReturnError(List<ErrorMessage> errors)
+        {
+            string _msg = string.Empty;
+            foreach (var m in errors)
+            {
+                _msg += m.Message + m.Stack;
+            }
+            //this.ThrowErrorException(_msg);
+            return View("Error");
         }
         #endregion
 
@@ -439,7 +466,7 @@ namespace BWYSDPWeb.BaseController
                                                 continue;
                                             }
                                             newrow[c] = new object();
-                                            
+
                                         }
                                         tb.Rows.Add(newrow);
                                         rowindex = (int)dr[colrowid];
@@ -451,7 +478,7 @@ namespace BWYSDPWeb.BaseController
                                                 #region 赋值
                                                 if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
                                                 {
-                                                    newrow[dr[colfieldnm].ToString()] = new Date { value= dr[cololdvalue].ToString() };
+                                                    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
                                                 }
                                                 else
                                                     newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
@@ -543,7 +570,17 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteMethod(string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            return _bll.ExecuteMethod(this.ProgID, method,this.LibTables, param);
+            DalResult dalResult = _bll.ExecuteMethod(this.ProgID, method, this.LibTables, param);
+            if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
+            {
+                string _msg = string.Empty;
+                foreach (var m in dalResult.ErrorMsglst)
+                {
+                    _msg += m.Message + m.Stack;
+                }
+                this.ThrowErrorException(_msg);
+            }
+            return dalResult;
         }
 
 
@@ -551,13 +588,23 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteDalMethod(string funcId, string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            return _bll.ExecuteMethod(funcId, method,null, param);
+            DalResult dalResult = _bll.ExecuteMethod(funcId, method, null, param);
+            if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
+            {
+                string _msg = string.Empty;
+                foreach (var m in dalResult.ErrorMsglst)
+                {
+                    _msg += m.Message + m.Stack;
+                }
+                this.ThrowErrorException(_msg);
+            }
+            return dalResult;
         }
 
         public DalResult ExecuteSaveMethod(string method, LibTable[] tables)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            DalResult dalResult=(DalResult )_bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
+            DalResult dalResult = (DalResult)_bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
             this.AddMessagelist(dalResult.Messagelist);
             return dalResult;
         }
@@ -565,10 +612,10 @@ namespace BWYSDPWeb.BaseController
         public void ThrowErrorException(string msg)
         {
             ExceptionHelp help = new ExceptionHelp();
-            help.ThrowError(this, msg); 
+            help.ThrowError(this, msg);
         }
 
-        public void AddMessage(string msg,LibMessageType msgtype=LibMessageType.Error)
+        public void AddMessage(string msg, LibMessageType msgtype = LibMessageType.Error)
         {
             if (this.MsgList == null) this.MsgList = new List<LibMessage>();
             this.MsgList.Add(new LibMessage { Message = msg, MsgType = msgtype });
@@ -602,7 +649,7 @@ namespace BWYSDPWeb.BaseController
         #region IlibException
         public void BeforeThrow()
         {
-            
+
         }
         #endregion
     }
@@ -625,6 +672,6 @@ namespace BWYSDPWeb.BaseController
         /// <summary>
         /// 功能处于预览状态
         /// </summary>
-        Preview=4
+        Preview = 4
     }
 }

@@ -32,6 +32,11 @@ namespace BWYSDPWeb.Models
         /// </summary>
         public string AliasNm { get; set; }
 
+        /// <summary>
+        /// 是否作为查询条件
+        /// </summary>
+        public bool IsCondition { get; set; }
+
         public bool Hidden { get; set; }
 
         public bool IsDateType { get; set; }
