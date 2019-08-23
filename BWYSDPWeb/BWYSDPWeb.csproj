@@ -165,6 +165,7 @@
     <Compile Include="BllStockController\StockController.cs" />
     <Compile Include="BllStockController\stocktestController.cs" />
     <Compile Include="BllsysSettingController\ServerController.cs" />
+    <Compile Include="Com\AppCom.cs" />
     <Compile Include="Com\CachHelp.cs" />
     <Compile Include="Com\ViewFactory.cs" />
     <Compile Include="Global.asax.cs">

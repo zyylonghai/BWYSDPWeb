@@ -32,6 +32,15 @@ namespace BWYSDPWeb.Com
 
         }
 
+        public void AddCachItem(string key, object val,DateTimeOffset dtoffset)
+        {
+            var exist = cache[key];
+            if (exist == null)
+            {
+                cache.Set(key, val, dtoffset);
+            }
+        }
+
         public object GetCach(string key)
         {
             //if (cache.Contains(key))

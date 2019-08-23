@@ -164,9 +164,9 @@ namespace BWYSDPWeb.BllComController
             return Json(new { message = "", Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
-        protected override void SetSearchField(List<SearchConditionField> fields)
+        protected override void SetSearchFieldExt(List<SearchConditionField> fields)
         {
-            base.SetSearchField(fields);
+            base.SetSearchFieldExt(fields);
             //SearchConditionField[] rmvs = { };
             //fields.Where(i => i.TableNm != "CheckBill").ToArray().CopyTo(rmvs, 0);
             //foreach (var item in rmvs)

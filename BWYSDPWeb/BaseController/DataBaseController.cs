@@ -139,13 +139,15 @@ namespace BWYSDPWeb.BaseController
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     FileOperation fileoperation = new FileOperation();
 
-                    fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", Server.MapPath("/").Replace("//", ""), packagepath, progId);
+                    fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath, string.Format("{0}_{1}",progId,this.Language .ToString ()));
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
-                        LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), progId, this.Package);
+                        LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progId, this.Package);
                         if (formpage == null) { return View("NotFindPage"); }
-                        LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(string.Format(@"{0}Views", Server.MapPath("/").Replace("//", "")), formpage.DSID, this.Package);
-
+                        LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, formpage.DSID, this.Package);
+                        DataTable dt= this.GetFieldDescBydsid(dataSource.DSID);
+                        CachHelp cachHelp = new CachHelp();
+                        cachHelp.AddCachItem(progId, dt, DateTimeOffset.Now.AddMinutes(2));
                         //if (formpage != null)
                         //{
                         #region 旧代码
@@ -168,6 +170,7 @@ namespace BWYSDPWeb.BaseController
                         factory.ControlClassNm = formpage.ControlClassNm;
                         factory.DSID = formpage.DSID;
                         factory.Package = this.Package;
+                        factory.Language = this.Language;
                         factory.BeginPage(formpage.FormName);
                         factory.CreateBody();
                         factory.CreateForm();
@@ -223,17 +226,13 @@ namespace BWYSDPWeb.BaseController
                         sQLiteHelp.Update(commandtextlst);
                         string d = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                         #endregion
-                        //}
-                        //else
-                        //{
-                        //    return View("NotFindPage");
-                        //}
 
                     }
                     //Server.MapPath("/")
                 }
             }
-            return View(progId);
+            //return View(progId);
+            return View(string.Format("{0}_{1}", progId, this.Language.ToString()));
         }
 
         [HttpPost]
@@ -874,7 +873,7 @@ namespace BWYSDPWeb.BaseController
 
         #region 搜索模态框 操作
         [HttpGet]
-        public ActionResult GetSearchCondFields(string tbnm)
+        public ActionResult GetSearchCondFields(string tbnm,string relatedsid)
         {
             //var libtb= this.LibTables.FirstOrDefault(i => i.Name == tbnm);
             SearchConditionField cond = null;
@@ -926,8 +925,37 @@ namespace BWYSDPWeb.BaseController
                         }
                     }
                 }
+                SetSearchFieldExt(condcollection);
             }
-            SetSearchField(condcollection);
+            else
+            {
+                //来源字段上的搜索
+                LibDataSource ds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, relatedsid);
+                foreach (LibDefineTable def in ds.DefTables)
+                {
+                    foreach (LibDataTableStruct dtstruct in def.TableStruct)
+                    {
+                        if (dtstruct.Name == tbnm)
+                        {
+                            foreach (LibField f in dtstruct.Fields)
+                            {
+                                if (!f.IsActive) continue;
+                                cond = new SearchConditionField();
+                                cond.IsCondition = true;
+                                cond.DisplayNm = f.DisplayName;
+                                //cond.DefTableNm = deftb.Name;
+                                cond.TableNm = dtstruct .Name;
+                                cond.FieldNm =f.Name;
+                                cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(dtstruct .TableIndex);
+                                cond.AliasNm = f.AliasName;
+                                cond.IsDateType = f.FieldType==LibFieldType.Date;
+                                condcollection.Add(cond);
+                            }
+                        }
+                    }
+                }
+                
+            }
             return Json(new { data = condcollection.Where (i=>i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
@@ -1038,7 +1066,7 @@ namespace BWYSDPWeb.BaseController
 
         }
 
-        protected virtual void SetSearchField(List<SearchConditionField> fields) { }
+        protected virtual void SetSearchFieldExt(List<SearchConditionField> fields) { }
 
         protected virtual void BindSmodalDataExt(DataTable currpagedata)
         {

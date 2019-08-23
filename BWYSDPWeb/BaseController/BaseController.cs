@@ -22,6 +22,7 @@ namespace BWYSDPWeb.BaseController
         private BllDataBase _bll = null;
         //private List<LibMessage> MsgList = null;
         private SessionInfo _sessionobj = null;
+        private string _rootpath = string.Empty;
         #endregion
         #region 公开属性
 
@@ -78,6 +79,21 @@ namespace BWYSDPWeb.BaseController
         /// 错误，警告等信息集
         /// </summary>
         public List<LibMessage> MsgList { get; set; }
+        public Language Language { get; set; }
+
+        public string RootPath {
+            get {
+                if (string.IsNullOrEmpty (_rootpath ))
+                    _rootpath = Server.MapPath("/").Replace("//", "");
+                return _rootpath;
+            }
+        }
+        public string ModelRootPath
+        {
+            get {
+                return string.Format(@"{0}Views", this.RootPath);
+            }
+        }
         #endregion
 
         public BaseController()
@@ -87,6 +103,7 @@ namespace BWYSDPWeb.BaseController
             this.ProgID = request.Params["sdp_pageid"] ?? string.Empty;
             this.DSID = request.Params["sdp_dsid"] ?? string.Empty;
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
+            this.Language = Language.CHS;
             //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
             this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;
@@ -624,6 +641,17 @@ namespace BWYSDPWeb.BaseController
         {
             if (this.MsgList == null) this.MsgList = new List<LibMessage>();
             this.MsgList.AddRange(msglist);
+        }
+
+        public string GetFieldDesc(string tablenm,string fieldnm)
+        {
+            return AppCom.GetFieldDesc((int)this.Language, this.DSID, tablenm, fieldnm);
+
+        }
+        public DataTable GetFieldDescBydsid(string dsid)
+        {
+            BllDataBase bll = new BllDataBase();
+            return bll.GetFieldDescData(dsid);
         }
         #endregion
 

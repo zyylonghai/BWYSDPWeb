@@ -29,6 +29,8 @@ namespace BWYSDPWeb.Com
         public string DSID { get; set; }
         public string Package { get; set; }
 
+        public Language Language { get; set; }
+
         /// <summary>
         /// 用于存储 信息组的字段。
         /// </summary>
@@ -220,7 +222,9 @@ namespace BWYSDPWeb.Com
                 validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
                 validatorAttr.AppendFormat("maxlength=\"{0}\"", field.FieldLength);
                 #endregion
-                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName + (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+
+                //_page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName+ (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + AppCom .GetFieldDesc((int)Language,this.DSID ,field.FromTableNm ,field.Name ) + (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
                 _page.Append("<div class=\"col-sm-" + field.Width + "\">");
                 switch (field.ElemType)
                 {
@@ -244,10 +248,11 @@ namespace BWYSDPWeb.Com
                         _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Search:
+                        LibField lib = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         _page.Append("<div class=\"input-group\">");
                         _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         _page.Append("<span class=\"input-group-btn\">");
-                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + field.DisplayName + "\" data-fromdsid=\" \" data-deftb=\"\" data-tbstruct=\"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + field.DisplayName + "\" data-fromdsid=\""+lib.SourceField .FromDataSource+"\" data-deftb=\""+lib.SourceField.FromDefindTableNm+"\" data-tbstruct=\""+lib.SourceField .FromStructTableNm+"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                         _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
                         _page.Append("</button>");
                         _page.Append("</span>");
@@ -348,7 +353,8 @@ namespace BWYSDPWeb.Com
                 //valus.Add(field.Name);
 
                 table.Append(",{");
-                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, AppCom.GetFieldDesc((int)Language ,this.DSID ,field.FromTableNm ,field .Name ), field.HasSort ? "true" : "false"));
                 table.Append("formatter: function (value, row, index) {");
                 if (field.ElemType == ElementType.Date) {
                     table.Append(string.Format("return \"<div {0}>\" + TimeConverToStr(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));

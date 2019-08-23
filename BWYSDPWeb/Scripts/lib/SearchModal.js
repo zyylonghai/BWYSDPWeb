@@ -51,24 +51,25 @@
         $('#sdp_smodalbtnSearch').click(function () {
             DoSearch(flag, controlnm, fromdsid, deftb, tbstruct);
         });
-        if (flag == 1) {
-            $('#searchModal').find(".modal-footer").css("display","none");
+        if (flag == 1) {/*调出的搜索模态框为单据上的搜索*/
+            $('#searchModal').find(".modal-footer").css("display", "none");
             GetFields(tbstruct, controlnm);
         }
-        else {
+        else {/*调出的搜索模态框为来源字段上的搜索*/
             $('#searchModal').find(".modal-footer").css("display", "block");
+            GetFields(tbstruct, controlnm, fromdsid);
         }
     });
     drag("searchModal");
 });
 
-function GetFields(tbnm,ctrnm) {
+function GetFields(tbnm, ctrnm, relatedsid) {
     var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
     $.ajax({
         async: false,
         type: "Get",
         url: '/' + ctrnm + '/GetSearchCondFields',
-        data: "tbnm=" + tbnm + "",
+        data: "tbnm=" + tbnm + "&relatedsid=" + relatedsid + "",
         dataType: "Json",
         success: function (obj) {
             if (obj.flag == 0) {
