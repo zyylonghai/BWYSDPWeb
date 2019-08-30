@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CheckBillDal.cs" />
     <Compile Include="ComDal.cs" />
+    <Compile Include="MaterialsDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

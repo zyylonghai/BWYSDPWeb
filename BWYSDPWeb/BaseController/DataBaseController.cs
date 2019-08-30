@@ -115,6 +115,13 @@ namespace BWYSDPWeb.BaseController
             m.Package = "com";
             m.PmenuId = "0103";
             mdata.Add(m);
+            m = new Menu();
+            m.MenuId = "010303";
+            m.MenuName = "物料主数据";
+            m.ProgId = "Materials";
+            m.Package = "com";
+            m.PmenuId = "0103";
+            mdata.Add(m);
 
             return Json(new { Message = "success", data = mdata, Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
@@ -139,13 +146,13 @@ namespace BWYSDPWeb.BaseController
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     FileOperation fileoperation = new FileOperation();
 
-                    fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath, string.Format("{0}_{1}",progId,this.Language .ToString ()));
+                    fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath, string.Format("{0}_{1}", progId, this.Language.ToString()));
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
                         LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progId, this.Package);
                         if (formpage == null) { return View("NotFindPage"); }
                         LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, formpage.DSID, this.Package);
-                        DataTable dt= this.GetFieldDescBydsid(dataSource.DSID);
+                        DataTable dt = this.GetFieldDescBydsid(dataSource.DSID);
                         CachHelp cachHelp = new CachHelp();
                         cachHelp.AddCachItem(progId, dt, DateTimeOffset.Now.AddMinutes(2));
                         //if (formpage != null)
@@ -406,7 +413,7 @@ namespace BWYSDPWeb.BaseController
             //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             //object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
             DalResult result = null;
-            if (this.MsgList == null || this.MsgList.FirstOrDefault(i=>i.MsgType==LibMessageType.Error )==null)
+            if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
                 result = (DalResult)this.ExecuteSaveMethod("Save", this.LibTables);
             }
@@ -422,7 +429,7 @@ namespace BWYSDPWeb.BaseController
                 if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
                 this.SessionObj.MsgforSave.AddRange(this.MsgList);
             }
-            if (result !=null && result.ErrorMsglst != null && result.ErrorMsglst.Count > 0)
+            if (result != null && result.ErrorMsglst != null && result.ErrorMsglst.Count > 0)
             {
                 //string _msg = string.Empty;
                 //foreach (var m in result.ErrorMsglst)
@@ -449,17 +456,6 @@ namespace BWYSDPWeb.BaseController
             foreach (LibTable def in this.LibTables)
             {
                 dtlist.AddRange(def.Tables);
-                //foreach (DataTable dt in def.Tables)
-                //{
-                //    if (dt.TableName == tablenm)
-                //    {
-                //        foreach (var col in dt.PrimaryKey)
-                //        {
-
-                //        }
-                //        break;
-                //    }
-                //}
             }
             DataTable mast = dtlist.FirstOrDefault(i => i.TableName == tablenm);
             if (mast == null)
@@ -873,7 +869,7 @@ namespace BWYSDPWeb.BaseController
 
         #region 搜索模态框 操作
         [HttpGet]
-        public ActionResult GetSearchCondFields(string tbnm,string relatedsid)
+        public ActionResult GetSearchCondFields(string tbnm, string fieldnm, string flag)
         {
             //var libtb= this.LibTables.FirstOrDefault(i => i.Name == tbnm);
             SearchConditionField cond = null;
@@ -883,80 +879,108 @@ namespace BWYSDPWeb.BaseController
             DataColumn[] mastkeys = null;
             List<DataTable> list = new List<DataTable>();
             List<SearchConditionField> condcollection = new List<SearchConditionField>();
-            foreach (LibTable deftb in this.LibTables)
+            if (string.Compare(flag, "1") == 0)
             {
-                list.AddRange(deftb.Tables);
-            }
-            var mtb = list.FirstOrDefault(i => i.TableName == tbnm);
-            if (mtb != null)
-            {
-                tbextprop = mtb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                masttbindex = tbextprop.TableIndex;
-                foreach (DataTable dt in list)
+                foreach (LibTable deftb in this.LibTables)
                 {
-                    tbextprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                    if (dt.TableName == tbnm) { mastkeys = dt.PrimaryKey; }
-                    if (tbextprop.TableIndex == masttbindex || tbextprop.RelateTableIndex == masttbindex)
-                    {
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                            if (!colextprop.IsActive) continue;
-                            cond = new SearchConditionField();
-                            cond.IsCondition = true;
-                            cond.DisplayNm = col.Caption;
-                            //cond.DefTableNm = deftb.Name;
-                            cond.TableNm = dt.TableName;
-                            cond.FieldNm = col.ColumnName;
-                            cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(tbextprop.TableIndex);
-                            if ((tbextprop.TableIndex != masttbindex &&
-                                  mtb.PrimaryKey.FirstOrDefault(i => i.ColumnName == col.ColumnName) != null))
-                            {
-                                cond.AliasNm = colextprop.AliasName;
-                            }
-                            else
-                            {
-                                var exist = condcollection.FirstOrDefault(i => i.FieldNm == col.ColumnName);
-                                cond.AliasNm = (exist != null && string.IsNullOrEmpty(colextprop.AliasName)) ? string.Format("{0}{1}{2}", cond.TBAliasNm, SysConstManage.Underline, cond.FieldNm) : colextprop.AliasName;
-                            }
-                            if (tbextprop.TableIndex != masttbindex) cond.Hidden = true;
-                            cond.IsDateType = col.DataType.Equals(typeof(Date));
-                            condcollection.Add(cond);
-                        }
-                    }
+                    list.AddRange(deftb.Tables);
                 }
-                SetSearchFieldExt(condcollection);
-            }
-            else
-            {
-                //来源字段上的搜索
-                LibDataSource ds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, relatedsid);
-                foreach (LibDefineTable def in ds.DefTables)
+                var mtb = list.FirstOrDefault(i => i.TableName == tbnm);
+                if (mtb != null)
                 {
-                    foreach (LibDataTableStruct dtstruct in def.TableStruct)
+                    tbextprop = mtb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    masttbindex = tbextprop.TableIndex;
+                    foreach (DataTable dt in list)
                     {
-                        if (dtstruct.Name == tbnm)
+                        tbextprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                        if (dt.TableName == tbnm) { mastkeys = dt.PrimaryKey; }
+                        if (tbextprop.TableIndex == masttbindex || tbextprop.RelateTableIndex == masttbindex)
                         {
-                            foreach (LibField f in dtstruct.Fields)
+                            foreach (DataColumn col in dt.Columns)
                             {
-                                if (!f.IsActive) continue;
+                                colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                                if (!colextprop.IsActive) continue;
                                 cond = new SearchConditionField();
                                 cond.IsCondition = true;
-                                cond.DisplayNm = f.DisplayName;
+                                cond.DisplayNm = col.Caption;
                                 //cond.DefTableNm = deftb.Name;
-                                cond.TableNm = dtstruct .Name;
-                                cond.FieldNm =f.Name;
-                                cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(dtstruct .TableIndex);
-                                cond.AliasNm = f.AliasName;
-                                cond.IsDateType = f.FieldType==LibFieldType.Date;
+                                cond.TableNm = dt.TableName;
+                                cond.FieldNm = col.ColumnName;
+                                cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(tbextprop.TableIndex);
+                                if ((tbextprop.TableIndex != masttbindex &&
+                                      mtb.PrimaryKey.FirstOrDefault(i => i.ColumnName == col.ColumnName) != null))
+                                {
+                                    cond.AliasNm = colextprop.AliasName;
+                                }
+                                else
+                                {
+                                    var exist = condcollection.FirstOrDefault(i => i.FieldNm == col.ColumnName);
+                                    cond.AliasNm = (exist != null && string.IsNullOrEmpty(colextprop.AliasName)) ? string.Format("{0}{1}{2}", cond.TBAliasNm, SysConstManage.Underline, cond.FieldNm) : colextprop.AliasName;
+                                }
+                                if (tbextprop.TableIndex != masttbindex) cond.Hidden = true;
+                                cond.IsDateType = col.DataType.Equals(typeof(Date));
                                 condcollection.Add(cond);
                             }
                         }
                     }
+                    SetSearchFieldExt(condcollection);
                 }
-                
             }
-            return Json(new { data = condcollection.Where (i=>i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
+            else
+            {
+                //来源字段上的搜索
+                //LibDataSource ds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, relatedsid);
+                LibDataSource ds = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, this.DSID, this.Package);
+                LibField field = null;
+                foreach (LibDefineTable def in ds.DefTables)
+                {
+                    LibDataTableStruct dtstruct = def.TableStruct.FindFirst("Name", tbnm);
+                    if (dtstruct != null)
+                    {
+                        field = dtstruct.Fields.FindFirst("Name", fieldnm);
+                        break;
+                    }
+                }
+                if (field == null) {
+                    this.ThrowErrorException("未能取到字段，请确认。");
+                }
+                if (field.SourceField == null) {
+                    this.ThrowErrorException("模型未设置来源字段，请确认");
+                }
+
+                if (field.SourceField.Count == 1)
+                {
+                    if (this.SessionObj.FromFieldInfo == null) this.SessionObj.FromFieldInfo = new FromFieldInfo();
+                    this.SessionObj.FromFieldInfo.tableNm = tbnm;
+                    this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
+                    this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
+
+                    LibDataSource sourceds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, field.SourceField[0].FromDataSource);
+                    LibDefineTable defdt = sourceds.DefTables.FindFirst("TableName", field.SourceField[0].FromDefindTableNm);
+                    LibDataTableStruct dtstruct = defdt.TableStruct.FindFirst("Name", field.SourceField[0].FromStructTableNm);
+                    foreach (LibField f in dtstruct.Fields)
+                    {
+                        if (!f.IsActive) continue;
+                        cond = new SearchConditionField();
+                        cond.IsCondition = true;
+                        cond.DisplayNm = f.DisplayName;
+                        cond.DSID = sourceds.DSID;
+                        cond.DefTableNm = defdt.TableName;
+                        cond.TableNm = dtstruct.Name;
+                        cond.FieldNm = f.Name;
+                        cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(dtstruct.TableIndex);
+                        cond.AliasNm = f.AliasName;
+                        cond.IsDateType = f.FieldType == LibFieldType.Date;
+                        condcollection.Add(cond);
+                    }
+                }
+                else
+                {
+
+                }
+
+            }
+            return Json(new { data = condcollection.Where(i => i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult GetSmodalCondition(int index)
@@ -967,57 +991,61 @@ namespace BWYSDPWeb.BaseController
         public ActionResult DoSearchData(int flag)
         {
             var formdata = this.Request.Form;
-            //DalResult result = null;
-            if (flag == 1)
+            string index = string.Empty;
+            string tbnm = formdata["tb"];
+            List<string> fieldkeys = formdata.AllKeys.Where(i => i.Contains(SysConstManage.sdp_smodalfield)).ToList();
+            List<LibSearchCondition> conds = new List<LibSearchCondition>();
+            LibSearchCondition cond = null;
+            foreach (string key in fieldkeys)
             {
-                string index = string.Empty;
-                string tbnm = formdata["tb"];
-                List<string> fieldkeys = formdata.AllKeys.Where(i => i.Contains(SysConstManage.sdp_smodalfield)).ToList();
-                List<LibSearchCondition> conds = new List<LibSearchCondition>();
-                LibSearchCondition cond = null;
-                foreach (string key in fieldkeys)
+                index = key.Substring(key.Length - 1);
+                cond = new LibSearchCondition();
+                if (flag == 1)
                 {
-                    index = key.Substring(key.Length - 1);
-                    cond = new LibSearchCondition();
-                    cond.Values = new object[2];
-                    cond.FieldNm = formdata[key];
-                    if (cond.FieldNm == "0") continue;
-                    cond.Symbol = (SmodalSymbol)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodalsymbol, index)]);
-                    cond.Values[0] = formdata[string.Format("{0}{1}_1", SysConstManage.sdp_smodalval, index)];
-                    cond.Values[1] = formdata[string.Format("{0}{1}_2", SysConstManage.sdp_smodalval, index)];
-                    cond.Logic = (Smodallogic)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodallogic, index)]);
-                    conds.Add(cond);
+                    cond.DSID = this.DSID;
                 }
-                this.SessionObj.Conds = conds;
-
-                //Session[string.Format("{0}{1}",SysConstManage.sdp_Schcond,this.ProgID)] = conds;
-                //result = this.ExecuteMethod("InternalSearch", tbnm, null, conds);
+                else
+                {
+                    cond.DSID = formdata["dsid"];
+                }
+                cond.TableNm = tbnm;
+                cond.Values = new object[2];
+                cond.FieldNm = formdata[key];
+                if (cond.FieldNm == "0") continue;
+                cond.Symbol = (SmodalSymbol)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodalsymbol, index)]);
+                cond.Values[0] = formdata[string.Format("{0}{1}_1", SysConstManage.sdp_smodalval, index)];
+                cond.Values[1] = formdata[string.Format("{0}{1}_2", SysConstManage.sdp_smodalval, index)];
+                cond.Logic = (Smodallogic)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodallogic, index)]);
+                conds.Add(cond);
             }
-            else if (flag == 2)
-            {
-
-            }
-            //if (result != null && result.Messagelist.Count == 0)
-            //{
-            //    return Json(new { data =(DataTable)result.Value,flag=0  }, JsonRequestBehavior.AllowGet);
-            //}
+            this.SessionObj.Conds = conds;
             return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
-        public string BindSmodalData(string tableNm, int page, int rows)
+        public string BindSmodalData(string tableNm,string dsid,int flag, int page, int rows)
         {
             List<LibSearchCondition> conds = this.SessionObj.Conds;
+            if (flag == 1) dsid = this.DSID;
             //this.AddMessage("jjjjjjjjjjjj");
             //List<LibSearchCondition> conds = Session[string.Format("{0}{1}", SysConstManage.sdp_Schcond, this.ProgID)] as List<LibSearchCondition>;
-            DalResult result = this.ExecuteMethod("InternalSearchByPage", tableNm, null, conds, page, rows);
+            DalResult result = this.ExecuteMethod("InternalSearchByPage",dsid, tableNm, null, conds, page, rows);
             if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
                 DataTable dt = ((DataTable)result.Value);
                 BindSmodalDataExt(dt);
-                if (this.MsgList == null || this.MsgList.FirstOrDefault(i=>i.MsgType==LibMessageType.Error )==null)
-                    //var resultdt = new { total = dt.Rows.Count > 0 ? dt.Rows[0][SysConstManage.sdp_total_row] : 0, rows = result.Value,msg="jjjjjjjj" };
-                    //return JsonConvert.SerializeObject(resultdt);
+                if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
+                {
+                    if (dt != null && flag ==2)
+                    {
+                        if (this.SessionObj.FromFieldInfo != null)
+                        {
+                            DataColumn col = new DataColumn(string.Format("{0}_{1}_sdp_{2}",this.SessionObj.FromFieldInfo.tableNm , this.SessionObj.FromFieldInfo.FieldNm,this.SessionObj.FromFieldInfo.FromFieldNm));
+                            dt.Columns.Add(col);
+                            this.SessionObj.FromFieldInfo = null;
+                        }
+                    }
                     return LibReturnForGrid((dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), dt);
+                }
             }
             return LibReturnForGrid(0, null);
         }

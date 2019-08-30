@@ -44,12 +44,21 @@ namespace BWYSDPBaseDal
             return this.DataAccess.GetDataTable(sql);
             //return null;
         }
-        public DataTable InternalSearchByPage(string tbnm, string[] fields, List<LibSearchCondition> conds, int pageindex, int pagesize)
+        public DataTable InternalSearchByPage(string dsid,string tbnm, string[] fields, List<LibSearchCondition> conds, int pageindex, int pagesize)
         {
             object[] values = { };
             StringBuilder whereformat = new StringBuilder();
             AnalyzeSearchCondition(conds, whereformat,ref values);
-            string sql = this.SQLBuilder.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values },pageindex,pagesize);
+            SDPCRL.DAL.COM.SQLBuilder sQLBuilder = null;
+            if (string.IsNullOrEmpty(dsid))
+            {
+                sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder();
+            }
+            else
+            {
+                sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder(dsid);
+            }
+            string sql = sQLBuilder.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values },pageindex,pagesize);
             return this.DataAccess.GetDataTable(sql);
         }
 
@@ -59,7 +68,7 @@ namespace BWYSDPBaseDal
             DataTable[] dts = { };
             //DataTable mdt = null;
             //Dictionary<int, int> dic = new Dictionary<int, int>();
-            SDPCRL.DAL.COM.SQLBuilder sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder();
+            //SDPCRL.DAL.COM.SQLBuilder sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder();
             foreach (var libdt in this.LibTables)
             {
                 foreach (DataTable dt in libdt.Tables)
@@ -71,7 +80,7 @@ namespace BWYSDPBaseDal
 
                     if (tbextprop.TableIndex == 0 || tbextprop .TableIndex !=tbextprop .RelateTableIndex)
                     {
-                        sql.Append(sQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=whereformat,Values=valus }));
+                        sql.Append(this.SQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=whereformat,Values=valus },false));
                         sql.AppendLine();
                     }
                 }

@@ -22,5 +22,15 @@ namespace BWYSDPWeb.Models
         /// 用于存储保存时产生的信息。
         /// </summary>
         public List<LibMessage> MsgforSave { get; set; }
+
+        public FromFieldInfo FromFieldInfo { get; set; }
+    }
+
+    public class FromFieldInfo
+    {
+        public string tableNm { get; set; }
+        public string FieldNm { get; set; }
+
+        public string FromFieldNm { get; set; }
     }
 }

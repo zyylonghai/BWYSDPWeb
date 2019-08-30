@@ -8,6 +8,7 @@ namespace BWYSDPWeb.Models
 {
     public class SearchConditionField
     {
+        public string DSID { get; set; }
         /// <summary>
         /// 自定义表名
         /// </summary>

@@ -26,6 +26,7 @@
         var fromdsid = button.data('fromdsid');//来源数据源id
         var tbstruct = button.data('tbstruct');//来源表结构
         var controlnm = button.data('controlnm');//服务端的controller
+        var fieldnm = button.data('fieldnm');//搜索控件关联的字段
         var flag = button.data('flag');//1标识单据的搜索，2标识来源主数据的搜索
         $('#searchModal .modal-title').text(Modalnm + "主数据");
 
@@ -53,29 +54,29 @@
         });
         if (flag == 1) {/*调出的搜索模态框为单据上的搜索*/
             $('#searchModal').find(".modal-footer").css("display", "none");
-            GetFields(tbstruct, controlnm);
+            GetFields(tbstruct, controlnm, null, flag);
         }
         else {/*调出的搜索模态框为来源字段上的搜索*/
             $('#searchModal').find(".modal-footer").css("display", "block");
-            GetFields(tbstruct, controlnm, fromdsid);
+            GetFields(tbstruct, controlnm, fieldnm,flag);
         }
     });
     drag("searchModal");
 });
 
-function GetFields(tbnm, ctrnm, relatedsid) {
+function GetFields(tbnm, ctrnm, fieldnm, flag) {
     var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
     $.ajax({
         async: false,
         type: "Get",
         url: '/' + ctrnm + '/GetSearchCondFields',
-        data: "tbnm=" + tbnm + "&relatedsid=" + relatedsid + "",
+        data: "tbnm=" + tbnm + "&fieldnm=" + fieldnm + "&flag=" + flag + "",
         dataType: "Json",
         success: function (obj) {
             if (obj.flag == 0) {
                 //o.children().remove();
                 $.each(obj.data, function (index, row) {
-                    o.append("<option value='" + row.TBAliasNm + "." + row.FieldNm + "' hid='" + row.Hidden + "' aliasnm='" + row.AliasNm + "' isdate='" + row.IsDateType+"'>" + row.DisplayNm + "(" + row.TBAliasNm + "." + row.FieldNm + ")</option>");
+                    o.append("<option value='" + row.TBAliasNm + "." + row.FieldNm + "'dsid='" + row.DSID+"' tbnm='" + row.TableNm + "' hid='" + row.Hidden + "' aliasnm='" + row.AliasNm + "' isdate='" + row.IsDateType + "'>" + row.DisplayNm + "(" + row.TBAliasNm + "." + row.FieldNm + ")</option>");
                 });
             }
         },
@@ -119,6 +120,15 @@ function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
     if ($('#sdp_smodaldata') != undefined || $('#sdp_smodaldata') != null || $('#sdp_smodaldata').length> 0) {
         $('#sdp_smodaldata').bootstrapTable('refreshOptions', { pageNumber: 1 });
     }
+    if (flag == 2) {
+        var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
+        $.each(o.children(), function (index, option) {
+            if (option.value != 0) {
+                dsid = $(option).attr("dsid");
+                tbstruct = $(option).attr("tbnm");
+            }
+        });
+    }
     $.ajax({
         async: false,
         type: "Post",
@@ -127,8 +137,8 @@ function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
         dataType: "Json",
         success: function (obj) {
             if (obj.flag == 0) {
-                BindToTable(ctrnm, tbstruct);
-                $('#sdp_smodaldata').bootstrapTable('refresh');
+                BindToTable(ctrnm, tbstruct, dsid, flag);
+                //$('#sdp_smodaldata').bootstrapTable('refresh');
                 closemsg();
             }
         },
@@ -137,9 +147,9 @@ function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
     });
 }
 
-function BindToTable(ctrnm,tbnm) {
+function BindToTable(ctrnm,tbnm,dsid,flag) {
     var sdp_searchtb = new LibTable("sdp_smodaldata");
-    sdp_searchtb.$table.url = "/" + ctrnm + "/BindSmodalData?tableNm=" + tbnm + "";
+    sdp_searchtb.$table.url = "/" + ctrnm + "/BindSmodalData?tableNm=" + tbnm + "&dsid=" + dsid + "&flag=" + flag + "";
     sdp_searchtb.$table.hasoperation = false;
     var cols = [];
     cols.push({
@@ -162,22 +172,44 @@ function BindToTable(ctrnm,tbnm) {
     sdp_searchtb.$table.columns = cols;
     sdp_searchtb.initialTable();
     sdp_searchtb.testid = tbnm;
-    sdp_searchtb.DbClickRow = function (dr, elem, tbname) {
-        $.ajax({
-            async: false,
-            type: "Post",
-            url: '/DataBase/FillAndEdit',
-            data: { dr, "tablenm":tbname },
-            dataType: "Json",
-            success: function (obj) {
-                $("#searchModal").modal('hide');
-                var grids = $("#sdp_form").find("table");
-                $.each(grids, function (index, o) {
-                    $('#' + o.id).bootstrapTable('refresh');
-                });
-            },
-            error: function () {
-            }
-        });
+    sdp_searchtb.flag = flag;
+    sdp_searchtb.DbClickRow = function (dr, elem, tbname, flag) {
+        if (flag == 1) {
+            $.ajax({
+                async: false,
+                type: "Post",
+                url: '/DataBase/FillAndEdit',
+                data: { dr, "tablenm": tbname, "flag": flag },
+                dataType: "Json",
+                success: function (obj) {
+                    $("#searchModal").modal('hide');
+                    var grids = $("#sdp_form").find("table");
+                    $.each(grids, function (index, o) {
+                        $('#' + o.id).bootstrapTable('refresh');
+                    });
+                },
+                error: function () {
+                   
+                }
+            });
+        }
+        else {
+            let fromfieldnm;
+            let fieldnm;
+            $.each(dr, function (name, val) {
+                let index = name.indexOf("_sdp_");
+                if (index != -1) {
+                    fieldnm = name.substring(0, index);
+                    fromfieldnm = name.substring(index + 5);
+                    //$('#' + tbname + '_' + fieldnm).val(dr.)
+                }
+            });
+            $.each(dr, function (name, val) {
+                if (name == fromfieldnm) {
+                    $('#' + fieldnm).val(val);
+                }
+            });
+            $("#searchModal").modal('hide');
+        }
     }
 }

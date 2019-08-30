@@ -20,7 +20,7 @@ namespace BWYSDPWeb.Com
         private List<string> _tableScriptlst = null;
         private string _progid = null;
         //private string _dsid = null;
-        private bool _hasSearchModal = false;// 是否有搜索控件。
+        private bool _hasSearchModal = true;// 是否有搜索控件。
         private string _pagetitle = string.Empty;
        //private Dictionary<string, bool> _fomGroupdic=null;
 
@@ -67,11 +67,16 @@ namespace BWYSDPWeb.Com
             get
             {
                 StringBuilder jsandcss = new StringBuilder();
-                if (_gridGroupdic.Count > 0)
+                if (_hasSearchModal)
                 {
                     jsandcss.Append("@Styles.Render(\"~/Content/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
+                }
+                if (_gridGroupdic.Count > 0)
+                {
                     //jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/TableModal\")");
                 }
@@ -79,12 +84,12 @@ namespace BWYSDPWeb.Com
                 {
                     jsandcss.Append("@Scripts.Render(\"~/Scripts/lib/laydate/laydate\")");
                 }
-                if (_hasSearchModal)
-                {
-                    if (_gridGroupdic.Count == 0)
-                        jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
-                    jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
-                }
+                //if (_hasSearchModal)
+                //{
+                //    if (_gridGroupdic.Count == 0)
+                //        jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
+                //    jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
+                //}
                 return jsandcss.Append(_page.ToString()).ToString();
             }
         }
@@ -199,6 +204,8 @@ namespace BWYSDPWeb.Com
             int colcout = 0;
             List<string> valus = null;
             StringBuilder validatorAttr = null;
+            LibField libField = null;
+            List<LibFormGroupField> textarealst = new List<LibFormGroupField>();
             foreach (LibFormGroupField field in fields)
             {
                 if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
@@ -215,6 +222,7 @@ namespace BWYSDPWeb.Com
                     }
                     _page.Append("<div class=\"form-group\">");
                 }
+                if (field.ElemType == ElementType.Textarea) { textarealst.Add(field);continue; }
                 string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
                 string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
                 #region 字段属性验证设置
@@ -237,7 +245,7 @@ namespace BWYSDPWeb.Com
                         break;
                     case ElementType.Select:
                         _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" " + validatorAttr.ToString() + ">");
-                        LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                         libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         foreach (LibKeyValue keyval in libField.Items)
                         {
                             _page.Append("<option value=\"" + keyval.Key + "\">" + keyval.Value + "</option>");
@@ -248,23 +256,44 @@ namespace BWYSDPWeb.Com
                         _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Search:
-                        LibField lib = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                        libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         _page.Append("<div class=\"input-group\">");
                         _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + field.DisplayName + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<label ></label>");
                         _page.Append("<span class=\"input-group-btn\">");
-                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + field.DisplayName + "\" data-fromdsid=\""+lib.SourceField .FromDataSource+"\" data-deftb=\""+lib.SourceField.FromDefindTableNm+"\" data-tbstruct=\""+lib.SourceField .FromStructTableNm+"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + field.DisplayName + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                         _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
                         _page.Append("</button>");
                         _page.Append("</span>");
                         _page.Append("</div>");
-                        this._hasSearchModal = true;
+                        //this._hasSearchModal = true;
                         break;
+                    //case ElementType.Textarea:
+                    //    _page.Append("<textarea class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" rows=\"3\" " + validatorAttr.ToString() + " ></textarea>");
+                    //    break;
                 }
                 //_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
                 _page.Append("</div>");//结束 col-sm
                 colcout += field.Width + 1;
             }
             _page.Append("</div>");// 结束 form-group
+            //textarea控件处理
+            foreach (LibFormGroupField item in textarealst)
+            {
+                _page.Append("<div class=\"form-group\">");
+                string id = string.Format("{0}_{1}", item.FromTableNm, item.Name);
+                string name = string.Format("{0}.{1}", item.FromTableNm, item.Name);
+                #region 字段属性验证设置
+                validatorAttr = new StringBuilder();
+                validatorAttr.Append(item.IsAllowNull ? " required=\"required\"" : "");
+                //validatorAttr.AppendFormat("maxlength=\"{0}\"", item.FieldLength);
+                #endregion
+                _page.Append("<label for=\"" + item.Name + "\" class=\"col-sm-1 control-label\">" + AppCom.GetFieldDesc((int)Language, this.DSID, item.FromTableNm, item.Name) + (item.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+                _page.Append("<div class=\"col-sm-" + item.Width + "\">");
+                _page.Append("<textarea class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" rows=\"3\" " + validatorAttr.ToString() + " ></textarea>");
+                _page.Append("</div>");//结束 col-sm
+                _page.Append("</div>");// 结束 form-group
+            }
         }
 
         /// <summary>

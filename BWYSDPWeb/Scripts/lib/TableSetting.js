@@ -139,6 +139,7 @@ function LibTable(id)
         columns: []
     };
     this.testid = id;
+    this.flag = 0;//标识。主要用于搜索模态框是单据上的搜索，还是来源主数据的搜索。1标识单据的搜索，2标识来源主数据的搜索
     this.RowsOfAdd = [];
     this.RowsOfEdit = [];
     this.RowsOfRemov = [];
@@ -242,7 +243,7 @@ LibTable.prototype = {
             },
             onDblClickRow: function (row, $element) {
                 var id = row.ID;
-                tbobj.DbClickRow(row, $element, tbobj.testid);
+                tbobj.DbClickRow(row, $element, tbobj.testid, tbobj.flag);
                 //EditViewById(id, 'view');
             },
             onClickCell: function (field, value, row, $element) {
