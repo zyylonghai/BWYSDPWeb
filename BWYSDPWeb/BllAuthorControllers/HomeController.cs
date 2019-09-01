@@ -1,4 +1,6 @@
 ﻿using BWYSDPWeb.BaseController;
+using SDPCRL.COM;
+using SDPCRL.CORE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,21 +14,23 @@ namespace BWYSDPWeb.Controllers
         private string aa = string.Empty;
         public ActionResult Index()
         {
-            return View();
+            var userinfo = Session[SysConstManage.sdp_userinfo];
+            if (userinfo == null)
+                return View("Login");
+            else
+                return View();
         }
-
-        public ActionResult About()
+        [HttpPost]
+        public ActionResult login()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            var formparams = this.Request.Form;
+            Models.UserInfo userInfo = new Models.UserInfo();
+            userInfo.UserId = formparams["userId"];
+            userInfo.UserNm = formparams[""];
+            userInfo.Language =(Language) Convert.ToInt32(formparams["language"]);
+            
+            Session[SysConstManage.sdp_userinfo] =userInfo;
+            return RedirectToAction("Index");
         }
 
     }

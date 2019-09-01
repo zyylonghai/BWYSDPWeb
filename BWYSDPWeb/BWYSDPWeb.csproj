@@ -177,6 +177,7 @@
     <Compile Include="Models\SessionInfo.cs" />
     <Compile Include="Models\TableObj.cs" />
     <Compile Include="Models\TestInfo.cs" />
+    <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1952,9 +1953,9 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_Layout2.cshtml" />
     <Content Include="Views\SCM\index.cshtml" />
-    <Content Include="Views\SCM\SaleOrder.cshtml" />
     <Content Include="Views\Shared\NotFindPage.cshtml" />
     <Content Include="Views\Server\ServerPage.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

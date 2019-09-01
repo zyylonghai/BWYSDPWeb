@@ -154,7 +154,7 @@ namespace BWYSDPWeb.BaseController
                         LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, formpage.DSID, this.Package);
                         DataTable dt = this.GetFieldDescBydsid(dataSource.DSID);
                         CachHelp cachHelp = new CachHelp();
-                        cachHelp.AddCachItem(progId, dt, DateTimeOffset.Now.AddMinutes(2));
+                        cachHelp.AddCachItem(dataSource.DSID, dt, DateTimeOffset.Now.AddMinutes(2));
                         //if (formpage != null)
                         //{
                         #region 旧代码
@@ -178,14 +178,15 @@ namespace BWYSDPWeb.BaseController
                         factory.DSID = formpage.DSID;
                         factory.Package = this.Package;
                         factory.Language = this.Language;
-                        factory.BeginPage(formpage.FormName);
+                        factory.BeginPage(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formpage.FormId));
                         factory.CreateBody();
                         factory.CreateForm();
                         if (formpage.FormGroups != null)
                         {
                             foreach (LibFormGroup formg in formpage.FormGroups)
                             {
-                                factory.CreatePanelGroup(formg.FormGroupDisplayNm);
+
+                                factory.CreatePanelGroup(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formg.FormGroupName));
                                 if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
                                 {
                                     factory.AddFormGroupFields(formg.FmGroupFields);
@@ -314,6 +315,7 @@ namespace BWYSDPWeb.BaseController
                     {
                         if (dt.Rows.Count > 0)
                         {
+                            //dt.Rows[0][array[1]] ="2019-08-08 21:41:30";
                             DataTableHelp.SetColomnValue(dt.Rows[0], array[1], val);
                         }
                         else
@@ -902,7 +904,7 @@ namespace BWYSDPWeb.BaseController
                                 if (!colextprop.IsActive) continue;
                                 cond = new SearchConditionField();
                                 cond.IsCondition = true;
-                                cond.DisplayNm = col.Caption;
+                                cond.DisplayNm =AppCom .GetFieldDesc ((int)this.Language ,this.DSID,dt.TableName,col.ColumnName );
                                 //cond.DefTableNm = deftb.Name;
                                 cond.TableNm = dt.TableName;
                                 cond.FieldNm = col.ColumnName;
@@ -963,7 +965,7 @@ namespace BWYSDPWeb.BaseController
                         if (!f.IsActive) continue;
                         cond = new SearchConditionField();
                         cond.IsCondition = true;
-                        cond.DisplayNm = f.DisplayName;
+                        cond.DisplayNm = AppCom.GetFieldDesc((int)this.Language, sourceds.DSID, dtstruct.Name, f.Name);
                         cond.DSID = sourceds.DSID;
                         cond.DefTableNm = defdt.TableName;
                         cond.TableNm = dtstruct.Name;

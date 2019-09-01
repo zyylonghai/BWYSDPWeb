@@ -14,16 +14,29 @@ namespace Bll
         #region 构造函数
         public BllDataBase(bool getcurrentserver = true)
         {
+            ServerInfo info = null;
             if (getcurrentserver)
             {
-                ServerInfo info = new SQLite().GetCurrentServer();
-                if (info != null)
-                {
-                    this.AccoutId = info.accountid;
-                    SDPCRL.BLL.BUS.ServerInfo.ConnectType = info.connectype;
-                    SDPCRL.BLL.BUS.ServerInfo.IPAddress = info.ipAddress;
-                    SDPCRL.BLL.BUS.ServerInfo.Point = info.point;
-                }
+                 info = new SQLite().GetCurrentServer();
+                //if (info != null)
+                //{
+                //    this.AccoutId = info.accountid;
+                //    SDPCRL.BLL.BUS.ServerInfo.ConnectType = info.connectype;
+                //    SDPCRL.BLL.BUS.ServerInfo.IPAddress = info.ipAddress;
+                //    SDPCRL.BLL.BUS.ServerInfo.Point = info.point;
+                //}
+            }
+            else
+            {
+                //系统账套服务信息
+                 info = new SQLite().GetSysServer();
+            }
+            if (info != null)
+            {
+                this.AccoutId = info.accountid;
+                SDPCRL.BLL.BUS.ServerInfo.ConnectType = info.connectype;
+                SDPCRL.BLL.BUS.ServerInfo.IPAddress = info.ipAddress;
+                SDPCRL.BLL.BUS.ServerInfo.Point = info.point;
             }
         }
 

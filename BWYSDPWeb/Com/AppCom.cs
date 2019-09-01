@@ -13,7 +13,13 @@ namespace BWYSDPWeb.Com
         {
             #region 先从cache缓存中取数。
             CachHelp cachelp = new CachHelp();
+            BllDataBase bll = new BllDataBase(false);
             DataTable dt = cachelp.GetCach(dsid) as DataTable;
+            if (dt == null)
+            {
+                dt = bll.GetFieldDescData(dsid);
+                cachelp.AddCachItem(dsid, dt, DateTimeOffset.Now.AddMinutes(2));
+            }
             if (dt != null)
             {
                 DataRow[] dr = dt.Select(string.Format("LanguageId={0} and DSID='{1}' and FieldNm='{2}' and TableNm='{3}'",
@@ -24,9 +30,7 @@ namespace BWYSDPWeb.Com
                 }
             }
             #endregion 
-            BllDataBase bll = new BllDataBase(false);
             return bll.GetFieldDesc(languageid, dsid, tablenm, fieldnm);
-
         }
     }
 }

@@ -103,7 +103,8 @@ namespace BWYSDPWeb.BaseController
             this.ProgID = request.Params["sdp_pageid"] ?? string.Empty;
             this.DSID = request.Params["sdp_dsid"] ?? string.Empty;
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
-            this.Language = Language.CHS;
+            var user = System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo ;
+            this.Language = user == null ? Language.CHS : (user).Language;
             //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
             this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;
@@ -650,7 +651,9 @@ namespace BWYSDPWeb.BaseController
         }
         public DataTable GetFieldDescBydsid(string dsid)
         {
-            BllDataBase bll = new BllDataBase();
+            //CachHelp cachelp = new CachHelp();
+            //DataTable dt = cachelp.GetCach(dsid) as DataTable;
+            BllDataBase bll = new BllDataBase(false);
             return bll.GetFieldDescData(dsid);
         }
         #endregion

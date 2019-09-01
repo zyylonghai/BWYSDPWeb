@@ -4,6 +4,8 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BWYResFactory;
+using SDPCRL.CORE;
 
 namespace Bll
 {
@@ -134,6 +136,43 @@ namespace Bll
                     try
                     {
                         cmd.CommandText = string.Format("Select *from ServerInfo where IsCurrentServer='True'");
+                        using (SQLiteDataReader read = cmd.ExecuteReader())
+                        {
+                            if (read.Read())
+                            {
+                                info = new ServerInfo();
+                                info.accountid = read["accountid"].ToString();
+                                info.accountname = read["accountname"].ToString();
+                                info.connectype = read["connectype"].ToString();
+                                info.ipAddress = read["ipAddress"].ToString();
+                                info.serverNm = read["serverNm"].ToString();
+                                info.IsCurrentServer = (bool)read["IsCurrentServer"];
+                                info.point = Convert.ToInt32(read["point"]);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                return info;
+            }
+        }
+
+        public ServerInfo GetSysServer()
+        {
+            using (SQLiteConnection cn = new SQLiteConnection(connectStr))
+            {
+                //在打开数据库时，会判断数据库是否存在，如果不存在，则在当前目录下创建一个 
+                cn.Open();
+                ServerInfo info = null;
+                using (SQLiteCommand cmd = new SQLiteCommand())
+                {
+                    cmd.Connection = cn;
+                    try
+                    {
+                        cmd.CommandText = string.Format("Select *from ServerInfo where accountname='"+ ResFactory.ResManager.SysDBNm + "'");
                         using (SQLiteDataReader read = cmd.ExecuteReader())
                         {
                             if (read.Read())
