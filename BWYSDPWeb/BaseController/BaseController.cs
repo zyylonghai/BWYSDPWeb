@@ -104,7 +104,7 @@ namespace BWYSDPWeb.BaseController
             this.DSID = request.Params["sdp_dsid"] ?? string.Empty;
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
             var user = System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo ;
-            this.Language = user == null ? Language.CHS : (user).Language;
+            this.Language = user == null ? Language.CHS : user.Language;
             //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
             this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;

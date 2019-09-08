@@ -1,4 +1,5 @@
-﻿using SDPCRL.COM;
+﻿using BWYSDPWeb.Models;
+using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
@@ -251,7 +252,12 @@ namespace BWYSDPWeb.Com
                          libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         foreach (LibKeyValue keyval in libField.Items)
                         {
-                            _page.Append("<option value=\"" + keyval.Key + "\">" + keyval.Value + "</option>");
+                            if (string.IsNullOrEmpty(keyval.FromkeyValueID))
+                            {
+                                _page.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, this.DSID, field.FromDefTableNm, string.Format("{0}_{1}", field.Name, keyval.Key)) + "</option>");
+                            }
+                            else
+                                _page.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, keyval.FromkeyValueID, string.Empty, keyval.Key.ToString ()) + "</option>");
                         }
                         _page.Append("</select>");
                         break;
@@ -550,14 +556,14 @@ namespace BWYSDPWeb.Com
                 #endregion
                 _page.Append(new ElementCollection().SearchModalCondition(1));
                 _page.Append("</div>");
-                _page.Append("<button id=\"sdp_smodalbtnSearch\" type=\"button\" class=\"btn btn-primary\">查询</button>");
+                _page.Append("<button id=\"sdp_smodalbtnSearch\" type=\"button\" class=\"btn btn-primary\">"+AppCom.GetFieldDesc((int)Language ,string.Empty ,string.Empty , "sdp_btnselect") +"</button>");
                 _page.Append("<table id=\"sdp_smodaldata\"></table>");
 
                 _page.Append("</form>");
                 _page.Append("</div>");
                 _page.Append("<div class=\"modal-footer\">");
-                _page.Append("<button type=\"button\" class=\"btn btn-primary\">确定</button>");
-                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-primary\">"+ AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnConfirm") + "</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnClose") + "</button>");
                 _page.Append("</div>");
                 _page.Append("</div>");
                 _page.Append("</div>");
@@ -739,6 +745,7 @@ namespace BWYSDPWeb.Com
 
     public class ElementCollection
     {
+        public Language Language { get { return (System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo).Language; } }
         /// <summary>
         /// 搜索模态框的条件元素
         /// </summary>
@@ -747,7 +754,7 @@ namespace BWYSDPWeb.Com
         public string SearchModalCondition(int condindex)
         {
             StringBuilder str = new StringBuilder();
-            str.Append("<label class=\"form-inline\"> 字段:");
+            str.Append("<label class=\"form-inline\"> "+AppCom.GetFieldDesc ((int)Language, string.Empty ,string.Empty , "sdp_labelField") +":");
 
             str.AppendFormat("<select class=\"form-control\" name=\"{0}{1}\">", SysConstManage.sdp_smodalfield,condindex);
             //str.Append("<option value=\"0\">默认选择</option>");
@@ -758,11 +765,6 @@ namespace BWYSDPWeb.Com
             {
                 str.AppendFormat("<option value=\"{0}\">{1}</option>", (int)item, ReSourceManage.GetResource(item));
             }
-            //str.Append("<option value=\"1\">等于</option>");
-            //str.Append("<option value=\"2\">大于</option>");
-            //str.Append("<option value=\"3\">小于</option>");
-            //str.Append("<option value=\"4\">包含</option>");
-            //str.Append("<option value=\"5\">[a,b]之间</option>");
             str.Append("</select>");
 
             str.AppendFormat("<input type=\"text\" class=\"form-control\" name=\"{0}{1}_1\"/>",SysConstManage .sdp_smodalval,condindex);
