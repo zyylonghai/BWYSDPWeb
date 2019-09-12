@@ -1,0 +1,37 @@
+账户表：
+(
+UserId,账户号   主键
+UserNm, 账户名 
+Password,密码 （存的是密文）
+Status,状态(已激活，未激活，冻结）
+
+CreateDate, 创建日期
+Creater,创建者
+LastmodifyDate, 最后修改日期
+LastmodifyUser, 最后修改者
+)
+
+角色表(主)：
+(
+     JoleId, 角色编号   主键
+     JoleNm, 角色名
+     Status, 状态（已激活，未激活，冻结）
+     Remark, 备注
+     
+CreateDate, 创建日期
+Creater,创建者
+LastmodifyDate, 最后修改日期
+LastmodifyUser, 最后修改者
+)
+
+角色（明细）:
+(
+    JoleId, 角色编号   主键
+    ProgId, 功能ID  主键
+    
+CreateDate, 创建日期
+Creater,创建者
+LastmodifyDate, 最后修改日期
+LastmodifyUser, 最后修改者
+
+)

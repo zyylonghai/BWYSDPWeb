@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="Jole" FormName="角色" DSID="Jole" ControlClassNm="" CssFile="" ScriptFile="" Package="Authority">
+  <FormGroups>
+    <LibFormGroup FormGroupID="b95ee5f0-e0f3-4b5e-96fa-a7a86c5e0b19" FormGroupName="Key Information" FormGroupDisplayNm="关键信息">
+      <FmGroupFields>
+        <LibFormGroupField ID="66189290-189c-4133-b5b2-a4101b2f6eb0">
+          <Name>JoleId</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>角色编号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <FieldLength>15</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="f5289220-9d95-435f-9c52-7ba1f573e3f7">
+          <Name>JoleNm</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>角色名</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <FieldLength>30</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="41368022-d0cf-4b6f-b239-aed7148e1898">
+          <Name>Status</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>状态</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>true</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="c6e9d39e-850e-4e79-baeb-96f6d6008f2a">
+          <Name>Remark</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>备注</DisplayName>
+          <ElemType>Textarea</ElemType>
+          <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>false</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="83273581-d337-4327-80f4-84de33690865">
+          <Name>CreateDate</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>创建日期</DisplayName>
+          <ElemType>DateTime</ElemType>
+          <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="272673f8-656a-4eef-a2a5-044ca43032de">
+          <Name>Creater</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>创建者</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <FieldLength>30</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="33beca76-f702-4fea-b4a3-73cf68c702b0">
+          <Name>LastmodifyDate</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>最后修改日期</DisplayName>
+          <ElemType>DateTime</ElemType>
+          <Width>2</Width>
+          <FieldLength>0</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="2b7d2583-934b-4392-865f-84edc3d614fb">
+          <Name>LastmodifyUser</Name>
+          <FromTableNm>Jole</FromTableNm>
+          <FromDefTableNm>Jole</FromDefTableNm>
+          <DisplayName>最后修改者</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <FieldLength>30</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+      </FmGroupFields>
+    </LibFormGroup>
+  </FormGroups>
+  <GridGroups>
+    <LibGridGroup GridGroupID="4ad97372-382e-4928-8d95-9c35b6dd4b63" GridGroupName="JoleDetail" GridGroupDisplayNm="角色功能明细" ControlClassNm="" HasSummary="false">
+      <GdGroupFields>
+        <LibGridGroupField ID="4e6b66ae-3ebe-4de5-91dd-8876a564ad3a">
+          <Name>JoleId</Name>
+          <FromTableNm>JoleD</FromTableNm>
+          <FromDefTableNm>JoleD</FromDefTableNm>
+          <DisplayName>角色编号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="9f9b0423-2e13-4964-b210-3d0d451f8ecd">
+          <Name>ProgId</Name>
+          <FromTableNm>JoleD</FromTableNm>
+          <FromDefTableNm>JoleD</FromDefTableNm>
+          <DisplayName>功能ID</DisplayName>
+          <ElemType>Search</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="5dd0de16-8c00-4f4a-a71c-957308ac0cff">
+          <Name>ProgNm</Name>
+          <FromTableNm>JoleD</FromTableNm>
+          <FromDefTableNm>JoleD</FromDefTableNm>
+          <DisplayName>功能名称</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+      </GdGroupFields>
+    </LibGridGroup>
+  </GridGroups>
+</LibFormPage>

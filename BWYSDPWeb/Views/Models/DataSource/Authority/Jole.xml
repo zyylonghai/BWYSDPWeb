@@ -1,0 +1,296 @@
+<?xml version="1.0"?>
+<LibDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" DSID="Jole" DataSourceName="角色" Package="Authority">
+  <DefTables>
+    <LibDefineTable ID="dadbac69-66e8-481a-a69b-397580aa9464" TableName="Jole" DisplayName="角色(Jole)">
+      <TableStruct>
+        <LibDataTableStruct ID="7b2b0a4f-6508-481c-a602-79370a9a6ee1">
+          <Name>Jole</Name>
+          <DisplayName>数据表-Jole</DisplayName>
+          <Ignore>true</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey>
+            <string>JoleId</string>
+          </PrimaryKey>
+          <Fields>
+            <LibField>
+              <ID>2a9009a8-3a45-4f6b-97ad-97aa59a2f367</ID>
+              <Name>JoleId</Name>
+              <AliasName />
+              <DisplayName>角色编号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>15</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>947c2b0b-2778-4636-b927-51f0506a850e</ID>
+              <Name>JoleNm</Name>
+              <AliasName />
+              <DisplayName>角色名</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>0d512057-d1ce-4c64-91db-cba859b17892</ID>
+              <Name>Status</Name>
+              <AliasName />
+              <DisplayName>状态</DisplayName>
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>3827fdb4-7d20-416e-a648-db49b9c26bcb</ID>
+              <Name>Remark</Name>
+              <AliasName />
+              <DisplayName>备注</DisplayName>
+              <OrignNm />
+              <FieldType>Text</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>c118eba6-ee2b-4a1c-939c-02cb5a5e297f</ID>
+              <Name>CreateDate</Name>
+              <AliasName />
+              <DisplayName>创建日期</DisplayName>
+              <OrignNm />
+              <FieldType>DateTime</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>ccc0837b-f098-413a-9e7f-768157af6fd0</ID>
+              <Name>Creater</Name>
+              <AliasName />
+              <DisplayName>创建者</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>6b5126fb-4d77-4896-b3c3-d7172c236c6c</ID>
+              <Name>LastmodifyDate</Name>
+              <AliasName />
+              <DisplayName>最后修改日期</DisplayName>
+              <OrignNm />
+              <FieldType>DateTime</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+            <LibField>
+              <ID>f9ec2c7a-9971-4839-8aa6-3d01f5ad7a32</ID>
+              <Name>LastmodifyUser</Name>
+              <AliasName />
+              <DisplayName>最后修改者</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </LibDefineTable>
+    <LibDefineTable ID="bdcece2e-43e6-48d7-8cf9-768bb62f1032" TableName="JoleD" DisplayName="角色功能明细">
+      <TableStruct>
+        <LibDataTableStruct ID="481bd777-eaa5-45e9-b214-502d5ccd57f0">
+          <Name>JoleD</Name>
+          <DisplayName>角色功能明细</DisplayName>
+          <Ignore>true</Ignore>
+          <TableIndex>1</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey>
+            <string>JoleId</string>
+            <string>ProgId</string>
+          </PrimaryKey>
+          <Fields>
+            <LibField>
+              <ID>1a3f1f12-108d-426a-a852-a6ecd68ae10e</ID>
+              <Name>JoleId</Name>
+              <AliasName />
+              <DisplayName>角色编号</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>15</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+            </LibField>
+            <LibField>
+              <ID>8f5cd790-d1d6-43f6-9eb8-e97ec8a703d8</ID>
+              <Name>ProgId</Name>
+              <AliasName />
+              <DisplayName>功能ID</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+            </LibField>
+            <LibField>
+              <ID>9705b64e-a199-46fd-94a3-9d03356cf369</ID>
+              <Name>CreateDate</Name>
+              <AliasName />
+              <DisplayName>创建日期</DisplayName>
+              <OrignNm />
+              <FieldType>DateTime</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+            </LibField>
+            <LibField>
+              <ID>79059762-dc67-466d-a3e0-6228a26943d1</ID>
+              <Name>Creater</Name>
+              <AliasName />
+              <DisplayName>创建者</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+            </LibField>
+            <LibField>
+              <ID>a27f03fd-cb3a-4f4e-a908-15338be8ec5a</ID>
+              <Name>LastmodifyDate</Name>
+              <AliasName />
+              <DisplayName>最后修改日期</DisplayName>
+              <OrignNm />
+              <FieldType>DateTime</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+            </LibField>
+            <LibField>
+              <ID>caf33d9f-ad15-4f8f-b570-f2b54ba93f5a</ID>
+              <Name>LastmodifyUser</Name>
+              <AliasName />
+              <DisplayName>最后修改者</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+            </LibField>
+            <LibField>
+              <ID>ebb4d424-3b97-43af-970d-43b377818a90</ID>
+              <Name>ProgNm</Name>
+              <AliasName />
+              <DisplayName>功能名称</DisplayName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </LibDefineTable>
+  </DefTables>
+</LibDataSource>

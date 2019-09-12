@@ -114,10 +114,10 @@ namespace BWYSDPWeb.Com
         {
             _page.Append("<div class=\"panel-body\">");
             _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
-            _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"fa fa-fw fa-save\"></i>"+AppCom .GetFieldDesc ((int)Language ,string.Empty ,string.Empty , "sdp_btnsave") +"</button>");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnedit") + "</button>");
+            _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnsave") + "</button>");
+            //_page.Append("<i class=\"fa fa-fw fa-save\"></i>"+AppCom .GetFieldDesc ((int)Language ,string.Empty ,string.Empty , "sdp_btnsave") +"</button>");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
+            //_page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btncopy") + "</button>");
 
             //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-cut\"></i></button>");
@@ -445,7 +445,8 @@ namespace BWYSDPWeb.Com
                         tbformfield.Append("<div class=\"input-group\">");
                         tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\">");
                         tbformfield.Append("<span class=\"input-group-btn\">");
-                        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-whatever=\"" + fielddisplaynm + "\">");
+                        //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"\" data-fieldnm=\"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                         tbformfield.Append("<i class=\"glyphicon glyphicon-search\"></i>");
                         tbformfield.Append("</button>");
                         tbformfield.Append("</span>");

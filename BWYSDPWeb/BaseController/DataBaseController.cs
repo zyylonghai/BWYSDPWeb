@@ -123,6 +123,19 @@ namespace BWYSDPWeb.BaseController
             m.PmenuId = "0103";
             mdata.Add(m);
 
+            m = new Menu();
+            m.MenuId = "0104";
+            m.MenuName = "权限配置";
+            mdata.Add(m);
+
+            m = new Menu();
+            m.MenuId = "010401";
+            m.MenuName = "角色";
+            m.ProgId = "Jole";
+            m.Package = "Authority";
+            m.PmenuId = "0104";
+            mdata.Add(m);
+
             return Json(new { Message = "success", data = mdata, Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
@@ -870,6 +883,13 @@ namespace BWYSDPWeb.BaseController
         #endregion
 
         #region 搜索模态框 操作
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tbnm"></param>
+        /// <param name="fieldnm"></param>
+        /// <param name="flag">1标识单据的搜索，2标识来源主数据的搜索</param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult GetSearchCondFields(string tbnm, string fieldnm, string flag)
         {
@@ -925,63 +945,68 @@ namespace BWYSDPWeb.BaseController
                             }
                         }
                     }
-                    SetSearchFieldExt(condcollection);
+                    //SetSearchFieldExt(condcollection);
                 }
             }
             else
             {
-                //来源字段上的搜索
-                //LibDataSource ds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, relatedsid);
-                LibDataSource ds = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, this.DSID, this.Package);
-                LibField field = null;
-                foreach (LibDefineTable def in ds.DefTables)
+                if (!string.IsNullOrEmpty(tbnm) && !string.IsNullOrEmpty(fieldnm))
                 {
-                    LibDataTableStruct dtstruct = def.TableStruct.FindFirst("Name", tbnm);
-                    if (dtstruct != null)
+                    //来源字段上的搜索
+                    //LibDataSource ds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, relatedsid);
+                    LibDataSource ds = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, this.DSID, this.Package);
+                    LibField field = null;
+                    foreach (LibDefineTable def in ds.DefTables)
                     {
-                        field = dtstruct.Fields.FindFirst("Name", fieldnm);
-                        break;
+                        LibDataTableStruct dtstruct = def.TableStruct.FindFirst("Name", tbnm);
+                        if (dtstruct != null)
+                        {
+                            field = dtstruct.Fields.FindFirst("Name", fieldnm);
+                            break;
+                        }
+                    }
+                    if (field == null)
+                    {
+                        this.ThrowErrorException("未能取到字段，请确认。");
+                    }
+                    if (field.SourceField == null)
+                    {
+                        this.ThrowErrorException("模型未设置来源字段，请确认");
+                    }
+
+                    if (field.SourceField.Count == 1)
+                    {
+                        if (this.SessionObj.FromFieldInfo == null) this.SessionObj.FromFieldInfo = new FromFieldInfo();
+                        this.SessionObj.FromFieldInfo.tableNm = tbnm;
+                        this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
+                        this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
+
+                        LibDataSource sourceds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, field.SourceField[0].FromDataSource);
+                        LibDefineTable defdt = sourceds.DefTables.FindFirst("TableName", field.SourceField[0].FromDefindTableNm);
+                        LibDataTableStruct dtstruct = defdt.TableStruct.FindFirst("Name", field.SourceField[0].FromStructTableNm);
+                        foreach (LibField f in dtstruct.Fields)
+                        {
+                            if (!f.IsActive) continue;
+                            cond = new SearchConditionField();
+                            cond.IsCondition = true;
+                            cond.DisplayNm = AppCom.GetFieldDesc((int)this.Language, sourceds.DSID, dtstruct.Name, f.Name);
+                            cond.DSID = sourceds.DSID;
+                            cond.DefTableNm = defdt.TableName;
+                            cond.TableNm = dtstruct.Name;
+                            cond.FieldNm = f.Name;
+                            cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(dtstruct.TableIndex);
+                            cond.AliasNm = f.AliasName;
+                            cond.IsDateType = f.FieldType == LibFieldType.Date;
+                            condcollection.Add(cond);
+                        }
+                    }
+                    else
+                    {
+
                     }
                 }
-                if (field == null) {
-                    this.ThrowErrorException("未能取到字段，请确认。");
-                }
-                if (field.SourceField == null) {
-                    this.ThrowErrorException("模型未设置来源字段，请确认");
-                }
-
-                if (field.SourceField.Count == 1)
-                {
-                    if (this.SessionObj.FromFieldInfo == null) this.SessionObj.FromFieldInfo = new FromFieldInfo();
-                    this.SessionObj.FromFieldInfo.tableNm = tbnm;
-                    this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
-                    this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
-
-                    LibDataSource sourceds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, field.SourceField[0].FromDataSource);
-                    LibDefineTable defdt = sourceds.DefTables.FindFirst("TableName", field.SourceField[0].FromDefindTableNm);
-                    LibDataTableStruct dtstruct = defdt.TableStruct.FindFirst("Name", field.SourceField[0].FromStructTableNm);
-                    foreach (LibField f in dtstruct.Fields)
-                    {
-                        if (!f.IsActive) continue;
-                        cond = new SearchConditionField();
-                        cond.IsCondition = true;
-                        cond.DisplayNm = AppCom.GetFieldDesc((int)this.Language, sourceds.DSID, dtstruct.Name, f.Name);
-                        cond.DSID = sourceds.DSID;
-                        cond.DefTableNm = defdt.TableName;
-                        cond.TableNm = dtstruct.Name;
-                        cond.FieldNm = f.Name;
-                        cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(dtstruct.TableIndex);
-                        cond.AliasNm = f.AliasName;
-                        cond.IsDateType = f.FieldType == LibFieldType.Date;
-                        condcollection.Add(cond);
-                    }
-                }
-                else
-                {
-
-                }
-
             }
+            SetSearchFieldExt(condcollection);
             return Json(new { data = condcollection.Where(i => i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
