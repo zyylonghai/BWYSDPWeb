@@ -654,19 +654,15 @@ namespace BWYSDPWeb.BaseController
             DataTable dt = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
             if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
             GetGridDataExt(gridid, dt);
-            //DataTable dt2 = dt.Copy();
-            //DataRow[] drs = dt2.Select(string.Format("Age>={0} and Age<={1}",rows*(page -1),rows*page));
-            //foreach (DataRow dr in drs)
+
+            //DataTable resultdt = dt.Clone();
+            //for (int index = (page - 1) * rows; index < page * rows; index++)
             //{
-            //    dt2.Rows.Remove(dr);
+            //    if (index >= dt.Rows.Count) break;
+            //    if (dt.Rows[index].RowState == DataRowState.Deleted) continue;
+            //    resultdt.ImportRow(dt.Rows[index]);
             //}
-            DataTable resultdt = dt.Clone();
-            for (int index = (page - 1) * rows; index < page * rows; index++)
-            {
-                if (index >= dt.Rows.Count) break;
-                if (dt.Rows[index].RowState == DataRowState.Deleted) continue;
-                resultdt.ImportRow(dt.Rows[index]);
-            }
+            DataTable resultdt = AppSysUtils.GetDataByPage(dt, page, rows);
             var result = new { total = AppSysUtils.CalculateTotal(dt), rows = resultdt };
             //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
 
@@ -884,11 +880,11 @@ namespace BWYSDPWeb.BaseController
 
         #region 搜索模态框 操作
         /// <summary>
-        /// 
+        /// 获取搜索条件字段
         /// </summary>
         /// <param name="tbnm"></param>
         /// <param name="fieldnm"></param>
-        /// <param name="flag">1标识单据的搜索，2标识来源主数据的搜索</param>
+        /// <param name="flag">1标识单据的搜索，2标识来源主数据的搜索,3标识无来源主数据的搜索</param>
         /// <returns></returns>
         [HttpGet]
         public ActionResult GetSearchCondFields(string tbnm, string fieldnm, string flag)
@@ -924,7 +920,7 @@ namespace BWYSDPWeb.BaseController
                                 if (!colextprop.IsActive) continue;
                                 cond = new SearchConditionField();
                                 cond.IsCondition = true;
-                                cond.DisplayNm =AppCom .GetFieldDesc ((int)this.Language ,this.DSID,dt.TableName,col.ColumnName );
+                                cond.DisplayNm = AppCom.GetFieldDesc((int)this.Language, this.DSID, dt.TableName, col.ColumnName);
                                 //cond.DefTableNm = deftb.Name;
                                 cond.TableNm = dt.TableName;
                                 cond.FieldNm = col.ColumnName;
@@ -948,7 +944,7 @@ namespace BWYSDPWeb.BaseController
                     //SetSearchFieldExt(condcollection);
                 }
             }
-            else
+            else if (string.Compare(flag, "2") == 0)
             {
                 if (!string.IsNullOrEmpty(tbnm) && !string.IsNullOrEmpty(fieldnm))
                 {
@@ -980,6 +976,7 @@ namespace BWYSDPWeb.BaseController
                         this.SessionObj.FromFieldInfo.tableNm = tbnm;
                         this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
                         this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
+                        this.SessionObj.FromFieldInfo.FromFieldDesc = field.SourceField[0].FromFieldDesc;
 
                         LibDataSource sourceds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, field.SourceField[0].FromDataSource);
                         LibDefineTable defdt = sourceds.DefTables.FindFirst("TableName", field.SourceField[0].FromDefindTableNm);
@@ -1006,7 +1003,14 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
             }
-            SetSearchFieldExt(condcollection);
+            else if(string.Compare(flag, "3") == 0)
+            {
+                if (this.SessionObj.FromFieldInfo == null) this.SessionObj.FromFieldInfo = new FromFieldInfo();
+                this.SessionObj.FromFieldInfo.tableNm = tbnm;
+                this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
+                //this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
+            }
+            SetSearchFieldExt(condcollection,Convert .ToInt32 (flag));
             return Json(new { data = condcollection.Where(i => i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
@@ -1031,7 +1035,7 @@ namespace BWYSDPWeb.BaseController
                 {
                     cond.DSID = this.DSID;
                 }
-                else
+                else if (flag ==2)
                 {
                     cond.DSID = formdata["dsid"];
                 }
@@ -1045,6 +1049,7 @@ namespace BWYSDPWeb.BaseController
                 cond.Logic = (Smodallogic)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodallogic, index)]);
                 conds.Add(cond);
             }
+            SetSearchCondition(conds);
             this.SessionObj.Conds = conds;
             return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }
@@ -1052,14 +1057,45 @@ namespace BWYSDPWeb.BaseController
         public string BindSmodalData(string tableNm,string dsid,int flag, int page, int rows)
         {
             List<LibSearchCondition> conds = this.SessionObj.Conds;
+            DataTable dt = null;
+            if (flag ==3)
+            {
+                dt = new DataTable();
+                BindSmodalDataExt(dt,flag);
+                #region 解析搜索条件
+                object[] values = { };
+                StringBuilder whereformat = new StringBuilder();
+                SearchConditionHelper.AnalyzeSearchCondition(conds, whereformat, ref values);
+                #endregion
+                for (int i = 0; i < values.Length; i++)
+                {
+                    values[i] = string.Format("'{0}'", values[i]);
+                }
+                DataRow[] rws= dt.Select(string.Format(whereformat.ToString(), values));
+                DataTable dt2 = dt.Clone();
+                foreach (DataRow dr in rws)
+                {
+                    dt2.ImportRow(dr);
+                }
+                DataTable resultdt = AppSysUtils.GetDataByPage(dt2, page, rows);
+                if (this.SessionObj.FromFieldInfo != null) {
+                    DataColumn primarycol = null;
+                    if (resultdt.PrimaryKey != null && resultdt.PrimaryKey.Length > 0)
+                        primarycol = resultdt.PrimaryKey[0];
+                    DataColumn col = new DataColumn(string.Format("{0}_{1}_sdp_{2}", this.SessionObj.FromFieldInfo.tableNm, this.SessionObj.FromFieldInfo.FieldNm, primarycol == null ? string.Empty : primarycol.ColumnName));
+                    resultdt.Columns.Add(col);
+                    //this.SessionObj.FromFieldInfo = null;
+                }
+                return LibReturnForGrid(dt2.Rows.Count, resultdt);
+            }
             if (flag == 1) dsid = this.DSID;
             //this.AddMessage("jjjjjjjjjjjj");
             //List<LibSearchCondition> conds = Session[string.Format("{0}{1}", SysConstManage.sdp_Schcond, this.ProgID)] as List<LibSearchCondition>;
             DalResult result = this.ExecuteMethod("InternalSearchByPage",dsid, tableNm, null, conds, page, rows);
             if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
-                DataTable dt = ((DataTable)result.Value);
-                BindSmodalDataExt(dt);
+                dt = ((DataTable)result.Value);
+                BindSmodalDataExt(dt,flag);
                 if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
                 {
                     if (dt != null && flag ==2)
@@ -1068,13 +1104,93 @@ namespace BWYSDPWeb.BaseController
                         {
                             DataColumn col = new DataColumn(string.Format("{0}_{1}_sdp_{2}",this.SessionObj.FromFieldInfo.tableNm , this.SessionObj.FromFieldInfo.FieldNm,this.SessionObj.FromFieldInfo.FromFieldNm));
                             dt.Columns.Add(col);
-                            this.SessionObj.FromFieldInfo = null;
+                            col = new DataColumn(string.Format("sdp_desc{0}", this.SessionObj.FromFieldInfo.FromFieldDesc));
+                            dt.Columns.Add(col);
+                            //this.SessionObj.FromFieldInfo = null;
                         }
                     }
                     return LibReturnForGrid((dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), dt);
                 }
             }
             return LibReturnForGrid(0, null);
+        }
+        #endregion
+
+        #region 来源主数据模糊搜索
+        public ActionResult InternalFuzzySearch(string id,string val)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                string[] array = id.Split(SysConstManage.Underline);
+                if (array != null && array.Length > 1)
+                {
+                    string tablenm = array[0];
+                    string fieldnm = array[1];
+                    LibDataSource ds = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, this.DSID, this.Package);
+                    LibField field = null;
+                    foreach (LibDefineTable def in ds.DefTables)
+                    {
+                        LibDataTableStruct dtstruct = def.TableStruct.FindFirst("Name", tablenm);
+                        if (dtstruct != null)
+                        {
+                            field = dtstruct.Fields.FindFirst("Name", fieldnm);
+                            break;
+                        }
+                    }
+                    if (field != null && field.SourceField != null)
+                    {
+                        List<LibSearchCondition> conds = new List<LibSearchCondition>();
+                        if (field.SourceField.Count == 1)
+                        {
+                            LibFromSourceField fromSourceField = field.SourceField[0];
+                            LibSearchCondition cond = new LibSearchCondition();
+                            cond.DSID = fromSourceField.FromDataSource;
+                            cond.TableNm = fromSourceField.FromStructTableNm;
+                            cond.FieldNm = fromSourceField.FromFieldNm;
+                            cond.Symbol = SmodalSymbol.Contains;
+                            cond.Values = new object[] { val };
+                            conds.Add(cond);
+                            DalResult result = this.ExecuteMethod("InternalSearchByPage", cond.DSID, cond.TableNm, new string[] { fromSourceField.FromFieldNm, fromSourceField .FromFieldDesc }, conds, 1, 20);
+                            if (result.Messagelist == null || result.Messagelist.Count == 0)
+                            {
+                               DataTable dt = ((DataTable)result.Value);
+                                if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
+                                {
+                                    if (dt != null)
+                                    {
+                                        
+                                        dt.Columns.Remove(SysConstManage.sdp_total_row);
+                                        DataColumn col = dt.Columns[fromSourceField.FromFieldNm];
+                                        if (col != null) col.ColumnName = AppCom.GetFieldDesc((int)this.Language, fromSourceField.FromDataSource, fromSourceField.FromStructTableNm, fromSourceField.FromFieldNm);
+                                        col = dt.Columns[fromSourceField.FromFieldDesc];
+                                        if (col != null) col.ColumnName = AppCom.GetFieldDesc((int)this.Language, fromSourceField.FromDataSource, fromSourceField.FromStructTableNm, fromSourceField.FromFieldDesc);
+                                        //List<string> fields = new List<string>();
+                                        //foreach (DataColumn c in dt.Columns)
+                                        //{
+                                        //    fields.Add(c.ColumnName);
+                                        //}
+                                        //FuzzySearchResult obj = null;
+                                        //List<FuzzySearchResult> datas = new List<FuzzySearchResult>();
+                                        //foreach (DataRow dr in dt.Rows)
+                                        //{
+                                        //    obj = new FuzzySearchResult();
+                                        //    obj.FromFieldValue = dr[fromSourceField.FromFieldNm].ToString();
+                                        //    obj.Describle = dr[fromSourceField.FromFieldDesc].ToString();
+                                        //    datas.Add(obj);
+                                        //}
+                                        return Json(new {data=JsonConvert.SerializeObject(dt.Rows) }, JsonRequestBehavior.AllowGet);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+            }
+            return Json(new { });
         }
         #endregion
 
@@ -1091,7 +1207,7 @@ namespace BWYSDPWeb.BaseController
         //    }
         //    return Json(new { Messagelist = msglist }, JsonRequestBehavior.AllowGet);
         //}
-        #endregion 
+        #endregion
         #region 受保护方法
         protected virtual void GetGridDataExt(string gridid, DataTable dt)
         {
@@ -1121,9 +1237,14 @@ namespace BWYSDPWeb.BaseController
 
         }
 
-        protected virtual void SetSearchFieldExt(List<SearchConditionField> fields) { }
+        protected virtual void SetSearchFieldExt(List<SearchConditionField> fields,int flag) { }
 
-        protected virtual void BindSmodalDataExt(DataTable currpagedata)
+        protected virtual void SetSearchCondition(List<LibSearchCondition> conditions)
+        {
+
+        }
+
+        protected virtual void BindSmodalDataExt(DataTable currpagedata,int flag)
         {
 
         }

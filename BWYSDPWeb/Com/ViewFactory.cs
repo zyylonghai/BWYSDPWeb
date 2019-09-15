@@ -20,6 +20,7 @@ namespace BWYSDPWeb.Com
         private List<string> _dateElemlst = null;
         private List<string> _datetimeElemlst = null;
         private List<string> _tableScriptlst = null;
+        private List<string> _searchModelIds = null;
         private string _progid = null;
         //private string _dsid = null;
         private bool _hasSearchModal = true;// 是否有搜索控件。
@@ -49,6 +50,7 @@ namespace BWYSDPWeb.Com
             _panelgroupdic = new Dictionary<string, bool>();
             _gridGroupdic = new Dictionary<string, bool>();
             _tableScriptlst = new List<string>();
+            _searchModelIds = new List<string>();
             Formfields = new Dictionary<string, List<string>>();
             _tbmodalFormfields = new Dictionary<string, string>();
             //_fomGroupdic = new Dictionary<string, bool>();
@@ -75,7 +77,7 @@ namespace BWYSDPWeb.Com
                     jsandcss.Append("@Styles.Render(\"~/Content/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
-                    jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
+                    //jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
                 }
                 if (_gridGroupdic.Count > 0)
@@ -268,13 +270,14 @@ namespace BWYSDPWeb.Com
                         libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         _page.Append("<div class=\"input-group\">");
                         _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
-                        _page.Append("<label ></label>");
+                        _page.Append("<label id=\"" +string.Format("{0}_desc", id) + "\" ></label>");
                         _page.Append("<span class=\"input-group-btn\">");
                         _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                         _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
                         _page.Append("</button>");
                         _page.Append("</span>");
                         _page.Append("</div>");
+                        this._searchModelIds.Add(id);
                         //this._hasSearchModal = true;
                         break;
                     //case ElementType.Textarea:
@@ -361,6 +364,7 @@ namespace BWYSDPWeb.Com
             StringBuilder table = new StringBuilder();
             StringBuilder hidecolumns = new StringBuilder();
             StringBuilder tbformfield = new StringBuilder();
+            LibField libField = null;
             int colcout = 0;
             //List<string> valus = null;
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
@@ -442,11 +446,15 @@ namespace BWYSDPWeb.Com
                         tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\">");
                         break;
                     case ElementType.Search:
+                        libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                        if (libField.SourceField == null || libField.SourceField.Count == 0)
+                        {
+                        }
                         tbformfield.Append("<div class=\"input-group\">");
                         tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\">");
                         tbformfield.Append("<span class=\"input-group-btn\">");
                         //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
-                        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"\" data-fieldnm=\"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\""+field.FromTableNm+"\" data-fieldnm=\""+field.Name+"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\""+((libField.SourceField == null || libField.SourceField.Count == 0)?3:2)+"\">");
                         tbformfield.Append("<i class=\"glyphicon glyphicon-search\"></i>");
                         tbformfield.Append("</button>");
                         tbformfield.Append("</span>");
@@ -663,6 +671,17 @@ namespace BWYSDPWeb.Com
                 "datastr+=']';" +
                 "Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
                 "});");
+            #endregion
+
+            #region 搜索控件 绑定input propertychange 事件
+            foreach (string id in this._searchModelIds)
+            {
+                _script.Append("$('#"+id+"').bind(\"input propertychange\", function () {");
+                _script.Append("if (this.value =='') {$('#" + id + "_desc').text(''); }");
+                _script.Append("Showfuzzydiv('"+id+"');");
+                _script.Append("onpropertychange('"+id+"','"+ (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "')");
+                _script.Append("});");
+            }
             #endregion
 
             //#region msgforsave 函数

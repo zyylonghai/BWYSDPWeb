@@ -19,5 +19,17 @@ namespace Com
             }
             return total;
         }
+
+        public static DataTable GetDataByPage(DataTable dt, int page, int rows)
+        {
+            DataTable resultdt = dt.Clone();
+            for (int index = (page - 1) * rows; index < page * rows; index++)
+            {
+                if (index >= dt.Rows.Count) break;
+                if (dt.Rows[index].RowState == DataRowState.Deleted) continue;
+                resultdt.ImportRow(dt.Rows[index]);
+            }
+            return resultdt;
+        }
     }
 }

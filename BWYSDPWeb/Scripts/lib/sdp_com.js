@@ -114,32 +114,50 @@ function TimeConverToStr(tm) {
     return year + "-" + month + "-" + day;
 }
 
-function GetMsgForSave() {
+function Showfuzzydiv(id) {
+    $("#sdp_fuzzySearch").css("position", "absolute");
+    $("#sdp_fuzzySearch").css("top", $("#" + id).offset().top + $("#" + id).parent().height());
+    $("#sdp_fuzzySearch").css("left", $("#" + id).offset().left);
+    if ($("#sdp_fuzzySearch").css("display") == "none") {
+        $("#sdp_fuzzySearch").show("slow");
+    } else {
+        //$("#sdp_fuzzySearch").hide("slow");
+    }
+}
+
+function Closefuzzydiv() {
+    $("#sdp_fuzzySearch").hide("slow");
+}
+
+function onpropertychange(id,ctrnm) {
     $.ajax({
-        url: "/DataBase/GetMsgforSave",
-        data:"" ,
+        url: "/" + ctrnm + "/InternalFuzzySearch",
+        data: "id=" + id + "&val=" + $('#' + id).val() + "",
         type: 'Post',
         async: false,
         dataType: "json",
         success: function (obj) {
-            if (obj != null && obj != undefined && obj.Messagelist != null && obj.Messagelist != undefined) {
-                let _errors = "";
-                let _warnings = "";
-                $.each(obj.Messagelist, function (index, o) {
-                    if (o.MsgType == 1) {
-                        _errors += o.Message + "<br/>";
-                    }
-                    else if (o.MsgType == 2) {
-                        _warnings += o.Message + "<br/>";
-                    }
-                    
-
+            var o = JSON.parse(obj.data);
+            if (o.length > 0) {
+                var rows = o[0].Table;
+                var fuzzytb = $('#fuzzysearchtable');
+                fuzzytb.children().remove();
+                var thead = "<thead style=\"background-color: deepskyblue\"><tr>";
+                var tbody = "<tbody>";
+                $.each(rows[0], function (nm, val) {
+                    thead += "<th>" + nm + "</th>";
                 });
-                if (_errors.length > 0)
-                    ShowMsg(_errors, 'error');
-                if (_warnings.length > 0)
-                    ShowMsg(_warnings, 'warning');
-                
+                thead += "</tr></thead>";
+                fuzzytb.append(thead);
+                $.each(rows, function (index, dr) {
+                    tbody += "<tr>";
+                    $.each(dr, function (nm, val) {
+                        tbody += "<td>" + val + "</td>";
+                    });
+                    tbody += "</tr>";
+                });
+                tbody += "</tbody>";
+                fuzzytb.append(tbody);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -147,3 +165,37 @@ function GetMsgForSave() {
         }
     });
 }
+
+//function GetMsgForSave() {
+//    $.ajax({
+//        url: "/DataBase/GetMsgforSave",
+//        data:"" ,
+//        type: 'Post',
+//        async: false,
+//        dataType: "json",
+//        success: function (obj) {
+//            if (obj != null && obj != undefined && obj.Messagelist != null && obj.Messagelist != undefined) {
+//                let _errors = "";
+//                let _warnings = "";
+//                $.each(obj.Messagelist, function (index, o) {
+//                    if (o.MsgType == 1) {
+//                        _errors += o.Message + "<br/>";
+//                    }
+//                    else if (o.MsgType == 2) {
+//                        _warnings += o.Message + "<br/>";
+//                    }
+                    
+
+//                });
+//                if (_errors.length > 0)
+//                    ShowMsg(_errors, 'error');
+//                if (_warnings.length > 0)
+//                    ShowMsg(_warnings, 'warning');
+                
+//            }
+//        },
+//        error: function (XMLHttpRequest, textStatus, errorThrown) {
+//            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+//        }
+//    });
+//}

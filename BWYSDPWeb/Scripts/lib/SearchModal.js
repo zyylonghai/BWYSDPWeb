@@ -76,7 +76,7 @@ function GetFields(tbnm, ctrnm, fieldnm, flag) {
             if (obj.flag == 0) {
                 //o.children().remove();
                 $.each(obj.data, function (index, row) {
-                    o.append("<option value='" + row.TBAliasNm + "." + row.FieldNm + "'dsid='" + row.DSID+"' tbnm='" + row.TableNm + "' hid='" + row.Hidden + "' aliasnm='" + row.AliasNm + "' isdate='" + row.IsDateType + "'>" + row.DisplayNm + "(" + row.TBAliasNm + "." + row.FieldNm + ")</option>");
+                    o.append("<option value='" + (flag == 3 ? row.FieldNm: (row.TBAliasNm + "." + row.FieldNm)) + "'dsid='" + row.DSID + "' tbnm='" + row.TableNm + "' hid='" + row.Hidden + "' aliasnm='" + row.AliasNm + "' isdate='" + row.IsDateType + "'>" + row.DisplayNm + "(" + (flag == 3 ? row.FieldNm : (row.TBAliasNm + "." + row.FieldNm)) + ")</option>");
                 });
             }
         },
@@ -117,9 +117,9 @@ function DeletCondition(obj) {
     obj.remove();
 }
 function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
-    if ($('#sdp_smodaldata') != undefined || $('#sdp_smodaldata') != null || $('#sdp_smodaldata').length> 0) {
-        $('#sdp_smodaldata').bootstrapTable('refreshOptions', { pageNumber: 1 });
-    }
+    //if ($('#sdp_smodaldata') != undefined || $('#sdp_smodaldata') != null || $('#sdp_smodaldata').length> 0) {
+    //    $('#sdp_smodaldata').bootstrapTable('refreshOptions', { pageNumber: 1 });
+    //}
     if (flag == 2) {
         var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
         $.each(o.children(), function (index, option) {
@@ -139,6 +139,7 @@ function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
             if (obj.flag == 0) {
                 BindToTable(ctrnm, tbstruct, dsid, flag);
                 //$('#sdp_smodaldata').bootstrapTable('refresh');
+                $('#sdp_smodaldata').bootstrapTable('refreshOptions', { pageNumber: 1 });
                 closemsg();
             }
         },
@@ -160,19 +161,20 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
         if (option.value != 0) {
             let vis = $(option).attr("hid") == "false" ? true : false;
             let aliasnm = $(option).attr("aliasnm");
-            let arrary = option.value.split('.');
+            let arrary = flag == 3 ? option.value: option.value.split('.')[1];
             let date = $(option).attr("isdate") == "false" ? false : true;
             if (date) {
-                cols.push({ field: (aliasnm == "" || aliasnm == undefined) ? arrary[1] : aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis, formatter: function (value, row, index) { return TimeConverToStr(value); } });
+                cols.push({ field: (aliasnm == "" || aliasnm == undefined || aliasnm == "null") ? arrary: aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis, formatter: function (value, row, index) { return TimeConverToStr(value); } });
             }
             else
-                cols.push({ field: (aliasnm == "" || aliasnm == undefined) ? arrary[1] : aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis });
+                cols.push({ field: (aliasnm == "" || aliasnm == undefined || aliasnm=="null") ? arrary: aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis });
         }
     });
     sdp_searchtb.$table.columns = cols;
     sdp_searchtb.initialTable();
     sdp_searchtb.testid = tbnm;
     sdp_searchtb.flag = flag;
+
     sdp_searchtb.DbClickRow = function (dr, elem, tbname, flag) {
         if (flag == 1) {
             $.ajax({
@@ -196,6 +198,7 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
         else {
             let fromfieldnm;
             let fieldnm;
+            let fromfielddesc
             $.each(dr, function (name, val) {
                 let index = name.indexOf("_sdp_");
                 if (index != -1) {
@@ -203,10 +206,19 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
                     fromfieldnm = name.substring(index + 5);
                     //$('#' + tbname + '_' + fieldnm).val(dr.)
                 }
+                else {
+                    index = name.indexOf("sdp_desc");
+                    if (index != -1) {
+                        fromfielddesc = name.substring(index + 8);
+                    }
+                }
             });
             $.each(dr, function (name, val) {
                 if (name == fromfieldnm) {
                     $('#' + fieldnm).val(val);
+                }
+                else if (name == fromfielddesc) {
+                    $('#' + fieldnm + '_desc').text(val);
                 }
             });
             $("#searchModal").modal('hide');

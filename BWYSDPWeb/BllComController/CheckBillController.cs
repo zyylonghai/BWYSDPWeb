@@ -164,9 +164,9 @@ namespace BWYSDPWeb.BllComController
             return Json(new { message = "", Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
-        protected override void SetSearchFieldExt(List<SearchConditionField> fields)
+        protected override void SetSearchFieldExt(List<SearchConditionField> fields,int flag)
         {
-            base.SetSearchFieldExt(fields);
+            base.SetSearchFieldExt(fields,flag);
             //SearchConditionField[] rmvs = { };
             //fields.Where(i => i.TableNm != "CheckBill").ToArray().CopyTo(rmvs, 0);
             //foreach (var item in rmvs)
@@ -181,9 +181,9 @@ namespace BWYSDPWeb.BllComController
             //    }
             //}
         }
-        protected override void BindSmodalDataExt(DataTable currpagedata)
+        protected override void BindSmodalDataExt(DataTable currpagedata,int flag)
         {
-            base.BindSmodalDataExt(currpagedata);
+            base.BindSmodalDataExt(currpagedata,flag);
             //DataTable dt = currpagedata.Copy();
             //List<string> exists = new List<string>();
             //DataRow[] drs = null;
