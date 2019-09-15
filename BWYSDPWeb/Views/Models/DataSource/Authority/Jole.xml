@@ -66,7 +66,29 @@
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
               <SourceField />
-              <Items />
+              <Items>
+                <LibKeyValue>
+                  <ID>94da9925-f325-4e5a-a1cc-ef9816724e88</ID>
+                  <FromkeyValueID>JoleStatus</FromkeyValueID>
+                  <Key xsi:type="xsd:string">0</Key>
+                  <Value xsi:type="xsd:string">未激活</Value>
+                  <Remark />
+                </LibKeyValue>
+                <LibKeyValue>
+                  <ID>73cb2593-faa3-4ff0-b49b-a81757b9f30a</ID>
+                  <FromkeyValueID>JoleStatus</FromkeyValueID>
+                  <Key xsi:type="xsd:string">1</Key>
+                  <Value xsi:type="xsd:string">已激活</Value>
+                  <Remark />
+                </LibKeyValue>
+                <LibKeyValue>
+                  <ID>97724670-0635-4c43-8244-afc1525c9698</ID>
+                  <FromkeyValueID>JoleStatus</FromkeyValueID>
+                  <Key xsi:type="xsd:string">2</Key>
+                  <Value xsi:type="xsd:string">冻结</Value>
+                  <Remark />
+                </LibKeyValue>
+              </Items>
             </LibField>
             <LibField>
               <ID>3827fdb4-7d20-416e-a648-db49b9c26bcb</ID>
@@ -170,7 +192,9 @@
           <Ignore>true</Ignore>
           <TableIndex>1</TableIndex>
           <JoinTableIndex>0</JoinTableIndex>
-          <JoinFields />
+          <JoinFields>
+            <string>JoleId</string>
+          </JoinFields>
           <PrimaryKey>
             <string>JoleId</string>
             <string>ProgId</string>
@@ -191,6 +215,8 @@
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
             </LibField>
             <LibField>
               <ID>8f5cd790-d1d6-43f6-9eb8-e97ec8a703d8</ID>
@@ -207,6 +233,8 @@
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
             </LibField>
             <LibField>
               <ID>9705b64e-a199-46fd-94a3-9d03356cf369</ID>
@@ -223,6 +251,8 @@
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
             </LibField>
             <LibField>
               <ID>79059762-dc67-466d-a3e0-6228a26943d1</ID>
@@ -239,6 +269,8 @@
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
             </LibField>
             <LibField>
               <ID>a27f03fd-cb3a-4f4e-a908-15338be8ec5a</ID>
@@ -255,6 +287,8 @@
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
             </LibField>
             <LibField>
               <ID>caf33d9f-ad15-4f8f-b570-f2b54ba93f5a</ID>
@@ -271,6 +305,8 @@
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
             </LibField>
             <LibField>
               <ID>ebb4d424-3b97-43af-970d-43b377818a90</ID>
@@ -287,6 +323,8 @@
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
               <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
             </LibField>
           </Fields>
         </LibDataTableStruct>

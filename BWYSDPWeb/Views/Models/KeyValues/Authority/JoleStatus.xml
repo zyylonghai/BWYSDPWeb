@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<LibKeyValueCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="JoleStatus">
+  <Package>Authority</Package>
+  <KeyValues>
+    <LibKeyValue>
+      <ID>94da9925-f325-4e5a-a1cc-ef9816724e88</ID>
+      <Key xsi:type="xsd:string">0</Key>
+      <Value xsi:type="xsd:string">未激活</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>73cb2593-faa3-4ff0-b49b-a81757b9f30a</ID>
+      <Key xsi:type="xsd:string">1</Key>
+      <Value xsi:type="xsd:string">已激活</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>97724670-0635-4c43-8244-afc1525c9698</ID>
+      <Key xsi:type="xsd:string">2</Key>
+      <Value xsi:type="xsd:string">冻结</Value>
+      <Remark />
+    </LibKeyValue>
+  </KeyValues>
+</LibKeyValueCollection>

@@ -32,7 +32,7 @@
           <FromTableNm>Jole</FromTableNm>
           <FromDefTableNm>Jole</FromDefTableNm>
           <DisplayName>状态</DisplayName>
-          <ElemType>Text</ElemType>
+          <ElemType>Select</ElemType>
           <Width>2</Width>
           <FieldLength>0</FieldLength>
           <IsAllowNull>true</IsAllowNull>
