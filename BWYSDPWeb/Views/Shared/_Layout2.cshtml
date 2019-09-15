@@ -17,6 +17,9 @@
         .error{
 	color:red;
 }
+        .selectrow {
+            background-color:cyan;
+        }
     </style>
     <title>Clearmin template</title>
     @Styles.Render("~/Content/css")
@@ -214,7 +217,51 @@
         @RenderBody()
         <footer class="cm-footer"><span class="pull-left">Connected as John Smith</span><span class="pull-right">&copy; PAOMEDIA SARL</span></footer>
     </div>
-    <div id="masklayer" class="masklayer"></div>    
+    <div id="masklayer" class="masklayer"></div>  
+    <div id="sdp_fuzzySearch" style="display:none;width:300px; height:260px;">
+        <div class="panel-group">
+            <div class="panel panel-success">
+                <div class="panel-heading" style="background-color:#dff0d8; text-align:left; ">
+                    <h4 class="panel-title">
+                        <button type="button" class="close" onclick="Closefuzzydiv()">
+                            ×
+                        </button>
+                    </h4>
+                </div>
+                <div class="panel-collapse in">
+                    <div style="overflow:scroll;height:260px;">
+                        <table class="table table-bordered" id="fuzzysearchtable">
+                            @*<thead style="background-color:deepskyblue">
+                                <tr>
+                                    <th>名称</th>
+                                    <th>城市</th>
+                                    <th>邮编</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tanmay</td>
+                                    <td>Bangalore</td>
+                                    <td>560001</td>
+                                </tr>
+                                <tr>
+                                    <td>Sachin</td>
+                                    <td>Mumbai</td>
+                                    <td>400003</td>
+                                </tr>
+                                <tr>
+                                    <td>Uma</td>
+                                    <td>Pune</td>
+                                    <td>411027</td>
+                                </tr>
+                            </tbody>*@
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </div>
     @*@Scripts.Render("~/bundles/jquery")*@
     @RenderSection("scripts", required: false)
     @*<script type="text/javascript">

@@ -150,7 +150,7 @@ function onpropertychange(id,ctrnm) {
                 thead += "</tr></thead>";
                 fuzzytb.append(thead);
                 $.each(rows, function (index, dr) {
-                    tbody += "<tr>";
+                    tbody += "<tr onmousemove=\"mousemoveup(this)\" ondblclick=\"dblclick(this, '" + id + "')\">";
                     $.each(dr, function (nm, val) {
                         tbody += "<td>" + val + "</td>";
                     });
@@ -164,6 +164,26 @@ function onpropertychange(id,ctrnm) {
             alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
         }
     });
+}
+
+function mousemoveup(obj) {
+    $.each($(obj).parent().children(), function (index, o) {
+        $(o).removeClass("selectrow");
+    });
+    $(obj).addClass("selectrow");
+
+}
+
+function dblclick(obj, id) {
+    $.each(obj.cells, function (index, col) {
+        if (index == 0) {
+            $('#' + id).val(col.innerText);
+        }
+        if (index == 1) {
+            $('#' + id + '_desc').text(col.innerText);
+        }
+    });
+    Closefuzzydiv();
 }
 
 //function GetMsgForSave() {

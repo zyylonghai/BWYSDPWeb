@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="Jole" FormName="角色" DSID="Jole" ControlClassNm="" CssFile="" ScriptFile="" Package="Authority">
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="Jole" FormName="角色" DSID="Jole" ControlClassNm="Jole" CssFile="" ScriptFile="" Package="Authority">
   <FormGroups>
     <LibFormGroup FormGroupID="b95ee5f0-e0f3-4b5e-96fa-a7a86c5e0b19" FormGroupName="Key Information" FormGroupDisplayNm="关键信息">
       <FmGroupFields>
