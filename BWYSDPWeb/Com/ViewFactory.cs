@@ -234,6 +234,7 @@ namespace BWYSDPWeb.Com
                 validatorAttr = new StringBuilder();
                 validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
                 validatorAttr.AppendFormat(" maxlength=\"{0}\"", field.FieldLength);
+                validatorAttr.AppendFormat(" {0} ", field.Readonly ? "readonly" : "");
                 #endregion
                 string displaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
                 //_page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName+ (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
@@ -365,6 +366,7 @@ namespace BWYSDPWeb.Com
             StringBuilder hidecolumns = new StringBuilder();
             StringBuilder tbformfield = new StringBuilder();
             LibField libField = null;
+            StringBuilder validatorAttr = null;
             int colcout = 0;
             //List<string> valus = null;
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
@@ -429,21 +431,29 @@ namespace BWYSDPWeb.Com
                 }
                 string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
                 string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+
+                #region 字段属性验证设置
+                validatorAttr = new StringBuilder();
+                //validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
+                //validatorAttr.AppendFormat(" maxlength=\"{0}\"", field.FieldLength);
+                validatorAttr.AppendFormat(" {0} ", field.ReadOnly  ? "readonly" : "");
+                #endregion
+
                 tbformfield.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
                 tbformfield.Append("<div class=\"col-sm-" + field.Width + "\">");
                 switch (field.ElemType)
                 {
                     case ElementType.Date:
                         _dateElemlst.Add(id);
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\">");
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.DateTime:
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\">");
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Select:
                         break;
                     case ElementType.Text:
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\">");
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Search:
                         libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
@@ -451,7 +461,7 @@ namespace BWYSDPWeb.Com
                         {
                         }
                         tbformfield.Append("<div class=\"input-group\">");
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\">");
+                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                         tbformfield.Append("<span class=\"input-group-btn\">");
                         //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                         tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\""+field.FromTableNm+"\" data-fieldnm=\""+field.Name+"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\""+((libField.SourceField == null || libField.SourceField.Count == 0)?3:2)+"\">");
