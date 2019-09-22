@@ -94,6 +94,8 @@ namespace BWYSDPWeb.BaseController
                 return string.Format(@"{0}Views", this.RootPath);
             }
         }
+
+        public UserInfo UserInfo { get; set; }
         #endregion
 
         public BaseController()
@@ -103,8 +105,8 @@ namespace BWYSDPWeb.BaseController
             this.ProgID = request.Params["sdp_pageid"] ?? string.Empty;
             this.DSID = request.Params["sdp_dsid"] ?? string.Empty;
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
-            var user = System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo ;
-            this.Language = user == null ? Language.CHS : user.Language;
+            this.UserInfo = System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo ;
+            this.Language = this.UserInfo == null ? Language.CHS : this.UserInfo.Language;
             //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
             this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;

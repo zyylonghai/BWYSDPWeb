@@ -122,6 +122,13 @@ namespace BWYSDPWeb.BaseController
             m.Package = "com";
             m.PmenuId = "0103";
             mdata.Add(m);
+            m = new Menu();
+            m.MenuId = "010304";
+            m.MenuName = "测试功能";
+            m.ProgId = "WebTestFunc";
+            m.Package = "com";
+            m.PmenuId = "0103";
+            mdata.Add(m);
 
             m = new Menu();
             m.MenuId = "0104";
@@ -194,28 +201,66 @@ namespace BWYSDPWeb.BaseController
                         factory.BeginPage(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formpage.FormId));
                         factory.CreateBody();
                         factory.CreateForm();
-                        if (formpage.FormGroups != null)
+                        if (formpage.ModuleOrder != null)
                         {
-                            foreach (LibFormGroup formg in formpage.FormGroups)
+                            foreach (ModuleOrder item in formpage.ModuleOrder)
                             {
+                                switch (item.moduleType)
+                                {
+                                    case ModuleType.FormGroup:
+                                        if (formpage.FormGroups != null)
+                                        {
+                                            foreach (LibFormGroup formg in formpage.FormGroups)
+                                            {
+                                                if (formg.FormGroupID != item.ID) continue;
+                                                factory.CreatePanelGroup(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formg.FormGroupName));
+                                                if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
+                                                {
+                                                    factory.AddFormGroupFields(formg.FmGroupFields);
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case ModuleType.GridGroup:
+                                        if (formpage.GridGroups != null)
+                                        {
+                                            foreach (LibGridGroup grid in formpage.GridGroups)
+                                            {
+                                                if (grid.GridGroupID != item.ID) continue;
+                                                if (grid.GdGroupFields != null)
+                                                {
+                                                    factory.CreateGridGroup(grid);
+                                                }
+                                            }
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        #region 旧代码
+                        //if (formpage.FormGroups != null)
+                        //{
+                        //    foreach (LibFormGroup formg in formpage.FormGroups)
+                        //    {
 
-                                factory.CreatePanelGroup(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formg.FormGroupName));
-                                if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
-                                {
-                                    factory.AddFormGroupFields(formg.FmGroupFields);
-                                }
-                            }
-                        }
-                        if (formpage.GridGroups != null)
-                        {
-                            foreach (LibGridGroup grid in formpage.GridGroups)
-                            {
-                                if (grid.GdGroupFields != null)
-                                {
-                                    factory.CreateGridGroup(grid);
-                                }
-                            }
-                        }
+                        //        factory.CreatePanelGroup(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formg.FormGroupName));
+                        //        if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
+                        //        {
+                        //            factory.AddFormGroupFields(formg.FmGroupFields);
+                        //        }
+                        //    }
+                        //}
+                        //if (formpage.GridGroups != null)
+                        //{
+                        //    foreach (LibGridGroup grid in formpage.GridGroups)
+                        //    {
+                        //        if (grid.GdGroupFields != null)
+                        //        {
+                        //            factory.CreateGridGroup(grid);
+                        //        }
+                        //    }
+                        //}
+                        #endregion
                         factory.EndPage();
 
                         fileoperation.WritText(factory.PageHtml);
@@ -427,6 +472,21 @@ namespace BWYSDPWeb.BaseController
             //this.LibTables[0].Tables[0].Rows[0]["Checker"] ="66";
             //string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             //object resut2 = this.ExecuteMethod("Test", "longhaibangshan", 8888);
+
+            #region 系统字段的填值
+            foreach (LibTable libtb in this.LibTables)
+            {
+                foreach (DataTable table in libtb.Tables)
+                {
+                    if (table == null) continue;
+                    foreach (DataRow dr in table.Rows)
+                    {
+                        SetColumnValue(dr, SysConstManage.sysfld_creater, this.UserInfo.UserId);
+                        SetColumnValue(dr, SysConstManage.sysfld_createDT, DateTime.Now);
+                    }
+                }
+            }
+            #endregion
             DalResult result = null;
             if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
@@ -434,6 +494,7 @@ namespace BWYSDPWeb.BaseController
             }
             //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
+
             //if ((result.Messagelist != null && result.Messagelist.Count > 0))
             //{
             //    if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
@@ -466,7 +527,8 @@ namespace BWYSDPWeb.BaseController
             var parmas = this.Request.Form;
             string tablenm = parmas["tablenm"];
             List<DataTable> dtlist = new List<DataTable>();
-            StringBuilder whereformat = new StringBuilder();
+            //StringBuilder whereformat = new StringBuilder();
+            List<string> whereformat = new List<string>();
             object[] vals = null;
             foreach (LibTable def in this.LibTables)
             {
@@ -480,14 +542,15 @@ namespace BWYSDPWeb.BaseController
             vals = new object[mast.PrimaryKey.Length];
             for (int n = 0; n < mast.PrimaryKey.Length; n++)
             {
-                if (whereformat.Length > 0)
-                {
-                    whereformat.Append(" And ");
-                }
-                whereformat.AppendFormat("{0}={1}", mast.PrimaryKey[n].ColumnName, "{" + n + "}");
+                //if (whereformat.Length > 0)
+                //{
+                //    whereformat.Append(" And ");
+                //}
+                //whereformat.AppendFormat("{0}={1}", mast.PrimaryKey[n].ColumnName, "{" + n + "}");
+                whereformat.Add(string.Format("{0}={1}", mast.PrimaryKey[n].ColumnName, "{" + n + "}"));
                 vals[n] = parmas[string.Format("dr[{0}]", mast.PrimaryKey[n].ColumnName)];
             }
-            DalResult result = this.ExecuteMethod("InternalFillData", whereformat.ToString(), vals);
+            DalResult result = this.ExecuteMethod("InternalFillData", whereformat, vals);
             if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
                 DataTable[] resultb = (DataTable[])result.Value;
@@ -768,7 +831,7 @@ namespace BWYSDPWeb.BaseController
             {
                 var formparams = this.Request.Form;
                 string[] array;
-                DataTable tb;
+                DataTable tb=null;
                 DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
@@ -860,17 +923,26 @@ namespace BWYSDPWeb.BaseController
                             break;
                     }
                 }
-                foreach (string nm in formparams.AllKeys)
+                try
                 {
-                    if (nm.Contains(SysConstManage.Point))
+                    foreach (string nm in formparams.AllKeys)
                     {
-                        array = nm.Split(SysConstManage.Point);
-                        if (array.Length < 2) continue;
-                        if (dr != null)
+                        if (nm.Contains(SysConstManage.Point))
                         {
-                            dr[array[1]] = formparams[nm];
+                            array = nm.Split(SysConstManage.Point);
+                            if (array.Length < 2) continue;
+                            if (dr != null)
+                            {
+                                dr[array[1]] = formparams[nm];
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    if (dr != null && cmd == "Add")
+                        tb.Rows.Remove(dr);
+                    this.ThrowErrorException(ex.Message);
                 }
                 UpdateTableAction(gridid, dr, cmd);
             }
@@ -1251,7 +1323,12 @@ namespace BWYSDPWeb.BaseController
         #endregion
 
         #region 私有函数
-
+        private void SetColumnValue(DataRow dr, string fieldnm, object value)
+        {
+            DataColumn c = dr.Table.Columns[fieldnm];
+            if (c != null)
+                dr[c] = value;
+        }
         #endregion
     }
 }

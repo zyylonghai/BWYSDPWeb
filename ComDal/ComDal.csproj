@@ -54,6 +54,7 @@
     <Compile Include="ComDal.cs" />
     <Compile Include="MaterialsDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebTestFuncDal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BWYSDPBaseDal\BWYSDPBaseDal.csproj">

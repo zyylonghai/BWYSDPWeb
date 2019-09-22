@@ -62,10 +62,11 @@ namespace BWYSDPBaseDal
             return this.DataAccess.GetDataTable(sql);
         }
 
-        public DataTable[] InternalFillData(string whereformat,object[] valus )
+        public DataTable[] InternalFillData(List<string> whereformat,object[] valus )
         {
             StringBuilder sql = new StringBuilder();
             DataTable[] dts = { };
+            StringBuilder where = new StringBuilder();
             //DataTable mdt = null;
             //Dictionary<int, int> dic = new Dictionary<int, int>();
             //SDPCRL.DAL.COM.SQLBuilder sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder();
@@ -80,7 +81,16 @@ namespace BWYSDPBaseDal
 
                     if (tbextprop.TableIndex == 0 || tbextprop .TableIndex !=tbextprop .RelateTableIndex)
                     {
-                        sql.Append(this.SQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=whereformat,Values=valus },false));
+                        where.Clear();
+                        foreach (string item in whereformat)
+                        {
+                            if (where.Length > 0)
+                            {
+                                where.Append(" And ");
+                            }
+                            where.AppendFormat("{0}.{1}", LibSysUtils.ToCharByTableIndex(tbextprop.TableIndex), item);
+                        }
+                        sql.Append(this.SQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=where.ToString (),Values=valus },false));
                         sql.AppendLine();
                     }
                 }
