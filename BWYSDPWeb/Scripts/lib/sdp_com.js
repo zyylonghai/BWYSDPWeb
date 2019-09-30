@@ -104,6 +104,10 @@ function TableBtnEdit(obj, grid) {
     return false;
 }
 
+function TableBtnAdd(obj) {
+
+}
+
 function TimeConverToStr(tm) {
     //var datetime = Date.parse(new Date(stringTime));
     //datetime.setTime(time);
