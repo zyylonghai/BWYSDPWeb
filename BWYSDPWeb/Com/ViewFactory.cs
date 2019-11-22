@@ -374,6 +374,38 @@ namespace BWYSDPWeb.Com
             table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
             table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm, grid.GdGroupFields[0].FromTableNm));
             table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";", param, grid.GridGroupName));
+            #region 是否显示父子表
+            var deftb = this.LibDataSource.DefTables.FindFirst("TableName", grid.GdGroupFields[0].FromDefTableNm);
+            int tbindex = -1;
+            if (deftb != null)
+            {
+                var structtb=deftb .TableStruct.FindFirst("Name", grid.GdGroupFields[0].FromTableNm);
+                if (structtb != null)
+                    tbindex = structtb.TableIndex;
+
+            }
+            foreach (LibDefineTable item in this.LibDataSource.DefTables)
+            {
+                foreach (LibDataTableStruct t in item.TableStruct)
+                {
+                    if (t.JoinTableIndex == tbindex && t.TableIndex!=tbindex)
+                    {
+                        table.Append(string.Format("{0}.$table.detailView =true;", param));
+                        table.Append(string.Format("{0}.SubTable =new LibTable(\"{1}\");", param,"zyylonghaitb"));
+                        table.Append(string.Format("{0}.SubTable.$table.detailView =false;", param));
+                        table.Append(string.Format("{0}.SubTable.$table.hasoperation =false;", param));
+                        table.Append(string.Format("{0}.SubTable.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName,item.TableName  ,t.Name));
+                        table.Append(string.Format("{0}.SubTable.$table.columns = [", param));
+                        table.Append("{checkbox: true,visible: true }");
+                        #region sdp_rowid 列
+                        table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: false}");
+                        //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
+                        #endregion
+                        table.Append("];");
+                    }
+                }
+            }
+            #endregion
             if (grid.HasSummary)
             {
                 table.Append(string.Format("{0}.$table.showFooter={1};", param, grid.HasSummary ? "true" : "false"));

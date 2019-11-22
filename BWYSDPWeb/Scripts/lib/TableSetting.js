@@ -129,10 +129,10 @@ function LibTable(id)
         minimumCountColumns: 2,             //最少允许的列数
         clickToSelect: true,                //是否启用点击选中行
         height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-        uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+        uniqueId: "",                     //每一行的唯一标识，一般为主键列
         showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
         cardView: false,                    //是否显示详细视图
-        detailView: false,
+        detailView: false,                  //是否显示父子表
         hasoperation: true,                 //是否显示操作列
         showFooter: false,                  //表格最底部是否显示汇总行
         showExport: true,                  //是否显示导出按钮
@@ -143,6 +143,7 @@ function LibTable(id)
     this.RowsOfAdd = [];
     this.RowsOfEdit = [];
     this.RowsOfRemov = [];
+    this.SubTable;
 }
 
 LibTable.prototype = {
@@ -212,6 +213,12 @@ LibTable.prototype = {
                 return temp;
             },
             columns: this.$table.columns,
+            onExpandRow: function (index, row, $detail) {
+                var parentid = row.sdp_rowid;
+                tbobj.SubTable.$table.ElemtableID += "_" + index + "";
+                $detail.html("<table id='" + tbobj.SubTable.$table.ElemtableID +"'></table>");
+                tbobj.SubTable.initialTable();
+            },
             onPreBody: function (data) {
 
             },
@@ -295,6 +302,9 @@ LibTable.prototype = {
         //    headerOnly: true,
         //    resizeMode: 'overflow'//overflow,flex,fit
         //});
+    },
+    initSubTable: function (elem) {
+
     },
     AddRow: function () {
         //var arrselections = $('#' + this.$table.ElemtableID).bootstrapTable('getSelections');
@@ -453,3 +463,4 @@ function saveData(gridid, index, field, value){
         value: value        //cell值
     });
 }
+
