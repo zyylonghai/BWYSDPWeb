@@ -40,6 +40,8 @@ namespace BWYSDPWeb.Com
         public Dictionary<string, List<string>> Formfields { get; set; }
 
         public LibDataSource LibDataSource { get; set; }
+
+        public LibFormPage LibFormPage { get; set; }
         #endregion
         public ViewFactory()
         {
@@ -375,34 +377,50 @@ namespace BWYSDPWeb.Com
             table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm, grid.GdGroupFields[0].FromTableNm));
             table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";", param, grid.GridGroupName));
             #region 是否显示父子表
-            var deftb = this.LibDataSource.DefTables.FindFirst("TableName", grid.GdGroupFields[0].FromDefTableNm);
-            int tbindex = -1;
-            if (deftb != null)
+            if (!string.IsNullOrEmpty(grid.ChildGridNm)) // 显示父子表
             {
-                var structtb=deftb .TableStruct.FindFirst("Name", grid.GdGroupFields[0].FromTableNm);
-                if (structtb != null)
-                    tbindex = structtb.TableIndex;
-
-            }
-            foreach (LibDefineTable item in this.LibDataSource.DefTables)
-            {
-                foreach (LibDataTableStruct t in item.TableStruct)
+                table.Append(string.Format("{0}.$table.detailView =true;", param));
+                //找出子表格组
+                LibGridGroup childgrid= this.LibFormPage.GridGroups.FindFirst("GridGroupName", grid.ChildGridNm);
+                if (childgrid != null && childgrid .GdGroupFields!=null && childgrid .GdGroupFields.Count >0)
                 {
-                    if (t.JoinTableIndex == tbindex && t.TableIndex!=tbindex)
+                    table.Append(string.Format("{0}.SubTable =new LibTable(\"{1}\");", param, childgrid .ChildGridNm));
+                    table.Append(string.Format("{0}.SubTable.$table.detailView =false;", param));
+                    table.Append(string.Format("{0}.SubTable.$table.hasoperation =false;", param));
+                    table.Append(string.Format("{0}.SubTable.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm, childgrid.GridGroupName, childgrid.GdGroupFields[0].FromDefTableNm, childgrid.GdGroupFields[0].FromTableNm));
+                    table.Append(string.Format("{0}.SubTable.$table.columns = [", param));
+                    table.Append("{checkbox: true,visible: true }");
+                    #region sdp_rowid 列
+                    table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: false}");
+                    //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
+                    #endregion
+                    foreach (LibGridGroupField field in childgrid.GdGroupFields)
                     {
-                        table.Append(string.Format("{0}.$table.detailView =true;", param));
-                        table.Append(string.Format("{0}.SubTable =new LibTable(\"{1}\");", param,"zyylonghaitb"));
-                        table.Append(string.Format("{0}.SubTable.$table.detailView =false;", param));
-                        table.Append(string.Format("{0}.SubTable.$table.hasoperation =false;", param));
-                        table.Append(string.Format("{0}.SubTable.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName,item.TableName  ,t.Name));
-                        table.Append(string.Format("{0}.SubTable.$table.columns = [", param));
-                        table.Append("{checkbox: true,visible: true }");
-                        #region sdp_rowid 列
-                        table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: false}");
-                        //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
-                        #endregion
-                        table.Append("];");
+                        table.Append(",{");
+                        string fielddisplaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
+                        //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                        table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible:{3},", field.Name, fielddisplaynm, field.HasSort ? "true" : "false", field.Hidden ? "false" : "true"));
+                        table.Append("formatter: function (value, row, index) {");
+                        if (field.ElemType == ElementType.Date)
+                        {
+                            table.Append(string.Format("return \"<div {0}>\" + TimeConverToStr(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
+                        else
+                            table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        table.Append("}");
+                        if (childgrid.HasSummary)
+                        {
+                            //设置汇总行，
+                            table.Append(",footerFormatter: function() {return '汇总'}");
+                            childgrid.HasSummary = false;
+                        }
+                        table.Append("}");
+                        //if (field.Hidden)
+                        //{
+                        //    hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', '{1}');", grid.GridGroupName, field.Name));
+                        //}
                     }
+                    table.Append("];");
                 }
             }
             #endregion

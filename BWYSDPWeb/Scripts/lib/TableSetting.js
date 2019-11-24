@@ -138,6 +138,13 @@ function LibTable(id)
         showExport: true,                  //是否显示导出按钮
         columns: []
     };
+    this.$subtableParam = {
+        gridid: "",
+        deftbnm: "",
+        tablenm: "",
+        controlnm: "",
+        cmd:""
+    };
     this.testid = id;
     this.flag = 0;//标识。主要用于搜索模态框是单据上的搜索，还是来源主数据的搜索。1标识单据的搜索，2标识来源主数据的搜索
     this.RowsOfAdd = [];
@@ -216,8 +223,17 @@ LibTable.prototype = {
             onExpandRow: function (index, row, $detail) {
                 var parentid = row.sdp_rowid;
                 tbobj.SubTable.$table.ElemtableID += "_" + index + "";
-                $detail.html("<table id='" + tbobj.SubTable.$table.ElemtableID +"'></table>");
+                let toolid = tbobj.SubTable.$table.ElemtableID + "_toolbar";
+                var toolhtml = "<div id='" + toolid + "' class='btn-group'>" +
+                    "<button type='button' class='btn btn-default' data-toggle='modal' data-target='' data-gridid='' data-deftbnm='' data-tablenm='' data-controlnm=''  data-cmd='Add'><i class='glyphicon glyphicon-plus'></i></button>" +
+                    "<button type='button' class='btn btn-default'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                    "<button type='button' class='btn btn-default'><i class='glyphicon glyphicon-trash'></i></button>" +
+                    "</div>";
+                $detail.html(toolhtml + "<table id='" + tbobj.SubTable.$table.ElemtableID + "'></table>");
+                tbobj.SubTable.$table.toolbar ='#'+ toolid;
                 tbobj.SubTable.initialTable();
+                $('#' + toolid + '_sdp_addrow').click(function () { tbobj.SubTable.AddRow();});
+
             },
             onPreBody: function (data) {
 

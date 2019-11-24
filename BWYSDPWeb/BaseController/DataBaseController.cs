@@ -194,6 +194,7 @@ namespace BWYSDPWeb.BaseController
                         #region 根据排版模型对象 创建功能视图。
                         ViewFactory factory = new ViewFactory(progId);
                         factory.LibDataSource = dataSource;
+                        factory.LibFormPage = formpage;
                         factory.ControlClassNm = formpage.ControlClassNm;
                         factory.DSID = formpage.DSID;
                         factory.Package = this.Package;
