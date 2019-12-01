@@ -225,7 +225,7 @@ LibTable.prototype = {
                 tbobj.SubTable.$table.ElemtableID += "_" + index + "";
                 let toolid = tbobj.SubTable.$table.ElemtableID + "_toolbar";
                 var toolhtml = "<div id='" + toolid + "' class='btn-group'>" +
-                    "<button type='button' class='btn btn-default' data-toggle='modal' data-target='' data-gridid='' data-deftbnm='' data-tablenm='' data-controlnm=''  data-cmd='Add'><i class='glyphicon glyphicon-plus'></i></button>" +
+                    "<button type='button' class='btn btn-default' data-toggle='modal' data-target='#sdp_tbmdl_GridGroup_" + tbobj.SubTable.$subtableParam.gridid + "' data-gridid='" + tbobj.SubTable.$subtableParam.gridid + "' data-deftbnm='" + tbobj.SubTable.$subtableParam.deftbnm + "' data-tablenm='" + tbobj.SubTable.$subtableParam.tablenm + "' data-controlnm='" + tbobj.SubTable.$subtableParam.controlnm + "'  data-cmd='Add'><i class='glyphicon glyphicon-plus'></i></button>" +
                     "<button type='button' class='btn btn-default'><i class='glyphicon glyphicon-pencil'></i></button>" +
                     "<button type='button' class='btn btn-default'><i class='glyphicon glyphicon-trash'></i></button>" +
                     "</div>";

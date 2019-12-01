@@ -228,6 +228,7 @@ namespace BWYSDPWeb.BaseController
                                             foreach (LibGridGroup grid in formpage.GridGroups)
                                             {
                                                 if (grid.GridGroupID != item.ID) continue;
+                                                if (factory.Childrengrids.FirstOrDefault(i => i.GridGroupID == grid.GridGroupID) != null) continue;
                                                 if (grid.GdGroupFields != null)
                                                 {
                                                     factory.CreateGridGroup(grid);

@@ -42,6 +42,8 @@ namespace BWYSDPWeb.Com
         public LibDataSource LibDataSource { get; set; }
 
         public LibFormPage LibFormPage { get; set; }
+
+        public List<LibGridGroup> Childrengrids { get; set; }
         #endregion
         public ViewFactory()
         {
@@ -55,6 +57,7 @@ namespace BWYSDPWeb.Com
             _searchModelIds = new List<string>();
             Formfields = new Dictionary<string, List<string>>();
             _tbmodalFormfields = new Dictionary<string, string>();
+            Childrengrids = new List<LibGridGroup>();
             //_fomGroupdic = new Dictionary<string, bool>();
         }
         public ViewFactory(string progid)
@@ -149,24 +152,6 @@ namespace BWYSDPWeb.Com
         /// </summary>
         public void CreatePanelGroup(string title)
         {
-            //KeyValuePair<string, bool> panelitem = _panelgroupdic.FirstOrDefault(i => !i.Value);
-            //if (panelitem.Key != null)
-            //{
-            //    _page.Append("</div>");
-            //    _page.Append("</div>");
-            //    _page.Append("</div>");
-            //    _page.Append("</div>");
-            //    _panelgroupdic[panelitem.Key] = true;
-            //}
-            //KeyValuePair<string, bool> griditem = _gridGroupdic.FirstOrDefault(i => !i.Value);
-            //if (griditem.Key != null)
-            //{
-            //    _page.Append("</div>");
-            //    _page.Append("</div>");
-            //    _page.Append("</div>");
-            //    _page.Append("</div>");
-            //    _gridGroupdic[griditem.Key] = true;
-            //}
             EndprePanel();
             string id = string.Format("PanelGroup{0}", _panelgroupdic.Count + 1);
             string contentid = string.Format("{0}_info", id);
@@ -367,6 +352,7 @@ namespace BWYSDPWeb.Com
             StringBuilder table = new StringBuilder();
             StringBuilder hidecolumns = new StringBuilder();
             StringBuilder tbformfield = new StringBuilder();
+            StringBuilder childformfield = new StringBuilder();
             LibField libField = null;
             StringBuilder validatorAttr = null;
             int colcout = 0;
@@ -382,12 +368,23 @@ namespace BWYSDPWeb.Com
                 table.Append(string.Format("{0}.$table.detailView =true;", param));
                 //找出子表格组
                 LibGridGroup childgrid= this.LibFormPage.GridGroups.FindFirst("GridGroupName", grid.ChildGridNm);
+                string childgridmodalid = string.Format("GridGroup_{0}", childgrid.GridGroupName);
+                Childrengrids.Add(childgrid);
+                _gridGroupdic.Add(childgridmodalid, true);
                 if (childgrid != null && childgrid .GdGroupFields!=null && childgrid .GdGroupFields.Count >0)
                 {
-                    table.Append(string.Format("{0}.SubTable =new LibTable(\"{1}\");", param, childgrid .ChildGridNm));
+                    table.Append(string.Format("{0}.SubTable =new LibTable(\"{1}\");", param, childgrid .GridGroupName));
                     table.Append(string.Format("{0}.SubTable.$table.detailView =false;", param));
                     table.Append(string.Format("{0}.SubTable.$table.hasoperation =false;", param));
                     table.Append(string.Format("{0}.SubTable.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm, childgrid.GridGroupName, childgrid.GdGroupFields[0].FromDefTableNm, childgrid.GdGroupFields[0].FromTableNm));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.gridid ='{1}';", param, childgrid.GridGroupName));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.deftbnm ='{1}';", param, childgrid.GdGroupFields[0].FromDefTableNm));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.tablenm ='{1}';", param, childgrid.GdGroupFields[0].FromTableNm));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.controlnm ='{1}';", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm));
+                    if (grid.HasSummary)
+                    {
+                        table.Append(string.Format("{0}.SubTable.$table.showFooter={1};", param, childgrid.HasSummary ? "true" : "false"));
+                    }
                     table.Append(string.Format("{0}.SubTable.$table.columns = [", param));
                     table.Append("{checkbox: true,visible: true }");
                     #region sdp_rowid 列
@@ -415,14 +412,35 @@ namespace BWYSDPWeb.Com
                             childgrid.HasSummary = false;
                         }
                         table.Append("}");
-                        //if (field.Hidden)
-                        //{
-                        //    hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', '{1}');", grid.GridGroupName, field.Name));
-                        //}
+
+                        #region 模态框 的控件
+                        if (field.Hidden) continue;
+                        if (colcout % 9 == 0)
+                        {
+                            if (colcout != 0)
+                            {
+                                childformfield.Append("</div>");
+                            }
+                            childformfield.Append("<div class=\"form-group\">");
+                        }
+                        CreatModalFields(childformfield, field, fielddisplaynm);
+
+                        colcout += field.Width + 1;
+                        #endregion
                     }
+                    childformfield.Append("</div>");// 结束 form-group
                     table.Append("];");
                 }
+                _tbmodalFormfields.Add(childgridmodalid, childformfield.ToString());
+
+                #region tablemodal脚本
+                string childmdparam = string.Format("childtbmodal{0}", Childrengrids.Count + 1);
+                table.Append(string.Format("var {0}=new libTableModal(\"{1}\");", childmdparam, string.Format("sdp_tbmdl_{0}", childgridmodalid)));
+                table.Append(string.Format("{0}.initialModal();", childmdparam));
+                table.Append("$('#sdp_tbmodalbtn" + childgridmodalid + "').click(function () {" + childmdparam + ".Confirm();});");
+                #endregion
             }
+            colcout = 0;//重置colcout值
             #endregion
             if (grid.HasSummary)
             {
@@ -479,51 +497,52 @@ namespace BWYSDPWeb.Com
                     }
                     tbformfield.Append("<div class=\"form-group\">");
                 }
-                string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
-                string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+                CreatModalFields(tbformfield, field, fielddisplaynm);
+                //string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
+                //string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
 
-                #region 字段属性验证设置
-                validatorAttr = new StringBuilder();
-                //validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
-                //validatorAttr.AppendFormat(" maxlength=\"{0}\"", field.FieldLength);
-                validatorAttr.AppendFormat(" {0} ", field.ReadOnly  ? "readonly" : "");
-                #endregion
+                //#region 字段属性验证设置
+                //validatorAttr = new StringBuilder();
+                ////validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
+                ////validatorAttr.AppendFormat(" maxlength=\"{0}\"", field.FieldLength);
+                //validatorAttr.AppendFormat(" {0} ", field.ReadOnly  ? "readonly" : "");
+                //#endregion
 
-                tbformfield.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
-                tbformfield.Append("<div class=\"col-sm-" + field.Width + "\">");
-                switch (field.ElemType)
-                {
-                    case ElementType.Date:
-                        _dateElemlst.Add(id);
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                        break;
-                    case ElementType.DateTime:
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                        break;
-                    case ElementType.Select:
-                        break;
-                    case ElementType.Text:
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                        break;
-                    case ElementType.Search:
-                        libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
-                        if (libField.SourceField == null || libField.SourceField.Count == 0)
-                        {
-                        }
-                        tbformfield.Append("<div class=\"input-group\">");
-                        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                        tbformfield.Append("<span class=\"input-group-btn\">");
-                        //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
-                        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\""+field.FromTableNm+"\" data-fieldnm=\""+field.Name+"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\""+((libField.SourceField == null || libField.SourceField.Count == 0)?3:2)+"\">");
-                        tbformfield.Append("<i class=\"glyphicon glyphicon-search\"></i>");
-                        tbformfield.Append("</button>");
-                        tbformfield.Append("</span>");
-                        tbformfield.Append("</div>");
-                        this._hasSearchModal = true;
-                        break;
-                }
-                //_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
-                tbformfield.Append("</div>");//结束 col-sm
+                //tbformfield.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
+                //tbformfield.Append("<div class=\"col-sm-" + field.Width + "\">");
+                //switch (field.ElemType)
+                //{
+                //    case ElementType.Date:
+                //        _dateElemlst.Add(id);
+                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                //        break;
+                //    case ElementType.DateTime:
+                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                //        break;
+                //    case ElementType.Select:
+                //        break;
+                //    case ElementType.Text:
+                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                //        break;
+                //    case ElementType.Search:
+                //        libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                //        if (libField.SourceField == null || libField.SourceField.Count == 0)
+                //        {
+                //        }
+                //        tbformfield.Append("<div class=\"input-group\">");
+                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                //        tbformfield.Append("<span class=\"input-group-btn\">");
+                //        //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                //        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\""+field.FromTableNm+"\" data-fieldnm=\""+field.Name+"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\""+((libField.SourceField == null || libField.SourceField.Count == 0)?3:2)+"\">");
+                //        tbformfield.Append("<i class=\"glyphicon glyphicon-search\"></i>");
+                //        tbformfield.Append("</button>");
+                //        tbformfield.Append("</span>");
+                //        tbformfield.Append("</div>");
+                //        this._hasSearchModal = true;
+                //        break;
+                //}
+                ////_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
+                //tbformfield.Append("</div>");//结束 col-sm
                 colcout += field.Width + 1;
                 #endregion
             }
@@ -819,6 +838,58 @@ namespace BWYSDPWeb.Com
                 }
             }
             return string.Empty;
+        }
+
+        /// <summary>创建表格模态框的控件</summary>
+        /// <param name="fieldsbuilder"></param>
+        /// <param name="field"></param>
+        /// <param name="fielddisplaynm"></param>
+        private void CreatModalFields(StringBuilder fieldsbuilder, LibGridGroupField field,string fielddisplaynm)
+        {
+            #region 模态框 的控件
+            string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
+            string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+
+            #region 字段属性验证设置
+            StringBuilder validatorAttr = new StringBuilder();
+            validatorAttr.AppendFormat(" {0} ", field.ReadOnly ? "readonly" : "");
+            #endregion
+
+            fieldsbuilder.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
+            fieldsbuilder.Append("<div class=\"col-sm-" + field.Width + "\">");
+            switch (field.ElemType)
+            {
+                case ElementType.Date:
+                    _dateElemlst.Add(id);
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
+                case ElementType.DateTime:
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
+                case ElementType.Select:
+                    break;
+                case ElementType.Text:
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
+                case ElementType.Search:
+                    LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    if (libField.SourceField == null || libField.SourceField.Count == 0)
+                    {
+                    }
+                    fieldsbuilder.Append("<div class=\"input-group\">");
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    fieldsbuilder.Append("<span class=\"input-group-btn\">");
+                    //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                    fieldsbuilder.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"" + ((libField.SourceField == null || libField.SourceField.Count == 0) ? 3 : 2) + "\">");
+                    fieldsbuilder.Append("<i class=\"glyphicon glyphicon-search\"></i>");
+                    fieldsbuilder.Append("</button>");
+                    fieldsbuilder.Append("</span>");
+                    fieldsbuilder.Append("</div>");
+                    this._hasSearchModal = true;
+                    break;
+            }
+            fieldsbuilder.Append("</div>");//结束 col-sm
+            #endregion
         }
         #endregion
     }
