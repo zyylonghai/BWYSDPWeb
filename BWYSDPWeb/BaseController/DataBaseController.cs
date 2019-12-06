@@ -721,18 +721,28 @@ namespace BWYSDPWeb.BaseController
             if (!string.IsNullOrEmpty(prowid))
             {
                 TableExtendedProperties extprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                DataTable relatedt = InternalGetRelateTable(dt);
+                DataRow relaterow = AppSysUtils.GetRowByRowId(relatedt, Convert.ToInt32(prowid));
+                StringBuilder where = new StringBuilder();
+                ColExtendedProperties colextprop = null;
+                DataColumn col2 = null;
+                foreach (DataColumn col in dt.PrimaryKey)
+                {
+                    if (col.AutoIncrement) continue;
+                    colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                    col2 = string.IsNullOrEmpty(colextprop.MapPrimarykey) ? relatedt.Columns[col.ColumnName ]: relatedt.Columns[colextprop.MapPrimarykey];
+                    if (col2 == null) continue;
 
-                dt = AppSysUtils.GetDataByRowId(dt, Convert.ToInt32(prowid));
+                    if (where.Length > 0)
+                    {
+                        where.Append(" and ");
+                    }
+                    where.AppendFormat("{0}='{1}'", col.ColumnName, relaterow[col2]);
+                }
+                dt = AppSysUtils.GetData(dt, where.ToString());
             }
             GetGridDataExt(gridid, dt);
 
-            //DataTable resultdt = dt.Clone();
-            //for (int index = (page - 1) * rows; index < page * rows; index++)
-            //{
-            //    if (index >= dt.Rows.Count) break;
-            //    if (dt.Rows[index].RowState == DataRowState.Deleted) continue;
-            //    resultdt.ImportRow(dt.Rows[index]);
-            //}
             DataTable resultdt = AppSysUtils.GetDataByPage(dt, page, rows);
             if (!string.IsNullOrEmpty(sort))
             {
@@ -740,12 +750,7 @@ namespace BWYSDPWeb.BaseController
                 resultdt = resultdt.DefaultView.ToTable();
             }
             var result = new { total = AppSysUtils.CalculateTotal(dt), rows = resultdt };
-            //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
 
-            //string c = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
-            //var sss = JsonConvert.SerializeObject(result);
-            //string d = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
-            //return Json(new { total = testlist.Count , rows = testlist }, JsonRequestBehavior.AllowGet);
             return JsonConvert.SerializeObject(result);
         }
 
@@ -769,21 +774,22 @@ namespace BWYSDPWeb.BaseController
                             if (extprop != null)
                             {
                                 #region 获取关联的表
-                                foreach (var item in this.LibTables)
-                                {
-                                    for (int n = 0; n < item.Tables.Length; n++)
-                                    {
-                                        if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).TableIndex == extprop.RelateTableIndex)
-                                        {
-                                            relatetb = item.Tables[n];
-                                            break;
-                                        }
-                                    }
-                                    if (relatetb != null)
-                                    {
-                                        break;
-                                    }
-                                }
+                                relatetb = InternalGetRelateTable(tb);
+                                //foreach (var item in this.LibTables)
+                                //{
+                                //    for (int n = 0; n < item.Tables.Length; n++)
+                                //    {
+                                //        if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).TableIndex == extprop.RelateTableIndex)
+                                //        {
+                                //            relatetb = item.Tables[n];
+                                //            break;
+                                //        }
+                                //    }
+                                //    if (relatetb != null)
+                                //    {
+                                //        break;
+                                //    }
+                                //}
                                 #endregion
                                 #region 填充主键列的值
                                 if (relatetb != null)
@@ -1362,6 +1368,41 @@ namespace BWYSDPWeb.BaseController
             DataColumn c = dr.Table.Columns[fieldnm];
             if (c != null)
                 dr[c] = value;
+        }
+
+        #endregion
+
+        #region 公开函数
+        public DataTable GetRelateTable(string tbnm)
+        {
+            DataTable dt = null;
+            foreach (var libtb in this.LibTables)
+            {
+               dt= libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+            }
+            return InternalGetRelateTable(dt);
+        }
+
+        public DataTable InternalGetRelateTable(DataTable tb)
+        {
+            if (tb != null)
+            {
+                TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                if (extprop != null)
+                {
+                    foreach (var item in this.LibTables)
+                    {
+                        for (int n = 0; n < item.Tables.Length; n++)
+                        {
+                            if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).TableIndex == extprop.RelateTableIndex)
+                            {
+                                return item.Tables[n];
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
         #endregion
     }

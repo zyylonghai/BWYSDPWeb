@@ -33,16 +33,27 @@ namespace Com
             return resultdt;
         }
 
-        public static DataTable GetDataByRowId(DataTable dt, int rowId)
+        public static DataTable GetData(DataTable dt, string whereExpress)
         {
             DataTable resultdt = dt.Clone();
+            DataRow[] rows = dt.Select(whereExpress);
+            foreach (DataRow row in rows)
+            {
+                if (row.RowState == DataRowState.Deleted) continue;
+                resultdt.ImportRow(row);
+            }
+            return resultdt;
+        }
+
+        public static DataRow GetRowByRowId(DataTable dt, int rowId)
+        {
             foreach (DataRow row in dt.Rows)
             {
                 if (row.RowState == DataRowState.Deleted) continue;
                 if (Convert.ToInt32(row[SysConstManage.sdp_rowid]) == rowId)
-                    resultdt.ImportRow(row);
+                    return row;
             }
-            return resultdt;
+            return null;
         }
     }
 }
