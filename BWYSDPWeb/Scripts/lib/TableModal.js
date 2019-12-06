@@ -36,6 +36,7 @@ function libTableModal(id) {
     this.TableNm = "";
     this.Cmd = "";
     this.Currentrow = null;
+    this.ProwId = "";
 }
 
 libTableModal.prototype = {
@@ -68,6 +69,9 @@ libTableModal.prototype = {
             thisobj.GridId = button.data("gridid");
             thisobj.Cmd = button.data("cmd");
             thisobj.TableNm = button.data("tablenm");
+            thisobj.ProwId = button.data("prowid");
+            if (thisobj.ProwId == undefined)
+                thisobj.ProwId = "";
             if (thisobj.Cmd == "Add") {
                 $('#' + id + ' .modal-title').text(thisobj.DeftbNm + "新增");
             }
@@ -98,7 +102,7 @@ libTableModal.prototype = {
             async: false,
             type: "POST",
             url: '/' + this.ControlNm + '/GetTableRow',
-            data: 'gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&rowid=' + selectrowid + '&cmd=' + this.Cmd + '',
+            data: 'gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&rowid=' + selectrowid + '&prowid=' + this.ProwId + '&cmd=' + this.Cmd + '',
             //dataType: "text",
             success: function (data) {
                 thisobj.Currentrow = data.sdp_data;

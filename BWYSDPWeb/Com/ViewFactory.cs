@@ -353,8 +353,8 @@ namespace BWYSDPWeb.Com
             StringBuilder hidecolumns = new StringBuilder();
             StringBuilder tbformfield = new StringBuilder();
             StringBuilder childformfield = new StringBuilder();
-            LibField libField = null;
-            StringBuilder validatorAttr = null;
+            //LibField libField = null;
+            //StringBuilder validatorAttr = null;
             int colcout = 0;
             //List<string> valus = null;
             if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
@@ -376,7 +376,7 @@ namespace BWYSDPWeb.Com
                     table.Append(string.Format("{0}.SubTable =new LibTable(\"{1}\");", param, childgrid .GridGroupName));
                     table.Append(string.Format("{0}.SubTable.$table.detailView =false;", param));
                     table.Append(string.Format("{0}.SubTable.$table.hasoperation =false;", param));
-                    table.Append(string.Format("{0}.SubTable.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm, childgrid.GridGroupName, childgrid.GdGroupFields[0].FromDefTableNm, childgrid.GdGroupFields[0].FromTableNm));
+                    //table.Append(string.Format("{0}.SubTable.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm, childgrid.GridGroupName, childgrid.GdGroupFields[0].FromDefTableNm, childgrid.GdGroupFields[0].FromTableNm));
                     table.Append(string.Format("{0}.SubTable.$subtableParam.gridid ='{1}';", param, childgrid.GridGroupName));
                     table.Append(string.Format("{0}.SubTable.$subtableParam.deftbnm ='{1}';", param, childgrid.GdGroupFields[0].FromDefTableNm));
                     table.Append(string.Format("{0}.SubTable.$subtableParam.tablenm ='{1}';", param, childgrid.GdGroupFields[0].FromTableNm));

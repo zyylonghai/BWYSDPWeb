@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SDPCRL.CORE;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -28,6 +29,18 @@ namespace Com
                 if (index >= dt.Rows.Count) break;
                 if (dt.Rows[index].RowState == DataRowState.Deleted) continue;
                 resultdt.ImportRow(dt.Rows[index]);
+            }
+            return resultdt;
+        }
+
+        public static DataTable GetDataByRowId(DataTable dt, int rowId)
+        {
+            DataTable resultdt = dt.Clone();
+            foreach (DataRow row in dt.Rows)
+            {
+                if (row.RowState == DataRowState.Deleted) continue;
+                if (Convert.ToInt32(row[SysConstManage.sdp_rowid]) == rowId)
+                    resultdt.ImportRow(row);
             }
             return resultdt;
         }

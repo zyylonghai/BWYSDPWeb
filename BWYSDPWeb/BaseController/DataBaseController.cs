@@ -575,7 +575,7 @@ namespace BWYSDPWeb.BaseController
         }
 
         #region grid 表格操作
-        public string BindTableData(string gridid, string deftb, string tableNm, int page, int rows, string Mobile)
+        public string BindTableData(string gridid, string deftb, string tableNm,string prowid, int page, int rows,string sort,string sortOrder, string Mobile)
         {
             #region 旧代码
             //DataTable dt = new DataTable();
@@ -718,6 +718,12 @@ namespace BWYSDPWeb.BaseController
             #endregion
             DataTable dt = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
             if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+            if (!string.IsNullOrEmpty(prowid))
+            {
+                TableExtendedProperties extprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+
+                dt = AppSysUtils.GetDataByRowId(dt, Convert.ToInt32(prowid));
+            }
             GetGridDataExt(gridid, dt);
 
             //DataTable resultdt = dt.Clone();
@@ -728,6 +734,11 @@ namespace BWYSDPWeb.BaseController
             //    resultdt.ImportRow(dt.Rows[index]);
             //}
             DataTable resultdt = AppSysUtils.GetDataByPage(dt, page, rows);
+            if (!string.IsNullOrEmpty(sort))
+            {
+                resultdt.DefaultView.Sort = string.Format("{0} {1}", sort, sortOrder);
+                resultdt = resultdt.DefaultView.ToTable();
+            }
             var result = new { total = AppSysUtils.CalculateTotal(dt), rows = resultdt };
             //string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
 
@@ -738,7 +749,7 @@ namespace BWYSDPWeb.BaseController
             return JsonConvert.SerializeObject(result);
         }
 
-        public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string rowid, string cmd)
+        public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string rowid,string prowid, string cmd)
         {
             DataRow dr = null;
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
@@ -775,10 +786,24 @@ namespace BWYSDPWeb.BaseController
                                 }
                                 #endregion
                                 #region 填充主键列的值
-                                if (relatetb != null && extprop.RelateTableIndex == 0)
+                                if (relatetb != null)
                                 {
                                     ColExtendedProperties colextprop = null;
                                     DataColumn relatecol = null;
+                                    DataRow relaterow = null;
+                                    if (extprop.RelateTableIndex == 0)
+                                        relaterow = relatetb.Rows[0];
+                                    else
+                                    {
+                                        if (string.IsNullOrEmpty(prowid))
+                                        {
+                                            this.ThrowErrorException("the parentGrid rowId is NullorEmpty");
+                                        }
+                                        DataRow[] drs = relatetb.Select(string.Format("{0}={1}", SysConstManage.sdp_rowid, prowid));
+                                        if (drs != null && drs.Length > 0)
+                                            relaterow = drs[0];
+                                    }
+
                                     foreach (var col in tb.PrimaryKey)
                                     {
                                         if (col.AutoIncrement) continue;
@@ -787,7 +812,7 @@ namespace BWYSDPWeb.BaseController
                                         {
                                             relatecol = relatetb.Columns[col.ColumnName];
                                             if (relatecol != null)
-                                                dr[col] = relatetb.Rows[0][relatecol];
+                                                dr[col] = relaterow[relatecol];
                                             else
                                             {
                                                 if (col.DataType.Equals(typeof(int)) || col.DataType.Equals(typeof(decimal)) || col.DataType.Equals(typeof(long)))
@@ -799,7 +824,7 @@ namespace BWYSDPWeb.BaseController
                                             }
                                         }
                                         else
-                                            dr[col] = relatetb.Rows[0][colextprop.MapPrimarykey];
+                                            dr[col] = relaterow[colextprop.MapPrimarykey];
 
                                     }
                                 }
@@ -1128,6 +1153,13 @@ namespace BWYSDPWeb.BaseController
             return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>搜索模态框的绑定查询的数据 </summary>
+        /// <param name="tableNm"></param>
+        /// <param name="dsid"></param>
+        /// <param name="flag">标识1：标识单据搜索，2标识来源主数据搜索，3标识无来源主数据的搜索。</param>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
         public string BindSmodalData(string tableNm,string dsid,int flag, int page, int rows)
         {
             List<LibSearchCondition> conds = this.SessionObj.Conds;

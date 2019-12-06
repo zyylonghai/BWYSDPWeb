@@ -120,7 +120,7 @@ namespace BWYSDPWeb.BllComController
         {
             base.UpdateTableRow(gridid, row, cmd);
             //this.ThrowErrorException("抛出异常测试");
-            if (string.Compare(gridid, "GridGroup1") == 0 && cmd== "Add")
+            if (string.Compare(gridid, "GridGroup3") == 0 && cmd== "Add")
             {
                 row["yingdu"] = "zyylonghai";
                 row["xingzhuang"] = "88888888";
