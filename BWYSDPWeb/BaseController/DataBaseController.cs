@@ -415,7 +415,7 @@ namespace BWYSDPWeb.BaseController
             }
             #region 处理关联主表的表的主键赋值。
             TableExtendedProperties tbextp = null;
-            ColExtendedProperties colextp = null;
+            //ColExtendedProperties colextp = null;
             List<DataTable> relatedts = new List<DataTable>();
             DataTable mdt = null;
             foreach (LibTable def in this.LibTables)
@@ -428,43 +428,67 @@ namespace BWYSDPWeb.BaseController
                     {
                         if (mdt != null)
                         {
-                            foreach (DataRow dr in table.Rows)
-                            {
-                                foreach (DataColumn col in table.PrimaryKey)
-                                {
-                                    colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                                    DataColumn mcol = mdt.PrimaryKey.FirstOrDefault(i => i.ColumnName == (string.IsNullOrEmpty(colextp.MapPrimarykey) ? col.ColumnName : colextp.MapPrimarykey));
-                                    if (mcol != null)
-                                    {
-                                        dr[col] = mdt.Rows[0][mcol];
-                                    }
-                                }
-                            }
-                            continue;
+                            SetPrimaryKeyWithMastTB(table, mdt);
+                            //foreach (DataRow dr in table.Rows)
+                            //{
+                            //    foreach (DataColumn col in table.PrimaryKey)
+                            //    {
+                            //        colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                            //        DataColumn mcol = mdt.PrimaryKey.FirstOrDefault(i => i.ColumnName == (string.IsNullOrEmpty(colextp.MapPrimarykey) ? col.ColumnName : colextp.MapPrimarykey));
+                            //        if (mcol != null)
+                            //        {
+                            //            dr[col] = mdt.Rows[0][mcol];
+                            //        }
+                            //    }
+                            //}
                         }
                         relatedts.Add(table);
                     }
-                }
-            }
-            foreach (DataTable item in relatedts)
-            {
-                tbextp = item.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                if (mdt != null)
-                {
-                    foreach (DataRow dr in item.Rows)
+                    else
                     {
-                        foreach (DataColumn col in item.PrimaryKey)
+                        while (true)
                         {
-                            colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                            DataColumn mcol = mdt.PrimaryKey.FirstOrDefault(i => i.ColumnName == (string.IsNullOrEmpty(colextp.MapPrimarykey) ? col.ColumnName : colextp.MapPrimarykey));
-                            if (mcol != null)
+                            DataTable t = GetTableByIndex(tbextp.RelateTableIndex);
+                            if (t != null)
                             {
-                                dr[col] = mdt.Rows[0][mcol];
+                                tbextp = t.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                                if (tbextp.RelateTableIndex == 0 || tbextp.RelateTableIndex == tbextp.TableIndex)
+                                {
+                                    if (tbextp.RelateTableIndex == 0)
+                                        SetPrimaryKeyWithMastTB(table, mdt);
+                                    break;
+                                }
+
                             }
+                            else
+                                break;
                         }
                     }
                 }
             }
+            //foreach (DataTable item in relatedts)
+            //{
+            //    tbextp = item.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+            //    if (tbextp.TableIndex != tbextp.RelateTableIndex)
+            //    {
+                    
+            //    }
+            //    //if (mdt != null)
+            //    //{
+            //    //    foreach (DataRow dr in item.Rows)
+            //    //    {
+            //    //        foreach (DataColumn col in item.PrimaryKey)
+            //    //        {
+            //    //            colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+            //    //            DataColumn mcol = mdt.PrimaryKey.FirstOrDefault(i => i.ColumnName == (string.IsNullOrEmpty(colextp.MapPrimarykey) ? col.ColumnName : colextp.MapPrimarykey));
+            //    //            if (mcol != null)
+            //    //            {
+            //    //                dr[col] = mdt.Rows[0][mcol];
+            //    //            }
+            //    //        }
+            //    //    }
+            //    //}
+            //}
             #endregion
             #endregion
             BeforeSave();
@@ -723,6 +747,7 @@ namespace BWYSDPWeb.BaseController
                 TableExtendedProperties extprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
                 DataTable relatedt = InternalGetRelateTable(dt);
                 DataRow relaterow = AppSysUtils.GetRowByRowId(relatedt, Convert.ToInt32(prowid));
+                if(relaterow ==null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
                 StringBuilder where = new StringBuilder();
                 ColExtendedProperties colextprop = null;
                 DataColumn col2 = null;
@@ -1344,6 +1369,10 @@ namespace BWYSDPWeb.BaseController
         {
 
         }
+        /// <summary>换出表格模态框时，当前行的扩展操作（供子类处理）</summary>
+        /// <param name="gridid"></param>
+        /// <param name="row"></param>
+        /// <param name="cmd"></param>
         protected virtual void UpdateTableRow(string gridid, DataRow row, string cmd)
         {
 
@@ -1368,6 +1397,22 @@ namespace BWYSDPWeb.BaseController
             DataColumn c = dr.Table.Columns[fieldnm];
             if (c != null)
                 dr[c] = value;
+        }
+        private void SetPrimaryKeyWithMastTB(DataTable table, DataTable mdt)
+        {
+            ColExtendedProperties colextp = null;
+            foreach (DataRow dr in table.Rows)
+            {
+                foreach (DataColumn col in table.PrimaryKey)
+                {
+                    colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                    DataColumn mcol = mdt.PrimaryKey.FirstOrDefault(i => i.ColumnName == (string.IsNullOrEmpty(colextp.MapPrimarykey) ? col.ColumnName : colextp.MapPrimarykey));
+                    if (mcol != null)
+                    {
+                        dr[col] = mdt.Rows[0][mcol];
+                    }
+                }
+            }
         }
 
         #endregion
@@ -1399,6 +1444,22 @@ namespace BWYSDPWeb.BaseController
                                 return item.Tables[n];
                             }
                         }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public DataTable GetTableByIndex(int index)
+        {
+            foreach (LibTable libtb in this.LibTables)
+            {
+                foreach (DataTable table in libtb.Tables)
+                {
+                    TableExtendedProperties extprop = table.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    if (extprop != null && extprop .TableIndex ==index)
+                    {
+                        return table;
                     }
                 }
             }

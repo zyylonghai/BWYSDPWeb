@@ -385,13 +385,17 @@ namespace BWYSDPWeb.BaseController
 
         public ViewResult LibReturnError(List<ErrorMessage> errors)
         {
-            string _msg = string.Empty;
+            ErrorObject error = new ErrorObject();
+            //string _msg = string.Empty;
             foreach (var m in errors)
             {
-                _msg += m.Message + m.Stack;
+                error.Message += m.Message;
+                error.Stack += m.Stack;
+                //_msg += m.Message + m.Stack;
             }
+            
             //this.ThrowErrorException(_msg);
-            return View("Error");
+            return View("Error",error);
         }
         #endregion
 

@@ -1,5 +1,12 @@
-﻿<div class="container-fluid">
+﻿@model BWYSDPWeb.Models.ErrorObject
+<div class="container-fluid">
     <div class="panel panel-default">
-        错误页面
+        错误页面:
+        <div>
+            @Model.Message 
+        </div>
+        <div>
+            @Model.Stack 
+        </div>
     </div>
  </div>
