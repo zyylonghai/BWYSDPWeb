@@ -190,6 +190,21 @@ function dblclick(obj, id) {
     Closefuzzydiv();
 }
 
+function ShowImgFile(fileid) {
+    $('#' + fileid).click();
+}
+
+function LoadImgToUI(fileid, imgid) {
+    debugger
+    var imgRead = new FileReader();
+    var imgfilter = ""
+    var imgfile = $('#' + fileid).get(0).files[0];
+    imgRead.readAsDataURL(imgfile);
+    imgRead.onload = function (et) {
+        $('#' + imgid).attr("src", et.target.result);
+    }
+}
+
 //function GetMsgForSave() {
 //    $.ajax({
 //        url: "/DataBase/GetMsgforSave",

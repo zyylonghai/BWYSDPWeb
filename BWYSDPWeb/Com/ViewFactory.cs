@@ -21,6 +21,7 @@ namespace BWYSDPWeb.Com
         private List<string> _datetimeElemlst = null;
         private List<string> _tableScriptlst = null;
         private List<string> _searchModelIds = null;
+        private List<string> _fileUpdateScriplst = null;
         private string _progid = null;
         //private string _dsid = null;
         private bool _hasSearchModal = true;// 是否有搜索控件。
@@ -58,6 +59,7 @@ namespace BWYSDPWeb.Com
             Formfields = new Dictionary<string, List<string>>();
             _tbmodalFormfields = new Dictionary<string, string>();
             Childrengrids = new List<LibGridGroup>();
+            _fileUpdateScriplst = new List<string>();
             //_fomGroupdic = new Dictionary<string, bool>();
         }
         public ViewFactory(string progid)
@@ -198,6 +200,7 @@ namespace BWYSDPWeb.Com
             StringBuilder validatorAttr = null;
             LibField libField = null;
             List<LibFormGroupField> textarealst = new List<LibFormGroupField>();
+            List<LibFormGroupField> imgs = new List<LibFormGroupField>();
             foreach (LibFormGroupField field in fields)
             {
                 if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
@@ -207,6 +210,7 @@ namespace BWYSDPWeb.Com
                 }
                 valus.Add(field.Name);
                 if (field.ElemType == ElementType.Textarea) { textarealst.Add(field); continue; }
+                if (field.ElemType == ElementType.Img) { imgs.Add(field);continue; }
                 if (colcout % 12 == 0)
                 {
                     if (colcout != 0)
@@ -294,6 +298,13 @@ namespace BWYSDPWeb.Com
                 _page.Append("</div>");//结束 col-sm
                 _page.Append("</div>");// 结束 form-group
             }
+            foreach (LibFormGroupField item in imgs)
+            {
+                _page.Append("<div class=\"container\">");
+                _page.Append("<img id=\"sdp_img_" + item.Name + "\" src=\"~/img/0.jpg\" class=\"img-responsive\" onclick=\"ShowImgFile('sdp_file_" + item.Name + "')\" style=\"cursor:pointer\" alt=\"Cinque Terre\" width=\"200\" height=\"200\"/>");
+                _page.Append("<input type=\"file\" name=\"\" id=\"sdp_file_"+item.Name+ "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('sdp_file_" + item.Name + "','sdp_img_" + item.Name + "')\" />");
+                _page.Append("</div>");//结束 container
+            }
         }
 
         /// <summary>
@@ -343,6 +354,7 @@ namespace BWYSDPWeb.Com
             _gridGroupdic.Add(id, false);
             AddGridColumns(grid);
         }
+
         /// <summary>
         /// 添加表格列
         /// </summary>
