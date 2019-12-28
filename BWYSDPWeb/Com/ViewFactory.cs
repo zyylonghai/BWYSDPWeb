@@ -145,7 +145,7 @@ namespace BWYSDPWeb.Com
         public void CreateForm()
         {
             //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
-            _page.Append("@using(Html.BeginForm(\"Save\", \"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\"" + this.DSID + "\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\"sdp_form\" }))");
+            _page.Append("@using(Html.BeginForm(\"Save\", \"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\"" + this.DSID + "\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\"sdp_form\",@enctype=\"multipart/form-data\" }))");
             _page.Append("{");
         }
 
@@ -302,7 +302,7 @@ namespace BWYSDPWeb.Com
             {
                 _page.Append("<div class=\"container\">");
                 _page.Append("<img id=\"sdp_img_" + item.Name + "\" src=\"~/img/0.jpg\" class=\"img-responsive\" onclick=\"ShowImgFile('sdp_file_" + item.Name + "')\" style=\"cursor:pointer\" alt=\"Cinque Terre\" width=\"200\" height=\"200\"/>");
-                _page.Append("<input type=\"file\" name=\"\" id=\"sdp_file_"+item.Name+ "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('sdp_file_" + item.Name + "','sdp_img_" + item.Name + "')\" />");
+                _page.Append("<input type=\"file\" id=\"sdp_file_" + item.Name + "\"  name=\"sdp_file_" + item.Name + "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('sdp_file_" + item.Name + "','sdp_img_" + item.Name + "')\" />");
                 _page.Append("</div>");//结束 container
             }
         }

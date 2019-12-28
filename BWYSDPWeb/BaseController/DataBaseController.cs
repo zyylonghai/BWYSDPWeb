@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 
 namespace BWYSDPWeb.BaseController
@@ -356,9 +357,10 @@ namespace BWYSDPWeb.BaseController
         {
             return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
         }
-
+        [HttpPost]
         public ActionResult Save()
         {
+            HttpPostedFileBase file = this.Request.Files[0];
             #region 处理前端传回的数据
             var formdata = this.Request.Form;
             string[] array;
@@ -471,7 +473,7 @@ namespace BWYSDPWeb.BaseController
             //    tbextp = item.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
             //    if (tbextp.TableIndex != tbextp.RelateTableIndex)
             //    {
-                    
+
             //    }
             //    //if (mdt != null)
             //    //{
@@ -491,6 +493,7 @@ namespace BWYSDPWeb.BaseController
             //}
             #endregion
             #endregion
+
             BeforeSave();
             //TableExtendedProperties tbext = new TableExtendedProperties();
             //string ss= JsonConvert.SerializeObject(tbext);
