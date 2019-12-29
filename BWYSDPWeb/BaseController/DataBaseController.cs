@@ -931,7 +931,7 @@ namespace BWYSDPWeb.BaseController
             UpdateTableRow(gridid, dr, cmd);
             return LibJson(dr);
         }
-
+        [HttpPost]
         public ActionResult TableAction(string gridid, string tbnm, string tableNm, string cmd, string row)
         {
             DataRow dr = null;
@@ -1046,6 +1046,30 @@ namespace BWYSDPWeb.BaseController
                             }
                         }
                     }
+                    #region 处理上传的图片
+                    Stream fileInStream = null;
+                    HttpPostedFileBase file = null;
+                    foreach (string key in Request.Files.AllKeys)
+                    {
+                        if (key.Contains(SysConstManage.Point))
+                        {
+                            array = key.Split(SysConstManage.Point);
+                            if (array.Length < 2)
+                                continue;
+                            object val = null;
+                            if (this.Request.Files.AllKeys.FirstOrDefault(i => i == key) != null)
+                            {
+                                file = this.Request.Files[key];
+                                fileInStream = file.InputStream;
+                                byte[] content = new byte[file.ContentLength];
+                                fileInStream.Read(content, 0, file.ContentLength);
+                                //string ss= Convert.ToBase64String(content);
+                                if (content.Length == 0) continue;
+                                val = content;
+                            }
+                        }
+                    }
+                    #endregion
                 }
                 catch (Exception ex)
                 {

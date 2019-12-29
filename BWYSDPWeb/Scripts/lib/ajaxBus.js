@@ -28,15 +28,20 @@ $.ajax = function (opt) {
     //if (opt.data)
     //{
         fn.data = opt.data;
-        if (Object.prototype.toString.call(fn.data) != '[object String]') {
+    if (Object.prototype.toString.call(fn.data) != '[object String]') {
+        if (Object.prototype.toString.call(fn.data) == '[object FormData]') {
+            fn.data.append("sdp_pageid", $('#bwysdp_progid').val());
+            fn.data.append("sdp_dsid", $('#bwysdp_dsid').val());
+        }
+        else {
             fn.data.sdp_pageid = $('#bwysdp_progid').val();
             fn.data.sdp_dsid = $('#bwysdp_dsid').val();
         }
-        else
-        {
-            fn.data += "&sdp_pageid=" + $('#bwysdp_progid').val() + "";
-            fn.data += "&sdp_dsid=" + $('#bwysdp_dsid').val() + "";
-        }
+    }
+    else {
+        fn.data += "&sdp_pageid=" + $('#bwysdp_progid').val() + "";
+        fn.data += "&sdp_dsid=" + $('#bwysdp_dsid').val() + "";
+    }
     //}
     //if (sdp_haserror)
     //    return;

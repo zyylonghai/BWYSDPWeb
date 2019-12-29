@@ -121,13 +121,27 @@ libTableModal.prototype = {
     Confirm: function () {
         var formid = $('#' + this.ModalID + ' form').attr("id");
         let thisobj = this;
+        var fileData = new FormData($('#' + formid)[0]);
+        fileData.append("gridid", this.GridId);
+        fileData.append("tbnm", this.DeftbNm);
+        fileData.append("tableNm", this.TableNm);
+        fileData.append("cmd", this.Cmd);
+        fileData.append("row", JSON.stringify(thisobj.Currentrow));
+        //$("#" + formid + " input[type='file']").each(function () {
+        //    var f = this.files[0];
+        //    fileData.append("file", f);
+        //});
         $.ajax({
-            async: false,
+            //async: false,
             type: "POST",
             //url: '${pageContext.request.contextPath}/link/apply',
             url: '/' + this.ControlNm + '/TableAction',
-            data: $('#' + formid).serialize() + '&gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '&row=' + JSON.stringify(thisobj.Currentrow)+ '',
-            dataType: "text",
+            //data: fileData + '&gridid=' + this.GridId + '&tbnm=' + this.DeftbNm + '&tableNm=' + this.TableNm + '&cmd=' + this.Cmd + '&row=' + JSON.stringify(thisobj.Currentrow) + '',
+            data: fileData,
+            //dataType: "text",
+            processData: false,
+            contentType: false,
+            cache: false,
             success: function (data) {
                 $("#" + thisobj.ModalID).modal('hide');
                 $('#' + thisobj.GridId).bootstrapTable('refresh');

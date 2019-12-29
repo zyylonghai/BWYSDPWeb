@@ -472,12 +472,6 @@ namespace BWYSDPWeb.Com
             //bool flag = false;//用于标识是否已设置了 汇总行。
             foreach (LibGridGroupField field in grid.GdGroupFields)
             {
-                //if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
-                //{
-                //    valus = new List<string>();
-                //    this.Formfields.Add(field.FromTableNm, valus);
-                //}
-                //valus.Add(field.Name);
 
                 table.Append(",{");
                 string fielddisplaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
@@ -513,51 +507,6 @@ namespace BWYSDPWeb.Com
                     tbformfield.Append("<div class=\"form-group\">");
                 }
                 CreatModalFields(tbformfield, field, fielddisplaynm);
-                //string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
-                //string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
-
-                //#region 字段属性验证设置
-                //validatorAttr = new StringBuilder();
-                ////validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
-                ////validatorAttr.AppendFormat(" maxlength=\"{0}\"", field.FieldLength);
-                //validatorAttr.AppendFormat(" {0} ", field.ReadOnly  ? "readonly" : "");
-                //#endregion
-
-                //tbformfield.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
-                //tbformfield.Append("<div class=\"col-sm-" + field.Width + "\">");
-                //switch (field.ElemType)
-                //{
-                //    case ElementType.Date:
-                //        _dateElemlst.Add(id);
-                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                //        break;
-                //    case ElementType.DateTime:
-                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                //        break;
-                //    case ElementType.Select:
-                //        break;
-                //    case ElementType.Text:
-                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                //        break;
-                //    case ElementType.Search:
-                //        libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
-                //        if (libField.SourceField == null || libField.SourceField.Count == 0)
-                //        {
-                //        }
-                //        tbformfield.Append("<div class=\"input-group\">");
-                //        tbformfield.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
-                //        tbformfield.Append("<span class=\"input-group-btn\">");
-                //        //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
-                //        tbformfield.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\""+field.FromTableNm+"\" data-fieldnm=\""+field.Name+"\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\""+((libField.SourceField == null || libField.SourceField.Count == 0)?3:2)+"\">");
-                //        tbformfield.Append("<i class=\"glyphicon glyphicon-search\"></i>");
-                //        tbformfield.Append("</button>");
-                //        tbformfield.Append("</span>");
-                //        tbformfield.Append("</div>");
-                //        this._hasSearchModal = true;
-                //        break;
-                //}
-                ////_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
-                //tbformfield.Append("</div>");//结束 col-sm
                 colcout += field.Width + 1;
                 #endregion
             }
@@ -691,7 +640,7 @@ namespace BWYSDPWeb.Com
                     _page.Append("<h4 class=\"modal-title\" id=\"sdp_tbmdlbody_" + keyval.Key + "\">来源主数据</h4>");
                     _page.Append("</div>");
                     _page.Append("<div class=\"modal-body\">");
-                    _page.Append("<form id=\"sdp_" + keyval.Key + "_form\" class=\"form-horizontal\">");
+                    _page.Append("<form id=\"sdp_" + keyval.Key + "_form\" class=\"form-horizontal\"  enctype=\"multipart/form-data\" method=\"post\" novalidate=\"novalidate\">");
                     _page.Append(_tbmodalFormfields[keyval.Key]);
                     _page.Append("</form>");
                     _page.Append("</div>");
@@ -901,6 +850,12 @@ namespace BWYSDPWeb.Com
                     fieldsbuilder.Append("</span>");
                     fieldsbuilder.Append("</div>");
                     this._hasSearchModal = true;
+                    break;
+                case ElementType.Img:
+                    fieldsbuilder.Append("<div class=\"container\">");
+                    fieldsbuilder.Append("<img id=\"sdp_img_" + id + "\" src=\"~/img/0.jpg\" class=\"img-responsive\" onclick=\"ShowImgFile('" + id + "')\" style=\"cursor:pointer\" alt=\"Cinque Terre\" width=\"100\" height=\"100\"/>");
+                    fieldsbuilder.Append("<input type=\"file\" id=\"" + id + "\"  name=\"" + name + "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('" + id + "','sdp_img_" + id + "')\" />");
+                    fieldsbuilder.Append("</div>");//结束 container
                     break;
             }
             fieldsbuilder.Append("</div>");//结束 col-sm

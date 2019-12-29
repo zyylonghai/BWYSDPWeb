@@ -592,7 +592,7 @@ namespace BWYSDPWeb.BaseController
             }
             else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
             {
-                newrow[dr[colfieldnm].ToString()] = Convert .FromBase64String(dr[colvalue].ToString());
+                newrow[dr[colfieldnm].ToString()] = System .Text .Encoding .ASCII.GetBytes(dr[colvalue].ToString());
             }
             else
                 newrow[dr[colfieldnm].ToString()] = dr[colvalue];
