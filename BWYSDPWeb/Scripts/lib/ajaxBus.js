@@ -58,7 +58,12 @@ $.ajax = function (opt) {
         success: function (data, textStatus) {
             if (data != null && (data.sdp_flag != null && data.sdp_flag != undefined && data.sdp_flag==0))
             {
-                    $.each(data.sdp_data, function (index, o) {
+                $.each(data.sdp_data, function (index, o) {
+                    if (o.Isbinary) {
+                        if (o.FieldValue != null && o.FieldValue != '' && o.FieldValue != undefined)
+                            $('#sdp_img_' + o.FieldNm).attr("src", "data:image/*;base64," + o.FieldValue);
+                    }
+                    else
                         $('#' + o.FieldNm).val(o.FieldValue);
                     });
                

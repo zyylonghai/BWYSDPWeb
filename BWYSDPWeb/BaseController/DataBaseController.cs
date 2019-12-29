@@ -12,6 +12,7 @@ using SDPCRL.CORE.FileUtils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -360,11 +361,14 @@ namespace BWYSDPWeb.BaseController
         [HttpPost]
         public ActionResult Save()
         {
-            HttpPostedFileBase file = this.Request.Files[0];
+            //HttpPostedFileBase file = this.Request.Files[0];
+            
             #region 处理前端传回的数据
             var formdata = this.Request.Form;
             string[] array;
             DataTable dt = null;
+            Stream fileInStream = null;
+            HttpPostedFileBase file = null;
             foreach (string key in formdata.AllKeys)
             {
                 if (key.Contains(SysConstManage.Point))
@@ -372,23 +376,27 @@ namespace BWYSDPWeb.BaseController
                     array = key.Split(SysConstManage.Point);
                     if (array.Length < 2)
                         continue;
-                    string val = formdata[key];
+                    object val = formdata[key];
                     if (dt != null && dt.TableName == array[0])
                     {
-                        if (dt.Rows.Count > 0)
-                        {
-                            //dt.Rows[0][array[1]] ="2019-08-08 21:41:30";
-                            DataTableHelp.SetColomnValue(dt.Rows[0], array[1], val);
-                        }
-                        else
-                        {
-                            if (!LibSysUtils.IsNULLOrEmpty(val))
-                            {
-                                DataRow row = dt.NewRow();
-                                dt.Rows.Add(row);
-                                DataTableHelp.SetColomnValue(row, array[1], val);
-                            }
-                        }
+                        SetDTFirstRowColValue(dt, array[1], val);
+                        #region 旧代码
+                        //if (dt.Rows.Count > 0)
+                        //{
+                        //    //dt.Rows[0][array[1]] ="2019-08-08 21:41:30";
+                        //    DataTableHelp.SetColomnValue(dt.Rows[0], array[1], val);
+                        //}
+                        //else
+                        //{
+                        //    if (!LibSysUtils.IsNULLOrEmpty(val))
+                        //    {
+                        //        DataRow row = dt.NewRow();
+                        //        dt.Rows.Add(row);
+                        //        DataTableHelp.SetColomnValue(row, array[1], val);
+                        //    }
+                        //}
+                        #endregion 
+                        continue;
                     }
                     foreach (LibTable libtb in this.LibTables)
                     {
@@ -396,25 +404,65 @@ namespace BWYSDPWeb.BaseController
                         dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
                         if (dt != null)
                         {
-                            if (dt.Rows.Count > 0)
-                            {
-                                DataTableHelp.SetColomnValue(dt.Rows[0], array[1], val);
-                            }
-                            else
-                            {
-                                if (!LibSysUtils.IsNULLOrEmpty(val))
-                                {
-                                    DataRow row = dt.NewRow();
-                                    dt.Rows.Add(row);
-                                    DataTableHelp.SetColomnValue(row, array[1], val);
-                                }
-                            }
+                            SetDTFirstRowColValue(dt, array[1], val);
+                            #region 旧代码
+                            //if (dt.Rows.Count > 0)
+                            //{
+                            //    DataTableHelp.SetColomnValue(dt.Rows[0], array[1], val);
+                            //}
+                            //else
+                            //{
+                            //    if (!LibSysUtils.IsNULLOrEmpty(val))
+                            //    {
+                            //        DataRow row = dt.NewRow();
+                            //        dt.Rows.Add(row);
+                            //        DataTableHelp.SetColomnValue(row, array[1], val);
+                            //    }
+                            //}
+                            #endregion
                             break;
                         }
                     }
 
                 }
             }
+            #region 处理上传的图片
+            foreach (string  key in Request.Files.AllKeys)
+            {
+                if (key.Contains(SysConstManage.Point))
+                {
+                    array = key.Split(SysConstManage.Point);
+                    if (array.Length < 2)
+                        continue;
+                    object val = null;
+                    if (this.Request.Files.AllKeys.FirstOrDefault(i => i == key) != null)
+                    {
+                        file = this.Request.Files[key];
+                        fileInStream = file.InputStream;
+                        byte[] content = new byte[file.ContentLength];
+                        fileInStream.Read(content, 0, file.ContentLength);
+                        //string ss= Convert.ToBase64String(content);
+                        if (content.Length == 0) continue;
+                        val = content;
+                    }
+                    if (dt != null && dt.TableName == array[0])
+                    {
+                        SetDTFirstRowColValue(dt, array[1], val);
+                        continue;
+                    }
+                    foreach (LibTable libtb in this.LibTables)
+                    {
+                        string tbnm = array[0];
+                        dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                        if (dt != null)
+                        {
+                            SetDTFirstRowColValue(dt, array[1], val);
+                            break;
+                        }
+                    }
+                }
+            }
+            #endregion
             #region 处理关联主表的表的主键赋值。
             TableExtendedProperties tbextp = null;
             //ColExtendedProperties colextp = null;
@@ -1070,6 +1118,7 @@ namespace BWYSDPWeb.BaseController
                                 }
                                 if (tbextprop.TableIndex != masttbindex) cond.Hidden = true;
                                 cond.IsDateType = col.DataType.Equals(typeof(Date));
+                                cond.isBinary = col.DataType.Equals(typeof(byte[]));
                                 condcollection.Add(cond);
                             }
                         }
@@ -1249,6 +1298,25 @@ namespace BWYSDPWeb.BaseController
                             //this.SessionObj.FromFieldInfo = null;
                         }
                     }
+                    List<DataColumn> binarycols = new List<DataColumn>();
+                    foreach (DataColumn c in dt.Columns)
+                    {
+                        if (c.DataType.Equals(typeof(byte[])))
+                        {
+                            binarycols.Add(c);
+                            
+                        }
+                    }
+                    if (binarycols.Count > 0)
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            foreach (DataColumn o in binarycols)
+                            {
+                                dr[o] = dr[o] == DBNull.Value ? dr[o] : Convert.FromBase64String(System.Text.Encoding.ASCII.GetString((byte[])dr[o]));
+                            }
+                        }
+                    }
                     return LibReturnForGrid((dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), dt);
                 }
             }
@@ -1414,6 +1482,23 @@ namespace BWYSDPWeb.BaseController
                     {
                         dr[col] = mdt.Rows[0][mcol];
                     }
+                }
+            }
+        }
+
+        private void SetDTFirstRowColValue(DataTable dt, string col, object val)
+        {
+            if (dt.Rows.Count > 0)
+            {
+                DataTableHelp.SetColomnValue(dt.Rows[0], col, val);
+            }
+            else
+            {
+                if (!LibSysUtils.IsNULLOrEmpty(val))
+                {
+                    DataRow row = dt.NewRow();
+                    dt.Rows.Add(row);
+                    DataTableHelp.SetColomnValue(row, col, val);
                 }
             }
         }

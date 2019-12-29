@@ -328,11 +328,18 @@ namespace BWYSDPWeb.BaseController
                         col = dt.Columns[s];
                         f = new FormFields();
                         f.ProgId = this.ProgID;
+                        f.Isbinary = false;
+                        //f.Isbinary = col.DataType.Equals(typeof(byte[]));
                         f.FieldNm = string.Format("{0}{2}{1}", item.Key, s, SysConstManage.Underline);
                         if (col.DataType.Equals(typeof(DateTime)) || col.DataType.Equals(typeof(Date)))
                         {
                             f.FieldValue = dt.Rows[0][col].ToString();
 
+                        }
+                        else if (col.DataType.Equals(typeof(byte[])))
+                        {
+                            f.Isbinary = true;
+                            f.FieldValue = dt.Rows[0][col] != DBNull.Value ? System .Text .Encoding .ASCII .GetString((byte[])dt.Rows[0][col]) : dt.Rows[0][col];
                         }
                         else
                             f.FieldValue = dt.Rows[0][col];
@@ -361,6 +368,7 @@ namespace BWYSDPWeb.BaseController
                 {
                     f = new FormFields();
                     f.ProgId = this.ProgID;
+                    f.Isbinary = col.DataType.Equals(typeof(byte[]));
                     f.FieldNm = string.Format("{0}{2}{1}", row.Table.TableName, col.ColumnName, SysConstManage.Underline);
                     if (col.DataType.Equals(typeof(DateTime)) || col.DataType.Equals(typeof(Date)))
                     {
@@ -500,23 +508,33 @@ namespace BWYSDPWeb.BaseController
                                                 break;
                                             case 1: //修改状态
                                                 #region 赋值
-                                                if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
-                                                {
-                                                    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
-                                                }
-                                                else
-                                                    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
+                                                SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);
+                                                //if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+                                                //{
+                                                //    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
+                                                //}
+                                                //else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
+                                                //{
+                                                //    newrow[dr[colfieldnm].ToString()] = System.Text.Encoding.ASCII.GetBytes(dr[colvalue].ToString());
+                                                //}
+                                                //else
+                                                //    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
                                                 #endregion
                                                 newrow.AcceptChanges();
                                                 break;
                                             case 2: //删除状态
                                                 #region 赋值
-                                                if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
-                                                {
-                                                    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
-                                                }
-                                                else
-                                                    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
+                                                SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);
+                                                //if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+                                                //{
+                                                //    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
+                                                //}
+                                                //else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
+                                                //{
+                                                //    newrow[dr[colfieldnm].ToString()] = System.Text.Encoding.ASCII.GetBytes(dr[colvalue].ToString());
+                                                //}
+                                                //else
+                                                //    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
                                                 #endregion
                                                 rowstate.Add(rowindex, 2);
                                                 break;
@@ -526,12 +544,17 @@ namespace BWYSDPWeb.BaseController
                                         }
                                     }
                                     #region 赋值
-                                    if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
-                                    {
-                                        newrow[dr[colfieldnm].ToString()] = new Date { value = dr[colvalue].ToString() };
-                                    }
-                                    else
-                                        newrow[dr[colfieldnm].ToString()] = dr[colvalue];
+                                    SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);
+                                    //if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+                                    //{
+                                    //    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[colvalue].ToString() };
+                                    //}
+                                    //else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
+                                    //{
+                                    //    newrow[dr[colfieldnm].ToString()] = System.Text.Encoding.ASCII.GetBytes(dr[colvalue].ToString());
+                                    //}
+                                    //else
+                                    //    newrow[dr[colfieldnm].ToString()] = dr[colvalue];
                                     #endregion
                                 }
                                 foreach (KeyValuePair<int, int> keyval in rowstate)
@@ -559,6 +582,20 @@ namespace BWYSDPWeb.BaseController
                 CachHelp cachelp = new CachHelp();
                 cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), this.LibTables, this.ProgID);
             }
+        }
+
+        private void SetColumnValue(DataColumnCollection cols, DataColumn colfieldnm, DataColumn colvalue, DataRow newrow, DataRow dr)
+        {
+            if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+            {
+                newrow[dr[colfieldnm].ToString()] = new Date { value = dr[colvalue].ToString() };
+            }
+            else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
+            {
+                newrow[dr[colfieldnm].ToString()] = Convert .FromBase64String(dr[colvalue].ToString());
+            }
+            else
+                newrow[dr[colfieldnm].ToString()] = dr[colvalue];
         }
 
         //private void InsertTemp(DataRow dr, DataRowAction action)

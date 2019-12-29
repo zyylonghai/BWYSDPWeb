@@ -16,5 +16,6 @@ namespace BWYSDPWeb.Models
         public string ProgId { get; set; }
         public string FieldNm { get; set; }
         public object FieldValue { get; set; }
+        public bool Isbinary { get; set; }
     }
 }

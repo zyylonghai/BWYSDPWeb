@@ -208,9 +208,10 @@ namespace BWYSDPWeb.Com
                     valus = new List<string>();
                     this.Formfields.Add(field.FromTableNm, valus);
                 }
-                valus.Add(field.Name);
+                if (!valus.Contains(field.Name))
+                    valus.Add(field.Name);
                 if (field.ElemType == ElementType.Textarea) { textarealst.Add(field); continue; }
-                if (field.ElemType == ElementType.Img) { imgs.Add(field);continue; }
+                if (field.ElemType == ElementType.Img) { imgs.Add(field); continue; }
                 if (colcout % 12 == 0)
                 {
                     if (colcout != 0)
@@ -300,9 +301,11 @@ namespace BWYSDPWeb.Com
             }
             foreach (LibFormGroupField item in imgs)
             {
+                string id = string.Format("{0}_{1}", item.FromTableNm, item.Name);
+                string name = string.Format("{0}.{1}", item.FromTableNm, item.Name);
                 _page.Append("<div class=\"container\">");
-                _page.Append("<img id=\"sdp_img_" + item.Name + "\" src=\"~/img/0.jpg\" class=\"img-responsive\" onclick=\"ShowImgFile('sdp_file_" + item.Name + "')\" style=\"cursor:pointer\" alt=\"Cinque Terre\" width=\"200\" height=\"200\"/>");
-                _page.Append("<input type=\"file\" id=\"sdp_file_" + item.Name + "\"  name=\"sdp_file_" + item.Name + "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('sdp_file_" + item.Name + "','sdp_img_" + item.Name + "')\" />");
+                _page.Append("<img id=\"sdp_img_" + id + "\" src=\"~/img/0.jpg\" class=\"img-responsive\" onclick=\"ShowImgFile('" + id + "')\" style=\"cursor:pointer\" alt=\"Cinque Terre\" width=\"200\" height=\"200\"/>");
+                _page.Append("<input type=\"file\" id=\"" + id + "\"  name=\"" + name + "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('" + id + "','sdp_img_" + id + "')\" />");
                 _page.Append("</div>");//结束 container
             }
         }

@@ -32,7 +32,7 @@ namespace BWYSDPWeb.Com
 
         }
 
-        public void AddCachItem(string key, object val,DateTimeOffset dtoffset)
+        public void AddCachItem(string key, object val, DateTimeOffset dtoffset)
         {
             var exist = cache[key];
             if (exist == null)
@@ -117,14 +117,14 @@ namespace BWYSDPWeb.Com
                 #region 
                 DataTable temp = new DataTable();
                 temp.Columns.AddRange(new DataColumn[] {
-        new DataColumn("sessionid",typeof(string)),
-        new DataColumn("progid",typeof(string)),
-        new DataColumn("tableNm",typeof(string)),
-          new DataColumn("rowid",typeof(int)),
-        new DataColumn("fieldnm",typeof(string)),
-        new DataColumn("fieldvalue",typeof(string)),
-          new DataColumn("actions",typeof(int)),
-                new DataColumn ("oldfieldvalue",typeof(string))
+                    new DataColumn("sessionid",typeof(string)),
+                    new DataColumn("progid",typeof(string)),
+                    new DataColumn("tableNm",typeof(string)),
+                    new DataColumn("rowid",typeof(int)),
+                    new DataColumn("fieldnm",typeof(string)),
+                    new DataColumn("fieldvalue",typeof(string)),
+                    new DataColumn("actions",typeof(int)),
+                    new DataColumn ("oldfieldvalue",typeof(string))
                 });
                 DataRow row = null;
                 #endregion
@@ -159,17 +159,22 @@ namespace BWYSDPWeb.Com
                                         action = -1;
                                         break;
                                 }
+                                object val = null;
+                                object oldval = null;
                                 foreach (DataColumn col in t.Columns)
                                 {
+                                    val = col.DataType == typeof(byte[]) &&dr[col]!=DBNull.Value? System .Text .Encoding .ASCII.GetString((byte[])dr[col]) : dr[col].ToString();
+                                    if (action == 1 || action == 2)
+                                        oldval = col.DataType == typeof(byte[]) ? System.Text.Encoding.ASCII.GetString((byte[])dr[col, DataRowVersion.Original]) : dr[col, DataRowVersion.Original].ToString();
                                     row = temp.NewRow();
                                     row[0] = sessionid;
                                     row[1] = _progid;
                                     row[2] = t.TableName;
                                     row[3] = rowindex;
                                     row[4] = col.ColumnName;
-                                    row[5] = action == 2? dr[col, DataRowVersion.Original].ToString(): dr[col].ToString();
+                                    row[5] = action == 2 ? oldval : val;
                                     row[6] = action;
-                                    row[7] = (action == 1 || action == 2) ? dr[col, DataRowVersion.Original].ToString() : dr[col].ToString();
+                                    row[7] = (action == 1 || action == 2) ? oldval : val;
                                     temp.Rows.Add(row);
                                     //     commandlst.Add(string.Format("EXEC sp_executesql N'" +
                                     //"insert into [temp] values(@sessionid,@progid,@tbnm,@rwindx,@fieldnm,@fieldvalu,@actions)   '," +

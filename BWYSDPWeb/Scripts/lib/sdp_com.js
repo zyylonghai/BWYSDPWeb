@@ -118,6 +118,10 @@ function TimeConverToStr(tm) {
     return year + "-" + month + "-" + day;
 }
 
+function ImgFormatter(img) {
+    return "<img src=\"data:image/*;base64," + img+"\" class=\"img-responsive\"  width=\"100\" height=\"100\"/>";
+}
+
 function Showfuzzydiv(id) {
     $("#sdp_fuzzySearch").css("position", "absolute");
     $("#sdp_fuzzySearch").css("top", $("#" + id).offset().top + $("#" + id).parent().height());

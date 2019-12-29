@@ -76,7 +76,7 @@ function GetFields(tbnm, ctrnm, fieldnm, flag) {
             if (obj.flag == 0) {
                 //o.children().remove();
                 $.each(obj.data, function (index, row) {
-                    o.append("<option value='" + (flag == 3 ? row.FieldNm: (row.TBAliasNm + "." + row.FieldNm)) + "'dsid='" + row.DSID + "' tbnm='" + row.TableNm + "' hid='" + row.Hidden + "' aliasnm='" + row.AliasNm + "' isdate='" + row.IsDateType + "'>" + row.DisplayNm + "(" + (flag == 3 ? row.FieldNm : (row.TBAliasNm + "." + row.FieldNm)) + ")</option>");
+                    o.append("<option value='" + (flag == 3 ? row.FieldNm : (row.TBAliasNm + "." + row.FieldNm)) + "'dsid='" + row.DSID + "' tbnm='" + row.TableNm + "' hid='" + row.Hidden + "' aliasnm='" + row.AliasNm + "' isdate='" + row.IsDateType + "' blob='" + row.isBinary + "'>" + row.DisplayNm + "(" + (flag == 3 ? row.FieldNm : (row.TBAliasNm + "." + row.FieldNm)) + ")</option>");
                 });
             }
         },
@@ -163,8 +163,12 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
             let aliasnm = $(option).attr("aliasnm");
             let arrary = flag == 3 ? option.value: option.value.split('.')[1];
             let date = $(option).attr("isdate") == "false" ? false : true;
+            let blob = $(option).attr("blob") == "false" ? false : true;
             if (date) {
                 cols.push({ field: (aliasnm == "" || aliasnm == undefined || aliasnm == "null") ? arrary: aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis, formatter: function (value, row, index) { return TimeConverToStr(value); } });
+            }
+            else if (blob){
+                cols.push({ field: (aliasnm == "" || aliasnm == undefined || aliasnm == "null") ? arrary : aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis, formatter: function (value, row, index) { return ImgFormatter(value); } });
             }
             else
                 cols.push({ field: (aliasnm == "" || aliasnm == undefined || aliasnm=="null") ? arrary: aliasnm, title: option.outerText, align: 'center', sortable: true, visible: vis });

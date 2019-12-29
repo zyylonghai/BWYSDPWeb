@@ -39,8 +39,14 @@ namespace BWYSDPWeb.Models
         public bool IsCondition { get; set; }
 
         public bool Hidden { get; set; }
-
+        /// <summary>
+        /// 是否日期类型
+        /// </summary>
         public bool IsDateType { get; set; }
+        /// <summary>
+        /// 是否二进制类型
+        /// </summary>
+        public bool isBinary { get; set; }
     }
 
 }
