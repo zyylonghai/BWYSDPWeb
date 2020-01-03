@@ -479,18 +479,6 @@ namespace BWYSDPWeb.BaseController
                         if (mdt != null)
                         {
                             SetPrimaryKeyWithMastTB(table, mdt);
-                            //foreach (DataRow dr in table.Rows)
-                            //{
-                            //    foreach (DataColumn col in table.PrimaryKey)
-                            //    {
-                            //        colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                            //        DataColumn mcol = mdt.PrimaryKey.FirstOrDefault(i => i.ColumnName == (string.IsNullOrEmpty(colextp.MapPrimarykey) ? col.ColumnName : colextp.MapPrimarykey));
-                            //        if (mcol != null)
-                            //        {
-                            //            dr[col] = mdt.Rows[0][mcol];
-                            //        }
-                            //    }
-                            //}
                         }
                         relatedts.Add(table);
                     }
@@ -516,29 +504,6 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
             }
-            //foreach (DataTable item in relatedts)
-            //{
-            //    tbextp = item.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-            //    if (tbextp.TableIndex != tbextp.RelateTableIndex)
-            //    {
-
-            //    }
-            //    //if (mdt != null)
-            //    //{
-            //    //    foreach (DataRow dr in item.Rows)
-            //    //    {
-            //    //        foreach (DataColumn col in item.PrimaryKey)
-            //    //        {
-            //    //            colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-            //    //            DataColumn mcol = mdt.PrimaryKey.FirstOrDefault(i => i.ColumnName == (string.IsNullOrEmpty(colextp.MapPrimarykey) ? col.ColumnName : colextp.MapPrimarykey));
-            //    //            if (mcol != null)
-            //    //            {
-            //    //                dr[col] = mdt.Rows[0][mcol];
-            //    //            }
-            //    //        }
-            //    //    }
-            //    //}
-            //}
             #endregion
             #endregion
 
@@ -640,6 +605,7 @@ namespace BWYSDPWeb.BaseController
                         {
                             DataTableHelp dthelp = new DataTableHelp(exist, tb);
                             dthelp.CopyStable();
+                            ConvertBinaryColValue(tb);
                         }
                     }
                 }
@@ -820,6 +786,7 @@ namespace BWYSDPWeb.BaseController
             GetGridDataExt(gridid, dt);
 
             DataTable resultdt = AppSysUtils.GetDataByPage(dt, page, rows);
+            //ConvertBinaryColValue(resultdt);
             if (!string.IsNullOrEmpty(sort))
             {
                 resultdt.DefaultView.Sort = string.Format("{0} {1}", sort, sortOrder);
@@ -1065,7 +1032,12 @@ namespace BWYSDPWeb.BaseController
                                 fileInStream.Read(content, 0, file.ContentLength);
                                 //string ss= Convert.ToBase64String(content);
                                 if (content.Length == 0) continue;
+                                //val =System .Text .Encoding .ASCII.GetBytes(Convert .ToBase64String(content));
                                 val = content;
+                            }
+                            if (dr != null)
+                            {
+                                dr[array[1]] = val;
                             }
                         }
                     }
@@ -1322,25 +1294,26 @@ namespace BWYSDPWeb.BaseController
                             //this.SessionObj.FromFieldInfo = null;
                         }
                     }
-                    List<DataColumn> binarycols = new List<DataColumn>();
-                    foreach (DataColumn c in dt.Columns)
-                    {
-                        if (c.DataType.Equals(typeof(byte[])))
-                        {
-                            binarycols.Add(c);
+                    ConvertBinaryColValue(dt);
+                    //List<DataColumn> binarycols = new List<DataColumn>();
+                    //foreach (DataColumn c in dt.Columns)
+                    //{
+                    //    if (c.DataType.Equals(typeof(byte[])))
+                    //    {
+                    //        binarycols.Add(c);
                             
-                        }
-                    }
-                    if (binarycols.Count > 0)
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            foreach (DataColumn o in binarycols)
-                            {
-                                dr[o] = dr[o] == DBNull.Value ? dr[o] : Convert.FromBase64String(System.Text.Encoding.ASCII.GetString((byte[])dr[o]));
-                            }
-                        }
-                    }
+                    //    }
+                    //}
+                    //if (binarycols.Count > 0)
+                    //{
+                    //    foreach (DataRow dr in dt.Rows)
+                    //    {
+                    //        foreach (DataColumn o in binarycols)
+                    //        {
+                    //            dr[o] = dr[o] == DBNull.Value ? dr[o] : Convert.FromBase64String(System.Text.Encoding.ASCII.GetString((byte[])dr[o]));
+                    //        }
+                    //    }
+                    //}
                     return LibReturnForGrid((dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), dt);
                 }
             }
@@ -1527,6 +1500,30 @@ namespace BWYSDPWeb.BaseController
             }
         }
 
+        /// <summary>从数据库取出的二进制的字段图片转为Base64二进制</summary>
+        /// <param name="dt"></param>
+        private void ConvertBinaryColValue(DataTable dt)
+        {
+            List<DataColumn> binarycols = new List<DataColumn>();
+            foreach (DataColumn c in dt.Columns)
+            {
+                if (c.DataType.Equals(typeof(byte[])))
+                {
+                    binarycols.Add(c);
+
+                }
+            }
+            if (binarycols.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    foreach (DataColumn o in binarycols)
+                    {
+                        dr[o] = dr[o] == DBNull.Value ? dr[o] : Convert.FromBase64String(System.Text.Encoding.ASCII.GetString((byte[])dr[o]));
+                    }
+                }
+            }
+        }
         #endregion
 
         #region 公开函数

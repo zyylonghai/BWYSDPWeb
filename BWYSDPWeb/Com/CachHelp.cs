@@ -163,9 +163,17 @@ namespace BWYSDPWeb.Com
                                 object oldval = null;
                                 foreach (DataColumn col in t.Columns)
                                 {
-                                    val = col.DataType == typeof(byte[]) &&dr[col]!=DBNull.Value? System .Text .Encoding .ASCII.GetString((byte[])dr[col]) : dr[col].ToString();
+                                    val = col.DataType == typeof(byte[]) &&dr[col]!=DBNull.Value? Convert.ToBase64String((byte[])dr[col]) : dr[col].ToString();
                                     if (action == 1 || action == 2)
-                                        oldval = col.DataType == typeof(byte[]) ? System.Text.Encoding.ASCII.GetString((byte[])dr[col, DataRowVersion.Original]) : dr[col, DataRowVersion.Original].ToString();
+                                    {
+                                        oldval = col.DataType == typeof(byte[])&&dr[col, DataRowVersion.Original] != DBNull.Value ? Convert.ToBase64String((byte[])dr[col, DataRowVersion.Original]) : dr[col, DataRowVersion.Original].ToString();
+                                        //if (col.DataType == typeof(byte[]))
+                                        //{
+                                        //    oldval = dr[col, DataRowVersion.Original] != DBNull.Value ? Convert .ToBase64String((byte[])dr[col, DataRowVersion.Original]) : dr[col, DataRowVersion.Original].ToString();
+                                        //}
+                                        //else
+                                        //    oldval = dr[col, DataRowVersion.Original].ToString();
+                                    }
                                     row = temp.NewRow();
                                     row[0] = sessionid;
                                     row[1] = _progid;

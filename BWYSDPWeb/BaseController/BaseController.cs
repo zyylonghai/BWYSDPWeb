@@ -339,7 +339,8 @@ namespace BWYSDPWeb.BaseController
                         else if (col.DataType.Equals(typeof(byte[])))
                         {
                             f.Isbinary = true;
-                            f.FieldValue = dt.Rows[0][col] != DBNull.Value ? System .Text .Encoding .ASCII .GetString((byte[])dt.Rows[0][col]) : dt.Rows[0][col];
+                            f.FieldValue = dt.Rows[0][col] != DBNull.Value ? Convert .ToBase64String((byte[])dt.Rows[0][col]) : dt.Rows[0][col];
+                            //f.FieldValue = dt.Rows[0][col] != DBNull.Value ? System.Text.Encoding.ASCII.GetString((byte[])dt.Rows[0][col]) : dt.Rows[0][col];
                         }
                         else
                             f.FieldValue = dt.Rows[0][col];
@@ -348,9 +349,15 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             #endregion
-
+            //System.Web.Script.Serialization.JavaScriptSerializer
             bool haserror = this.MsgList != null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
-            return Json(new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
+            //return Json(new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
+            return new JsonResult
+            {
+                Data = new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror },
+                MaxJsonLength = int.MaxValue ,
+                JsonRequestBehavior= JsonRequestBehavior.AllowGet
+            };
         }
         //public JsonResult LibJson(object result)
         //{
@@ -375,13 +382,25 @@ namespace BWYSDPWeb.BaseController
                         f.FieldValue = row[col].ToString();
 
                     }
+                    else if (col.DataType.Equals(typeof(byte[])))
+                    {
+                        f.Isbinary = true;
+                        f.FieldValue = row[col] != DBNull.Value ? Convert.ToBase64String((byte[])row[col]) : row[col];
+                        //f.FieldValue = dt.Rows[0][col] != DBNull.Value ? System.Text.Encoding.ASCII.GetString((byte[])dt.Rows[0][col]) : dt.Rows[0][col];
+                    }
                     else
                         f.FieldValue = row[col];
                     fieldlst.Add(f);
                 }
             }
             bool haserror = this.MsgList != null && this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) != null;
-            return Json(new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
+            return new JsonResult
+            {
+                Data = new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror },
+                MaxJsonLength = int.MaxValue,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+            //return Json(new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
         }
 
         public string LibReturnForGrid(int total, DataTable dt)
@@ -461,6 +480,7 @@ namespace BWYSDPWeb.BaseController
                     DataColumnCollection cols = null;
                     DataColumn[] primarykeycols = null;
                     Dictionary<int, int> rowstate = null;
+                    Dictionary<string, object> newvalus = new Dictionary<string, object>();
 
                     DataColumn colrowid;
                     DataColumn colfieldnm;
@@ -485,10 +505,20 @@ namespace BWYSDPWeb.BaseController
                                 rowstate = new Dictionary<int, int>();
                                 colvalue = result.Columns["fieldvalue"];
                                 cololdvalue = result.Columns["oldfieldvalue"];
+                                newvalus.Clear();
                                 foreach (DataRow dr in result.Rows)
                                 {
                                     if (rowindex != (int)dr[colrowid])
                                     {
+                                        if (newvalus.Count > 0)
+                                        {
+                                            newrow.AcceptChanges();
+                                            foreach (var keyvalu in newvalus)
+                                            {
+                                                SetColumnValue(newrow.Table .Columns, keyvalu .Key, newrow, keyvalu .Value);
+                                            }
+                                            newvalus.Clear();
+                                        }
                                         newrow = tb.NewRow();
                                         foreach (var c in primarykeycols)
                                         {
@@ -502,60 +532,45 @@ namespace BWYSDPWeb.BaseController
                                         }
                                         tb.Rows.Add(newrow);
                                         rowindex = (int)dr[colrowid];
-                                        switch ((short)dr[colaction])
-                                        {
-                                            case 0: //新增状态
-                                                break;
-                                            case 1: //修改状态
-                                                #region 赋值
-                                                SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);
-                                                //if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
-                                                //{
-                                                //    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
-                                                //}
-                                                //else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
-                                                //{
-                                                //    newrow[dr[colfieldnm].ToString()] = System.Text.Encoding.ASCII.GetBytes(dr[colvalue].ToString());
-                                                //}
-                                                //else
-                                                //    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
-                                                #endregion
-                                                newrow.AcceptChanges();
-                                                break;
-                                            case 2: //删除状态
-                                                #region 赋值
-                                                SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);
-                                                //if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
-                                                //{
-                                                //    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[cololdvalue].ToString() };
-                                                //}
-                                                //else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
-                                                //{
-                                                //    newrow[dr[colfieldnm].ToString()] = System.Text.Encoding.ASCII.GetBytes(dr[colvalue].ToString());
-                                                //}
-                                                //else
-                                                //    newrow[dr[colfieldnm].ToString()] = dr[cololdvalue];
-                                                #endregion
-                                                rowstate.Add(rowindex, 2);
-                                                break;
-                                            case -1: //未更改状态
-                                                rowstate.Add(rowindex, -1);
-                                                break;
-                                        }
                                     }
                                     #region 赋值
-                                    SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);
-                                    //if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
-                                    //{
-                                    //    newrow[dr[colfieldnm].ToString()] = new Date { value = dr[colvalue].ToString() };
-                                    //}
-                                    //else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
-                                    //{
-                                    //    newrow[dr[colfieldnm].ToString()] = System.Text.Encoding.ASCII.GetBytes(dr[colvalue].ToString());
-                                    //}
-                                    //else
-                                    //    newrow[dr[colfieldnm].ToString()] = dr[colvalue];
+                                    switch ((short)dr[colaction])
+                                    {
+                                        case 0: //新增状态
+                                            SetColumnValue(cols, dr[colfieldnm].ToString(), newrow, dr[colvalue]);
+                                            break;
+                                        case 1: //修改状态
+                                            #region 赋值
+                                            SetColumnValue(cols, dr[colfieldnm].ToString(),newrow, dr[cololdvalue]);
+                                            newvalus.Add(dr[colfieldnm].ToString(), dr[colvalue]);
+
+                                            #endregion
+                                            //newrow.AcceptChanges();
+                                            break;
+                                        case 2: //删除状态
+                                            #region 赋值
+                                            SetColumnValue(cols, dr[colfieldnm].ToString(), newrow, dr[cololdvalue]);
+                                            newvalus.Add(dr[colfieldnm].ToString(), dr[colvalue]);
+    
+                                            #endregion
+                                            rowstate.Add(rowindex, 2);
+                                            break;
+                                        case -1: //未更改状态
+                                            SetColumnValue(cols, dr[colfieldnm].ToString(),newrow, dr[colvalue]);
+                                            rowstate.Add(rowindex, -1);
+                                            break;
+                                    }
+                                    //SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);
                                     #endregion
+                                }
+                                if (newvalus.Count > 0)
+                                {
+                                    newrow.AcceptChanges();
+                                    foreach (var keyvalu in newvalus)
+                                    {
+                                        SetColumnValue(newrow.Table.Columns, keyvalu.Key, newrow, keyvalu.Value);
+                                    }
+                                    newvalus.Clear();
                                 }
                                 foreach (KeyValuePair<int, int> keyval in rowstate)
                                 {
@@ -584,18 +599,18 @@ namespace BWYSDPWeb.BaseController
             }
         }
 
-        private void SetColumnValue(DataColumnCollection cols, DataColumn colfieldnm, DataColumn colvalue, DataRow newrow, DataRow dr)
+        private void SetColumnValue(DataColumnCollection cols, string fieldnm, DataRow newrow,object valu)
         {
-            if (cols[dr[colfieldnm].ToString()].DataType == typeof(Date))
+            if (cols[fieldnm].DataType == typeof(Date))
             {
-                newrow[dr[colfieldnm].ToString()] = new Date { value = dr[colvalue].ToString() };
+                newrow[fieldnm] = new Date { value = valu.ToString () };
             }
-            else if (cols[dr[colfieldnm].ToString()].DataType == typeof(byte[]))
+            else if (cols[fieldnm].DataType == typeof(byte[]))
             {
-                newrow[dr[colfieldnm].ToString()] = System .Text .Encoding .ASCII.GetBytes(dr[colvalue].ToString());
+                newrow[fieldnm] = Convert .FromBase64String(valu.ToString());
             }
             else
-                newrow[dr[colfieldnm].ToString()] = dr[colvalue];
+                newrow[fieldnm] = valu;
         }
 
         //private void InsertTemp(DataRow dr, DataRowAction action)
