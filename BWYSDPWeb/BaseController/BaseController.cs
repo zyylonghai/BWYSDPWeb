@@ -103,6 +103,10 @@ namespace BWYSDPWeb.BaseController
             var request = System.Web.HttpContext.Current.Request;
             this._rootPath = request.PhysicalApplicationPath;
             this.ProgID = request.Params["sdp_pageid"] ?? string.Empty;
+            if(string.IsNullOrEmpty(this.ProgID))
+            {
+                this.ProgID = request.Params["progId"] ?? string.Empty;
+            }
             this.DSID = request.Params["sdp_dsid"] ?? string.Empty;
             this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, this.ProgID);
             this.UserInfo = System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo ;
@@ -314,6 +318,11 @@ namespace BWYSDPWeb.BaseController
             DataColumn col = null;
             foreach (KeyValuePair<string, List<string>> item in fields)
             {
+                if (this.LibTables == null)
+                {
+                    this.AddMessage("系统开小差了，请重新刷新页面。");
+                    break;
+                }
                 foreach (LibTable t in this.LibTables)
                 {
                     dt = t.Tables.FirstOrDefault(i => i.TableName == item.Key);
@@ -551,13 +560,15 @@ namespace BWYSDPWeb.BaseController
                                             #region 赋值
                                             SetColumnValue(cols, dr[colfieldnm].ToString(), newrow, dr[cololdvalue]);
                                             newvalus.Add(dr[colfieldnm].ToString(), dr[colvalue]);
-    
+
                                             #endregion
-                                            rowstate.Add(rowindex, 2);
+                                            if (!rowstate.ContainsKey(rowindex))
+                                                rowstate.Add(rowindex, 2);
                                             break;
                                         case -1: //未更改状态
                                             SetColumnValue(cols, dr[colfieldnm].ToString(),newrow, dr[colvalue]);
-                                            rowstate.Add(rowindex, -1);
+                                            if (!rowstate.ContainsKey(rowindex))
+                                                rowstate.Add(rowindex, -1);
                                             break;
                                     }
                                     //SetColumnValue(cols, colfieldnm, colvalue, newrow, dr);

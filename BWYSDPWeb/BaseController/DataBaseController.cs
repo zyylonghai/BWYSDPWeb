@@ -154,7 +154,7 @@ namespace BWYSDPWeb.BaseController
         /// <param name="progId">排版模型ID</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult ConverToPage(string progId)
+        public ActionResult ConverToPage(string progId,string flag)
         {
             if (this.Request.Url.Segments.Length > 2)
             {
@@ -310,31 +310,31 @@ namespace BWYSDPWeb.BaseController
         {
             if (this.SessionObj.MsgforSave == null || this.SessionObj.MsgforSave.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
-                this.SessionObj.OperateAction = OperatAction.Add;
-                //Session[SysConstManage.OperateAction] = this.OperatAction;
-                this.CreateTableSchema();
-                #region delete temp data(重新加载页面，需清除temp表中的session数据)
-                //Bll.DelegateFactory df = new Bll.DelegateFactory();
-                //df.ClearTempDataByProgid(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
-
-                TempHelp sQLiteHelp = new TempHelp("TempData");
-                sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
-
-                #endregion
-                //DataRow row = null;
-                foreach (var def in this.LibTables)
+                if (this.SessionObj.OperateAction != OperatAction.Preview)
                 {
-                    foreach (DataTable dt in def.Tables)
-                    {
-                        if ((dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
-                        {
-                            //row = dt.NewRow();
+                    this.SessionObj.OperateAction = OperatAction.Add;
+                    //Session[SysConstManage.OperateAction] = this.OperatAction;
+                    this.CreateTableSchema();
+                    #region delete temp data(重新加载页面，需清除temp表中的session数据)
+                    TempHelp sQLiteHelp = new TempHelp("TempData");
+                    sQLiteHelp.ClearTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
 
-                            dt.Rows.Add(dt.NewRow());
+                    #endregion
+                    //DataRow row = null;
+                    foreach (var def in this.LibTables)
+                    {
+                        foreach (DataTable dt in def.Tables)
+                        {
+                            if ((dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
+                            {
+                                //row = dt.NewRow();
+
+                                dt.Rows.Add(dt.NewRow());
+                            }
                         }
                     }
+                    PageLoad();
                 }
-                PageLoad();
             }
             #region 处理MsgforSave
             LibMessage[] msglist = null;
@@ -560,7 +560,11 @@ namespace BWYSDPWeb.BaseController
             }
             //return Content("alert(\"sdfds\")");
             //return Json(new { message = "dfceshi" }, JsonRequestBehavior.AllowGet);
-            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
+            if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
+            {
+                this.SessionObj.OperateAction = OperatAction.Preview;
+            }
+            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID , flag =1});
         }
 
         [HttpPost]

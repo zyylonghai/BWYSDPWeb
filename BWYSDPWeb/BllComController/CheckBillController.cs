@@ -211,7 +211,7 @@ namespace BWYSDPWeb.BllComController
         {
             base.BeforeSave();
             //this.AddMessage("beforesave的错误信息", SDPCRL.CORE.LibMessageType.Error);
-            this.AddMessage("beforesave的警告信息", SDPCRL.CORE.LibMessageType.Warning);
+            //this.AddMessage("beforesave的警告信息", SDPCRL.CORE.LibMessageType.Warning);
         }
 
     }
