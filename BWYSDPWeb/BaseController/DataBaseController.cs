@@ -166,6 +166,10 @@ namespace BWYSDPWeb.BaseController
                     this.Package = packagepath.Replace("/", "");
                     this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, this.Package);
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
+                    //if (string.IsNullOrEmpty (flag ) && this.SessionObj .OperateAction==OperatAction.Preview)
+                    //{
+                    //    this.SessionObj.OperateAction = OperatAction.None;
+                    //}
                     FileOperation fileoperation = new FileOperation();
 
                     fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath, string.Format("{0}_{1}", progId, this.Language.ToString()));
@@ -564,7 +568,7 @@ namespace BWYSDPWeb.BaseController
             {
                 this.SessionObj.OperateAction = OperatAction.Preview;
             }
-            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID , flag =1});
+            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID});
         }
 
         [HttpPost]
@@ -614,7 +618,7 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
             }
-            this.SessionObj.OperateAction = OperatAction.Preview;
+            this.SessionObj.OperateAction = OperatAction.Preview ;
             return LibJson();
             //return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }

@@ -766,11 +766,11 @@ namespace BWYSDPWeb.BaseController
         /// </summary>
         Edit = 2,
         /// <summary>
-        /// 
+        /// 功能处于搜索后预览状态
         /// </summary>
-        Delet = 3,
+        SearchView = 3,
         /// <summary>
-        /// 功能处于预览状态
+        /// 功能处于保存后预览状态
         /// </summary>
         Preview = 4
     }
