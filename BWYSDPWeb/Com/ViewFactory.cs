@@ -722,8 +722,10 @@ namespace BWYSDPWeb.Com
                 "var datastr='['; " +
                 "$.each(objs,function(index,o){if(datastr.length==1){ datastr+=Serialobj(o);}else{datastr+=\",\"+Serialobj(o);}});" +
                 "datastr+=']';" +
-                "Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
+                "SDP_Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
                 "});");
+            _script.Append("$('#bwysdp_btnadd').click(function (){ SDP_Add();});");
+
             #endregion
 
             #region 搜索控件 绑定input propertychange 事件

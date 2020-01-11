@@ -65,7 +65,7 @@ function Serialobj(obj) {
     return JSON.stringify(o);
 }
 
-function Save(datastr, ctrNm) {
+function SDP_Save(datastr, ctrNm) {
     
     //$.ajax({
     //    url: "/" + ctrNm + "/Save",
@@ -81,6 +81,10 @@ function Save(datastr, ctrNm) {
     //    }
     //});
     $('#sdp_form').submit();
+}
+
+function SDP_Add() {
+    
 }
 
 function TableBtnEdit(obj, grid) {
