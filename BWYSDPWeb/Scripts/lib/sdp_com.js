@@ -1,14 +1,17 @@
 ﻿$(function () {
-    $('body').append("<div id=\"sdp_errorinfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-danger\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_error_content\"></p></div></div>");
-    $('body').append("<div id=\"sdp_warninginfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-warning\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_warning_content\"></p></div></div>");
+    $('body').append("<div id=\"sdp_info\" class=\"container navbar-fixed-top\"> <div id=\"sdp_errorinfo\" class=\"alert alert-danger\"> <a class=\"close\" href=\"#\" onclick=\"closemsgbyobj(this)\">&times;</a> <p id=\"sdp_error_content\"></p></div><div id=\"sdp_warninginfo\" class=\"alert alert-warning\"> <a class=\"close\" href=\"#\" onclick=\"closemsgbyobj(this)\">&times;</a> <p id=\"sdp_warning_content\"></p></div><div id=\"sdp_successinfo\" class=\"alert alert-success\"> <a class=\"close\" href=\"#\" onclick=\"closemsgbyobj(this)\">&times;</a> <p id=\"sdp_success_content\"></p></div></div>");
+    //$('body').append("<div id=\"sdp_warninginfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-warning\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_warning_content\"></p></div></div>");
+    //$('body').append("<div id=\"sdp_successinfo\" class=\"container navbar-fixed-top\"> <div  class=\"alert alert-success\"> <a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a> <p id=\"sdp_success_content\"></p></div></div>");
     //$('body').append("<div  class=\"alert alert-danger\">");
     //$('body').append("<a class=\"close\" href=\"#\" onclick=\"closemsg()\">&times;</a>");
     //$('body').append("<p>显示了错误信息提示框</p>");
     //$('body').append("</div>");
     //$('body').append("</div>");
 
+    //$('#sdp_info').hide();
     $('#sdp_errorinfo').hide();
     $('#sdp_warninginfo').hide();
+    $('#sdp_successinfo').hide();
 });
 var sdp_globModalzindex = 0;
 function drag(id) {
@@ -53,11 +56,20 @@ function ShowMsg(msg, msgtype) {
         $('#sdp_warning_content').html(msg);
         $('#sdp_warninginfo').show();
     }
+    else if (msgtype == "promt") {
+        $('#sdp_success_content').html(msg);
+        $('#sdp_successinfo').show();
+    }
 }
 
 function closemsg() {
     $('#sdp_errorinfo').hide();
     $('#sdp_warninginfo').hide();
+    $('#sdp_successinfo').hide();
+}
+
+function closemsgbyobj(obj) {
+    $(obj).parent().hide();
 }
 
 function Serialobj(obj) {
@@ -83,8 +95,23 @@ function SDP_Save(datastr, ctrNm) {
     $('#sdp_form').submit();
 }
 
-function SDP_Add() {
-    
+function SDP_Add(ctrNm) {
+    $.ajax({
+        url: "/" + ctrNm + "/Add",
+        data: "",
+        type: 'Post',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            var grids = $("#sdp_form").find("table");
+            $.each(grids, function (index, o) {
+                $('#' + o.id).bootstrapTable('refresh');
+            });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
 }
 
 function TableBtnEdit(obj, grid) {
@@ -211,6 +238,13 @@ function LoadImgToUI(fileid, imgid) {
     imgRead.onload = function (et) {
         $('#' + imgid).attr("src", et.target.result);
     }
+}
+
+function RefreshAllGrid() {
+    var grids = $("#sdp_form").find("table");
+    $.each(grids, function (index, o) {
+        $('#' + o.id).bootstrapTable('refresh');
+    });
 }
 
 //function GetMsgForSave() {

@@ -30,7 +30,8 @@
 
     <script type="text/javascript">
         $(function () {
-
+            $('#userId').val("admin");
+            $('#password').val("123456");
         });
 
     </script>
@@ -48,7 +49,7 @@
             <div class="form-group">
                 <label for="ipAddress" class="col-sm-2 control-label">密码</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control" id="password" name="password"
+                    <input type="password" class="form-control" id="password" name="password"
                            placeholder="密码">
                 </div>
             </div>
@@ -57,7 +58,7 @@
                 <div class="col-sm-2">
                     <select class="form-control" name="language" id="language">
                         <option value="0">中文</option>
-                        <option value="1">中文(简体)</option>
+                        <option value="1">中文(繁体)</option>
                         <option value="2">英文</option>
                         @*<option value="3">类型2</option>*@
                     </select>
@@ -81,3 +82,4 @@
     <div id="masklayer" class="masklayer"></div>
 </body>
 </html>
+

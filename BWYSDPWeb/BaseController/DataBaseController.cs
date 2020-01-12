@@ -305,6 +305,10 @@ namespace BWYSDPWeb.BaseController
                     //Server.MapPath("/")
                 }
             }
+            if (this.UserInfo == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             //return View(progId);
             return View(string.Format("{0}_{1}", progId, this.Language.ToString()));
         }
@@ -357,10 +361,17 @@ namespace BWYSDPWeb.BaseController
         /// </summary>
         /// <param name="q"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public ActionResult SearchFunc(string q)
         {
-            return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
+            ProgInfo[] allprogid = AppCom.GetAllProgid();
+            var pid = allprogid.FirstOrDefault(i =>i.ProgId.ToUpper() ==q.ToUpper ());
+            if (pid != null)
+            {
+                return RedirectToAction("ConverToPage", pid .Package, new { progId = pid .ProgId });
+            }
+            //this.AddMessage("找不到该功能", LibMessageType.Error);
+            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
         [HttpPost]
         public ActionResult Save()
@@ -541,16 +552,6 @@ namespace BWYSDPWeb.BaseController
             //string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             AfterSave();
 
-            //if ((result.Messagelist != null && result.Messagelist.Count > 0))
-            //{
-            //    if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
-            //    this.SessionObj.MsgforSave.AddRange(result.Messagelist);
-            //}
-            if (this.MsgList != null && this.MsgList.Count > 0)
-            {
-                if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
-                this.SessionObj.MsgforSave.AddRange(this.MsgList);
-            }
             if (result != null && result.ErrorMsglst != null && result.ErrorMsglst.Count > 0)
             {
                 //string _msg = string.Empty;
@@ -568,7 +569,19 @@ namespace BWYSDPWeb.BaseController
             {
                 this.SessionObj.OperateAction = OperatAction.Preview;
             }
+            this.AddMessage("保存成功", LibMessageType.Prompt);
+            if (this.MsgList != null && this.MsgList.Count > 0)
+            {
+                if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
+                this.SessionObj.MsgforSave.AddRange(this.MsgList);
+            }
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID});
+        }
+
+        public ActionResult Add()
+        {
+            this.SessionObj.OperateAction = OperatAction.Add;
+            return BasePageLoad();
         }
 
         [HttpPost]

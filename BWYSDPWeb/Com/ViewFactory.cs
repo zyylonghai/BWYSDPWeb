@@ -96,6 +96,11 @@ namespace BWYSDPWeb.Com
                 {
                     jsandcss.Append("@Scripts.Render(\"~/Scripts/lib/laydate/laydate\")");
                 }
+                if (!string.IsNullOrEmpty(LibFormPage.ScriptFile))
+                {
+                    _page.AppendLine();
+                    _page.Append("<script src = \"/Scripts/" + LibFormPage.Package + "/" + LibFormPage.ScriptFile + "\" ></script>");
+                }
                 //if (_hasSearchModal)
                 //{
                 //    if (_gridGroupdic.Count == 0)
@@ -336,21 +341,37 @@ namespace BWYSDPWeb.Com
 
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Add\">");
-            //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>"+AppCom .GetFieldDesc ((int)Language ,string.Empty ,string.Empty , "sdp_btngridadd") +"");//新增
-            _page.Append("</button>");
-
-            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnEdit(this,'" + grid.GridGroupName + "')\" data-toggle=\"modal\"  data-target=\"#sdp_tbmdl_" + id + "\"  data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Edit\">");
-            //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngridedit") + "");//编辑
-            _page.Append("</button>");
-
-            _page.Append("<button type=\"button\" class=\"btn btn-default\">");
-            //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
-            _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngriddelete") + "");//删除
-            _page.Append("</button>");
-
+            if (grid.HasAddRowButton)
+            {
+                _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Add\">");
+                //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
+                _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngridadd") + "");//新增
+                _page.Append("</button>");
+            }
+            if (grid.HasEditRowButton)
+            {
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnEdit(this,'" + grid.GridGroupName + "')\" data-toggle=\"modal\"  data-target=\"#sdp_tbmdl_" + id + "\"  data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Edit\">");
+                //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
+                _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngridedit") + "");//编辑
+                _page.Append("</button>");
+            }
+            if (grid.HasDeletRowButton)
+            {
+                _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+                //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
+                _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngriddelete") + "");//删除
+                _page.Append("</button>");
+            }
+            if (grid.GdButtons != null)
+            {
+                foreach (LibGridButton btn in grid.GdButtons)
+                {
+                    _page.Append("<button id=\""+btn.GridButtonName+ "\" type=\"button\" class=\"btn btn-default\" onclick=\"return "+btn .GridButtonEvent+"\">");
+                    //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
+                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>" + AppCom.GetFieldDesc((int)Language, this.DSID, string.Empty, btn.GridButtonName) + "");//删除
+                    _page.Append("</button>");
+                }
+            }
             _page.Append("</div>");
             #endregion
             _page.Append("<table id=\"" + grid.GridGroupName + "\"></table>");
@@ -724,7 +745,7 @@ namespace BWYSDPWeb.Com
                 "datastr+=']';" +
                 "SDP_Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
                 "});");
-            _script.Append("$('#bwysdp_btnadd').click(function (){ SDP_Add();});");
+            _script.Append("$('#bwysdp_btnadd').click(function (){ SDP_Add(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
 
             #endregion
 

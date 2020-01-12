@@ -154,8 +154,8 @@
             <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
             <div class="cm-flex">
                 <h1>Home</h1>
-                <form id="cm-search" action="@Url.Action("SearchFunc")" method="get">
-                    <input type="search" name="q" autocomplete="off" placeholder="请输入功能ID或名称...">
+                <form id="cm-search" action="@Url.Action("SearchFunc","DataBase")" method="post" >
+                    <input id="sdp_searchinput" type="search" name="q" autocomplete="off" placeholder="请输入功能ID或名称...">
                 </form>
             </div>
             <div class="pull-right">
@@ -264,10 +264,14 @@
         </div>
     @*@Scripts.Render("~/bundles/jquery")*@
     @RenderSection("scripts", required: false)
-    @*<script type="text/javascript">
+    <script type="text/javascript">
         $(function () {
-
+            $('#sdp_searchinput').keydown(function (e) {
+                if (e.keyCode == "13") {
+                    $('#cm-search').submit();
+                }
+            });
         });
-    </script>*@
+    </script>
 </body>
 </html>

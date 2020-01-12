@@ -186,6 +186,7 @@
     <Compile Include="Models\FuzzySearchResult.cs" />
     <Compile Include="Models\Menu.cs" />
     <Compile Include="Models\PageInfo.cs" />
+    <Compile Include="Models\ProgInfo.cs" />
     <Compile Include="Models\SearchCondition.cs" />
     <Compile Include="Models\SessionInfo.cs" />
     <Compile Include="Models\TableObj.cs" />
@@ -1878,6 +1879,7 @@
     <Content Include="img\sf\wine.svg" />
     <Content Include="img\sf\wrench-screwdriver.svg" />
     <Content Include="img\sf\wrench.svg" />
+    <Content Include="Scripts\Authority\JoleScript.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">

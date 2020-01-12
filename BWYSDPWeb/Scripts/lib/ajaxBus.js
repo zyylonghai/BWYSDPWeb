@@ -80,6 +80,7 @@ $.ajax = function (opt) {
             if (data != null && data.sdp_msglist != null && data.sdp_msglist != undefined) {
                 let _errors = "";
                 let _warnings = "";
+                let _promts = "";
                 $.each(data.sdp_msglist, function (index, o) {
                     //_msg += o.Message + "<br/>";
                     if (o.MsgType == 1) {
@@ -88,12 +89,20 @@ $.ajax = function (opt) {
                     else if (o.MsgType == 2) {
                         _warnings += o.Message + "<br/>";
                     }
+                    else if (o.MsgType == 3) {
+                        _promts += o.Message + "<br/>";
+                    }
 
                 });
                 if (_errors.length > 0)
                     ShowMsg(_errors, 'error');
-                else if (_warnings.length > 0)
-                    ShowMsg(_warnings, 'warning');
+                else {
+                    if (_warnings.length > 0)
+                        ShowMsg(_warnings, 'warning');
+                    if (_promts.length > 0) {
+                        ShowMsg(_promts, 'promt');
+                    }
+                }
               
                 sdp_haserror = true;
             }
