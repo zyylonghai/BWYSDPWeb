@@ -105,8 +105,8 @@
     @Scripts.Render("~/bundles/bootstrap")
 </head>
 <body class="cm-no-transition cm-1-navbar">
-    <input type="hidden" id="bwysdp_progid"/>
-    <input type="hidden" id="bwysdp_dsid"/>
+    <input type="hidden" id="bwysdp_progid" />
+    <input type="hidden" id="bwysdp_dsid" />
     <div id="cm-menu">
         <nav class="cm-navbar cm-navbar-primary">
             <div class="cm-flex"><a href="/" class="cm-logo"></a></div>
@@ -118,32 +118,32 @@
                     <ul id="menudata" class="cm-menu-items">
                         <li id="0001" onclick="menuClick(this)"><a href="/Home/ConverToPage?progId=Index" id="Index" class="sf-house">主页</a></li>
                         @*<li>@Html.ActionLink("主页", "ConverToPage", "Home", new { progId = "Index" }, new { id = "Index" })</li>
-        <li>@Html.ActionLink("关于", "ConverToPage", "Home", new { progId = "About" }, new { id = "About" })</li>
-        <li>@Html.ActionLink("联系方式", "ConverToPage", "Home", new { progId = "Contact" }, new { id = "Contact" })</li>
-        <li class="cm-submenu">
-            <a class="sf-window-layout">供应链管理<span class="caret"></span></a>
-            <ul>
-                <li class="active"><a href="/SCM/ConverToPage?progId=SaleOrder" id="SaleOrder">销售订单</a></li>
-                <li><a href="/SCM/ConverToPage?progId=PurchaseOrder" id="PurchaseOrder">采购订单</a></li>
-                <li><a href="/SCM/ConverToPage?progId=ShipOrder" id="ShipOrder">发货单</a></li>
-            </ul>
-        </li>
-        <li class="cm-submenu">
-            <a class="sf-window-layout">库存管理 <span class="caret"></span></a>
-            <ul id="0102">
-                <li><a href="/Stock/ConverToPage?progId=StockReport" id="StockReport">库存报表</a></li>
-                <li><a href="/Stock/ConverToPage?progId=StockAdjustment">库存调整</a></li>
-                <li><a href="/Stock/ConverToPage?progId=StockSearch">库存查询</a></li>
-            </ul>
-        </li>
-        <li class="cm-submenu">
-            <a class="sf-window-layout">库存2 <span class="caret"></span></a>
-            <ul>
-                <li><a href="/Stock/ConverToPage?progId=StockReport2" id="StockReport2">库存报表</a></li>
-            </ul>
-        </li>
-        <li>@Html.ActionLink("自定义页面", "ConverToPage", "Home", new { progId = "bordtest" }, new { id = "bordtest" })</li>
-        <li><a href="login.html" class="sf-lock-open">Login page</a></li>*@
+                            <li>@Html.ActionLink("关于", "ConverToPage", "Home", new { progId = "About" }, new { id = "About" })</li>
+                            <li>@Html.ActionLink("联系方式", "ConverToPage", "Home", new { progId = "Contact" }, new { id = "Contact" })</li>
+                            <li class="cm-submenu">
+                                <a class="sf-window-layout">供应链管理<span class="caret"></span></a>
+                                <ul>
+                                    <li class="active"><a href="/SCM/ConverToPage?progId=SaleOrder" id="SaleOrder">销售订单</a></li>
+                                    <li><a href="/SCM/ConverToPage?progId=PurchaseOrder" id="PurchaseOrder">采购订单</a></li>
+                                    <li><a href="/SCM/ConverToPage?progId=ShipOrder" id="ShipOrder">发货单</a></li>
+                                </ul>
+                            </li>
+                            <li class="cm-submenu">
+                                <a class="sf-window-layout">库存管理 <span class="caret"></span></a>
+                                <ul id="0102">
+                                    <li><a href="/Stock/ConverToPage?progId=StockReport" id="StockReport">库存报表</a></li>
+                                    <li><a href="/Stock/ConverToPage?progId=StockAdjustment">库存调整</a></li>
+                                    <li><a href="/Stock/ConverToPage?progId=StockSearch">库存查询</a></li>
+                                </ul>
+                            </li>
+                            <li class="cm-submenu">
+                                <a class="sf-window-layout">库存2 <span class="caret"></span></a>
+                                <ul>
+                                    <li><a href="/Stock/ConverToPage?progId=StockReport2" id="StockReport2">库存报表</a></li>
+                                </ul>
+                            </li>
+                            <li>@Html.ActionLink("自定义页面", "ConverToPage", "Home", new { progId = "bordtest" }, new { id = "bordtest" })</li>
+                            <li><a href="login.html" class="sf-lock-open">Login page</a></li>*@
                     </ul>
                 </div>
             </div>
@@ -154,7 +154,7 @@
             <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
             <div class="cm-flex">
                 <h1>Home</h1>
-                <form id="cm-search" action="@Url.Action("SearchFunc","DataBase")" method="post" >
+                <form id="cm-search" action="@Url.Action("SearchFunc","DataBase")" method="post">
                     <input id="sdp_searchinput" type="search" name="q" autocomplete="off" placeholder="请输入功能ID或名称...">
                 </form>
             </div>
@@ -217,7 +217,7 @@
         @RenderBody()
         <footer class="cm-footer"><span class="pull-left">Connected as John Smith</span><span class="pull-right">&copy; PAOMEDIA SARL</span></footer>
     </div>
-    <div id="masklayer" class="masklayer"></div>  
+    <div id="masklayer" class="masklayer"></div>
     <div id="sdp_fuzzySearch" style="display:none;width:300px; height:260px;">
         <div class="panel-group">
             <div class="panel panel-success">
@@ -232,36 +232,61 @@
                     <div style="overflow:scroll;height:260px;">
                         <table class="table table-bordered" id="fuzzysearchtable">
                             @*<thead style="background-color:deepskyblue">
-                                <tr>
-                                    <th>名称</th>
-                                    <th>城市</th>
-                                    <th>邮编</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Tanmay</td>
-                                    <td>Bangalore</td>
-                                    <td>560001</td>
-                                </tr>
-                                <tr>
-                                    <td>Sachin</td>
-                                    <td>Mumbai</td>
-                                    <td>400003</td>
-                                </tr>
-                                <tr>
-                                    <td>Uma</td>
-                                    <td>Pune</td>
-                                    <td>411027</td>
-                                </tr>
-                            </tbody>*@
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>城市</th>
+                                        <th>邮编</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Tanmay</td>
+                                        <td>Bangalore</td>
+                                        <td>560001</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sachin</td>
+                                        <td>Mumbai</td>
+                                        <td>400003</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Uma</td>
+                                        <td>Pune</td>
+                                        <td>411027</td>
+                                    </tr>
+                                </tbody>*@
                         </table>
                     </div>
                 </div>
             </div>
 
         </div>
-        </div>
+    </div>
+    <div class="modal fade" id="sdp_Modal_com" tabindex="-1" role="dialog" aria-labelledby="sdp_ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#dff0d8">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="sdp_ModalLabel">
+                        模态框（Modal）标题
+                    </h4>
+                </div>
+                <div id="sdp_comModal_body" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭
+                    </button>
+                    <button id="sdp_comModal_btnok" type="button" class="btn btn-primary">
+                        提交更改
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
     @*@Scripts.Render("~/bundles/jquery")*@
     @RenderSection("scripts", required: false)
     <script type="text/javascript">

@@ -27,7 +27,7 @@
                         foreach (var item in groups)
                         {
                             var list = Model.ActObjList.Where(i => i.GroupId == item.Key.GroupId).ToList();
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">@item.Key.GroupNm </div>
                                     <div class="panel-body" style="min-height: 120px;">
@@ -55,7 +55,7 @@
                         foreach (var item in groups)
                         {
                             var list = Model.DataObjList.Where(i => i.GroupId == item.Key.GroupId).ToList();
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">@item.Key.GroupNm </div>
                                     <div class="panel-body" style="min-height: 120px;">
@@ -86,32 +86,4 @@
         //    $(".previous-tab span").html(previousTab);
         //});
     })
-    @*function onclickEvent(obj) {
-        $('ul').children().each(function (index, o) { $(this).removeClass("active"); });
-        $(obj).parent().addClass("active");
-        if (obj.id == "action") {
-            GetActionData(1);
-            //$('#content').html("操作对象设置");
-        }
-        else if (obj.id == "data") {
-            $('#content').html("数据对象设置");
-        }
-        //else if (obj.id == "staff") {
-        //    $('#content').html("所考虑的就是看见");
-        //}
-    }
-
-    function GetActionData(flag) {
-        $.ajax({
-            url: "/Jole/GetActionData/",
-            data: { progid: "@Model", flag: flag },
-            type: 'Post',
-            success: function (content) {
-
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
-            }
-        });
-    }*@
 </script>

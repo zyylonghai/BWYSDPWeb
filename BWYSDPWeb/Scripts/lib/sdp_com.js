@@ -247,7 +247,7 @@ function RefreshAllGrid() {
     });
 }
 
-function ShowComModal(title,html,okFunc) {
+function ShowComModal(title,html,okEvent) {
     $('#sdp_Modal_com').on('show.bs.modal', function (e) {
         // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
         $(this).css('display', 'block');
@@ -278,7 +278,7 @@ function ShowComModal(title,html,okFunc) {
         //var fieldnm = button.data('fieldnm');//搜索控件关联的字段
         //var flag = button.data('flag');//1标识单据的搜索，2标识来源主数据的搜索
         $('#sdp_Modal_com .modal-title').text(title);
-        $('#sdp_comModal_btnok').click(okFunc);
+        $('#sdp_comModal_btnok').click(okEvent);
     });
     $("#sdp_Modal_com").modal("show");
     drag("sdp_Modal_com");
