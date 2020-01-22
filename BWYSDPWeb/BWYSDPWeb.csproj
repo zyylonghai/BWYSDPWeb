@@ -1971,10 +1971,10 @@
     <Content Include="Views\Shared\NotFindPage.cshtml" />
     <Content Include="Views\Server\ServerPage.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Authority\_ActionDetailParse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Authority\" />
     <Folder Include="Views\Com\" />
     <Folder Include="Views\stocktest\" />
     <Folder Include="Views\Stock\" />
@@ -1995,6 +1995,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Authority\AuthorityViewModel.csproj">
+      <Project>{9e903a68-2e4f-4d90-89a2-1f628c0dbdfc}</Project>
+      <Name>AuthorityViewModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bll\Bll.csproj">
       <Project>{415116f1-316c-4977-b659-a9da96990b5c}</Project>
       <Name>Bll</Name>

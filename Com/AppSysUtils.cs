@@ -21,6 +21,13 @@ namespace Com
             return total;
         }
 
+        /// <summary>
+        /// 分页取数
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="page">页码</param>
+        /// <param name="rows">每页条数</param>
+        /// <returns></returns>
         public static DataTable GetDataByPage(DataTable dt, int page, int rows)
         {
             DataTable resultdt = dt.Clone();

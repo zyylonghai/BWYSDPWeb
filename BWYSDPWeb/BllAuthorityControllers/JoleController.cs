@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
+using SDPCRL.COM.ModelManager;
+using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
 using SDPCRL.CORE.FileUtils;
 
@@ -66,5 +68,20 @@ namespace BWYSDPWeb.BllAuthorityControllers
                 #endregion
             }
         }
+
+        //public ActionResult GetActionData(string progid,int flag)
+        //{
+        //    ProgInfo[] allprogid = AppCom.GetAllProgid();
+        //    if (flag == 1)
+        //    {
+        //        var pid = allprogid.FirstOrDefault(i => i.ProgId.ToUpper() == progid.ToUpper());
+        //        if (pid != null)
+        //        {
+        //            LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progid, pid.Package);
+
+        //        }
+        //    }
+        //    return Json(new { });
+        //}
     }
 }

@@ -1,0 +1,117 @@
+﻿@model AuthorityViewModel.ActionViewModel
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#action" data-toggle="tab">操作对象设置</a>
+    </li>
+    <li><a href="#data" data-toggle="tab">数据对象设置</a></li>
+    @*<li class="dropdown">
+            <a href="#" id="myTabDrop1" class="dropdown-toggle"
+               data-toggle="dropdown">
+                Java <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                <li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>
+                <li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>
+            </ul>
+        </li>*@
+</ul>
+<form id="content">
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="action">
+            <div class="row cm-fix-height">
+                @{
+                    if (Model != null)
+                    {
+                        string pregroupid = string.Empty;
+                        var groups = Model.ActObjList.GroupBy(i =>new { i.GroupId,i.GroupNm }).ToList();
+                        foreach (var item in groups)
+                        {
+                            var list = Model.ActObjList.Where(i => i.GroupId == item.Key.GroupId).ToList();
+                            <div class="col-sm-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">@item.Key.GroupNm </div>
+                                    <div class="panel-body" style="min-height: 120px;">
+                                        <ul style="margin:0">
+                                            @foreach (var o in list)
+                                            {
+                                                <li><input type="checkbox" name="@string.Format("{0}_{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+        <div class="tab-pane fade" id="data">
+            <div class="row cm-fix-height">
+                @{
+                    if (Model != null)
+                    {
+                        string pregroupid = string.Empty;
+                        var groups = Model.DataObjList.GroupBy(i => new { i.GroupId, i.GroupNm }).ToList();
+                        foreach (var item in groups)
+                        {
+                            var list = Model.DataObjList.Where(i => i.GroupId == item.Key.GroupId).ToList();
+                            <div class="col-sm-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">@item.Key.GroupNm </div>
+                                    <div class="panel-body" style="min-height: 120px;">
+                                        <ul style="margin:0">
+                                            @foreach (var o in list)
+                                            {
+                                                <li><input type="checkbox" name="@string.Format("{0}_{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(function () {
+        //$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        //    // 获取已激活的标签页的名称
+        //    var activeTab = $(e.target).text();
+        //    // 获取前一个激活的标签页的名称
+        //    var previousTab = $(e.relatedTarget).text();
+        //    $(".active-tab span").html(activeTab);
+        //    $(".previous-tab span").html(previousTab);
+        //});
+    })
+    @*function onclickEvent(obj) {
+        $('ul').children().each(function (index, o) { $(this).removeClass("active"); });
+        $(obj).parent().addClass("active");
+        if (obj.id == "action") {
+            GetActionData(1);
+            //$('#content').html("操作对象设置");
+        }
+        else if (obj.id == "data") {
+            $('#content').html("数据对象设置");
+        }
+        //else if (obj.id == "staff") {
+        //    $('#content').html("所考虑的就是看见");
+        //}
+    }
+
+    function GetActionData(flag) {
+        $.ajax({
+            url: "/Jole/GetActionData/",
+            data: { progid: "@Model", flag: flag },
+            type: 'Post',
+            success: function (content) {
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+            }
+        });
+    }*@
+</script>

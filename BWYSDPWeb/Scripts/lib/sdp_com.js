@@ -247,6 +247,43 @@ function RefreshAllGrid() {
     });
 }
 
+function ShowComModal(title,html,okFunc) {
+    $('#sdp_Modal_com').on('show.bs.modal', function (e) {
+        // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零
+        $(this).css('display', 'block');
+
+        if (parseInt(sdp_globModalzindex) > 0) {
+            $(this).css('z-index', parseInt(sdp_globModalzindex) + 1);
+        }
+        sdp_globModalzindex = $(this).css("z-index");
+        if ($(window).width() > 780) {
+            $('#sdp_Modal_com .modal-dialog').width($(window).width() - 200);
+        }
+        var modalHeight = $(window).height() / 2 - $('#sdp_Modal_com .modal-dialog').height() / 2;
+        var modalWidth = $('#sdp_Modal_com .modal-dialog').width() / 2;
+        if ($(window).width() > 780) {
+            $(this).find('.modal-dialog').css({
+                'margin-top': modalHeight,
+                'margin-left': -modalWidth
+            });
+        }
+        $('#sdp_comModal_body').html(html);
+        //var button = $(e.relatedTarget); // 触发事件的按钮
+        //var param = button.data('whatever'); // 解析出data-whatever内容
+        //var Modalnm = button.data('modalnm');//模态框标题
+        //var deftb = button.data('deftb');//来源自定义表名
+        //var fromdsid = button.data('fromdsid');//来源数据源id
+        //var tbstruct = button.data('tbstruct');//来源表结构
+        //var controlnm = button.data('controlnm');//服务端的controller
+        //var fieldnm = button.data('fieldnm');//搜索控件关联的字段
+        //var flag = button.data('flag');//1标识单据的搜索，2标识来源主数据的搜索
+        $('#sdp_Modal_com .modal-title').text(title);
+        $('#sdp_comModal_btnok').click(okFunc);
+    });
+    $("#sdp_Modal_com").modal("show");
+    drag("sdp_Modal_com");
+}
+
 //function GetMsgForSave() {
 //    $.ajax({
 //        url: "/DataBase/GetMsgforSave",

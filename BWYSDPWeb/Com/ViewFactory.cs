@@ -131,7 +131,7 @@ namespace BWYSDPWeb.Com
             _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnsave") + "</button>");
             _page.Append("<button id=\"bwysdp_btnadd\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnadd") + "</button>");
             //_page.Append("<i class=\"fa fa-fw fa-save\"></i>"+AppCom .GetFieldDesc ((int)Language ,string.Empty ,string.Empty , "sdp_btnsave") +"</button>");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
+            _page.Append("<button id=\"bwysdp_btndelet\" type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
             //_page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
             _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btncopy") + "</button>");
 
@@ -490,7 +490,7 @@ namespace BWYSDPWeb.Com
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
             #region sdp_rowid 列
-            table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: true}");
+            table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible:true,switchable:false}");
             hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
             #endregion
             //if (grid.GdGroupFields != null)

@@ -1,8 +1,11 @@
-﻿using BWYSDPWeb.BaseController;
-using System;
+﻿using AuthorityViewModel;
+using BWYSDPWeb.BaseController;
+using BWYSDPWeb.Com;
+using BWYSDPWeb.Models;
+using SDPCRL.COM.ModelManager;
+using SDPCRL.COM.ModelManager.FormTemplate;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BWYSDPWeb.BllAuthorityControllers
@@ -13,6 +16,115 @@ namespace BWYSDPWeb.BllAuthorityControllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        /// <summary>取功能权限对象</summary>
+        /// <param name="progid"></param>
+        /// <returns></returns>
+        public ActionResult GetActionDetailView(string progid)
+        {
+            ActionViewModel vm = null;
+            ProgInfo[] allprogid = AppCom.GetAllProgid();
+            var pid = allprogid.FirstOrDefault(i => i.ProgId.ToUpper() == progid.ToUpper());
+            if (pid != null)
+            {
+                List<ActionObj> list = new List<ActionObj>();
+                ActionObj o = null;
+                LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progid, pid.Package);
+                LibPermissionSource libPermission = ModelManager.GetModelBypath<LibPermissionSource>(this.ModelRootPath, progid, pid.Package);
+                if (libPermission != null)
+                {
+                    if (libPermission.IsAdd)
+                    {
+                        o = new ActionObj();
+                        o.ObjectType = 1;
+                        o.ObjectId = "bwysdp_btnadd";
+                        o.ObjectNm = "新增";
+                        o.GroupId = formpage.FormId;
+                        o.GroupNm = "功能按钮";
+                        list.Add(o);
+                    }
+                    if (libPermission.IsDelete)
+                    {
+                        o = new ActionObj();
+                        o.ObjectType = 1;
+                        o.ObjectId = "bwysdp_btndelet";
+                        o.ObjectNm = "删除";
+                        o.GroupId = formpage.FormId;
+                        o.GroupNm = "功能按钮";
+                        list.Add(o);
+                    }
+                    if (libPermission.IsSearch)
+                    {
+                        o = new ActionObj();
+                        o.ObjectType = 1;
+                        o.ObjectId = "bwysdp_btnSearch";
+                        o.ObjectNm = "查询";
+                        o.GroupId = formpage.FormId;
+                        o.GroupNm = "功能按钮";
+                        list.Add(o);
+                    }
+                }
+                if (formpage != null)
+                {
+                    if (formpage.BtnGroups != null)
+                    {
+                        foreach (LibButtonGroup group in formpage.BtnGroups)
+                        {
+                            if (group.LibButtons == null) continue;
+                            foreach (LibButton btn in group.LibButtons)
+                            {
+                                o = new ActionObj();
+                                o.ObjectType = 1;
+                                o.ObjectId = btn.LibButtonName;
+                                o.ObjectNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, btn.LibButtonName);
+                                o.GroupId = group .BtnGroupName;
+                                o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, group.BtnGroupName);
+                                list.Add(o);
+                            }
+
+                        }
+                    }
+                    if (formpage.GridGroups != null)
+                    {
+                        foreach (LibGridGroup item in formpage.GridGroups)
+                        {
+                            if (formpage.ModuleOrder.FindFirst("ID", item.GridGroupID) == null) continue;
+                            if (item.GdButtons != null)
+                            {
+                                foreach (LibGridButton btn in item.GdButtons)
+                                {
+                                    o = new ActionObj();
+                                    o.ObjectType = 1;
+                                    o.ObjectId = btn.GridButtonName;
+                                    o.ObjectNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, btn.GridButtonName);
+                                    o.GroupId = item.GridGroupName;
+                                    o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, item.GridGroupName);
+                                    list.Add(o);
+                                }
+                            }
+                            if (item.GdGroupFields != null)
+                            {
+                                foreach (LibGridGroupField f in item.GdGroupFields)
+                                {
+                                    if (f.Hidden) continue;
+                                    o = new ActionObj();
+                                    o.ObjectType = 2;
+                                    o.ObjectId = f.Name;
+                                    o.ObjectNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, f.FromTableNm, f.Name);
+                                    o.GroupId = item.GridGroupName;
+                                    o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, item.GridGroupName);
+                                    list.Add(o);
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                vm = new ActionViewModel(list);
+
+            }
+            return PartialView("_ActionDetailParse",vm);
         }
     }
 }
