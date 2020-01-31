@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using AuthorityViewModel;
 using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using SDPCRL.COM.ModelManager;
@@ -13,16 +14,16 @@ using SDPCRL.CORE.FileUtils;
 
 namespace BWYSDPWeb.BllAuthorityControllers
 {
-    public class JoleController: AuthorityController
+    public class JoleController : AuthorityController
     {
         protected override void PageLoad()
         {
             base.PageLoad();
         }
 
-        protected override void SetSearchFieldExt(List<SearchConditionField> fields,int flag)
+        protected override void SetSearchFieldExt(List<SearchConditionField> fields, int flag)
         {
-            base.SetSearchFieldExt(fields,flag);
+            base.SetSearchFieldExt(fields, flag);
             if (flag == 3)
             {
                 SearchConditionField field = new SearchConditionField();
@@ -41,9 +42,9 @@ namespace BWYSDPWeb.BllAuthorityControllers
             }
         }
 
-        protected override void BindSmodalDataExt(DataTable currpagedata,int flag)
+        protected override void BindSmodalDataExt(DataTable currpagedata, int flag)
         {
-            base.BindSmodalDataExt(currpagedata,flag);
+            base.BindSmodalDataExt(currpagedata, flag);
             if (flag == 3)
             {
                 #region 获取所有功能模型的Progid
@@ -67,6 +68,36 @@ namespace BWYSDPWeb.BllAuthorityControllers
 
                 #endregion
             }
+        }
+
+        public ActionResult SaveActionDetail(List<ActionObj> data, string progid)
+        {
+            if (data != null)
+            {
+                DataTable dt = this.LibTables[2].Tables[0];
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    if (dt.Rows[i].RowState == DataRowState.Added)
+                    {
+                        dt.Rows[i].Delete();
+                        i--;
+                    }
+                    else
+                    {
+                        dt.Rows[i].Delete();
+                    }
+                }
+                foreach (ActionObj item in data)
+                {
+                    DataRow dr = this.LibTables[2].Tables[0].NewRow();
+                    dr["ProgId"] = progid;
+                    dr["ObjectType"] = item.ObjectType;
+                    dr["ObjectId"] = item.ObjectId;
+                    dr["GroupId"] = item.GroupId;
+                    this.LibTables[2].Tables[0].Rows.Add(dr);
+                }
+            }
+            return Json(new { });
         }
 
         //public ActionResult GetActionData(string progid,int flag)

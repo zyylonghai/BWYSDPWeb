@@ -233,7 +233,7 @@ LibTable.prototype = {
                 $detail.html(toolhtml + "<table id='" + tbobj.SubTable.$table.ElemtableID + "'></table>");
                 tbobj.SubTable.$table.toolbar ='#'+ toolid;
                 tbobj.SubTable.initialTable();
-                $('#' + toolid + '_sdp_addrow').click(function () { tbobj.SubTable.AddRow();});
+                //$('#' + toolid + '_sdp_addrow').click(function () { tbobj.SubTable.AddRow();});
 
             },
             onPreBody: function (data) {

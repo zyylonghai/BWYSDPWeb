@@ -44,6 +44,12 @@ namespace BWYSDPWeb.Com
             return bll.GetFieldDesc(languageid, dsid, tablenm, fieldnm);
         }
 
+        public static string GetMessageDesc(string msgid)
+        {
+            UserInfo userInfo = System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo;
+            return GetFieldDesc((int)userInfo.Language, string.Empty, string.Empty, msgid);
+        }
+
         public static ProgInfo[] GetAllProgid()
         {
             ProgInfo[] results=null;

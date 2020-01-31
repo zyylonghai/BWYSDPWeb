@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SDPCRL.COM">
+      <HintPath>..\library\SDPCRL.COM.dll</HintPath>
+    </Reference>
     <Reference Include="SDPCRL.CORE">
       <HintPath>..\library\SDPCRL.CORE.dll</HintPath>
     </Reference>

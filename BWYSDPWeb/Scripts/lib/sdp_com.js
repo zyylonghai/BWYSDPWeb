@@ -139,6 +139,53 @@ function TableBtnAdd(obj) {
 
 }
 
+function TableBtnDelete(obj, grid,tbnm,tablenm,ctrl) {
+    var seletdr = $('#' + grid).bootstrapTable('getSelections');
+    if (seletdr == null || seletdr.length == 0) {
+        ShowMsg('未选择要删除的行', 'error');
+        return false;
+    }
+    //if (seletdr.length > 1) {
+    //    ShowMsg('只能选择一行进行删除', 'error');
+    //    return;
+    //}
+    var rowids = [];
+    $.each(seletdr, function (index, o) {
+        rowids.push({ FieldNm: "sdp_rowid", FieldValue: o.sdp_rowid });
+    });
+    $.confirm({
+        title: '提示!',
+        content: '确定删除选中的记录吗？',
+        buttons: {
+            确定: function () {
+                $.ajax({
+                    type: "POST",
+                    url: '/' + ctrl + '/TableAction',
+                    data: 'gridid=' + grid + '&tbnm=' + tbnm + '&tableNm=' + tablenm + '&cmd=Delet&row=' + JSON.stringify(rowids)+ '',
+                    //data: fileData,
+                    dataType: "text",
+                    success: function (data) {
+                        $('#' + grid).bootstrapTable('refresh');
+                    },
+                    error: function () {
+                    }
+                });
+            },
+            取消: function () {
+            }
+            //somethingElse: {
+            //    text: 'Something else',
+            //    btnClass: 'btn-blue',
+            //    keys: ['enter', 'shift'],
+            //    action: function () {
+            //        $.alert('Something else?');
+            //    }
+            //}
+        }
+    });
+
+}
+
 function TimeConverToStr(tm) {
     //var datetime = Date.parse(new Date(stringTime));
     //datetime.setTime(time);
@@ -278,10 +325,14 @@ function ShowComModal(title,html,okEvent) {
         //var fieldnm = button.data('fieldnm');//搜索控件关联的字段
         //var flag = button.data('flag');//1标识单据的搜索，2标识来源主数据的搜索
         $('#sdp_Modal_com .modal-title').text(title);
+        $('#sdp_comModal_btnok').unbind();
         $('#sdp_comModal_btnok').click(okEvent);
     });
     $("#sdp_Modal_com").modal("show");
     drag("sdp_Modal_com");
+}
+function CloseComModal() {
+    $("#sdp_Modal_com").modal('hide');
 }
 
 //function GetMsgForSave() {

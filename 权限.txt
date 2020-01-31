@@ -1,4 +1,4 @@
-账户表：
+账户信息表：
 (
 UserId,账户号   主键
 UserNm, 账户名 
@@ -42,11 +42,23 @@ LastmodifyUser, 最后修改者
     SeqNo, 项目号 主键（自动增长)
     ObjectType, 权限对象类型(1:操作对象 2:数据对象 )
     ObjectId, 对象ID（包括按钮id，字段id） 
-    GroupId, 组ID（包括信息组ID，表格组ID）
+    GroupId, 组ID（包括信息组ID，表格组ID,按钮组ID，排版模型ID）
 
 CreateDate, 创建日期
 Creater,创建者
 LastmodifyDate, 最后修改日期
 LastmodifyUser, 最后修改者
 
+)
+
+用户权限表
+(
+  UserId,账户号   主键
+  JoleId, 角色编号   主键
+
+CreateDate, 创建日期
+Creater,创建者
+LastmodifyDate, 最后修改日期
+LastmodifyUser, 最后修改者
+  
 )

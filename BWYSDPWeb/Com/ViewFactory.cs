@@ -181,19 +181,6 @@ namespace BWYSDPWeb.Com
             _panelgroupdic.Add(id, false);
         }
 
-        //public void CreateFormGroup()
-        //{
-        //    foreach (KeyValuePair<string, bool> item in _fomGroupdic)
-        //    {
-        //        if (!item.Value)
-        //        {
-        //            _page.Append("</div>");
-        //            _fomGroupdic[item.Key] = true;
-        //        }
-        //    }
-        //    _page.Append("<div class=\"form-group\">");
-        //    _fomGroupdic.Add(string.Format("formgroup{0}", _fomGroupdic.Count + 1), false);
-        //}
 
         /// <summary>
         /// 添加信息组字段
@@ -357,7 +344,7 @@ namespace BWYSDPWeb.Com
             }
             if (grid.HasDeletRowButton)
             {
-                _page.Append("<button type=\"button\" class=\"btn btn-default\">");
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnDelete(this,'" + grid.GridGroupName + "','"+ grid.GdGroupFields[0].FromDefTableNm + "','"+ grid.GdGroupFields[0].FromTableNm + "','"+(string.IsNullOrEmpty(ControlClassNm )?"DataBase":ControlClassNm)+"')\">");
                 //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
                 _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngriddelete") + "");//删除
                 _page.Append("</button>");
@@ -390,6 +377,7 @@ namespace BWYSDPWeb.Com
             StringBuilder hidecolumns = new StringBuilder();
             StringBuilder tbformfield = new StringBuilder();
             StringBuilder childformfield = new StringBuilder();
+            LibFromSourceField libFromSource = null;
             //LibField libField = null;
             //StringBuilder validatorAttr = null;
             int colcout = 0;
@@ -430,8 +418,13 @@ namespace BWYSDPWeb.Com
                     #endregion
                     foreach (LibGridGroupField field in childgrid.GdGroupFields)
                     {
+                        if (field.IsFromSourceField)
+                        {
+                            libFromSource = GetSourceField(field.Name, field.FromDefTableNm, field.FromTableNm);
+                        }
                         table.Append(",{");
-                        string fielddisplaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
+                        string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID,
+                                                                    (field.IsFromSourceField&& libFromSource !=null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
                         //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
                         table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible:{3},", field.Name, fielddisplaynm, field.HasSort ? "true" : "false", field.Hidden ? "false" : "true"));
                         table.Append("formatter: function (value, row, index) {");
@@ -498,9 +491,13 @@ namespace BWYSDPWeb.Com
             //bool flag = false;//用于标识是否已设置了 汇总行。
             foreach (LibGridGroupField field in grid.GdGroupFields)
             {
-
+                if (field.IsFromSourceField)
+                {
+                    libFromSource = GetSourceField(field.Name, field.FromDefTableNm, field.FromTableNm);
+                }
                 table.Append(",{");
-                string fielddisplaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
+                string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID, 
+                      (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
                 //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
                 table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, fielddisplaynm, field.HasSort ? "true" : "false"));
                 table.Append("formatter: function (value, row, index) {");
@@ -563,6 +560,26 @@ namespace BWYSDPWeb.Com
             _tableScriptlst.Add(table.ToString());
             _tbmodalFormfields.Add(string.Format("GridGroup_{0}", grid.GridGroupName), tbformfield.ToString());
 
+        }
+
+        /// <summary>
+        /// 创建按钮组
+        /// </summary>
+        public void CreatBtnGroup(LibButtonGroup btngroup)
+        {
+            EndprePanel();
+            _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
+            if (btngroup != null && btngroup.LibButtons != null)
+            {
+                foreach (LibButton btn in btngroup.LibButtons)
+                {
+                    _page.Append("<button id=\"" + btn.LibButtonName + "\" type=\"button\" class=\"btn btn-default\" onclick=\"return " + btn.LibButtonEvent + "\">");
+                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>" + AppCom.GetFieldDesc((int)Language, this.DSID, string.Empty, btn.LibButtonName) + "");
+                    _page.Append("</button>");
+                }
+            }
+            _page.Append("</div>");
+            _page.Append("<br /><br />");
         }
 
         /// <summary>
@@ -893,6 +910,25 @@ namespace BWYSDPWeb.Com
             }
             fieldsbuilder.Append("</div>");//结束 col-sm
             #endregion
+        }
+
+        private LibFromSourceField GetSourceField(string fieldNm, string deftbNm, string tableNm)
+        {
+            var deftb = this.LibDataSource.DefTables.FindFirst("TableName", deftbNm);
+            var tbstruct = deftb.TableStruct.FindFirst("Name", tableNm);
+            foreach (LibField field in tbstruct.Fields)
+            {
+                if (field.SourceField == null || field.SourceField.Count == 0) continue;
+                foreach (LibFromSourceField sfd in field.SourceField)
+                {
+                    if (sfd.RelateFieldNm == null || sfd.RelateFieldNm.Count == 0) continue;
+                    if (sfd.RelateFieldNm.FirstOrDefault(i => i.AliasName == fieldNm || i.FieldNm == fieldNm) != null)
+                    {
+                        return sfd;
+                    }
+                }
+            }
+            return null;
         }
         #endregion
     }

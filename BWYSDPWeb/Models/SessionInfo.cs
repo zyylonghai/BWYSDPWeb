@@ -45,5 +45,10 @@ namespace BWYSDPWeb.Models
         /// 来源字段描述
         /// </summary>
         public string FromFieldDesc { get; set; }
+
+        /// <summary>
+        ///关联带出来的字段集合
+        /// </summary>
+        public List<string> RelateFields { get; set; }
     }
 }

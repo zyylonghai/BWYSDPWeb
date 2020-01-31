@@ -27,7 +27,7 @@
         var tbstruct = button.data('tbstruct');//来源表结构
         var controlnm = button.data('controlnm');//服务端的controller
         var fieldnm = button.data('fieldnm');//搜索控件关联的字段
-        var flag = button.data('flag');//1标识单据的搜索，2标识来源主数据的搜索
+        var flag = button.data('flag');//1标识单据的搜索，2标识来源主数据的搜索,3标识无来源主数据的搜索
         $('#searchModal .modal-title').text(Modalnm + "主数据");
 
         var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
@@ -199,10 +199,11 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
                 }
             });
         }
-        else {
+        else if (flag==2) {
             let fromfieldnm;
             let fieldnm;
-            let fromfielddesc
+            let fromfielddesc;
+            let relatefields = [];
             $.each(dr, function (name, val) {
                 let index = name.indexOf("_sdp_");
                 if (index != -1) {
@@ -215,6 +216,15 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
                     if (index != -1) {
                         fromfielddesc = name.substring(index + 8);
                     }
+                    else {
+                        let arr = name.split("_rsdp_");
+                        if (arr != null && arr.length>1) {
+                            var o = new Object();
+                            o.aliasnm = arr[0];
+                            o.fieldnm = arr[1];
+                            relatefields.push(o);
+                        }
+                    }
                 }
             });
             $.each(dr, function (name, val) {
@@ -223,6 +233,20 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
                 }
                 else if (name == fromfielddesc) {
                     $('#' + fieldnm + '_desc').text(val);
+                    $.each(relatefields, function (n, o) {
+                        if (o.fieldnm == name) {
+                            $('#' + o.aliasnm).val(val);
+                            $('#' + o.aliasnm + o.fieldnm).val(val);
+                        }
+                    });
+                }
+                else {
+                    $.each(relatefields, function (n, o) {
+                        if (o.fieldnm == name) {
+                            $('#' + o.aliasnm).val(val);
+                            $('#' + o.aliasnm + o.fieldnm).val(val);
+                        }
+                    });
                 }
             });
             $("#searchModal").modal('hide');

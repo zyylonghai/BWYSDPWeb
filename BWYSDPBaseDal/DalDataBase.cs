@@ -58,7 +58,7 @@ namespace BWYSDPBaseDal
             {
                 sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder(dsid);
             }
-            string sql = sQLBuilder.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values },pageindex,pagesize);
+            string sql = sQLBuilder.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values },pageindex,pagesize,true ,false);
             return this.DataAccess.GetDataTable(sql);
         }
 
@@ -90,7 +90,7 @@ namespace BWYSDPBaseDal
                             }
                             where.AppendFormat("{0}.{1}", LibSysUtils.ToCharByTableIndex(tbextprop.TableIndex), item);
                         }
-                        sql.Append(this.SQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=where.ToString (),Values=valus },false));
+                        sql.Append(this.SQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=where.ToString (),Values=valus },false,false));
                         sql.AppendLine();
                     }
                 }
@@ -98,6 +98,13 @@ namespace BWYSDPBaseDal
             this.DataAccess.GetDatatTables(sql.ToString(), ref dts);
             return dts;
            
+        }
+
+        public DataTable GetAuthority(string userid)
+        {
+            SDPCRL.DAL.COM.SQLBuilder sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder("Account");
+            string sql = sQLBuilder.GetSQL("UserRole",null, sQLBuilder.Where("B.UserId={0}", userid));
+            return this.DataAccess.GetDataTable(sql);
         }
 
         #region 私有函数

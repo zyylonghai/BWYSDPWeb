@@ -4,7 +4,9 @@ using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -39,7 +41,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                         o = new ActionObj();
                         o.ObjectType = 1;
                         o.ObjectId = "bwysdp_btnadd";
-                        o.ObjectNm = "新增";
+                        o.ObjectNm = AppCom .GetMessageDesc("sdp_btnadd");
                         o.GroupId = formpage.FormId;
                         o.GroupNm = "功能按钮";
                         list.Add(o);
@@ -49,7 +51,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                         o = new ActionObj();
                         o.ObjectType = 1;
                         o.ObjectId = "bwysdp_btndelet";
-                        o.ObjectNm = "删除";
+                        o.ObjectNm = AppCom.GetMessageDesc("sdp_btnDelete");
                         o.GroupId = formpage.FormId;
                         o.GroupNm = "功能按钮";
                         list.Add(o);
@@ -59,7 +61,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                         o = new ActionObj();
                         o.ObjectType = 1;
                         o.ObjectId = "bwysdp_btnSearch";
-                        o.ObjectNm = "查询";
+                        o.ObjectNm = AppCom.GetMessageDesc("sdp_btnsearch");
                         o.GroupId = formpage.FormId;
                         o.GroupNm = "功能按钮";
                         list.Add(o);
@@ -82,7 +84,6 @@ namespace BWYSDPWeb.BllAuthorityControllers
                                 o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, group.BtnGroupName);
                                 list.Add(o);
                             }
-
                         }
                     }
                     if (formpage.GridGroups != null)
@@ -122,6 +123,19 @@ namespace BWYSDPWeb.BllAuthorityControllers
                     
                 }
                 vm = new ActionViewModel(list);
+                DataRow[] rows = this.LibTables[2].Tables[0].Select(string.Format("ProgId='{0}'", progid));
+                string groupid = string.Empty;
+                string objId = string.Empty;
+                int objtype = -1;
+                foreach (DataRow dr in rows)
+                {
+                     groupid = dr["GroupId"].ToString();
+                     objId = dr["ObjectId"].ToString();
+                     objtype = Convert.ToInt32(dr["ObjectType"].ToString());
+                    var exist = list.FirstOrDefault(i => i.GroupId == groupid && i.ObjectId == objId && i.ObjectType == objtype);
+                    if (exist != null)
+                        exist.IsAuthority = false;
+                }
 
             }
             return PartialView("_ActionDetailParse",vm);

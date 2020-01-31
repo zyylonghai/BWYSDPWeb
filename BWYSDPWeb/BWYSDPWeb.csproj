@@ -185,6 +185,7 @@
     <Compile Include="Models\ErrorObject.cs" />
     <Compile Include="Models\FuzzySearchResult.cs" />
     <Compile Include="Models\Menu.cs" />
+    <Compile Include="Models\NotPermission.cs" />
     <Compile Include="Models\PageInfo.cs" />
     <Compile Include="Models\ProgInfo.cs" />
     <Compile Include="Models\SearchCondition.cs" />
@@ -202,6 +203,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\c3.min.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\jquery-confirm.min.css" />
     <Content Include="Content\material-design.css" />
     <Content Include="Content\roboto.css" />
     <Content Include="Content\small-n-flat.css" />
@@ -1927,6 +1929,7 @@
     <Content Include="Scripts\jquery-2.1.3.min.js" />
     <Content Include="Scripts\lib\FormValidator.js" />
     <Content Include="Scripts\lib\home.js" />
+    <Content Include="Scripts\lib\jquery-confirm.min.js" />
     <Content Include="Scripts\lib\jquery.base64.js" />
     <Content Include="Scripts\lib\jquery.cookie.min.js" />
     <Content Include="Scripts\lib\jquery.mousewheel.min.js" />
@@ -1972,6 +1975,7 @@
     <Content Include="Views\Server\ServerPage.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Authority\_ActionDetailParse.cshtml" />
+    <Content Include="Views\Shared\NotPermission.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

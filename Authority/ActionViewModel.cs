@@ -36,5 +36,8 @@ namespace AuthorityViewModel
 
         public string GroupNm { get; set; }
 
+        /// <summary>是否有权限</summary>
+        public bool IsAuthority = true;
+
     }
 }

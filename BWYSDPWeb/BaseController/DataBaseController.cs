@@ -154,8 +154,12 @@ namespace BWYSDPWeb.BaseController
         /// <param name="progId">排版模型ID</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult ConverToPage(string progId,string flag)
+        public ActionResult ConverToPage(string progId, string flag)
         {
+            if (this.UserInfo == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (this.Request.Url.Segments.Length > 2)
             {
                 string packagepath = this.Request.Url.Segments[1];
@@ -164,6 +168,31 @@ namespace BWYSDPWeb.BaseController
                 {
                     this.ProgID = progId;
                     this.Package = packagepath.Replace("/", "");
+                    #region 权限验证
+                    var permresult = PermissionResult(this.ProgID, this.Package);
+                    if (permresult != null)
+                        return permresult;
+                    DalResult result = this.ExecuteMethod("GetAuthority", this.UserInfo.UserId);
+                    DataTable data = (DataTable)result.Value;
+                    if (data != null)
+                    {
+                        DataRow[] rows = data.Select(string.Format("JoleId='{0}'", "001"));//是否有管理员角色
+                        if (rows.Length == 0)//没有管理角色，则检查权限。
+                        {
+                            rows = data.Select(string.Format("ProgId='{0}'", this.ProgID));
+                            if (rows.Length == 0)
+                            {
+                                //msg000000009	用户{0}没有功能{1}使用权限
+                                return View("NotPermission", new NotPermission { Message = string.Format(AppCom.GetMessageDesc("msg000000009"), this.UserInfo.UserNm, this.ProgID) });
+                            }
+                            foreach (DataRow dr in rows)
+                            {
+
+                            }
+                        }
+
+                    }
+                    #endregion
                     this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, this.Package);
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     //if (string.IsNullOrEmpty (flag ) && this.SessionObj .OperateAction==OperatAction.Preview)
@@ -242,6 +271,16 @@ namespace BWYSDPWeb.BaseController
                                             }
                                         }
                                         break;
+                                    case ModuleType.ButtonGroup:
+                                        if (formpage.BtnGroups != null)
+                                        {
+                                            foreach (LibButtonGroup btngroup in formpage.BtnGroups)
+                                            {
+                                                if (btngroup.BtnGroupID != item.ID) continue;
+                                                factory.CreatBtnGroup(btngroup);
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -305,10 +344,6 @@ namespace BWYSDPWeb.BaseController
                     //Server.MapPath("/")
                 }
             }
-            if (this.UserInfo == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             //return View(progId);
             return View(string.Format("{0}_{1}", progId, this.Language.ToString()));
         }
@@ -365,10 +400,24 @@ namespace BWYSDPWeb.BaseController
         public ActionResult SearchFunc(string q)
         {
             ProgInfo[] allprogid = AppCom.GetAllProgid();
-            var pid = allprogid.FirstOrDefault(i =>i.ProgId.ToUpper() ==q.ToUpper ());
+            var pid = allprogid.FirstOrDefault(i => i.ProgId.ToUpper() == q.ToUpper());
             if (pid != null)
             {
-                return RedirectToAction("ConverToPage", pid .Package, new { progId = pid .ProgId });
+                //LibPermissionSource permission = ModelManager.GetModelBypath<LibPermissionSource>(this.ModelRootPath, pid.ProgId, pid.Package);
+                //if (permission != null&& !permission .IsMenu)
+                //{
+                //    //msg000000007	该功能未开放
+                //    return View("NotPermission", new NotPermission { Message = AppCom .GetMessageDesc ("msg000000007") });
+                //}
+                //if (permission == null)
+                //{
+                //    //msg000000008	功能{0}未配置权限模型
+                //    return View("NotPermission", new NotPermission { Message =string.Format(AppCom.GetMessageDesc("msg000000008"),pid.ProgId) });
+                //}
+                var permresult = PermissionResult(pid.ProgId, pid.Package);
+                if (permresult != null)
+                    return permresult;
+                return RedirectToAction("ConverToPage", pid.Package, new { progId = pid.ProgId });
             }
             //this.AddMessage("找不到该功能", LibMessageType.Error);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
@@ -377,7 +426,7 @@ namespace BWYSDPWeb.BaseController
         public ActionResult Save()
         {
             //HttpPostedFileBase file = this.Request.Files[0];
-            
+
             #region 处理前端传回的数据
             var formdata = this.Request.Form;
             string[] array;
@@ -442,7 +491,7 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             #region 处理上传的图片
-            foreach (string  key in Request.Files.AllKeys)
+            foreach (string key in Request.Files.AllKeys)
             {
                 if (key.Contains(SysConstManage.Point))
                 {
@@ -538,6 +587,7 @@ namespace BWYSDPWeb.BaseController
                     if (table == null) continue;
                     foreach (DataRow dr in table.Rows)
                     {
+                        if (dr.RowState == DataRowState.Deleted) continue;
                         SetColumnValue(dr, SysConstManage.sysfld_creater, this.UserInfo.UserId);
                         SetColumnValue(dr, SysConstManage.sysfld_createDT, DateTime.Now);
                     }
@@ -567,15 +617,23 @@ namespace BWYSDPWeb.BaseController
             //return Json(new { message = "dfceshi" }, JsonRequestBehavior.AllowGet);
             if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
+                foreach (LibTable libtb in this.LibTables)
+                {
+                    foreach (DataTable table in libtb.Tables)
+                    {
+                        table.AcceptChanges();
+                    }
+                }
                 this.SessionObj.OperateAction = OperatAction.Preview;
             }
-            this.AddMessage("保存成功", LibMessageType.Prompt);
+            //msg000000001 保存成功
+            this.AddMessage(AppCom.GetMessageDesc("msg000000001"), LibMessageType.Prompt);
             if (this.MsgList != null && this.MsgList.Count > 0)
             {
                 if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
                 this.SessionObj.MsgforSave.AddRange(this.MsgList);
             }
-            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID});
+            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
 
         public ActionResult Add()
@@ -600,7 +658,8 @@ namespace BWYSDPWeb.BaseController
             DataTable mast = dtlist.FirstOrDefault(i => i.TableName == tablenm);
             if (mast == null)
             {
-                return Json(new { data = "找不到表", flag = 1 }, JsonRequestBehavior.AllowGet);
+                //msg000000002 找不到表
+                return Json(new { data = AppCom.GetMessageDesc("msg000000002"), flag = 1 }, JsonRequestBehavior.AllowGet);
             }
             vals = new object[mast.PrimaryKey.Length];
             for (int n = 0; n < mast.PrimaryKey.Length; n++)
@@ -631,13 +690,13 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
             }
-            this.SessionObj.OperateAction = OperatAction.Preview ;
+            this.SessionObj.OperateAction = OperatAction.Preview;
             return LibJson();
             //return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }
 
         #region grid 表格操作
-        public string BindTableData(string gridid, string deftb, string tableNm,string prowid, int page, int rows,string sort,string sortOrder, string Mobile)
+        public string BindTableData(string gridid, string deftb, string tableNm, string prowid, int page, int rows, string sort, string sortOrder, string Mobile)
         {
             #region 旧代码
             //DataTable dt = new DataTable();
@@ -783,25 +842,26 @@ namespace BWYSDPWeb.BaseController
             if (!string.IsNullOrEmpty(prowid))
             {
                 TableExtendedProperties extprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                DataTable relatedt = InternalGetRelateTable(dt);
+                DataTable relatedt = InternalGetParentTable(dt);
                 DataRow relaterow = AppSysUtils.GetRowByRowId(relatedt, Convert.ToInt32(prowid));
-                if(relaterow ==null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-                StringBuilder where = new StringBuilder();
-                ColExtendedProperties colextprop = null;
-                DataColumn col2 = null;
-                foreach (DataColumn col in dt.PrimaryKey)
-                {
-                    if (col.AutoIncrement) continue;
-                    colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                    col2 = string.IsNullOrEmpty(colextprop.MapPrimarykey) ? relatedt.Columns[col.ColumnName ]: relatedt.Columns[colextprop.MapPrimarykey];
-                    if (col2 == null) continue;
+                if (relaterow == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+                //StringBuilder where = new StringBuilder();
+                //ColExtendedProperties colextprop = null;
+                //DataColumn col2 = null;
+                //foreach (DataColumn col in dt.PrimaryKey)
+                //{
+                //    if (col.AutoIncrement) continue;
+                //    colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                //    col2 = string.IsNullOrEmpty(colextprop.MapPrimarykey) ? relatedt.Columns[col.ColumnName] : relatedt.Columns[colextprop.MapPrimarykey];
+                //    if (col2 == null) continue;
 
-                    if (where.Length > 0)
-                    {
-                        where.Append(" and ");
-                    }
-                    where.AppendFormat("{0}='{1}'", col.ColumnName, relaterow[col2]);
-                }
+                //    if (where.Length > 0)
+                //    {
+                //        where.Append(" and ");
+                //    }
+                //    where.AppendFormat("{0}='{1}'", col.ColumnName, relaterow[col2]);
+                //}
+                string where = AppSysUtils.GetChildRowByParentRowToExpress(relaterow, dt);
                 dt = AppSysUtils.GetData(dt, where.ToString());
             }
             GetGridDataExt(gridid, dt);
@@ -818,7 +878,7 @@ namespace BWYSDPWeb.BaseController
             return JsonConvert.SerializeObject(result);
         }
 
-        public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string rowid,string prowid, string cmd)
+        public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string rowid, string prowid, string cmd)
         {
             DataRow dr = null;
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
@@ -838,7 +898,7 @@ namespace BWYSDPWeb.BaseController
                             if (extprop != null)
                             {
                                 #region 获取关联的表
-                                relatetb = InternalGetRelateTable(tb);
+                                relatetb = InternalGetParentTable(tb);
                                 //foreach (var item in this.LibTables)
                                 //{
                                 //    for (int n = 0; n < item.Tables.Length; n++)
@@ -928,18 +988,20 @@ namespace BWYSDPWeb.BaseController
             {
                 var formparams = this.Request.Form;
                 string[] array;
-                DataTable tb=null;
+                DataTable tb = null;
                 DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
                     tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
                     if (tb == null)
-                        this.ThrowErrorException(string.Format("未找到表{0}", tableNm));
+                        //msg000000003	未找到表{0}
+                        this.ThrowErrorException(string.Format(AppCom.GetMessageDesc("msg000000003"), tableNm));
                     if (string.IsNullOrEmpty(row))
                         this.ThrowErrorException("error! not data");
                     List<FormFields> fieldlst = JsonConvert.DeserializeObject<List<FormFields>>(row);
                     if (fieldlst == null)
-                        this.ThrowErrorException(string.Format("反序列化后数据为空"));
+                        //msg000000004	反序列化后数据为空
+                        this.ThrowErrorException(AppCom.GetMessageDesc("msg000000004"));
 
                     switch (cmd)
                     {
@@ -1017,6 +1079,93 @@ namespace BWYSDPWeb.BaseController
                             }
                             break;
                         case "Delet":
+                            if (fieldlst != null && fieldlst.Count > 0)
+                            {
+                                string rowid = string.Empty;
+                                Dictionary<int, List<int>> prows = new Dictionary<int, List<int>>();
+                                List<int> vals = null;
+                                TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                                List<DataRow> deletrows = new List<DataRow>();
+                                List<DataTable> childdts = InternalGetChildTable(tb);
+                                #region 删当前表的行。
+                                foreach (DataRow rw in tb.Rows)
+                                {
+                                    rowid = rw[SysConstManage.sdp_rowid].ToString();
+                                    if (fieldlst.FirstOrDefault(i => i.FieldNm == SysConstManage.sdp_rowid && i.FieldValue.ToString() == rowid) != null)
+                                    {
+                                        if (!prows.TryGetValue(extprop.TableIndex, out vals))
+                                        {
+                                            vals = new List<int>();
+                                            prows.Add(extprop.TableIndex, vals);
+                                        }
+                                        //if (childdts != null && childdts.Count > 0)
+                                        //{
+                                        //    foreach (DataTable cdt in childdts)
+                                        //    {
+                                        //        vals.Add(AppSysUtils.GetChildRowByParentRowToExpress(rw, cdt));
+                                        //    }
+                                        //}
+                                        vals.Add(Convert.ToInt32(rw[SysConstManage.sdp_rowid]));
+                                        deletrows.Add(rw);
+                                        //rw.Delete();
+                                    }
+                                }
+                                //foreach (DataRow drw in deletrows)
+                                //{
+                                //    drw.Delete();
+                                //}
+                                #endregion
+
+                                #region 删除子表的关联行。
+                                List<int> hasdone = new List<int>();
+                                while (childdts != null && childdts.Count > 0)
+                                {
+                                    foreach (DataTable child in childdts)
+                                    {
+                                        extprop = child.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                                        if (extprop != null)
+                                        {
+                                            if (prows.TryGetValue(extprop.RelateTableIndex, out vals))
+                                            {
+                                                if (!prows.ContainsKey(extprop.TableIndex))
+                                                {
+                                                    prows.Add(extprop.TableIndex, new List<int>());
+                                                }
+                                                hasdone.Add(extprop.RelateTableIndex);
+                                                DataTable pdt = GetTableByIndex(extprop.RelateTableIndex);
+                                                //deletrows.Clear();
+                                                foreach (int prowid in vals) {
+                                                   DataRow prow= AppSysUtils.GetRowByRowId(pdt, prowid);
+                                                    DataRow[] childrows = AppSysUtils.GetChildRowByParentRow(prow, child);
+                                                    if (childrows != null)
+                                                    {
+                                                        foreach (DataRow r in childrows)
+                                                        {
+                                                            prows[extprop.TableIndex].Add(Convert.ToInt32(r[SysConstManage.sdp_rowid]));
+                                                            deletrows.Add(r);
+                                                            //r.Delete();
+                                                        }
+                                                    }
+                                                }
+                                                //foreach (DataRow d in deletrows)
+                                                //{
+                                                //    d.Delete();
+                                                //}
+                                            }
+                                        }
+                                    }
+                                    foreach (int i in hasdone)
+                                    {
+                                        prows.Remove(i);
+                                    }
+                                    childdts = GetChildTableByIndex(prows.Keys.ToList());
+                                }
+                                foreach (DataRow drow in deletrows)
+                                {
+                                    drow.Delete();
+                                }
+                                #endregion
+                            }
                             break;
                     }
                 }
@@ -1162,11 +1311,13 @@ namespace BWYSDPWeb.BaseController
                     }
                     if (field == null)
                     {
-                        this.ThrowErrorException("未能取到字段，请确认。");
+                        //msg000000005	未能取到字段，请确认。
+                        this.ThrowErrorException(AppCom.GetMessageDesc("msg000000005"));
                     }
                     if (field.SourceField == null)
                     {
-                        this.ThrowErrorException("模型未设置来源字段，请确认");
+                        //msg000000006	模型未设置来源字段，请确认
+                        this.ThrowErrorException(AppCom.GetMessageDesc("msg000000006"));
                     }
 
                     if (field.SourceField.Count == 1)
@@ -1176,6 +1327,15 @@ namespace BWYSDPWeb.BaseController
                         this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
                         this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
                         this.SessionObj.FromFieldInfo.FromFieldDesc = field.SourceField[0].FromFieldDesc;
+                        if (field.SourceField[0].RelateFieldNm != null)
+                        {
+                            if (this.SessionObj.FromFieldInfo.RelateFields == null) this.SessionObj.FromFieldInfo.RelateFields = new List<string>();
+                            else { this.SessionObj.FromFieldInfo.RelateFields.Clear(); }
+                            foreach (LibRelateField libRelate in field.SourceField[0].RelateFieldNm)
+                            {
+                                this.SessionObj.FromFieldInfo.RelateFields.Add(string.Format("{2}_{0}_rsdp_{1}", libRelate.AliasName, libRelate.FieldNm, tbnm));
+                            }
+                        }
 
                         LibDataSource sourceds = ModelManager.GetModelBymodelId<LibDataSource>(this.ModelRootPath, field.SourceField[0].FromDataSource);
                         LibDefineTable defdt = sourceds.DefTables.FindFirst("TableName", field.SourceField[0].FromDefindTableNm);
@@ -1202,14 +1362,14 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
             }
-            else if(string.Compare(flag, "3") == 0)
+            else if (string.Compare(flag, "3") == 0)
             {
                 if (this.SessionObj.FromFieldInfo == null) this.SessionObj.FromFieldInfo = new FromFieldInfo();
                 this.SessionObj.FromFieldInfo.tableNm = tbnm;
                 this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
                 //this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
             }
-            SetSearchFieldExt(condcollection,Convert .ToInt32 (flag));
+            SetSearchFieldExt(condcollection, Convert.ToInt32(flag));
             return Json(new { data = condcollection.Where(i => i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
@@ -1234,7 +1394,7 @@ namespace BWYSDPWeb.BaseController
                 {
                     cond.DSID = this.DSID;
                 }
-                else if (flag ==2)
+                else if (flag == 2)
                 {
                     cond.DSID = formdata["dsid"];
                 }
@@ -1260,14 +1420,14 @@ namespace BWYSDPWeb.BaseController
         /// <param name="page"></param>
         /// <param name="rows"></param>
         /// <returns></returns>
-        public string BindSmodalData(string tableNm,string dsid,int flag, int page, int rows)
+        public string BindSmodalData(string tableNm, string dsid, int flag, int page, int rows)
         {
             List<LibSearchCondition> conds = this.SessionObj.Conds;
             DataTable dt = null;
-            if (flag ==3)
+            if (flag == 3)
             {
                 dt = new DataTable();
-                BindSmodalDataExt(dt,flag);
+                BindSmodalDataExt(dt, flag);
                 #region 解析搜索条件
                 object[] values = { };
                 StringBuilder whereformat = new StringBuilder();
@@ -1277,14 +1437,15 @@ namespace BWYSDPWeb.BaseController
                 {
                     values[i] = string.Format("'{0}'", values[i]);
                 }
-                DataRow[] rws= dt.Select(string.Format(whereformat.ToString(), values));
+                DataRow[] rws = dt.Select(string.Format(whereformat.ToString(), values));
                 DataTable dt2 = dt.Clone();
                 foreach (DataRow dr in rws)
                 {
                     dt2.ImportRow(dr);
                 }
                 DataTable resultdt = AppSysUtils.GetDataByPage(dt2, page, rows);
-                if (this.SessionObj.FromFieldInfo != null) {
+                if (this.SessionObj.FromFieldInfo != null)
+                {
                     DataColumn primarycol = null;
                     if (resultdt.PrimaryKey != null && resultdt.PrimaryKey.Length > 0)
                         primarycol = resultdt.PrimaryKey[0];
@@ -1297,21 +1458,26 @@ namespace BWYSDPWeb.BaseController
             if (flag == 1) dsid = this.DSID;
             //this.AddMessage("jjjjjjjjjjjj");
             //List<LibSearchCondition> conds = Session[string.Format("{0}{1}", SysConstManage.sdp_Schcond, this.ProgID)] as List<LibSearchCondition>;
-            DalResult result = this.ExecuteMethod("InternalSearchByPage",dsid, tableNm, null, conds, page, rows);
+            DalResult result = this.ExecuteMethod("InternalSearchByPage", dsid, tableNm, null, conds, page, rows);
             if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
                 dt = ((DataTable)result.Value);
-                BindSmodalDataExt(dt,flag);
+                BindSmodalDataExt(dt, flag);
                 if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
                 {
-                    if (dt != null && flag ==2)
+                    if (dt != null && flag == 2)
                     {
                         if (this.SessionObj.FromFieldInfo != null)
                         {
-                            DataColumn col = new DataColumn(string.Format("{0}_{1}_sdp_{2}",this.SessionObj.FromFieldInfo.tableNm , this.SessionObj.FromFieldInfo.FieldNm,this.SessionObj.FromFieldInfo.FromFieldNm));
+                            DataColumn col = new DataColumn(string.Format("{0}_{1}_sdp_{2}", this.SessionObj.FromFieldInfo.tableNm, this.SessionObj.FromFieldInfo.FieldNm, this.SessionObj.FromFieldInfo.FromFieldNm));
                             dt.Columns.Add(col);
                             col = new DataColumn(string.Format("sdp_desc{0}", this.SessionObj.FromFieldInfo.FromFieldDesc));
                             dt.Columns.Add(col);
+                            foreach (string s in this.SessionObj.FromFieldInfo.RelateFields)
+                            {
+                                col = new DataColumn(s);
+                                dt.Columns.Add(col);
+                            }
                             //this.SessionObj.FromFieldInfo = null;
                         }
                     }
@@ -1322,7 +1488,7 @@ namespace BWYSDPWeb.BaseController
                     //    if (c.DataType.Equals(typeof(byte[])))
                     //    {
                     //        binarycols.Add(c);
-                            
+
                     //    }
                     //}
                     //if (binarycols.Count > 0)
@@ -1343,7 +1509,7 @@ namespace BWYSDPWeb.BaseController
         #endregion
 
         #region 来源主数据模糊搜索
-        public ActionResult InternalFuzzySearch(string id,string val)
+        public ActionResult InternalFuzzySearch(string id, string val)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -1376,15 +1542,15 @@ namespace BWYSDPWeb.BaseController
                             cond.Symbol = SmodalSymbol.Contains;
                             cond.Values = new object[] { val };
                             conds.Add(cond);
-                            DalResult result = this.ExecuteMethod("InternalSearchByPage", cond.DSID, cond.TableNm, new string[] { fromSourceField.FromFieldNm, fromSourceField .FromFieldDesc }, conds, 1, 20);
+                            DalResult result = this.ExecuteMethod("InternalSearchByPage", cond.DSID, cond.TableNm, new string[] { fromSourceField.FromFieldNm, fromSourceField.FromFieldDesc }, conds, 1, 20);
                             if (result.Messagelist == null || result.Messagelist.Count == 0)
                             {
-                               DataTable dt = ((DataTable)result.Value);
+                                DataTable dt = ((DataTable)result.Value);
                                 if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
                                 {
                                     if (dt != null)
                                     {
-                                        
+
                                         dt.Columns.Remove(SysConstManage.sdp_total_row);
                                         DataColumn col = dt.Columns[fromSourceField.FromFieldNm];
                                         if (col != null) col.ColumnName = AppCom.GetFieldDesc((int)this.Language, fromSourceField.FromDataSource, fromSourceField.FromStructTableNm, fromSourceField.FromFieldNm);
@@ -1404,7 +1570,7 @@ namespace BWYSDPWeb.BaseController
                                         //    obj.Describle = dr[fromSourceField.FromFieldDesc].ToString();
                                         //    datas.Add(obj);
                                         //}
-                                        return Json(new {data=JsonConvert.SerializeObject(dt.Rows) }, JsonRequestBehavior.AllowGet);
+                                        return Json(new { data = JsonConvert.SerializeObject(dt.Rows) }, JsonRequestBehavior.AllowGet);
                                     }
                                 }
                             }
@@ -1467,14 +1633,14 @@ namespace BWYSDPWeb.BaseController
 
         }
 
-        protected virtual void SetSearchFieldExt(List<SearchConditionField> fields,int flag) { }
+        protected virtual void SetSearchFieldExt(List<SearchConditionField> fields, int flag) { }
 
         protected virtual void SetSearchCondition(List<LibSearchCondition> conditions)
         {
 
         }
 
-        protected virtual void BindSmodalDataExt(DataTable currpagedata,int flag)
+        protected virtual void BindSmodalDataExt(DataTable currpagedata, int flag)
         {
 
         }
@@ -1492,6 +1658,7 @@ namespace BWYSDPWeb.BaseController
             ColExtendedProperties colextp = null;
             foreach (DataRow dr in table.Rows)
             {
+                if (dr.RowState == DataRowState.Deleted) continue;
                 foreach (DataColumn col in table.PrimaryKey)
                 {
                     colextp = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
@@ -1545,20 +1712,46 @@ namespace BWYSDPWeb.BaseController
                 }
             }
         }
+
+        private ActionResult PermissionResult(string progid, string package)
+        {
+            LibPermissionSource permission = ModelManager.GetModelBypath<LibPermissionSource>(this.ModelRootPath, progid, package);
+            if (permission != null && !permission.IsMenu)
+            {
+                //msg000000007	该功能未开放
+                return View("NotPermission", new NotPermission { Message = AppCom.GetMessageDesc("msg000000007") });
+            }
+            if (permission == null)
+            {
+                //msg000000008	功能{0}未配置权限模型
+                return View("NotPermission", new NotPermission { Message = string.Format(AppCom.GetMessageDesc("msg000000008"), progid) });
+            }
+            return null;
+        }
         #endregion
 
         #region 公开函数
-        public DataTable GetRelateTable(string tbnm)
+        /// <summary>
+        /// 取关联的父表
+        /// </summary>
+        /// <param name="tbnm"></param>
+        /// <returns></returns>
+        public DataTable GetParentTable(string tbnm)
         {
             DataTable dt = null;
             foreach (var libtb in this.LibTables)
             {
-               dt= libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
             }
-            return InternalGetRelateTable(dt);
+            return InternalGetParentTable(dt);
         }
 
-        public DataTable InternalGetRelateTable(DataTable tb)
+        /// <summary>
+        /// 取关联的父表
+        /// </summary>
+        /// <param name="tb"></param>
+        /// <returns></returns>
+        public DataTable InternalGetParentTable(DataTable tb)
         {
             if (tb != null)
             {
@@ -1580,6 +1773,60 @@ namespace BWYSDPWeb.BaseController
             return null;
         }
 
+        /// <summary>
+        /// 取关联的子表
+        /// </summary>
+        /// <param name="indexs"></param>
+        /// <returns></returns>
+        public List<DataTable> GetChildTableByIndex(List<int> indexs)
+        {
+            List<DataTable> result = new List<DataTable>();
+            TableExtendedProperties extprop = null;
+            foreach (int index in indexs)
+            {
+                foreach (var libtb in this.LibTables)
+                {
+                    foreach (DataTable tb in libtb.Tables)
+                    {
+                        extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                        if (extprop != null && extprop.TableIndex == index)
+                        {
+                            result.AddRange(InternalGetChildTable(tb));
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 取关联的子表
+        /// </summary>
+        /// <param name="tb"></param>
+        /// <returns></returns>
+        public List<DataTable> InternalGetChildTable(DataTable tb)
+        {
+            List<DataTable> result = new List<DataTable>();
+            if (tb != null)
+            {
+                TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                if (extprop != null)
+                {
+                    foreach (var item in this.LibTables)
+                    {
+                        for (int n = 0; n < item.Tables.Length; n++)
+                        {
+                            if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).RelateTableIndex == extprop.TableIndex)
+                            {
+                                result.Add(item.Tables[n]);
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         public DataTable GetTableByIndex(int index)
         {
             foreach (LibTable libtb in this.LibTables)
@@ -1587,7 +1834,7 @@ namespace BWYSDPWeb.BaseController
                 foreach (DataTable table in libtb.Tables)
                 {
                     TableExtendedProperties extprop = table.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                    if (extprop != null && extprop .TableIndex ==index)
+                    if (extprop != null && extprop.TableIndex == index)
                     {
                         return table;
                     }

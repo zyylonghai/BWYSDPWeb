@@ -31,6 +31,7 @@ namespace BWYSDPWeb
                       //"~/Scripts/lib/bootstrap.min.js",
                       "~/Scripts/lib/clearmin.min.js",
                       "~/Scripts/lib/home.js",
+                      "~/Scripts/lib/jquery-confirm.min.js",
                       "~/Scripts/lib/ajaxBus.js",
                       "~/Scripts/lib/sdp_com.js"
                       //"~/Scripts/lib/bootstrap-table.js",
@@ -66,11 +67,6 @@ namespace BWYSDPWeb
                      "~/Scripts/lib/SearchModal.js"
 
                ));
-            //sdp_com.js
-            //bundles.Add(new ScriptBundle("~/bundles/sdp_com").Include(
-            //         "~/Scripts/lib/sdp_com.js"
-
-            //   ));
             //TableModal.js
             bundles.Add(new ScriptBundle("~/bundles/TableModal").Include(
                      "~/Scripts/lib/TableModal.js"
@@ -85,7 +81,8 @@ namespace BWYSDPWeb
                       "~/Content/roboto.css",
                       "~/Content/material-design.css",
                       "~/Content/small-n-flat.css",
-                      "~/Content/font-awesome.min.css"
+                      "~/Content/font-awesome.min.css",
+                      "~/Content/jquery-confirm.min.css"
                       //"~/Content/bootstrap-table.css"
                       //"~/Content/bootstrap-datetimepicker.min.css"
                       ));
