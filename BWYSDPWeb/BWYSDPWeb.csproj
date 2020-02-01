@@ -2011,6 +2011,10 @@
       <Project>{00ee82ff-27f8-47a6-9a20-d368de88fd21}</Project>
       <Name>Com</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProgViewModel\ProgViewModel.csproj">
+      <Project>{7c3b1474-be9c-4541-823b-fb938820c6e2}</Project>
+      <Name>ProgViewModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
