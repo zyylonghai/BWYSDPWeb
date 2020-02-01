@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace BWYSDPWeb.Controllers
 {
@@ -26,9 +27,9 @@ namespace BWYSDPWeb.Controllers
             var formparams = this.Request.Form;
             Models.UserInfo userInfo = new Models.UserInfo();
             userInfo.UserId = formparams["userId"];
-            userInfo.UserNm = formparams[""];
+            userInfo.UserNm = "admintest";
             userInfo.Language =(Language) Convert.ToInt32(formparams["language"]);
-            
+            FormsAuthentication.SetAuthCookie(userInfo.UserNm, false);
             Session[SysConstManage.sdp_userinfo] =userInfo;
             return RedirectToAction("Index");
         }

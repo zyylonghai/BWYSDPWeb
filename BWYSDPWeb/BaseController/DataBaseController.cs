@@ -3,7 +3,7 @@ using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using Com;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using ProgViewModel;
 using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
@@ -156,6 +156,7 @@ namespace BWYSDPWeb.BaseController
         [HttpGet]
         public ActionResult ConverToPage(string progId, string flag)
         {
+            ProgBaseViewModel viewModel = new ProgBaseViewModel();
             if (this.UserInfo == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -168,6 +169,7 @@ namespace BWYSDPWeb.BaseController
                 {
                     this.ProgID = progId;
                     this.Package = packagepath.Replace("/", "");
+                    LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, this.ProgID, this.Package);
                     #region 权限验证
                     var permresult = PermissionResult(this.ProgID, this.Package);
                     if (permresult != null)
@@ -185,9 +187,55 @@ namespace BWYSDPWeb.BaseController
                                 //msg000000009	用户{0}没有功能{1}使用权限
                                 return View("NotPermission", new NotPermission { Message = string.Format(AppCom.GetMessageDesc("msg000000009"), this.UserInfo.UserNm, this.ProgID) });
                             }
+                            AuthorityObj obj = null;
                             foreach (DataRow dr in rows)
                             {
-
+                                obj = new AuthorityObj();
+                                if (LibSysUtils.IsNULLOrEmpty(dr["ObjectType"])) continue;
+                                obj.ObjectType = Convert.ToInt32(dr["ObjectType"]);
+                                obj.ObjectId = dr["ObjectId"].ToString();
+                                obj.GroupId = dr["GroupId"].ToString();
+                                viewModel.AuthorityObjs.Add(obj);
+                                if (obj.ObjectType == 1) //操作对象
+                                {
+                                    if (formpage.FormId == obj.GroupId)
+                                    {
+                                        continue;
+                                    }
+                                    #region 检查按钮组
+                                    var exist = formpage.BtnGroups.FindFirst("BtnGroupID", obj.GroupId);
+                                    if (exist != null)
+                                    {
+                                        var btn = exist.LibButtons.FindFirst("LibButtonID", obj.ObjectId);
+                                        if (btn != null)
+                                        {
+                                            obj.ObjectId = btn.LibButtonName;
+                                            continue;
+                                        }
+                                    }
+                                    #endregion
+                                    #region 检查表格组的自定义按钮
+                                    var exist2 = formpage.GridGroups.FindFirst("GridGroupID", obj.GroupId);
+                                    if (exist2 != null)
+                                    {
+                                        obj.GroupId = exist2.GridGroupName;
+                                        var btn = exist2.GdButtons.FindFirst("GridButtonID", obj.ObjectId);
+                                        if (btn != null)
+                                        {
+                                            obj.ObjectId = btn.GridButtonName;
+                                            continue;
+                                        }
+                                    }
+                                    #endregion 
+                                }
+                                else if (obj.ObjectType == 2)//数据对象
+                                {
+                                    var grid = formpage.GridGroups.FindFirst("GridGroupID", obj.GroupId);
+                                    if (grid != null)
+                                    {
+                                        obj.GroupId = grid.GridGroupName;
+                                    }
+                                }
                             }
                         }
 
@@ -204,7 +252,7 @@ namespace BWYSDPWeb.BaseController
                     fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath, string.Format("{0}_{1}", progId, this.Language.ToString()));
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
-                        LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progId, this.Package);
+                        //LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progId, this.Package);
                         if (formpage == null) { return View("NotFindPage"); }
                         LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, formpage.DSID, this.Package);
                         DataTable dt = this.GetFieldDescBydsid(dataSource.DSID);
@@ -345,7 +393,9 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             //return View(progId);
-            return View(string.Format("{0}_{1}", progId, this.Language.ToString()));
+            this.SessionObj.ProgBaseVM = viewModel;
+            object viewObj =@JsonConvert .SerializeObject(viewModel);
+            return View(string.Format("{0}_{1}", progId, this.Language.ToString()), viewObj);
         }
 
         [HttpPost]
@@ -353,7 +403,7 @@ namespace BWYSDPWeb.BaseController
         {
             if (this.SessionObj.MsgforSave == null || this.SessionObj.MsgforSave.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
-                if (this.SessionObj.OperateAction != OperatAction.Preview)
+                if (this.SessionObj.OperateAction != OperatAction.Preview && this.SessionObj.OperateAction!=OperatAction.Edit)
                 {
                     this.SessionObj.OperateAction = OperatAction.Add;
                     //Session[SysConstManage.OperateAction] = this.OperatAction;
@@ -639,6 +689,12 @@ namespace BWYSDPWeb.BaseController
         public ActionResult Add()
         {
             this.SessionObj.OperateAction = OperatAction.Add;
+            return BasePageLoad();
+        }
+
+        public ActionResult Edit()
+        {
+            this.SessionObj.OperateAction = OperatAction.Edit;
             return BasePageLoad();
         }
 
@@ -1265,6 +1321,11 @@ namespace BWYSDPWeb.BaseController
                             {
                                 colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
                                 if (!colextprop.IsActive) continue;
+                                if (this.SessionObj.ProgBaseVM != null && 
+                                    this.SessionObj.ProgBaseVM.AuthorityObjs.FirstOrDefault(i => i.ObjectType == 2 && i.ObjectId ==(string .IsNullOrEmpty(colextprop .AliasName )?col.ColumnName:colextprop .AliasName))!=null)
+                                {
+                                    continue;
+                                }
                                 cond = new SearchConditionField();
                                 cond.IsCondition = true;
                                 cond.DisplayNm = AppCom.GetFieldDesc((int)this.Language, this.DSID, dt.TableName, col.ColumnName);

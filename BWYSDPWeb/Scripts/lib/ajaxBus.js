@@ -74,7 +74,13 @@ $.ajax = function (opt) {
                     }
                     else
                         $('#' + o.FieldNm).val(o.FieldValue);
-                    });
+                });
+                if (data.sdp_preview) {
+                    SetPageDisabled();
+                }
+                else {
+                    RemovePageDisabled();
+                }
                
             }
             if (data != null && data.sdp_msglist != null && data.sdp_msglist != undefined) {

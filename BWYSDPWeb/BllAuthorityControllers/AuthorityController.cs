@@ -56,6 +56,16 @@ namespace BWYSDPWeb.BllAuthorityControllers
                         o.GroupNm = "功能按钮";
                         list.Add(o);
                     }
+                    if (libPermission.IsEdit)
+                    {
+                        o = new ActionObj();
+                        o.ObjectType = 1;
+                        o.ObjectId = "bwysdp_btnedit";
+                        o.ObjectNm = AppCom.GetMessageDesc("sdp_btnedit");
+                        o.GroupId = formpage.FormId;
+                        o.GroupNm = "功能按钮";
+                        list.Add(o);
+                    }
                     if (libPermission.IsSearch)
                     {
                         o = new ActionObj();
@@ -78,9 +88,9 @@ namespace BWYSDPWeb.BllAuthorityControllers
                             {
                                 o = new ActionObj();
                                 o.ObjectType = 1;
-                                o.ObjectId = btn.LibButtonName;
+                                o.ObjectId = btn.LibButtonID;
                                 o.ObjectNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, btn.LibButtonName);
-                                o.GroupId = group .BtnGroupName;
+                                o.GroupId = group.BtnGroupID;
                                 o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, group.BtnGroupName);
                                 list.Add(o);
                             }
@@ -97,9 +107,9 @@ namespace BWYSDPWeb.BllAuthorityControllers
                                 {
                                     o = new ActionObj();
                                     o.ObjectType = 1;
-                                    o.ObjectId = btn.GridButtonName;
+                                    o.ObjectId = btn.GridButtonID;
                                     o.ObjectNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, btn.GridButtonName);
-                                    o.GroupId = item.GridGroupName;
+                                    o.GroupId = item.GridGroupID;
                                     o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, item.GridGroupName);
                                     list.Add(o);
                                 }
@@ -113,7 +123,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                                     o.ObjectType = 2;
                                     o.ObjectId = f.Name;
                                     o.ObjectNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, f.FromTableNm, f.Name);
-                                    o.GroupId = item.GridGroupName;
+                                    o.GroupId = item.GridGroupID;
                                     o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, item.GridGroupName);
                                     list.Add(o);
                                 }

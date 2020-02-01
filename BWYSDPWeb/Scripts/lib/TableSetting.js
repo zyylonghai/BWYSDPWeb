@@ -123,7 +123,7 @@ function LibTable(id)
         pageSize: 10,
         pageList: [10, 25, 50, 100],
         search: false,
-        strictSearch: true,
+        strictSearch: true,                  //设置为 true启用 全匹配搜索，否则为模糊搜索
         showColumns: true,                  //是否显示所有的列（选择显示的列）
         showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
@@ -136,6 +136,8 @@ function LibTable(id)
         hasoperation: true,                 //是否显示操作列
         showFooter: false,                  //表格最底部是否显示汇总行
         showExport: true,                  //是否显示导出按钮
+        singleSelect: false,                //设置True 将禁止多选
+        idField: "",                        //指定主键列
         columns: []
     };
     this.$subtableParam = {
@@ -207,6 +209,7 @@ LibTable.prototype = {
             //    excelstyles: ['background-color', 'color', 'font-size', 'font-weight', 'border-top']
             //},
             showFooter: this.$table.showFooter,
+            singleSelect: this.$table.singleSelect,
             //得到查询的参数
             queryParams: function (params) {
                 //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
@@ -233,6 +236,12 @@ LibTable.prototype = {
                 $detail.html(toolhtml + "<table id='" + tbobj.SubTable.$table.ElemtableID + "'></table>");
                 tbobj.SubTable.$table.toolbar ='#'+ toolid;
                 tbobj.SubTable.initialTable();
+                if ($('#bwysdp_ispreview').val() == 1) {
+                    SetPageDisabled();
+                }
+                else {
+                    RemovePageDisabled();
+                }
                 //$('#' + toolid + '_sdp_addrow').click(function () { tbobj.SubTable.AddRow();});
 
             },

@@ -52,7 +52,7 @@ namespace BWYSDPWeb.BaseController
             set;
         }
         /// <summary>
-        /// 功能操作动作（新增Add，编辑Edit，删除Delete）
+        /// 功能操作动作（新增Add，编辑Edit，删除Delete,）
         /// </summary>
         public OperatAction OperatAction
         {
@@ -363,7 +363,7 @@ namespace BWYSDPWeb.BaseController
             //return Json(new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror }, JsonRequestBehavior.AllowGet);
             return new JsonResult
             {
-                Data = new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror },
+                Data = new { sdp_flag = 0, sdp_data = fieldlst, sdp_msglist = this.MsgList, sdp_haserror = haserror,sdp_preview=this.SessionObj.OperateAction==OperatAction.Preview },
                 MaxJsonLength = int.MaxValue ,
                 JsonRequestBehavior= JsonRequestBehavior.AllowGet
             };
@@ -765,10 +765,10 @@ namespace BWYSDPWeb.BaseController
         /// 功能处于编辑状态
         /// </summary>
         Edit = 2,
-        /// <summary>
-        /// 功能处于搜索后预览状态
-        /// </summary>
-        SearchView = 3,
+        ///// <summary>
+        ///// 功能处于搜索后预览状态
+        ///// </summary>
+        //SearchView = 3,
         /// <summary>
         /// 功能处于保存后预览状态
         /// </summary>

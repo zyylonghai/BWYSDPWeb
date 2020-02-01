@@ -77,6 +77,8 @@ namespace BWYSDPWeb.BllAuthorityControllers
                 DataTable dt = this.LibTables[2].Tables[0];
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
+                    if (dt.Rows[i].RowState == DataRowState.Deleted) continue;
+                    if (string.Compare(dt.Rows[i]["ProgId"].ToString(), progid, true) != 0) continue;
                     if (dt.Rows[i].RowState == DataRowState.Added)
                     {
                         dt.Rows[i].Delete();
@@ -87,6 +89,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                         dt.Rows[i].Delete();
                     }
                 }
+                
                 foreach (ActionObj item in data)
                 {
                     DataRow dr = this.LibTables[2].Tables[0].NewRow();
@@ -96,6 +99,16 @@ namespace BWYSDPWeb.BllAuthorityControllers
                     dr["GroupId"] = item.GroupId;
                     this.LibTables[2].Tables[0].Rows.Add(dr);
                 }
+                if (data.Where(i => (i.ObjectId == "bwysdp_btnedit" || i.ObjectId == "bwysdp_btnadd") && i.ObjectType == 1).Count()>=2)
+                {
+                    DataRow dr = this.LibTables[2].Tables[0].NewRow();
+                    dr["ProgId"] = progid;
+                    dr["ObjectType"] = 1;
+                    dr["ObjectId"] = "bwysdp_btnsave";
+                    dr["GroupId"] = progid;
+                    this.LibTables[2].Tables[0].Rows.Add(dr);
+                }
+                
             }
             return Json(new { });
         }

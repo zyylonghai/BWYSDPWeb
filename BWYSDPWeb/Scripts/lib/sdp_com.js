@@ -114,6 +114,25 @@ function SDP_Add(ctrNm) {
     });
 }
 
+function SDP_Edit(ctrNm) {
+    $.ajax({
+        url: "/" + ctrNm + "/Edit",
+        data: "",
+        type: 'Post',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            var grids = $("#sdp_form").find("table");
+            $.each(grids, function (index, o) {
+                $('#' + o.id).bootstrapTable('refresh');
+            });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
+}
+
 function TableBtnEdit(obj, grid) {
     let exist = $(obj).attr("data-toggle");
     if (!exist)
@@ -334,6 +353,46 @@ function ShowComModal(title,html,okEvent) {
 function CloseComModal() {
     $("#sdp_Modal_com").modal('hide');
 }
+function AuthorityCheck(authorityarray, objid, groupid) {
+    let result = false;
+    $.each(authorityarray, function (i, o) {
+        if (o.ObjectId == objid && o.GroupId == groupid) {
+            result = true;
+        }
+    });
+    return result;
+
+}
+function Authorize(authorityObjs) {
+    $.each(authorityObjs, function (i, o) {
+        if (o.ObjectType == 1) {
+            $('#' + o.ObjectId).hide();
+        }
+    });
+}
+function SetPageDisabled() {
+    DoSetPageStatus(true);
+}
+function RemovePageDisabled() {
+    DoSetPageStatus(false);
+}
+
+function DoSetPageStatus(ispreview) {
+    $('#sdp_form').find('input').each(function (i, o) {
+        if (o.id != "sdp_searchinput") $(o).attr("disabled", ispreview);
+    });
+    $('#sdp_form').find('textarea').each(function (i, o) { $(o).attr("disabled", ispreview); });
+    $('#sdp_form').find('select').each(function (i, o) { $(o).attr("disabled", ispreview); });
+    $('#sdp_form').find('a').each(function (i, o) {
+        $(o).attr("disabled", ispreview);
+    });
+    $('#sdp_form').find('button').each(function (i, o) { if (o.id != "bwysdp_btnsave" && o.id != "bwysdp_btnadd" && o.id != "bwysdp_btnedit" && o.id != "bwysdp_btndelet" && o.id != "bwysdp_btnSearch") $(o).attr("disabled", ispreview); });
+    if (ispreview)
+        $('#bwysdp_ispreview').val(1);
+    else
+        $('#bwysdp_ispreview').val(0);
+}
+
 
 //function GetMsgForSave() {
 //    $.ajax({

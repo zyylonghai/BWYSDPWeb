@@ -130,10 +130,11 @@ namespace BWYSDPWeb.Com
             _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
             _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnsave") + "</button>");
             _page.Append("<button id=\"bwysdp_btnadd\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnadd") + "</button>");
+            _page.Append("<button id=\"bwysdp_btnedit\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnedit") + "</button>");
             //_page.Append("<i class=\"fa fa-fw fa-save\"></i>"+AppCom .GetFieldDesc ((int)Language ,string.Empty ,string.Empty , "sdp_btnsave") +"</button>");
             _page.Append("<button id=\"bwysdp_btndelet\" type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
             //_page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
-            _page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btncopy") + "</button>");
+            _page.Append("<button id=\"bwysdp_btncopy\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btncopy") + "</button>");
 
             //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-cut\"></i></button>");
             //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i></button>");
@@ -499,7 +500,7 @@ namespace BWYSDPWeb.Com
                 string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID, 
                       (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
                 //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
-                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, fielddisplaynm, field.HasSort ? "true" : "false"));
+                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible: true,switchable:true,", field.Name, fielddisplaynm, field.HasSort ? "true" : "false"));
                 table.Append("formatter: function (value, row, index) {");
                 if (field.ElemType == ElementType.Date)
                 {
@@ -541,6 +542,16 @@ namespace BWYSDPWeb.Com
             tbformfield.Append("</div>");// 结束 form-group
             //}
             table.Append("];");
+
+            #region 移除权限内的字段
+            table.Append(string.Format("$.each({0},function (i, o)", string.Format("{0}.$table.columns", param)));
+            table.Append("{ let result=AuthorityCheck(authorityObjs, o.field, \"" + grid.GridGroupName + "\");");
+            table.Append("if(result){o.visible=false; o.switchable=false;" +
+                "$('#sdp_fieldlabel_"+ grid.GdGroupFields [0].FromTableNm+ "_'+o.field).hide();" +
+                "$('#sdp_fielddiv_" + grid.GdGroupFields[0].FromTableNm + "_'+o.field).hide();}");
+            table.Append("});");
+            #endregion
+
             table.Append(string.Format("{0}.initialTable();", param));
             table.Append(hidecolumns);
 
@@ -733,6 +744,12 @@ namespace BWYSDPWeb.Com
             _script.Append("$('#bwysdp_progid').val(\"" + this._progid + "\");");
             _script.Append("$('#bwysdp_dsid').val(\"" + this.DSID + "\");");
 
+            #region 获取权限对象数据
+            _script.Append("var viewModelObj = JSON.parse(\"@Model\".replace(new RegExp('&quot;', \"gm\"), '\"'));");
+            _script.Append("var authorityObjs = viewModelObj.AuthorityObjs;");
+            _script.Append("Authorize(authorityObjs);");
+            #endregion
+
             #region pageload
             _script.Append("$.ajax({url: \" /" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"\",type: 'Post',async: false,success: function (obj) {},");
             _script.Append("error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + \":\" + XMLHttpRequest.readyState.toString() + \", \" + textStatus + errorThrown);}");
@@ -763,6 +780,7 @@ namespace BWYSDPWeb.Com
                 "SDP_Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
                 "});");
             _script.Append("$('#bwysdp_btnadd').click(function (){ SDP_Add(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
+            _script.Append("$('#bwysdp_btnedit').click(function(){ SDP_Edit(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
 
             #endregion
 
@@ -869,8 +887,8 @@ namespace BWYSDPWeb.Com
             validatorAttr.AppendFormat(" {0} ", field.ReadOnly ? "readonly" : "");
             #endregion
 
-            fieldsbuilder.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
-            fieldsbuilder.Append("<div class=\"col-sm-" + field.Width + "\">");
+            fieldsbuilder.Append("<label id=\"sdp_fieldlabel_"+id+"\" for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
+            fieldsbuilder.Append("<div id=\"sdp_fielddiv_"+id+"\" class=\"col-sm-" + field.Width + "\">");
             switch (field.ElemType)
             {
                 case ElementType.Date:

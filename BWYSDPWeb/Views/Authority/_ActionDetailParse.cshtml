@@ -34,7 +34,14 @@
                                         <ul style="margin:0">
                                             @foreach (var o in list)
                                             {
-                                                <li><input type="checkbox" name="@string.Format("{0}_{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
+                                                if (o.IsAuthority)
+                                                {
+                                                   <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
+                                                }
+                                                else
+                                                {
+                                                   <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)"/>@o.ObjectNm</li>
+                                                }
                                             }
                                         </ul>
                                     </div>
@@ -62,7 +69,14 @@
                                         <ul style="margin:0">
                                             @foreach (var o in list)
                                             {
-                                                <li><input type="checkbox" name="@string.Format("{0}_{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
+                                                if (o.IsAuthority)
+                                                {
+                                                    <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
+                                                }
+                                                else
+                                                {
+                                                    <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)" />@o.ObjectNm</li>
+                                                }
                                             }
                                         </ul>
                                     </div>

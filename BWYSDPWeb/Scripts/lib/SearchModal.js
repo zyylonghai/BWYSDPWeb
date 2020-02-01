@@ -157,6 +157,7 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
         checkbox: true,
         visible: true });
     var o = $('#searchModal').find("select[name='sdp_smodalfield1']");
+
     $.each(o.children(), function (index, option) {
         if (option.value != 0) {
             let vis = $(option).attr("hid") == "false" ? true : false;
@@ -193,13 +194,14 @@ function BindToTable(ctrnm,tbnm,dsid,flag) {
                     $.each(grids, function (index, o) {
                         $('#' + o.id).bootstrapTable('refresh');
                     });
+                    //SetPageDisabled();
                 },
                 error: function () {
                    
                 }
             });
         }
-        else if (flag==2) {
+        else {
             let fromfieldnm;
             let fieldnm;
             let fromfielddesc;

@@ -1,4 +1,5 @@
-﻿using SDPCRL.COM;
+﻿using ProgViewModel;
+using SDPCRL.COM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace BWYSDPWeb.Models
 {
     public class SessionInfo
     {
-        /// <summary> </summary>
+        /// <summary>当前功能操作动作（新增Add，编辑Edit，删除Delete,） </summary>
         public BaseController.OperatAction OperateAction { get; set; }
 
         /// <summary>当前语言</summary>
@@ -26,6 +27,11 @@ namespace BWYSDPWeb.Models
         /// 用于来源数据搜索时，存储来源信息
         /// </summary>
         public FromFieldInfo FromFieldInfo { get; set; }
+
+        /// <summary>
+        /// 功能的ViewModel
+        /// </summary>
+        public ProgBaseViewModel ProgBaseVM { get; set; }
     }
 
     public class FromFieldInfo
