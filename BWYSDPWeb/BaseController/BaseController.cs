@@ -23,6 +23,7 @@ namespace BWYSDPWeb.BaseController
         //private List<LibMessage> MsgList = null;
         private SessionInfo _sessionobj = null;
         private string _rootpath = string.Empty;
+        private DateTimeOffset TimeOffset { get { return DateTime.Now.AddSeconds(30); } }
         #endregion
         #region 公开属性
 
@@ -244,7 +245,9 @@ namespace BWYSDPWeb.BaseController
 
             tbs = DoCreateTableSchema();
             cachelp.RemoveCache(key);
-            cachelp.AddCachItem(key, tbs, this.ProgID);
+            var policy = new CacheItemPolicy() { AbsoluteExpiration = this.TimeOffset };
+            cachelp.AddCachItem(key, tbs, this.TimeOffset, new LibTableChangeMonitor2(key, tbs, this.ProgID));
+            //cachelp.AddCachItem(key, tbs, this.ProgID);
             this.LibTables = tbs;
             //if (tbs == null)
             //{
@@ -606,7 +609,9 @@ namespace BWYSDPWeb.BaseController
                     ThrowErrorException(ex.Message);
                 }
                 CachHelp cachelp = new CachHelp();
-                cachelp.AddCachItem(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID), this.LibTables, this.ProgID);
+                string key = string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+                cachelp.AddCachItem(key, this.LibTables, this.TimeOffset, new LibTableChangeMonitor2(key, this.LibTables, this.ProgID));
+                //cachelp.AddCachItem(key, this.LibTables, this.ProgID);
             }
         }
 
@@ -657,7 +662,7 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteMethod(string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            DalResult dalResult = _bll.ExecuteMethod(this.ProgID, method, this.LibTables, param);
+            DalResult dalResult = _bll.ExecuteMethod(this.Language ,this.ProgID, method, this.LibTables, param);
             if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
             {
                 string _msg = string.Empty;
@@ -675,15 +680,28 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteDalMethod(string funcId, string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            DalResult dalResult = _bll.ExecuteMethod(funcId, method, null, param);
+            DalResult dalResult = _bll.ExecuteMethod(this.Language , funcId, method, null, param);
+            string _msg = string.Empty;
             if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
             {
-                string _msg = string.Empty;
                 foreach (var m in dalResult.ErrorMsglst)
                 {
                     _msg += m.Message + m.Stack;
                 }
                 this.ThrowErrorException(_msg);
+            }
+            if (dalResult != null && dalResult.Messagelist != null)
+            {
+                var error = dalResult.Messagelist.Where(i => i.MsgType == LibMessageType.Error).ToList();
+                if (error.Count > 0)
+                {
+                    foreach (var m in error)
+                    {
+                        _msg += m.Message;  
+                    }
+                    this.ThrowErrorException(_msg);
+                }
+ 
             }
             return dalResult;
         }
@@ -691,11 +709,14 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteSaveMethod(string method, LibTable[] tables)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            DalResult dalResult = (DalResult)_bll.ExecuteDalSaveMethod(this.ProgID, method, tables);
+            DalResult dalResult = (DalResult)_bll.ExecuteDalSaveMethod(this.Language, this.ProgID, method, tables);
             this.AddMessagelist(dalResult.Messagelist);
             return dalResult;
         }
-
+        /// <summary>
+        ///如果是页面处于刷新或提交则页面输出的是一串错误信息的json字符，否则以消息弹出框的形式弹出。
+        /// </summary>
+        /// <param name="msg"></param>
         public void ThrowErrorException(string msg)
         {
             ExceptionHelp help = new ExceptionHelp();
@@ -723,7 +744,7 @@ namespace BWYSDPWeb.BaseController
             //CachHelp cachelp = new CachHelp();
             //DataTable dt = cachelp.GetCach(dsid) as DataTable;
             BllDataBase bll = new BllDataBase(false);
-            return bll.GetFieldDescData(dsid);
+            return bll.GetFieldDescData(dsid,this.Language);
         }
         #endregion
 

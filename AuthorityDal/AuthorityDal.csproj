@@ -40,6 +40,14 @@
     <Reference Include="SDPCRL.DAL.BUS">
       <HintPath>..\library\Dal\SDPCRL.DAL.BUS.dll</HintPath>
     </Reference>
+    <Reference Include="SDPCRL.DAL.COM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\library\Dal\SDPCRL.DAL.COM.dll</HintPath>
+    </Reference>
+    <Reference Include="SDPCRL.IBussiness, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\library\SDPCRL.IBussiness.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountDal.cs" />
     <Compile Include="AuthorityDal.cs" />
     <Compile Include="JoleDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

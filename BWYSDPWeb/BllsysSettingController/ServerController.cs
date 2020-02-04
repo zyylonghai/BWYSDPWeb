@@ -48,7 +48,7 @@ namespace BWYSDPWeb.BllsysSettingController
             SDPCRL.BLL.BUS.ServerInfo.IPAddress = ip;
             SDPCRL.BLL.BUS.ServerInfo.Point = Int32.Parse(point);
             BllDataBase bll = new BllDataBase(false);
-            Dictionary<string, string> dic = bll.GetAccount();
+            Dictionary<string, string> dic = bll.GetAccount(SDPCRL.COM.Language.CHS);
             Session["serverinfo"] = dic;
             List<ServerInfo> data = new List<ServerInfo>();
             ServerInfo info = null;

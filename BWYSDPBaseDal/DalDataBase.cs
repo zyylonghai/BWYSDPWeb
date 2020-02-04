@@ -35,6 +35,33 @@ namespace BWYSDPBaseDal
             base.AfterUpdate();
         }
 
+        protected  string GetFieldDesc(string dsid, string tablenm, string fieldnm)
+        {
+            CachHelp cachelp = new CachHelp();
+            DataTable dt = cachelp.GetCach(dsid) as DataTable;
+            if (dt == null)
+            {
+                dt = (DataTable)this.ExecuteSysDalMethod("TestFunc", "GetFieldDescByDSID", dsid);
+                cachelp.AddCachItem(dsid, dt, DateTimeOffset.Now.AddMinutes(2));
+            }
+            if (dt != null)
+            {
+                DataRow[] dr = dt.Select(string.Format("LanguageId={0} and DSID='{1}' and FieldNm='{2}' and TableNm='{3}'",
+                                                     (int)this.Language, dsid, fieldnm, tablenm));
+                if (dr != null && dr.Length > 0)
+                {
+                    return dr[0]["Vals"].ToString();
+                }
+            }
+            return (string)this.ExecuteSysDalMethod("TestFunc", "InternalGetFieldDesc", (int)this.Language, dsid, tablenm, fieldnm);
+
+        }
+
+        protected string GetMessageDesc(string msgid)
+        {
+            return this.GetFieldDesc(string.Empty, string.Empty, msgid);
+        }
+
         public DataTable InternalSearch(string tbnm, string[] fields,List<LibSearchCondition> conds)
         {
             object[] values = { };

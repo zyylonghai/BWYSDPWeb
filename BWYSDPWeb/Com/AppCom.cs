@@ -28,7 +28,7 @@ namespace BWYSDPWeb.Com
             DataTable dt = cachelp.GetCach(dsid) as DataTable;
             if (dt == null)
             {
-                dt = bll.GetFieldDescData(dsid);
+                dt = bll.GetFieldDescData(dsid,(SDPCRL.COM .Language)languageid);
                 cachelp.AddCachItem(dsid, dt, DateTimeOffset.Now.AddMinutes(2));
             }
             if (dt != null)

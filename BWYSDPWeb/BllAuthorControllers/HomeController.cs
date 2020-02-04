@@ -28,9 +28,19 @@ namespace BWYSDPWeb.Controllers
             Models.UserInfo userInfo = new Models.UserInfo();
             userInfo.UserId = formparams["userId"];
             userInfo.UserNm = "admintest";
-            userInfo.Language =(Language) Convert.ToInt32(formparams["language"]);
-            FormsAuthentication.SetAuthCookie(userInfo.UserNm, false);
-            Session[SysConstManage.sdp_userinfo] =userInfo;
+            userInfo.Language = (Language)Convert.ToInt32(formparams["language"]);
+            this.Language = userInfo.Language;
+            DalResult result = this.ExecuteDalMethod("Account", "Login", userInfo.UserId, formparams["password"]);
+            if ((int)result.Value==1)
+            {
+                //userInfo.Language = (Language)Convert.ToInt32(formparams["language"]);
+                FormsAuthentication.SetAuthCookie(userInfo.UserNm, false);
+                Session[SysConstManage.sdp_userinfo] = userInfo;
+            }
+            if ((int)result.Value == 3)//密码错误
+            {
+                //this.AddMessage()
+            }
             return RedirectToAction("Index");
         }
 

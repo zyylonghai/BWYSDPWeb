@@ -253,6 +253,9 @@ namespace BWYSDPWeb.Com
                     case ElementType.Text:
                         _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
                         break;
+                    case ElementType.Password:
+                        _page.Append("<input type=\"password\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
+                        break;
                     case ElementType.Search:
                         libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         _page.Append("<div class=\"input-group\">");
@@ -903,11 +906,14 @@ namespace BWYSDPWeb.Com
                 case ElementType.Text:
                     fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                     break;
+                case ElementType.Password:
+                    fieldsbuilder.Append("<input type=\"password\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
                 case ElementType.Search:
                     LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
-                    if (libField.SourceField == null || libField.SourceField.Count == 0)
-                    {
-                    }
+                    //if (libField.SourceField == null || libField.SourceField.Count == 0)
+                    //{
+                    //}
                     fieldsbuilder.Append("<div class=\"input-group\">");
                     fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                     fieldsbuilder.Append("<span class=\"input-group-btn\">");
