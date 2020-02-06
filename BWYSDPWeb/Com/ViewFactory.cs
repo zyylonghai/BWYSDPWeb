@@ -881,6 +881,7 @@ namespace BWYSDPWeb.Com
         /// <param name="fielddisplaynm"></param>
         private void CreatModalFields(StringBuilder fieldsbuilder, LibGridGroupField field,string fielddisplaynm)
         {
+            LibField libField = null;
             #region 模态框 的控件
             string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
             string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
@@ -902,6 +903,18 @@ namespace BWYSDPWeb.Com
                     fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                     break;
                 case ElementType.Select:
+                    fieldsbuilder.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" " + validatorAttr.ToString() + ">");
+                    libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    foreach (LibKeyValue keyval in libField.Items)
+                    {
+                        if (string.IsNullOrEmpty(keyval.FromkeyValueID))
+                        {
+                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, this.DSID, field.FromDefTableNm, string.Format("{0}_{1}", field.Name, keyval.Key)) + "</option>");
+                        }
+                        else
+                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, keyval.FromkeyValueID, string.Empty, keyval.Key.ToString()) + "</option>");
+                    }
+                    fieldsbuilder.Append("</select>");
                     break;
                 case ElementType.Text:
                     fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
@@ -910,12 +923,13 @@ namespace BWYSDPWeb.Com
                     fieldsbuilder.Append("<input type=\"password\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
                     break;
                 case ElementType.Search:
-                    LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                     //if (libField.SourceField == null || libField.SourceField.Count == 0)
                     //{
                     //}
                     fieldsbuilder.Append("<div class=\"input-group\">");
                     fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    fieldsbuilder.Append("<label id=\"" + string.Format("{0}_desc", id) + "\" ></label>");
                     fieldsbuilder.Append("<span class=\"input-group-btn\">");
                     //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                     fieldsbuilder.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"" + ((libField.SourceField == null || libField.SourceField.Count == 0) ? 3 : 2) + "\">");

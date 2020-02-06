@@ -1,0 +1,48 @@
+﻿<?xml version="1.0"?>
+<LibKeyValueCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="RuleModule">
+  <Package>com</Package>
+  <KeyValues>
+    <LibKeyValue>
+      <ID>ae304df7-44da-4d85-a51e-1479fc40be9a</ID>
+      <Key xsi:type="xsd:string">yy</Key>
+      <Value xsi:type="xsd:string">年(2位)</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>dc01e607-52c8-417c-8fa6-7e60896f516f</ID>
+      <Key xsi:type="xsd:string">yyyy</Key>
+      <Value xsi:type="xsd:string">年(4位)</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>6477423e-cebc-4fd7-9509-82bee35dbe31</ID>
+      <Key xsi:type="xsd:string">MM</Key>
+      <Value xsi:type="xsd:string">月</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>3f244e51-f95b-4de8-99e6-5b0afdb33c64</ID>
+      <Key xsi:type="xsd:string">dd</Key>
+      <Value xsi:type="xsd:string">天</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>484789a7-0c97-4d01-986d-63d7cb08f6dd</ID>
+      <Key xsi:type="xsd:string">prefix</Key>
+      <Value xsi:type="xsd:string">前缀</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>10329bd3-368c-4f5f-b147-ac4a05a45a3f</ID>
+      <Key xsi:type="xsd:string">suffix</Key>
+      <Value xsi:type="xsd:string">后缀</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>6fce5a4c-69d5-451d-996d-655c1ca75dd2</ID>
+      <Key xsi:type="xsd:string">serial</Key>
+      <Value xsi:type="xsd:string">流水号</Value>
+      <Remark />
+    </LibKeyValue>
+  </KeyValues>
+</LibKeyValueCollection>

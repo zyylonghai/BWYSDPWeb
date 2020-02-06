@@ -1,9 +1,19 @@
 <?xml version="1.0"?>
-<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="Jole" FormName="角色" DSID="Jole" ControlClassNm="Jole" CssFile="" ScriptFile="" Package="Authority">
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="Jole" FormName="角色" DSID="Jole" ControlClassNm="Jole" CssFile="" ScriptFile="JoleScript.js" Package="Authority">
+  <ModuleOrder>
+    <ModuleOrder>
+      <moduleType>FormGroup</moduleType>
+      <ID>293255b2-ef58-41f0-a171-58ac456d7144</ID>
+    </ModuleOrder>
+    <ModuleOrder>
+      <moduleType>GridGroup</moduleType>
+      <ID>05ff793d-5214-40a3-b523-fa2e490cb4b2</ID>
+    </ModuleOrder>
+  </ModuleOrder>
   <FormGroups>
-    <LibFormGroup FormGroupID="b95ee5f0-e0f3-4b5e-96fa-a7a86c5e0b19" FormGroupName="Key Information" FormGroupDisplayNm="关键信息">
+    <LibFormGroup FormGroupID="293255b2-ef58-41f0-a171-58ac456d7144" FormGroupName="FormGroup1" FormGroupDisplayNm="关键信息">
       <FmGroupFields>
-        <LibFormGroupField ID="66189290-189c-4133-b5b2-a4101b2f6eb0">
+        <LibFormGroupField ID="a5fcdd4f-2238-4df2-a13b-af08f5a0bb78">
           <Name>JoleId</Name>
           <FromTableNm>Jole</FromTableNm>
           <FromDefTableNm>Jole</FromDefTableNm>
@@ -13,9 +23,10 @@
           <FieldLength>15</FieldLength>
           <IsAllowNull>true</IsAllowNull>
           <IsNumber>false</IsNumber>
-          <DealfValue xsi:type="xsd:string" />
+          <Readonly>false</Readonly>
+          <DealfValue xsi:type="xsd:string">001</DealfValue>
         </LibFormGroupField>
-        <LibFormGroupField ID="f5289220-9d95-435f-9c52-7ba1f573e3f7">
+        <LibFormGroupField ID="da4f7a7e-a8da-4765-a1e6-0da04448eb8e">
           <Name>JoleNm</Name>
           <FromTableNm>Jole</FromTableNm>
           <FromDefTableNm>Jole</FromDefTableNm>
@@ -25,9 +36,10 @@
           <FieldLength>30</FieldLength>
           <IsAllowNull>true</IsAllowNull>
           <IsNumber>false</IsNumber>
+          <Readonly>false</Readonly>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="41368022-d0cf-4b6f-b239-aed7148e1898">
+        <LibFormGroupField ID="0e82c366-5101-4f06-a244-680774a5bf55">
           <Name>Status</Name>
           <FromTableNm>Jole</FromTableNm>
           <FromDefTableNm>Jole</FromDefTableNm>
@@ -37,9 +49,10 @@
           <FieldLength>0</FieldLength>
           <IsAllowNull>true</IsAllowNull>
           <IsNumber>true</IsNumber>
+          <Readonly>false</Readonly>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
-        <LibFormGroupField ID="c6e9d39e-850e-4e79-baeb-96f6d6008f2a">
+        <LibFormGroupField ID="59319936-c369-4b91-9ab8-628f5dbd7099">
           <Name>Remark</Name>
           <FromTableNm>Jole</FromTableNm>
           <FromDefTableNm>Jole</FromDefTableNm>
@@ -49,75 +62,19 @@
           <FieldLength>0</FieldLength>
           <IsAllowNull>false</IsAllowNull>
           <IsNumber>false</IsNumber>
-          <DealfValue xsi:type="xsd:string" />
-        </LibFormGroupField>
-        <LibFormGroupField ID="83273581-d337-4327-80f4-84de33690865">
-          <Name>CreateDate</Name>
-          <FromTableNm>Jole</FromTableNm>
-          <FromDefTableNm>Jole</FromDefTableNm>
-          <DisplayName>创建日期</DisplayName>
-          <ElemType>DateTime</ElemType>
-          <Width>2</Width>
-          <FieldLength>0</FieldLength>
-          <IsAllowNull>true</IsAllowNull>
-          <IsNumber>false</IsNumber>
-          <DealfValue xsi:type="xsd:string" />
-        </LibFormGroupField>
-        <LibFormGroupField ID="272673f8-656a-4eef-a2a5-044ca43032de">
-          <Name>Creater</Name>
-          <FromTableNm>Jole</FromTableNm>
-          <FromDefTableNm>Jole</FromDefTableNm>
-          <DisplayName>创建者</DisplayName>
-          <ElemType>Text</ElemType>
-          <Width>2</Width>
-          <FieldLength>30</FieldLength>
-          <IsAllowNull>true</IsAllowNull>
-          <IsNumber>false</IsNumber>
-          <DealfValue xsi:type="xsd:string" />
-        </LibFormGroupField>
-        <LibFormGroupField ID="33beca76-f702-4fea-b4a3-73cf68c702b0">
-          <Name>LastmodifyDate</Name>
-          <FromTableNm>Jole</FromTableNm>
-          <FromDefTableNm>Jole</FromDefTableNm>
-          <DisplayName>最后修改日期</DisplayName>
-          <ElemType>DateTime</ElemType>
-          <Width>2</Width>
-          <FieldLength>0</FieldLength>
-          <IsAllowNull>true</IsAllowNull>
-          <IsNumber>false</IsNumber>
-          <DealfValue xsi:type="xsd:string" />
-        </LibFormGroupField>
-        <LibFormGroupField ID="2b7d2583-934b-4392-865f-84edc3d614fb">
-          <Name>LastmodifyUser</Name>
-          <FromTableNm>Jole</FromTableNm>
-          <FromDefTableNm>Jole</FromDefTableNm>
-          <DisplayName>最后修改者</DisplayName>
-          <ElemType>Text</ElemType>
-          <Width>2</Width>
-          <FieldLength>30</FieldLength>
-          <IsAllowNull>true</IsAllowNull>
-          <IsNumber>false</IsNumber>
+          <Readonly>false</Readonly>
           <DealfValue xsi:type="xsd:string" />
         </LibFormGroupField>
       </FmGroupFields>
     </LibFormGroup>
   </FormGroups>
   <GridGroups>
-    <LibGridGroup GridGroupID="4ad97372-382e-4928-8d95-9c35b6dd4b63" GridGroupName="JoleDetail" GridGroupDisplayNm="角色功能明细" ControlClassNm="" HasSummary="false">
+    <LibGridGroup GridGroupID="05ff793d-5214-40a3-b523-fa2e490cb4b2" GridGroupName="GridGroup2" GridGroupDisplayNm="功能明细" ControlClassNm="" HasSummary="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="">
+      <GdButtons>
+        <LibGridButton GridButtonID="66238d08-0833-427f-af05-ebcab8441216" GridButtonName="BtnActionDetail" GridButtonDisplayNm="操作对象配置" GridButtonEvent="ShowActionD()" />
+      </GdButtons>
       <GdGroupFields>
-        <LibGridGroupField ID="4e6b66ae-3ebe-4de5-91dd-8876a564ad3a">
-          <Name>JoleId</Name>
-          <FromTableNm>JoleD</FromTableNm>
-          <FromDefTableNm>JoleD</FromDefTableNm>
-          <DisplayName>角色编号</DisplayName>
-          <ElemType>Text</ElemType>
-          <Width>2</Width>
-          <HasSort>false</HasSort>
-          <Hidden>false</Hidden>
-          <ReadOnly>false</ReadOnly>
-          <DealfValue xsi:type="xsd:string" />
-        </LibGridGroupField>
-        <LibGridGroupField ID="9f9b0423-2e13-4964-b210-3d0d451f8ecd">
+        <LibGridGroupField ID="10861295-36e8-4b48-9f39-6122069bee97">
           <Name>ProgId</Name>
           <FromTableNm>JoleD</FromTableNm>
           <FromDefTableNm>JoleD</FromDefTableNm>
@@ -129,7 +86,7 @@
           <ReadOnly>false</ReadOnly>
           <DealfValue xsi:type="xsd:string" />
         </LibGridGroupField>
-        <LibGridGroupField ID="5dd0de16-8c00-4f4a-a71c-957308ac0cff">
+        <LibGridGroupField ID="2664103f-732d-4a8b-aa09-c1d9f3b35efd">
           <Name>ProgNm</Name>
           <FromTableNm>JoleD</FromTableNm>
           <FromDefTableNm>JoleD</FromDefTableNm>
@@ -144,4 +101,5 @@
       </GdGroupFields>
     </LibGridGroup>
   </GridGroups>
+  <BtnGroups />
 </LibFormPage>

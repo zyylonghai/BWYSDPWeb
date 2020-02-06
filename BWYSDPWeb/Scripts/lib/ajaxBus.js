@@ -70,6 +70,10 @@ $.ajax = function (opt) {
                         }
                         else {
                             $('#sdp_img_' + o.FieldNm).attr("src", "/img/0.jpg");
+                            //var fileobj = $('#' + o.FieldNm).get(0).files;
+                            //if (fileobj.length > 0) {
+                            //    fileobj.pop();
+                            //}
                         }
                     }
                     else

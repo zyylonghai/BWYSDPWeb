@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<LibKeyValueCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="BillStatus">
+  <Package>com</Package>
+  <KeyValues>
+    <LibKeyValue>
+      <ID>d2e9b8ad-8a3b-40f5-bd88-7480b9295ec1</ID>
+      <Key xsi:type="xsd:string">1</Key>
+      <Value xsi:type="xsd:string">关闭</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>3af83bd1-87f9-4703-b1ed-610c8f80503c</ID>
+      <Key xsi:type="xsd:string">2</Key>
+      <Value xsi:type="xsd:string">打开</Value>
+      <Remark />
+    </LibKeyValue>
+  </KeyValues>
+</LibKeyValueCollection>

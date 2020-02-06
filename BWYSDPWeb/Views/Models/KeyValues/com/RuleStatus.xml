@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<LibKeyValueCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="RuleStatus">
+  <Package>com</Package>
+  <KeyValues>
+    <LibKeyValue>
+      <ID>64dadf9a-22e6-4021-aa11-8390f4d07257</ID>
+      <Key xsi:type="xsd:string">1</Key>
+      <Value xsi:type="xsd:string">可用</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>1c578825-42d6-4fd6-b418-9c4f2855db80</ID>
+      <Key xsi:type="xsd:string">2</Key>
+      <Value xsi:type="xsd:string">作废</Value>
+      <Remark />
+    </LibKeyValue>
+  </KeyValues>
+</LibKeyValueCollection>

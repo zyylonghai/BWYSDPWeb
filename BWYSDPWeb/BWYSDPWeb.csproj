@@ -171,6 +171,7 @@
     <Compile Include="BllAuthorityControllers\AuthorityController.cs" />
     <Compile Include="BllAuthorityControllers\JoleController.cs" />
     <Compile Include="BllComController\CheckBillController.cs" />
+    <Compile Include="BllComController\CodeRuleConfigController.cs" />
     <Compile Include="BllComController\ComController.cs" />
     <Compile Include="BllSCMController\SaleOrderController.cs" />
     <Compile Include="BllSCMController\SCMController.cs" />
@@ -1980,7 +1981,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Account\" />
     <Folder Include="Views\Com\" />
     <Folder Include="Views\stocktest\" />
     <Folder Include="Views\Stock\" />

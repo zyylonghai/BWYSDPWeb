@@ -145,6 +145,7 @@ libTableModal.prototype = {
             success: function (data) {
                 $("#" + thisobj.ModalID).modal('hide');
                 $('#' + thisobj.GridId).bootstrapTable('refresh');
+                $('#' + formid)[0].reset();
             },
             error: function () {
             }

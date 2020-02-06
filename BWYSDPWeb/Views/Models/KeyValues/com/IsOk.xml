@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<LibKeyValueCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="IsOk">
+  <Package>com</Package>
+  <KeyValues>
+    <LibKeyValue>
+      <ID>8279f6c5-97f8-4aa3-8560-8a523d2088e9</ID>
+      <Key xsi:type="xsd:string">0</Key>
+      <Value xsi:type="xsd:string">否</Value>
+      <Remark />
+    </LibKeyValue>
+    <LibKeyValue>
+      <ID>f6700f12-1b98-4306-897a-080fceb20c01</ID>
+      <Key xsi:type="xsd:string">1</Key>
+      <Value xsi:type="xsd:string">是</Value>
+      <Remark />
+    </LibKeyValue>
+  </KeyValues>
+</LibKeyValueCollection>

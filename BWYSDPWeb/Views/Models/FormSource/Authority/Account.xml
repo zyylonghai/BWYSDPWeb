@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="Account" FormName="账户信息" DSID="Account" ControlClassNm="Account" CssFile="" ScriptFile="" Package="Authority">
+  <Buttons />
+  <ModuleOrder>
+    <ModuleOrder>
+      <moduleType>FormGroup</moduleType>
+      <ID>5c8e73ac-3e28-4e22-a405-859e9b9beaee</ID>
+    </ModuleOrder>
+    <ModuleOrder>
+      <moduleType>GridGroup</moduleType>
+      <ID>9846c563-960a-4553-903f-e909b3994a03</ID>
+    </ModuleOrder>
+  </ModuleOrder>
+  <FormGroups>
+    <LibFormGroup FormGroupID="5c8e73ac-3e28-4e22-a405-859e9b9beaee" FormGroupName="FormGroup1" FormGroupDisplayNm="关键信息">
+      <FmGroupFields>
+        <LibFormGroupField ID="8d2fb787-7e9b-4b47-b6b6-d784276d2ced">
+          <Name>UserId</Name>
+          <FromTableNm>Account</FromTableNm>
+          <FromDefTableNm>Account</FromDefTableNm>
+          <DisplayName>账户号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <FieldLength>20</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <Readonly>false</Readonly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="181ffe39-cbdb-4363-9b2d-977254a9a92c">
+          <Name>UserNm</Name>
+          <FromTableNm>Account</FromTableNm>
+          <FromDefTableNm>Account</FromDefTableNm>
+          <DisplayName>账户名</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <FieldLength>30</FieldLength>
+          <IsAllowNull>false</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <Readonly>false</Readonly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="990334e7-5343-41d1-af2f-bd5596014924">
+          <Name>Password</Name>
+          <FromTableNm>Account</FromTableNm>
+          <FromDefTableNm>Account</FromDefTableNm>
+          <DisplayName>密码</DisplayName>
+          <ElemType>Password</ElemType>
+          <Width>2</Width>
+          <FieldLength>150</FieldLength>
+          <IsAllowNull>true</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <Readonly>false</Readonly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="e97eeea7-1c36-4f3b-abc5-19fa06d87e5e">
+          <Name>Confirmpwd</Name>
+          <FromTableNm>Account</FromTableNm>
+          <FromDefTableNm>Account</FromDefTableNm>
+          <DisplayName>确认密码</DisplayName>
+          <ElemType>Password</ElemType>
+          <Width>2</Width>
+          <FieldLength>150</FieldLength>
+          <IsAllowNull>false</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <Readonly>false</Readonly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+        <LibFormGroupField ID="3ff42562-b499-4fbf-af17-dcf16795e887">
+          <Name>Status</Name>
+          <FromTableNm>Account</FromTableNm>
+          <FromDefTableNm>Account</FromDefTableNm>
+          <DisplayName>状态</DisplayName>
+          <ElemType>Select</ElemType>
+          <Width>2</Width>
+          <FieldLength>2</FieldLength>
+          <IsAllowNull>false</IsAllowNull>
+          <IsNumber>false</IsNumber>
+          <Readonly>false</Readonly>
+          <DealfValue xsi:type="xsd:string" />
+        </LibFormGroupField>
+      </FmGroupFields>
+    </LibFormGroup>
+  </FormGroups>
+  <GridGroups>
+    <LibGridGroup GridGroupID="9846c563-960a-4553-903f-e909b3994a03" GridGroupName="GridGroup1" GridGroupDisplayNm="角色明细" ControlClassNm="" HasSummary="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="">
+      <GdButtons>
+        <LibGridButton GridButtonID="31aaf55d-73da-4626-8319-1266a26611c8" GridButtonName="btnActionDetail" GridButtonDisplayNm="权限对象明细" GridButtonEvent="" />
+      </GdButtons>
+      <GdGroupFields>
+        <LibGridGroupField ID="7fb93041-7856-4835-b2e6-2534d401e682">
+          <Name>UserId</Name>
+          <FromTableNm>UserRole</FromTableNm>
+          <FromDefTableNm>UserRole</FromDefTableNm>
+          <DisplayName>账户号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="2d491d94-9f40-48e9-afb4-ccfdcf5f28df">
+          <Name>JoleId</Name>
+          <FromTableNm>UserRole</FromTableNm>
+          <FromDefTableNm>UserRole</FromDefTableNm>
+          <DisplayName>角色编号</DisplayName>
+          <ElemType>Search</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="1a5fa6a7-0c55-418d-b342-46ff13310aed">
+          <Name>JoleNm</Name>
+          <FromTableNm>UserRole</FromTableNm>
+          <FromDefTableNm>UserRole</FromDefTableNm>
+          <DisplayName>角色名</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>true</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="b7a984ce-245a-4a5a-bb8f-b139405e6d8d">
+          <Name>Status</Name>
+          <FromTableNm>UserRole</FromTableNm>
+          <FromDefTableNm>UserRole</FromDefTableNm>
+          <DisplayName>状态</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>true</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+      </GdGroupFields>
+    </LibGridGroup>
+  </GridGroups>
+  <BtnGroups />
+</LibFormPage>

@@ -127,13 +127,90 @@ namespace BWYSDPBaseDal
            
         }
 
+        /// <summary>
+        /// 根据账户id 获取账户下的角色及权限对象。
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
         public DataTable GetAuthority(string userid)
         {
-            SDPCRL.DAL.COM.SQLBuilder sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder("Account");
+            SQLBuilder sQLBuilder = new SQLBuilder("Account");
             string sql = sQLBuilder.GetSQL("UserRole",null, sQLBuilder.Where("B.UserId={0}", userid));
             return this.DataAccess.GetDataTable(sql);
         }
 
+        #region 根据规则生成编码 相关函数
+        public DataTable GetRuleDataByProgid(string progid)
+        {
+            SQLBuilder sQLBuilder = new SQLBuilder("CodeRuleConfig");
+            string sql = sQLBuilder.GetSQL("CodeRuleConfig", null, sQLBuilder.Where("A.ProgId={0}", progid));
+            return this.DataAccess.GetDataTable(sql);
+        }
+
+        public string GenerateNo(string progid, string ruleid)
+        {
+            DataTable dt = GetRuleDataByProgid(progid);
+            dt.DefaultView.Sort = "RuleId,SeqNo";
+            if (dt != null)
+            {
+                DataRow[] rows = dt.Select(string.Format("RuleId='{0}'", ruleid));
+                return DoGenerateNo(rows);
+                //if (rows != null && rows.Length > 0)
+                //{
+                //    string currdate = rows[0]["CurrDate"].ToString();
+                //    int currserial = Convert.ToInt32(rows[0]["CurrSerial"]);
+                //    string module = string.Empty;
+                //    int serialen = -1;
+                //    int index = 0;
+                //    //string suffix = string.Empty;
+                //    StringBuilder dateformat = new StringBuilder();
+                //    StringBuilder format = new StringBuilder();
+                //    foreach (DataRow dr in rows)
+                //    {
+                //        module = dr["ModuleId"].ToString();
+                //        switch (module)
+                //        {
+                //            case "yy":
+                //            case "yyyy":
+                //            case "MM":
+                //            case "dd":
+                //                dateformat.Append(module);
+                //                format.Append(module);
+                //                break;
+                //            case "prefix":
+                //            case "suffix":
+                //                format.Append(dr["FixValue"].ToString());
+                //                break;
+                //            case "serial":
+                //                format.Append("{" + index + "}");
+                //                index++;
+                //                serialen = Convert.ToInt32(dr["SeriaLen"]);
+                //                break;
+
+                //        }
+                //    }
+                //    if (serialen != -1)
+                //    {
+                //        currserial = DateTime.Now.ToString(dateformat.ToString()) == currdate ? currserial++ : 1;
+                //        //format.(format.ToString(), currserial.ToString().PadLeft(serialen, '0'));
+                //    }
+                //    return DateTime.Now.ToString(string.Format(format.ToString(), currserial.ToString().PadLeft(serialen, '0')));
+                //}
+            }
+            return string.Empty;
+        }
+        public string GenerateNoByprogid(string progid)
+        {
+            DataTable dt = GetRuleDataByProgid(progid);
+            dt.DefaultView.Sort = "RuleId,SeqNo";
+            if (dt != null)
+            {
+                DataRow[] rows = dt.Select(string.Format("IsDefault={0}", true));
+                return DoGenerateNo(rows);
+            }
+            return string.Empty;
+        }
+        #endregion 
         #region 私有函数
         private void AnalyzeSearchCondition(List<LibSearchCondition> conds, StringBuilder whereformat,ref object[] values)
         {
@@ -188,6 +265,56 @@ namespace BWYSDPBaseDal
             //    }
             //    precond = item;
             //}
+        }
+        private string DoGenerateNo(DataRow[] rows)
+        {
+            //DataRow[] rows = dt.Select(string.Format("RuleId='{0}'", ruleid));
+            if (rows != null && rows.Length > 0)
+            {
+                string currdate = rows[0]["CurrDate"].ToString();
+                int currserial = Convert.ToInt32(rows[0]["CurrSerial"]);
+                string module = string.Empty;
+                int serialen = -1;
+                int index = 0;
+                //string suffix = string.Empty;
+                StringBuilder dateformat = new StringBuilder();
+                StringBuilder format = new StringBuilder();
+                foreach (DataRow dr in rows)
+                {
+                    module = dr["ModuleId"].ToString();
+                    switch (module)
+                    {
+                        case "yy":
+                        case "yyyy":
+                        case "MM":
+                        case "dd":
+                            dateformat.Append(module);
+                            format.Append(module);
+                            break;
+                        case "prefix":
+                        case "suffix":
+                            format.Append(dr["FixValue"].ToString());
+                            break;
+                        case "serial":
+                            format.Append("{" + index + "}");
+                            index++;
+                            serialen = Convert.ToInt32(dr["SeriaLen"]);
+                            break;
+
+                    }
+                }
+                if (serialen != -1)
+                {
+                    currserial = DateTime.Now.ToString(dateformat.ToString()) == currdate ? (currserial+1) : 1;
+                    //format.(format.ToString(), currserial.ToString().PadLeft(serialen, '0'));
+                }
+                SQLBuilder builder = new SQLBuilder("CodeRuleConfig");
+                string sql= builder.GetUpdateSQL("CodeRuleConfig", builder.UpdateField("CurrDate={0},CurrSerial={1}", DateTime.Now.ToString(dateformat.ToString()), currserial), 
+                                                       builder.Where("ProgId={0} and RuleId={1}", rows[0]["ProgId"].ToString(), rows[0]["RuleId"].ToString()));
+                this.DataAccess.ExecuteNonQuery(sql);
+                return DateTime.Now.ToString(string.Format(format.ToString(), currserial.ToString().PadLeft(serialen, '0')));
+            }
+            return string.Empty;
         }
         #endregion
     }

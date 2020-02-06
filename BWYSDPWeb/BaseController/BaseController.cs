@@ -400,6 +400,10 @@ namespace BWYSDPWeb.BaseController
                         f.FieldValue = row[col] != DBNull.Value ? Convert.ToBase64String((byte[])row[col]) : row[col];
                         //f.FieldValue = dt.Rows[0][col] != DBNull.Value ? System.Text.Encoding.ASCII.GetString((byte[])dt.Rows[0][col]) : dt.Rows[0][col];
                     }
+                    else if (col.DataType.Equals(typeof(bool)))
+                    {
+                        f.FieldValue = Convert.ToInt32(row[col]);
+                    }
                     else
                         f.FieldValue = row[col];
                     fieldlst.Add(f);
@@ -745,6 +749,11 @@ namespace BWYSDPWeb.BaseController
             //DataTable dt = cachelp.GetCach(dsid) as DataTable;
             BllDataBase bll = new BllDataBase(false);
             return bll.GetFieldDescData(dsid,this.Language);
+        }
+
+        public string GenerateNoByprogid()
+        {
+            return (string)ExecuteMethod("GenerateNoByprogid", this.ProgID).Value;
         }
         #endregion
 

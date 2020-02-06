@@ -21,9 +21,9 @@ namespace BWYSDPWeb.BllAuthorityControllers
             base.PageLoad();
         }
 
-        protected override void SetSearchFieldExt(List<SearchConditionField> fields, int flag)
+        protected override void SetSearchFieldExt(List<SearchConditionField> fields, string fieldNm, int flag)
         {
-            base.SetSearchFieldExt(fields, flag);
+            base.SetSearchFieldExt(fields,fieldNm , flag);
             if (flag == 3)
             {
                 SearchConditionField field = new SearchConditionField();
@@ -42,9 +42,9 @@ namespace BWYSDPWeb.BllAuthorityControllers
             }
         }
 
-        protected override void BindSmodalDataExt(DataTable currpagedata, int flag)
+        protected override void BindSmodalDataExt(DataTable currpagedata, int flag, string fieldnm)
         {
-            base.BindSmodalDataExt(currpagedata, flag);
+            base.BindSmodalDataExt(currpagedata, flag,fieldnm);
             if (flag == 3)
             {
                 #region 获取所有功能模型的Progid

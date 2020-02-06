@@ -50,7 +50,7 @@
 
         $('#sdp_smodalbtnSearch').unbind('click');
         $('#sdp_smodalbtnSearch').click(function () {
-            DoSearch(flag, controlnm, fromdsid, deftb, tbstruct);
+            DoSearch(flag, controlnm, fromdsid, deftb, tbstruct, fieldnm);
         });
         if (flag == 1) {/*调出的搜索模态框为单据上的搜索*/
             $('#searchModal').find(".modal-footer").css("display", "none");
@@ -116,7 +116,7 @@ function AddCondition() {
 function DeletCondition(obj) {
     obj.remove();
 }
-function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
+function DoSearch(flag, ctrnm, dsid, deftb, tbstruct,fieldnm) {
     //if ($('#sdp_smodaldata') != undefined || $('#sdp_smodaldata') != null || $('#sdp_smodaldata').length> 0) {
     //    $('#sdp_smodaldata').bootstrapTable('refreshOptions', { pageNumber: 1 });
     //}
@@ -133,11 +133,11 @@ function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
         async: false,
         type: "Post",
         url: '/' + ctrnm + '/DoSearchData',
-        data: $('#sdp_smodalform').serialize() + "&flag=" + flag + "&dsid=" + dsid + "&deftb=" + deftb + "&tb=" + tbstruct + "",
+        data: $('#sdp_smodalform').serialize() + "&flag=" + flag + "&dsid=" + dsid + "&deftb=" + deftb + "&tb=" + tbstruct + "&fieldnm=" + fieldnm + "",
         dataType: "Json",
         success: function (obj) {
             if (obj.flag == 0) {
-                BindToTable(ctrnm, tbstruct, dsid, flag);
+                BindToTable(ctrnm, tbstruct, dsid, flag, fieldnm);
                 //$('#sdp_smodaldata').bootstrapTable('refresh');
                 $('#sdp_smodaldata').bootstrapTable('refreshOptions', { pageNumber: 1 });
                 closemsg();
@@ -148,9 +148,9 @@ function DoSearch(flag, ctrnm, dsid, deftb, tbstruct) {
     });
 }
 
-function BindToTable(ctrnm,tbnm,dsid,flag) {
+function BindToTable(ctrnm,tbnm,dsid,flag,fieldnm) {
     var sdp_searchtb = new LibTable("sdp_smodaldata");
-    sdp_searchtb.$table.url = "/" + ctrnm + "/BindSmodalData?tableNm=" + tbnm + "&dsid=" + dsid + "&flag=" + flag + "";
+    sdp_searchtb.$table.url = "/" + ctrnm + "/BindSmodalData?tableNm=" + tbnm + "&dsid=" + dsid + "&flag=" + flag + "&fieldnm=" + fieldnm + "";
     sdp_searchtb.$table.hasoperation = false;
     var cols = [];
     cols.push({

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="CodeRuleConfig" FormName="编码规则配置" DSID="CodeRuleConfig" ControlClassNm="CodeRuleConfig" CssFile="" ScriptFile="" Package="com">
+  <Buttons />
+  <ModuleOrder>
+    <ModuleOrder>
+      <moduleType>GridGroup</moduleType>
+      <ID>b4215d26-969f-41a4-ac69-421ab064f39a</ID>
+    </ModuleOrder>
+  </ModuleOrder>
+  <FormGroups />
+  <GridGroups>
+    <LibGridGroup GridGroupID="b4215d26-969f-41a4-ac69-421ab064f39a" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1" ControlClassNm="" HasSummary="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="">
+      <GdButtons />
+      <GdGroupFields>
+        <LibGridGroupField ID="ff34d7a5-5994-440a-86b4-8d37221be6e0">
+          <Name>ProgId</Name>
+          <FromTableNm>CodeRuleConfig</FromTableNm>
+          <FromDefTableNm>CodeRuleConfig</FromDefTableNm>
+          <DisplayName>功能ID</DisplayName>
+          <ElemType>Search</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="c2f637e7-9384-4d7a-a433-9f438c36a82e">
+          <Name>RuleId</Name>
+          <FromTableNm>CodeRuleConfig</FromTableNm>
+          <FromDefTableNm>CodeRuleConfig</FromDefTableNm>
+          <DisplayName>规则编号</DisplayName>
+          <ElemType>Search</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="d16309c3-4ec0-4d75-a014-2c4883ec4823">
+          <Name>GroupNo</Name>
+          <FromTableNm>CodeRuleConfig</FromTableNm>
+          <FromDefTableNm>CodeRuleConfig</FromDefTableNm>
+          <DisplayName>分组号</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="06d90547-d3a9-48e0-9313-859d5f57e41e">
+          <Name>IsDefault</Name>
+          <FromTableNm>CodeRuleConfig</FromTableNm>
+          <FromDefTableNm>CodeRuleConfig</FromDefTableNm>
+          <DisplayName>是否默认规则</DisplayName>
+          <ElemType>Select</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+      </GdGroupFields>
+    </LibGridGroup>
+  </GridGroups>
+  <BtnGroups />
+</LibFormPage>

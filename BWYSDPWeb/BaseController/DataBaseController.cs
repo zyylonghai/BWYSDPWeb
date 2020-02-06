@@ -483,6 +483,7 @@ namespace BWYSDPWeb.BaseController
             DataTable dt = null;
             Stream fileInStream = null;
             HttpPostedFileBase file = null;
+            DataTable mdt = null;//主表，即tableindex 为0的表
             foreach (string key in formdata.AllKeys)
             {
                 if (key.Contains(SysConstManage.Point))
@@ -540,6 +541,16 @@ namespace BWYSDPWeb.BaseController
 
                 }
             }
+            #region 主表主键值的编码规则处理
+            mdt = GetTableByIndex(0);
+            foreach (DataColumn col in mdt.PrimaryKey)
+            {
+                if (string.IsNullOrEmpty(mdt.Rows[0][col].ToString ()))
+                {
+                    mdt.Rows[0][col] = this.GenerateNoByprogid();
+                }
+            }
+            #endregion
             #region 处理上传的图片
             foreach (string key in Request.Files.AllKeys)
             {
@@ -581,13 +592,12 @@ namespace BWYSDPWeb.BaseController
             TableExtendedProperties tbextp = null;
             //ColExtendedProperties colextp = null;
             List<DataTable> relatedts = new List<DataTable>();
-            DataTable mdt = null;
             foreach (LibTable def in this.LibTables)
             {
                 foreach (DataTable table in def.Tables)
                 {
                     tbextp = table.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                    if (tbextp.TableIndex == 0) mdt = table;
+                    if (tbextp.TableIndex == 0) { continue; }
                     if (tbextp.RelateTableIndex == 0)
                     {
                         if (mdt != null)
@@ -620,7 +630,6 @@ namespace BWYSDPWeb.BaseController
             }
             #endregion
             #endregion
-
             BeforeSave();
             //TableExtendedProperties tbext = new TableExtendedProperties();
             //string ss= JsonConvert.SerializeObject(tbext);
@@ -694,7 +703,8 @@ namespace BWYSDPWeb.BaseController
 
         public ActionResult Edit()
         {
-            this.SessionObj.OperateAction = OperatAction.Edit;
+            if (this.SessionObj.OperateAction == OperatAction.Preview)
+                this.SessionObj.OperateAction = OperatAction.Edit;
             return BasePageLoad();
         }
 
@@ -972,7 +982,7 @@ namespace BWYSDPWeb.BaseController
                                 //}
                                 #endregion
                                 #region 填充主键列的值
-                                if (relatetb != null)
+                                if (relatetb != null && (relatetb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex!=extprop .TableIndex)
                                 {
                                     ColExtendedProperties colextprop = null;
                                     DataColumn relatecol = null;
@@ -1067,7 +1077,7 @@ namespace BWYSDPWeb.BaseController
                             {
                                 dr[f.FieldNm.Replace(string.Format("{0}{1}", tableNm, SysConstManage.Underline), "")] = f.FieldValue;
                             }
-                            tb.Rows.Add(dr);
+                            //tb.Rows.Add(dr);
                             #region 旧代码
                             //dr = tb.NewRow();
                             //TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
@@ -1146,6 +1156,7 @@ namespace BWYSDPWeb.BaseController
                                 #region 删当前表的行。
                                 foreach (DataRow rw in tb.Rows)
                                 {
+                                    if (rw.RowState == DataRowState.Deleted) continue;
                                     rowid = rw[SysConstManage.sdp_rowid].ToString();
                                     if (fieldlst.FirstOrDefault(i => i.FieldNm == SysConstManage.sdp_rowid && i.FieldValue.ToString() == rowid) != null)
                                     {
@@ -1227,52 +1238,67 @@ namespace BWYSDPWeb.BaseController
                 }
                 try
                 {
-                    foreach (string nm in formparams.AllKeys)
+                    if (cmd != "Delet")
                     {
-                        if (nm.Contains(SysConstManage.Point))
+                        DataColumn col = null;
+                        foreach (string nm in formparams.AllKeys)
                         {
-                            array = nm.Split(SysConstManage.Point);
-                            if (array.Length < 2) continue;
-                            if (dr != null)
+                            if (nm.Contains(SysConstManage.Point))
                             {
-                                dr[array[1]] = formparams[nm];
+                                array = nm.Split(SysConstManage.Point);
+                                if (array.Length < 2) continue;
+                                if (dr != null)
+                                {
+                                    col = tb.Columns[array[1]];
+                                    if (col != null)
+                                    {
+                                        if (col.DataType == typeof(bool))
+                                        {
+                                            dr[col] = Convert.ToBoolean(Convert.ToInt32(formparams[nm]));
+                                        }
+                                        else
+                                            dr[col] = formparams[nm];
+                                    }
+                                    
+                                }
                             }
                         }
-                    }
-                    #region 处理上传的图片
-                    Stream fileInStream = null;
-                    HttpPostedFileBase file = null;
-                    foreach (string key in Request.Files.AllKeys)
-                    {
-                        if (key.Contains(SysConstManage.Point))
+                        #region 处理上传的图片
+                        Stream fileInStream = null;
+                        HttpPostedFileBase file = null;
+                        foreach (string key in Request.Files.AllKeys)
                         {
-                            array = key.Split(SysConstManage.Point);
-                            if (array.Length < 2)
-                                continue;
-                            object val = null;
-                            if (this.Request.Files.AllKeys.FirstOrDefault(i => i == key) != null)
+                            if (key.Contains(SysConstManage.Point))
                             {
-                                file = this.Request.Files[key];
-                                fileInStream = file.InputStream;
-                                byte[] content = new byte[file.ContentLength];
-                                fileInStream.Read(content, 0, file.ContentLength);
-                                //string ss= Convert.ToBase64String(content);
-                                if (content.Length == 0) continue;
-                                //val =System .Text .Encoding .ASCII.GetBytes(Convert .ToBase64String(content));
-                                val = content;
-                            }
-                            if (dr != null)
-                            {
-                                dr[array[1]] = val;
+                                array = key.Split(SysConstManage.Point);
+                                if (array.Length < 2)
+                                    continue;
+                                object val = null;
+                                if (this.Request.Files.AllKeys.FirstOrDefault(i => i == key) != null)
+                                {
+                                    file = this.Request.Files[key];
+                                    fileInStream = file.InputStream;
+                                    byte[] content = new byte[file.ContentLength];
+                                    fileInStream.Read(content, 0, file.ContentLength);
+                                    //string ss= Convert.ToBase64String(content);
+                                    if (content.Length == 0) continue;
+                                    //val =System .Text .Encoding .ASCII.GetBytes(Convert .ToBase64String(content));
+                                    val = content;
+                                }
+                                if (dr != null)
+                                {
+                                    dr[array[1]] = val;
+                                }
                             }
                         }
+                        #endregion
+                        if (cmd == "Add") tb.Rows.Add(dr);
                     }
-                    #endregion
                 }
                 catch (Exception ex)
                 {
-                    if (dr != null && cmd == "Add")
-                        tb.Rows.Remove(dr);
+                    //if (dr != null && cmd == "Add")
+                    //    tb.Rows.Remove(dr);
                     this.ThrowErrorException(ex.Message);
                 }
                 UpdateTableAction(gridid, dr, cmd);
@@ -1430,7 +1456,7 @@ namespace BWYSDPWeb.BaseController
                 this.SessionObj.FromFieldInfo.FieldNm = fieldnm;
                 //this.SessionObj.FromFieldInfo.FromFieldNm = field.SourceField[0].FromFieldNm;
             }
-            SetSearchFieldExt(condcollection, Convert.ToInt32(flag));
+            SetSearchFieldExt(condcollection,fieldnm , Convert.ToInt32(flag));
             return Json(new { data = condcollection.Where(i => i.IsCondition).ToList(), flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
@@ -1439,7 +1465,7 @@ namespace BWYSDPWeb.BaseController
             return Json(new { data = new ElementCollection().SearchModalCondition(Convert.ToInt32(index)) }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult DoSearchData(int flag)
+        public ActionResult DoSearchData(int flag,string fieldnm)
         {
             var formdata = this.Request.Form;
             string index = string.Empty;
@@ -1469,7 +1495,7 @@ namespace BWYSDPWeb.BaseController
                 cond.Logic = (Smodallogic)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodallogic, index)]);
                 conds.Add(cond);
             }
-            SetSearchCondition(conds);
+            SetSearchCondition(conds,fieldnm);
             this.SessionObj.Conds = conds;
             return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }
@@ -1481,14 +1507,14 @@ namespace BWYSDPWeb.BaseController
         /// <param name="page"></param>
         /// <param name="rows"></param>
         /// <returns></returns>
-        public string BindSmodalData(string tableNm, string dsid, int flag, int page, int rows)
+        public string BindSmodalData(string tableNm, string dsid, int flag,string fieldnm, int page, int rows)
         {
             List<LibSearchCondition> conds = this.SessionObj.Conds;
             DataTable dt = null;
             if (flag == 3)
             {
                 dt = new DataTable();
-                BindSmodalDataExt(dt, flag);
+                BindSmodalDataExt(dt, flag,fieldnm);
                 #region 解析搜索条件
                 object[] values = { };
                 StringBuilder whereformat = new StringBuilder();
@@ -1523,7 +1549,7 @@ namespace BWYSDPWeb.BaseController
             if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
                 dt = ((DataTable)result.Value);
-                BindSmodalDataExt(dt, flag);
+                BindSmodalDataExt(dt, flag,fieldnm);
                 if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
                 {
                     if (dt != null && flag == 2)
@@ -1693,15 +1719,23 @@ namespace BWYSDPWeb.BaseController
         {
 
         }
-
-        protected virtual void SetSearchFieldExt(List<SearchConditionField> fields, int flag) { }
-
-        protected virtual void SetSearchCondition(List<LibSearchCondition> conditions)
+        /// <summary>
+        /// 扩展方法, 设置搜索条件中的字段
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <param name="fieldNm"></param>
+        /// <param name="flag"></param>
+        protected virtual void SetSearchFieldExt(List<SearchConditionField> fields,string fieldNm, int flag) { }
+        /// <summary>
+        /// 扩展方法，设置搜索条件表达式
+        /// </summary>
+        /// <param name="conditions"></param>
+        protected virtual void SetSearchCondition(List<LibSearchCondition> conditions,string fieldnm)
         {
 
         }
 
-        protected virtual void BindSmodalDataExt(DataTable currpagedata, int flag)
+        protected virtual void BindSmodalDataExt(DataTable currpagedata, int flag,string fieldnm)
         {
 
         }
