@@ -269,9 +269,9 @@ namespace BWYSDPWeb.Com
                     {
                         foreach (var t in tb.Tables)
                         {
-                            foreach (DataRow dr in t.Rows)
+                            foreach (DataRow dr in t.DataTable .Rows)
                             {
-                                rowindex = t.Rows.IndexOf(dr);
+                                rowindex = t.DataTable .Rows.IndexOf(dr);
                                 switch (dr.RowState)
                                 {
                                     case DataRowState.Added:
@@ -289,7 +289,7 @@ namespace BWYSDPWeb.Com
                                 }
                                 object val = null;
                                 object oldval = null;
-                                foreach (DataColumn col in t.Columns)
+                                foreach (DataColumn col in t.DataTable .Columns)
                                 {
                                     if (action != 2)
                                     {

@@ -1,0 +1,35 @@
+编码规则主表
+(
+   RuleId ,规则编号  主键
+   RuleNm,规则名称
+   Status,状态（1 可用，2作废）
+   Remark,
+)
+编码规则明细(模块)表
+(
+   RuleId ,规则编号  主键
+   SeqNo,  模块顺序编号 主键
+   ModuleId, 模块(yy:年(2位),yyyy:年(4位),MM:月,dd:天,prefix:前缀,suffix:后缀,serial:流水号)
+   FixValue, 前后缀值(固定值),
+   SeriaLen, 流水长度,
+
+CreateDate, 创建日期
+Creater,创建者
+LastmodifyDate, 最后修改日期
+LastmodifyUser, 最后修改者
+)
+
+规则配置表
+(
+   ProgId,功能ID   主键
+   RuleId,规则编号  主键
+   CurrDate,当前日期
+   CurrSerial,当前流水号
+   GroupNo,分组号
+   IsDefault,是否默认规则
+
+CreateDate, 创建日期
+Creater,创建者
+LastmodifyDate, 最后修改日期
+LastmodifyUser, 最后修改者
+)

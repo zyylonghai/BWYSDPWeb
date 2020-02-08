@@ -133,7 +133,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                     
                 }
                 vm = new ActionViewModel(list);
-                DataRow[] rows = this.LibTables[2].Tables[0].Select(string.Format("ProgId='{0}'", progid));
+                DataRow[] rows = this.LibTables[2].Tables[0].DataTable.Select(string.Format("ProgId='{0}'", progid));
                 string groupid = string.Empty;
                 string objId = string.Empty;
                 int objtype = -1;

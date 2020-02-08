@@ -74,7 +74,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
         {
             if (data != null)
             {
-                DataTable dt = this.LibTables[2].Tables[0];
+                DataTable dt = this.LibTables[2].Tables[0].DataTable;
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     if (dt.Rows[i].RowState == DataRowState.Deleted) continue;
@@ -97,7 +97,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                     dr["ObjectType"] = item.ObjectType;
                     dr["ObjectId"] = item.ObjectId;
                     dr["GroupId"] = item.GroupId;
-                    this.LibTables[2].Tables[0].Rows.Add(dr);
+                    this.LibTables[2].Tables[0].DataTable.Rows.Add(dr);
                 }
                 if (data.Where(i => (i.ObjectId == "bwysdp_btnedit" || i.ObjectId == "bwysdp_btnadd") && i.ObjectType == 1).Count()>=2)
                 {
@@ -106,7 +106,7 @@ namespace BWYSDPWeb.BllAuthorityControllers
                     dr["ObjectType"] = 1;
                     dr["ObjectId"] = "bwysdp_btnsave";
                     dr["GroupId"] = progid;
-                    this.LibTables[2].Tables[0].Rows.Add(dr);
+                    this.LibTables[2].Tables[0].DataTable.Rows.Add(dr);
                 }
                 
             }

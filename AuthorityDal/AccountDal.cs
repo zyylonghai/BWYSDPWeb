@@ -1,4 +1,5 @@
-﻿using SDPCRL.CORE;
+﻿using SDPCRL.COM;
+using SDPCRL.CORE;
 using SDPCRL.DAL.COM;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,11 @@ namespace AuthorityDal
         {
             base.BeforeUpdate();
             #region 产生密码秘钥并加密密码
-            string pwd = this.LibTables[0].Tables[0].Rows[0]["Password"].ToString();
+            string pwd = this.LibTables[0].Tables[0].DataTable .Rows[0]["Password"].ToString();
             string pwdkey = DesCryptFactory.GenerateKey();
             pwd = DesCryptFactory.EncryptString(pwd, pwdkey);
-            this.LibTables[0].Tables[0].Rows[0]["Password"] = pwd;
-            this.LibTables[0].Tables[0].Rows[0]["PasswordKey"] = DesCryptFactory.AESEncrypt(pwdkey, "bwyAccount");
+            this.LibTables[0].Tables[0].DataTable .Rows[0]["Password"] = pwd;
+            this.LibTables[0].Tables[0].DataTable .Rows[0]["PasswordKey"] = DesCryptFactory.AESEncrypt(pwdkey, "bwyAccount");
             #endregion 
         }
 
@@ -31,18 +32,21 @@ namespace AuthorityDal
         /// <returns>返回1表示登录成功，2表示已登录，3表示密码错误,0表示登录失败</returns>
         public int Login(string userid,string password)
         {
-            SQLBuilder builder = new SQLBuilder("Account");
-            string sql = builder.GetSQL("Account", new string[] { "A.UserId,A.Password,A.PasswordKey,A.loginIP,A.LoginDT,A.IsLogin" }, builder.Where("A.UserId={0}", userid));
-            DataRow row = this.DataAccess.GetDataRow(sql);
+            //SQLBuilder builder = new SQLBuilder("Account");
+            //string sql = builder.GetSQL("Account", new string[] { "A.UserId,A.Password,A.PasswordKey,A.loginIP,A.LoginDT,A.IsLogin" }, builder.Where("A.UserId={0}", userid));
+            //DataRow row = this.DataAccess.GetDataRow(sql);
+            LibTableObj account = this.DSContext.GetTableObj("Account");
+            this.DataAccess.FillTableObj(account.Where(account.Columns.UserId + "={0}",  userid));
+            dynamic row = account.FindRow(0);
             if (row != null)
             {
-                if ((bool)row["IsLogin"])
+                if (row.IsLogin)
                 {
                     //this.AddMessage(string.Format(this.GetMessageDesc("msg000000001")), LibMessageType.Prompt);
                     //return 2;
                 }
-                string pwd = row["Password"].ToString();
-                string pwdkey = row["PasswordKey"].ToString();
+                string pwd = row.Password;
+                string pwdkey = row.PasswordKey;
                 pwdkey = DesCryptFactory.AESDecrypt(pwdkey, "bwyAccount");
                 pwd = DesCryptFactory.DecryptString(pwd, pwdkey);
                 //this.AddMessage("test", LibMessageType.Error);

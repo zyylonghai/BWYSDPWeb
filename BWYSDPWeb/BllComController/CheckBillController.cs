@@ -16,6 +16,7 @@ namespace BWYSDPWeb.BllComController
 
         protected override void PageLoad()
         {
+            #region 
             //this.Tables[0].Columns["CheckDT"].DataType = typeof(Date);
             //DataRow row = this.LibTables[0].Tables[0].NewRow();
             //row["BillNo"] = "T201903160003";
@@ -86,6 +87,7 @@ namespace BWYSDPWeb.BllComController
             //    row["testfield"] = string.Format("测试字段{0}", i);
             //    this.LibTables[1].Tables[1].Rows.Add(row);
             //}
+            #endregion
             string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
             //row = this.LibTables[1].Tables[1].NewRow();
             //row["BillNo"] = "T201903160001";
@@ -97,7 +99,14 @@ namespace BWYSDPWeb.BllComController
             //string str = JsonConvert.SerializeObject(this.LibTables[0].Tables[1]);
             //DataTable dr2 = JsonConvert.DeserializeObject<DataTable>(str);
             //return LibJson();
-            this.LibTables[0].Tables[0].Rows[0]["BillNo"] = "T20102102";
+            //var mdr= this.LibTables[0].Tables[0].NewRow();
+            //mdr.BillNo = "T20200001";
+            //mdr.remark = "zyytest";
+            //var dr = this.LibTables[0].Tables[1].NewRow();
+            //dr.check1 = "skdfj";
+            //dr.check2 = "chedk";
+            var tbobj = this.LibTables[0].Tables[0];
+            tbobj.DataTable.Rows[0][tbobj.Columns.ID] = "T20102102";
             //this.ThrowErrorException("zyylonghai错误猜测是");
             //this.AddMessage("测试错误提示", SDPCRL.CORE.LibMessageType.Error);
             //this.AddMessage("测试错误提示2", SDPCRL.CORE.LibMessageType.Error);
@@ -122,8 +131,9 @@ namespace BWYSDPWeb.BllComController
             //this.ThrowErrorException("抛出异常测试");
             if (string.Compare(gridid, "GridGroup1") == 0 && cmd== "Add")
             {
-                row["yingdu"] = "zyylonghai";
-                row["xingzhuang"] = "88888888";
+                var tbobj = this.LibTables[1].Tables[0];
+                row[tbobj.Columns.yingdu] = "zyylonghai";
+                row[tbobj.Columns.xingzhuang] = "88888888";
             }
         }
 

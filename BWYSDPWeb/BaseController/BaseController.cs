@@ -319,6 +319,7 @@ namespace BWYSDPWeb.BaseController
             FormFields f = null;
             DataTable dt = null;
             DataColumn col = null;
+            LibTableObj tableObj = null;
             foreach (KeyValuePair<string, List<string>> item in fields)
             {
                 if (this.LibTables == null)
@@ -328,7 +329,8 @@ namespace BWYSDPWeb.BaseController
                 }
                 foreach (LibTable t in this.LibTables)
                 {
-                    dt = t.Tables.FirstOrDefault(i => i.TableName == item.Key);
+                    tableObj = t.Tables.FirstOrDefault(i => i.TableName == item.Key);
+                    dt = tableObj ==null ?null :tableObj .DataTable;
                     if (dt != null)
                         break;
                 }
@@ -451,10 +453,12 @@ namespace BWYSDPWeb.BaseController
             for (int i = 0; i < srcDT.Length; i++)
             {
                 targDT[i] = new LibTable(srcDT[i].Name);
-                targDT[i].Tables = new DataTable[srcDT[i].Tables.Length];
+                targDT[i].Tables = new LibTableObj[srcDT[i].Tables.Length];
+                DataTable dt = null;
                 for (int n = 0; n < srcDT[i].Tables.Length; n++)
                 {
-                    targDT[i].Tables[n] = srcDT[i].Tables[n].Copy();
+                     dt = srcDT[i].Tables[n].DataTable.Copy();
+                    targDT[i].Tables[n] = new LibTableObj (dt);
                 }
                 //targDT[i] = srcDT[i].Copy();
             }
@@ -508,7 +512,7 @@ namespace BWYSDPWeb.BaseController
                     {
                         for (int i = 0; i < item.Tables.Length; i++)
                         {
-                            tb = item.Tables[i];
+                            tb = item.Tables[i].DataTable;
                             cols = tb.Columns;
                             primarykeycols = tb.PrimaryKey;
                             result = sQLiteHelp.GetTempData(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, tb.TableName, ref rowcout);

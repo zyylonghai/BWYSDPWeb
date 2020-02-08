@@ -19,8 +19,8 @@ namespace BWYSDPWeb.BllAuthorityControllers
         protected override void BeforeSave()
         {
             base.BeforeSave();
-            string pwd = this.LibTables[0].Tables[0].Rows[0]["Password"].ToString();
-            string confirmpwd = this.LibTables[0].Tables[0].Rows[0]["Confirmpwd"].ToString();
+            string pwd = this.LibTables[0].Tables[0].DataTable .Rows[0]["Password"].ToString();
+            string confirmpwd = this.LibTables[0].Tables[0].DataTable.Rows[0]["Confirmpwd"].ToString();
             if (string.Compare(pwd, confirmpwd, false) != 0)
             {
                 //msg000000010 两次输入的密码不一致

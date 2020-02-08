@@ -14,13 +14,20 @@ namespace BWYSDPBaseDal
     public class DalDataBase : DALBase
     {
         #region 私有属性
-        private SDPCRL.DAL.COM.SQLBuilder _sQLBuilder = null;
+        //private SDPCRL.DAL.COM.SQLBuilder _sQLBuilder = null;
+        private LibDSContext _dSContext = null;
         #endregion 
         #region 属性
-        public  SDPCRL.DAL.COM.SQLBuilder SQLBuilder { get
-            {
-                if (this._sQLBuilder == null) this._sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder(this.ProgId);
-                return this._sQLBuilder;
+        //public  SDPCRL.DAL.COM.SQLBuilder SQLBuilder { get
+        //    {
+        //        if (this._sQLBuilder == null) this._sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder(this.ProgId);
+        //        return this._sQLBuilder;
+        //    }
+        //}
+        public LibDSContext DSContext {
+            get {
+                if (this._dSContext == null) this._dSContext = new LibDSContext(this.ProgId);
+                return this._dSContext;
             }
         }
         #endregion 
@@ -107,7 +114,8 @@ namespace BWYSDPBaseDal
             object[] values = { };
             StringBuilder whereformat = new StringBuilder();
             AnalyzeSearchCondition(conds, whereformat,ref values);
-            string sql = this.SQLBuilder.GetSQL(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString (), Values = values });
+            //string sql = this.SQLBuilder.GetSQL(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString (), Values = values });
+            string sql = this.DSContext.GetSQL(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values });
             return this.DataAccess.GetDataTable(sql);
             //return null;
         }
@@ -139,12 +147,12 @@ namespace BWYSDPBaseDal
             //SDPCRL.DAL.COM.SQLBuilder sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder();
             foreach (var libdt in this.LibTables)
             {
-                foreach (DataTable dt in libdt.Tables)
+                foreach (LibTableObj dtobj in libdt.Tables)
                 {
-                    TableExtendedProperties tbextprop = this.JsonToObj<TableExtendedProperties>(dt.ExtendedProperties[SysConstManage.ExtProp].ToString());
+                    TableExtendedProperties tbextprop = this.JsonToObj<TableExtendedProperties>(dtobj.DataTable.ExtendedProperties[SysConstManage.ExtProp].ToString());
                     if (!tbextprop.Ignore) continue;
                     Array.Resize(ref dts, dts.Length + 1);
-                    dts[dts.Length - 1] =new DataTable (dt.TableName);
+                    dts[dts.Length - 1] =new DataTable (dtobj.TableName);
 
                     if (tbextprop.TableIndex == 0 || tbextprop .TableIndex !=tbextprop .RelateTableIndex)
                     {
@@ -157,7 +165,8 @@ namespace BWYSDPBaseDal
                             }
                             where.AppendFormat("{0}.{1}", LibSysUtils.ToCharByTableIndex(tbextprop.TableIndex), item);
                         }
-                        sql.Append(this.SQLBuilder.GetSQL(dt.TableName, null, new WhereObject { WhereFormat=where.ToString (),Values=valus },false,false));
+                        //sql.Append(this.SQLBuilder.GetSQL(dtobj.TableName, null, new WhereObject { WhereFormat=where.ToString (),Values=valus },false,false));
+                        sql.Append(this.DSContext.GetSQL(dtobj.TableName, null, new WhereObject { WhereFormat = where.ToString(), Values = valus }, false, false));
                         sql.AppendLine();
                     }
                 }
@@ -174,16 +183,21 @@ namespace BWYSDPBaseDal
         /// <returns></returns>
         public DataTable GetAuthority(string userid)
         {
-            SQLBuilder sQLBuilder = new SQLBuilder("Account");
-            string sql = sQLBuilder.GetSQL("UserRole",null, sQLBuilder.Where("B.UserId={0}", userid));
+            //SQLBuilder sQLBuilder = new SQLBuilder("Account");
+            LibDSContext dSContext = new LibDSContext("Account");
+            var userRole = dSContext.GetTableObj("UserRole");
+            string sql = dSContext.GetSQL("UserRole",null, dSContext.Where("B."+ userRole.Columns.UserId + "={0}", userid));
             return this.DataAccess.GetDataTable(sql);
         }
 
         #region 根据规则生成编码 相关函数
         public DataTable GetRuleDataByProgid(string progid)
         {
-            SQLBuilder sQLBuilder = new SQLBuilder("CodeRuleConfig");
-            string sql = sQLBuilder.GetSQL("CodeRuleConfig", null, sQLBuilder.Where("A.ProgId={0}", progid));
+            //SQLBuilder sQLBuilder = new SQLBuilder("CodeRuleConfig");
+            LibDSContext dSContext = new LibDSContext("CodeRuleConfig");
+            var ruleconfig = dSContext.GetTableObj("CodeRuleConfig");
+            //string sql = sQLBuilder.GetSQL("CodeRuleConfig", null, sQLBuilder.Where("A.ProgId={0}", progid));
+            string sql = dSContext.GetSQL("CodeRuleConfig", null, dSContext.Where("A."+ ruleconfig.Columns.ProgId + "={0}", progid));
             return this.DataAccess.GetDataTable(sql);
         }
 
@@ -311,6 +325,9 @@ namespace BWYSDPBaseDal
             //DataRow[] rows = dt.Select(string.Format("RuleId='{0}'", ruleid));
             if (rows != null && rows.Length > 0)
             {
+                LibTableObj config = new LibTableObj(rows[0].Table);
+                config.FillData(rows);
+                
                 #region 判断是否有加锁
                 if (this.ExistDataLock("CodeRuleConfig", rows[0]))
                 {
@@ -321,10 +338,13 @@ namespace BWYSDPBaseDal
 
                 #endregion
                 #region 加锁，防止生成重复序列号
-                this.AddDataLock("CodeRuleConfig", rows[0], new DataColumn[] { rows[0].Table.Columns["ProgId"], rows[0].Table.Columns["RuleId"] });
+                dynamic firstdr = config.FindRow(0);
+                this.AddDataLock("CodeRuleConfig", rows[0], new DataColumn[] { rows[0].Table.Columns[config .Columns .ProgId], rows[0].Table.Columns[config.Columns.RuleId] });
                 #endregion 
-                string currdate = rows[0]["CurrDate"].ToString();
-                int currserial = Convert.ToInt32(rows[0]["CurrSerial"]);
+                //string currdate = rows[0][config.Columns .CurrDate].ToString();
+                //int currserial = Convert.ToInt32(rows[0][config.Columns .CurrSerial]);
+                string currdate = firstdr.CurrDate;
+                int currserial = firstdr.CurrSerial;
                 string module = string.Empty;
                 int serialen = -1;
                 int index = 0;
@@ -360,10 +380,18 @@ namespace BWYSDPBaseDal
                     currserial = DateTime.Now.ToString(dateformat.ToString()) == currdate ? (currserial+1) : 1;
                     //format.(format.ToString(), currserial.ToString().PadLeft(serialen, '0'));
                 }
-                SQLBuilder builder = new SQLBuilder("CodeRuleConfig");
-                string sql= builder.GetUpdateSQL("CodeRuleConfig", builder.UpdateField("CurrDate={0},CurrSerial={1}", DateTime.Now.ToString(dateformat.ToString()), currserial), 
-                                                       builder.Where("ProgId={0} and RuleId={1}", rows[0]["ProgId"].ToString(), rows[0]["RuleId"].ToString()));
-                this.DataAccess.ExecuteNonQuery(sql);
+                #region 更新CodeRuleConfig表的当前日期和流水号
+                //SQLBuilder builder = new SQLBuilder("CodeRuleConfig");
+                //string sql= builder.GetUpdateSQL("CodeRuleConfig", builder.UpdateField("CurrDate={0},CurrSerial={1}", DateTime.Now.ToString(dateformat.ToString()), currserial), 
+                //                                       builder.Where("ProgId={0} and RuleId={1}", rows[0]["ProgId"].ToString(), rows[0]["RuleId"].ToString()));
+                //this.DataAccess.ExecuteNonQuery(sql);
+                config = new LibTableObj("CodeRuleConfig", "CodeRuleConfig");
+                config.FillData(new DataRow[] { rows[0] });
+                dynamic rw = config.FindRow(0);
+                rw.CurrDate = DateTime.Now.ToString(dateformat.ToString());
+                rw.CurrSerial = currserial;
+                this.DataAccess.SaveChange(new LibTableObj[] { config });
+                #endregion 
                 #region 从容器中移除锁
                 RemoveDataLock("CodeRuleConfig", rows[0]);
                 #endregion

@@ -416,13 +416,13 @@ namespace BWYSDPWeb.BaseController
                     //DataRow row = null;
                     foreach (var def in this.LibTables)
                     {
-                        foreach (DataTable dt in def.Tables)
+                        foreach (LibTableObj dtobj in def.Tables)
                         {
-                            if ((dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
+                            if ((dtobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
                             {
                                 //row = dt.NewRow();
 
-                                dt.Rows.Add(dt.NewRow());
+                                dtobj .DataTable .Rows.Add(dtobj .DataTable .NewRow());
                             }
                         }
                     }
@@ -516,7 +516,8 @@ namespace BWYSDPWeb.BaseController
                     foreach (LibTable libtb in this.LibTables)
                     {
                         string tbnm = array[0];
-                        dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                        LibTableObj tbobj = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                        dt = tbobj ==null ?null :tbobj .DataTable;
                         if (dt != null)
                         {
                             SetDTFirstRowColValue(dt, array[1], val);
@@ -578,7 +579,8 @@ namespace BWYSDPWeb.BaseController
                     foreach (LibTable libtb in this.LibTables)
                     {
                         string tbnm = array[0];
-                        dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                        LibTableObj tableObj = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                        dt = tableObj ==null?null :tableObj .DataTable;
                         if (dt != null)
                         {
                             SetDTFirstRowColValue(dt, array[1], val);
@@ -594,17 +596,17 @@ namespace BWYSDPWeb.BaseController
             List<DataTable> relatedts = new List<DataTable>();
             foreach (LibTable def in this.LibTables)
             {
-                foreach (DataTable table in def.Tables)
+                foreach (LibTableObj tbojb in def.Tables)
                 {
-                    tbextp = table.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    tbextp = tbojb.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
                     if (tbextp.TableIndex == 0) { continue; }
                     if (tbextp.RelateTableIndex == 0)
                     {
                         if (mdt != null)
                         {
-                            SetPrimaryKeyWithMastTB(table, mdt);
+                            SetPrimaryKeyWithMastTB(tbojb .DataTable, mdt);
                         }
-                        relatedts.Add(table);
+                        relatedts.Add(tbojb .DataTable);
                     }
                     else
                     {
@@ -617,7 +619,7 @@ namespace BWYSDPWeb.BaseController
                                 if (tbextp.RelateTableIndex == 0 || tbextp.RelateTableIndex == tbextp.TableIndex)
                                 {
                                     if (tbextp.RelateTableIndex == 0)
-                                        SetPrimaryKeyWithMastTB(table, mdt);
+                                        SetPrimaryKeyWithMastTB(tbojb.DataTable, mdt);
                                     break;
                                 }
 
@@ -641,10 +643,10 @@ namespace BWYSDPWeb.BaseController
             #region 系统字段的填值
             foreach (LibTable libtb in this.LibTables)
             {
-                foreach (DataTable table in libtb.Tables)
+                foreach (LibTableObj  tbobj in libtb.Tables)
                 {
-                    if (table == null) continue;
-                    foreach (DataRow dr in table.Rows)
+                    if (tbobj.DataTable == null) continue;
+                    foreach (DataRow dr in tbobj.DataTable.Rows)
                     {
                         if (dr.RowState == DataRowState.Deleted) continue;
                         SetColumnValue(dr, SysConstManage.sysfld_creater, this.UserInfo.UserId);
@@ -678,9 +680,9 @@ namespace BWYSDPWeb.BaseController
             {
                 foreach (LibTable libtb in this.LibTables)
                 {
-                    foreach (DataTable table in libtb.Tables)
+                    foreach (LibTableObj tbobj in libtb.Tables)
                     {
-                        table.AcceptChanges();
+                        tbobj.DataTable.AcceptChanges();
                     }
                 }
                 this.SessionObj.OperateAction = OperatAction.Preview;
@@ -713,7 +715,7 @@ namespace BWYSDPWeb.BaseController
         {
             var parmas = this.Request.Form;
             string tablenm = parmas["tablenm"];
-            List<DataTable> dtlist = new List<DataTable>();
+            List<LibTableObj> dtlist = new List<LibTableObj>();
             //StringBuilder whereformat = new StringBuilder();
             List<string> whereformat = new List<string>();
             object[] vals = null;
@@ -721,7 +723,8 @@ namespace BWYSDPWeb.BaseController
             {
                 dtlist.AddRange(def.Tables);
             }
-            DataTable mast = dtlist.FirstOrDefault(i => i.TableName == tablenm);
+            var tbobj = dtlist.FirstOrDefault(i => i.TableName == tablenm);
+            DataTable mast = tbobj ==null ?null :tbobj .DataTable ;
             if (mast == null)
             {
                 //msg000000002 找不到表
@@ -749,9 +752,9 @@ namespace BWYSDPWeb.BaseController
                         var exist = resultb.FirstOrDefault(i => i.TableName == tb.TableName);
                         if (exist != null)
                         {
-                            DataTableHelp dthelp = new DataTableHelp(exist, tb);
+                            DataTableHelp dthelp = new DataTableHelp(exist, tb.DataTable);
                             dthelp.CopyStable();
-                            ConvertBinaryColValue(tb);
+                            ConvertBinaryColValue(tb.DataTable);
                         }
                     }
                 }
@@ -903,7 +906,8 @@ namespace BWYSDPWeb.BaseController
             ////   on rHead.Field<Int32>("GoodID") equals rTail.Field<Int32>("GoodID")
             ////   select rHead.ItemArray.Concat(rTail.ItemArray.Skip(1));
             #endregion
-            DataTable dt = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
+            var tbobj = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
+            DataTable dt = tbobj ==null?null :tbobj .DataTable;
             if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
             if (!string.IsNullOrEmpty(prowid))
             {
@@ -954,7 +958,7 @@ namespace BWYSDPWeb.BaseController
                 DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
-                    tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm).Copy();
+                    tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm).DataTable.Copy();
                     switch (cmd)
                     {
                         case "Add":
@@ -1058,7 +1062,8 @@ namespace BWYSDPWeb.BaseController
                 DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
-                    tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
+                    var tbobj = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
+                    tb =tbobj ==null ?null :tbobj .DataTable;
                     if (tb == null)
                         //msg000000003	未找到表{0}
                         this.ThrowErrorException(string.Format(AppCom.GetMessageDesc("msg000000003"), tableNm));
@@ -1324,7 +1329,7 @@ namespace BWYSDPWeb.BaseController
             TableExtendedProperties tbextprop = null;
             int masttbindex = 0;
             DataColumn[] mastkeys = null;
-            List<DataTable> list = new List<DataTable>();
+            List<LibTableObj> list = new List<LibTableObj>();
             List<SearchConditionField> condcollection = new List<SearchConditionField>();
             if (string.Compare(flag, "1") == 0)
             {
@@ -1333,17 +1338,17 @@ namespace BWYSDPWeb.BaseController
                     list.AddRange(deftb.Tables);
                 }
                 var mtb = list.FirstOrDefault(i => i.TableName == tbnm);
-                if (mtb != null)
+                if (mtb != null&& mtb .DataTable !=null)
                 {
-                    tbextprop = mtb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    tbextprop = mtb.DataTable .ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
                     masttbindex = tbextprop.TableIndex;
-                    foreach (DataTable dt in list)
+                    foreach (LibTableObj dtobj in list)
                     {
-                        tbextprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                        if (dt.TableName == tbnm) { mastkeys = dt.PrimaryKey; }
+                        tbextprop = dtobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                        if (dtobj.DataTable.TableName == tbnm) { mastkeys = dtobj.DataTable.PrimaryKey; }
                         if (tbextprop.TableIndex == masttbindex || tbextprop.RelateTableIndex == masttbindex)
                         {
-                            foreach (DataColumn col in dt.Columns)
+                            foreach (DataColumn col in dtobj.DataTable.Columns)
                             {
                                 colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
                                 if (!colextprop.IsActive) continue;
@@ -1354,13 +1359,13 @@ namespace BWYSDPWeb.BaseController
                                 }
                                 cond = new SearchConditionField();
                                 cond.IsCondition = true;
-                                cond.DisplayNm = AppCom.GetFieldDesc((int)this.Language, this.DSID, dt.TableName, col.ColumnName);
+                                cond.DisplayNm = AppCom.GetFieldDesc((int)this.Language, this.DSID, dtobj.DataTable.TableName, col.ColumnName);
                                 //cond.DefTableNm = deftb.Name;
-                                cond.TableNm = dt.TableName;
+                                cond.TableNm = dtobj.DataTable.TableName;
                                 cond.FieldNm = col.ColumnName;
                                 cond.TBAliasNm = LibSysUtils.ToCharByTableIndex(tbextprop.TableIndex);
                                 if ((tbextprop.TableIndex != masttbindex &&
-                                      mtb.PrimaryKey.FirstOrDefault(i => i.ColumnName == col.ColumnName) != null))
+                                      mtb.DataTable.PrimaryKey.FirstOrDefault(i => i.ColumnName == col.ColumnName) != null))
                                 {
                                     cond.AliasNm = colextprop.AliasName;
                                 }
@@ -1836,7 +1841,7 @@ namespace BWYSDPWeb.BaseController
             DataTable dt = null;
             foreach (var libtb in this.LibTables)
             {
-                dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm);
+                dt = libtb.Tables.FirstOrDefault(i => i.TableName == tbnm).DataTable;
             }
             return InternalGetParentTable(dt);
         }
@@ -1857,9 +1862,9 @@ namespace BWYSDPWeb.BaseController
                     {
                         for (int n = 0; n < item.Tables.Length; n++)
                         {
-                            if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).TableIndex == extprop.RelateTableIndex)
+                            if (((TableExtendedProperties)item.Tables[n].DataTable.ExtendedProperties[SysConstManage.ExtProp]).TableIndex == extprop.RelateTableIndex)
                             {
-                                return item.Tables[n];
+                                return item.Tables[n].DataTable;
                             }
                         }
                     }
@@ -1881,12 +1886,12 @@ namespace BWYSDPWeb.BaseController
             {
                 foreach (var libtb in this.LibTables)
                 {
-                    foreach (DataTable tb in libtb.Tables)
+                    foreach (LibTableObj tbobj in libtb.Tables)
                     {
-                        extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                        extprop = tbobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
                         if (extprop != null && extprop.TableIndex == index)
                         {
-                            result.AddRange(InternalGetChildTable(tb));
+                            result.AddRange(InternalGetChildTable(tbobj.DataTable));
                         }
                     }
                 }
@@ -1911,9 +1916,9 @@ namespace BWYSDPWeb.BaseController
                     {
                         for (int n = 0; n < item.Tables.Length; n++)
                         {
-                            if (((TableExtendedProperties)item.Tables[n].ExtendedProperties[SysConstManage.ExtProp]).RelateTableIndex == extprop.TableIndex)
+                            if (((TableExtendedProperties)item.Tables[n].DataTable.ExtendedProperties[SysConstManage.ExtProp]).RelateTableIndex == extprop.TableIndex)
                             {
-                                result.Add(item.Tables[n]);
+                                result.Add(item.Tables[n].DataTable);
                             }
                         }
                     }
@@ -1926,12 +1931,12 @@ namespace BWYSDPWeb.BaseController
         {
             foreach (LibTable libtb in this.LibTables)
             {
-                foreach (DataTable table in libtb.Tables)
+                foreach (LibTableObj tableobj in libtb.Tables)
                 {
-                    TableExtendedProperties extprop = table.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    TableExtendedProperties extprop = tableobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
                     if (extprop != null && extprop.TableIndex == index)
                     {
-                        return table;
+                        return tableobj.DataTable;
                     }
                 }
             }
