@@ -46,31 +46,31 @@ namespace Bll
         //}
         #endregion
 
-        public Dictionary<string, string> GetAccount()
+        public Dictionary<string, string> GetAccount(Language language)
         {
-            return (Dictionary<string, string>)this.ExecuteSysDalMethod("TestFunc", "GetAccount");
+            return (Dictionary<string, string>)this.ExecuteSysDalMethod((int)language,"TestFunc", "GetAccount");
         }
 
         public string GetFieldDesc(int languageId,string dsid,string tablenm,string fieldid)
         {
-            return (string)this.ExecuteSysDalMethod("TestFunc","InternalGetFieldDesc", languageId, dsid, tablenm, fieldid);
+            return (string)this.ExecuteSysDalMethod(languageId,"TestFunc","InternalGetFieldDesc", languageId, dsid, tablenm, fieldid);
         }
 
-        public DataTable GetFieldDescData( string dsid)
+        public DataTable GetFieldDescData( string dsid,Language language)
         {
-            return (DataTable)this.ExecuteSysDalMethod("TestFunc", "GetFieldDescByDSID", dsid);
+            return (DataTable)this.ExecuteSysDalMethod((int)language,"TestFunc", "GetFieldDescByDSID", dsid);
         }
         //public object ExecuteSysDalMethod(string method, params object[] param)
         //{ }
 
-        public object ExecuteDalSaveMethod(string funcId, string method,LibTable[] tables)
+        public object ExecuteDalSaveMethod(LibClientInfo clientInfo, string funcId, string method,LibTable[] tables)
         {
-            return this.ExecuteSaveMethod(funcId, method, tables);
+            return this.ExecuteSaveMethod(clientInfo,funcId, method, tables);
         }
 
-        public DalResult ExecuteMethod(string funcId, string method,LibTable[] libTables, params object[] param)
+        public DalResult ExecuteMethod(LibClientInfo clientInfo,string funcId, string method,LibTable[] libTables, params object[] param)
         {
-            return  (DalResult)this.ExecuteDalMethod(funcId, method,libTables, param);
+            return  (DalResult)this.ExecuteDalMethod(clientInfo, funcId, method,libTables, param);
         }
     }
 }

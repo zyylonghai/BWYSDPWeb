@@ -34,8 +34,8 @@ namespace BWYSDPBaseDal
             //this.AddMessage("AfterUpdate has do run error",LibMessageType.Warning);
             base.AfterUpdate();
         }
-
-        protected  string GetFieldDesc(string dsid, string tablenm, string fieldnm)
+        #region 字段或信息的多语言描述 相关
+        protected string GetFieldDesc(string dsid, string tablenm, string fieldnm)
         {
             CachHelp cachelp = new CachHelp();
             DataTable dt = cachelp.GetCach(dsid) as DataTable;
@@ -61,6 +61,46 @@ namespace BWYSDPBaseDal
         {
             return this.GetFieldDesc(string.Empty, string.Empty, msgid);
         }
+        #endregion 
+
+        #region  锁相关
+        protected void AddDataLock(string tablenm, DataRow row, DataColumn[] primarykey)
+        {
+            //DataLock dataLock = new DataLock(tablenm, row, primarykey);
+            //dataLock.ClientSessionId = this.LibClient.SessionId;
+            //LockHelp.AddLock<DataLock>(tablenm, this.LibClient .SessionId ,tablenm, row, primarykey);
+            LockHelp<DataLock>.AddLock(tablenm, this.LibClient.SessionId, tablenm, row, primarykey);
+        }
+        protected void AddDataLock(string tablenm, DataRow row)
+        {
+            LockHelp<DataLock>.AddLock(tablenm, this.LibClient.SessionId, row);
+        }
+        protected void RemoveDataLock(string tablenm, DataRow row)
+        {
+            List<DataLock> locks = LockHelp<DataLock>.GetLock(tablenm);
+            if (locks != null)
+            {
+                DataLock l = locks.FirstOrDefault(i => i.ClientSessionId == this.LibClient.SessionId && i.Status == LibLockStatus.Lock && i.HasExist(row));
+                if (l!=null)
+                {
+                    LockHelp<DataLock>.RemoveLock(l);
+                }
+            }
+        }
+
+        protected bool ExistDataLock(string tablenm, DataRow row)
+        {
+            List<DataLock> locks = LockHelp<DataLock>.GetLock(tablenm);
+            if (locks != null)
+            {
+                if (locks.FirstOrDefault(i => i.ClientSessionId == this.LibClient.SessionId && i.Status == LibLockStatus.Lock && i.HasExist(row)) != null)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion 
 
         public DataTable InternalSearch(string tbnm, string[] fields,List<LibSearchCondition> conds)
         {
@@ -271,6 +311,18 @@ namespace BWYSDPBaseDal
             //DataRow[] rows = dt.Select(string.Format("RuleId='{0}'", ruleid));
             if (rows != null && rows.Length > 0)
             {
+                #region 判断是否有加锁
+                if (this.ExistDataLock("CodeRuleConfig", rows[0]))
+                {
+                    //该功能和规则编号，正被锁着。
+                    //throw new LibExceptionBase("该功能和规则编号，正被锁着。");
+                    this.AddMessage("该功能和规则编号，正被锁着。", LibMessageType.Error);
+                }
+
+                #endregion
+                #region 加锁，防止生成重复序列号
+                this.AddDataLock("CodeRuleConfig", rows[0], new DataColumn[] { rows[0].Table.Columns["ProgId"], rows[0].Table.Columns["RuleId"] });
+                #endregion 
                 string currdate = rows[0]["CurrDate"].ToString();
                 int currserial = Convert.ToInt32(rows[0]["CurrSerial"]);
                 string module = string.Empty;
@@ -312,6 +364,9 @@ namespace BWYSDPBaseDal
                 string sql= builder.GetUpdateSQL("CodeRuleConfig", builder.UpdateField("CurrDate={0},CurrSerial={1}", DateTime.Now.ToString(dateformat.ToString()), currserial), 
                                                        builder.Where("ProgId={0} and RuleId={1}", rows[0]["ProgId"].ToString(), rows[0]["RuleId"].ToString()));
                 this.DataAccess.ExecuteNonQuery(sql);
+                #region 从容器中移除锁
+                RemoveDataLock("CodeRuleConfig", rows[0]);
+                #endregion
                 return DateTime.Now.ToString(string.Format(format.ToString(), currserial.ToString().PadLeft(serialen, '0')));
             }
             return string.Empty;

@@ -666,15 +666,30 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteMethod(string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            DalResult dalResult = _bll.ExecuteMethod(this.Language ,this.ProgID, method, this.LibTables, param);
+            string _msg = string.Empty;
+            LibClientInfo clientInfo = new LibClientInfo { Language = this.Language, SessionId = System.Web.HttpContext.Current.Session.SessionID};
+            DalResult dalResult = _bll.ExecuteMethod(clientInfo ,this.ProgID, method, this.LibTables, param);
             if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
             {
-                string _msg = string.Empty;
+                
                 foreach (var m in dalResult.ErrorMsglst)
                 {
                     _msg += m.Message + m.Stack;
                 }
                 this.ThrowErrorException(_msg);
+            }
+            if (dalResult != null && dalResult.Messagelist != null)
+            {
+                var error = dalResult.Messagelist.Where(i => i.MsgType == LibMessageType.Error).ToList();
+                if (error.Count > 0)
+                {
+                    foreach (var m in error)
+                    {
+                        _msg += m.Message;
+                    }
+                    this.ThrowErrorException(_msg);
+                }
+
             }
             return dalResult;
         }
@@ -684,7 +699,8 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteDalMethod(string funcId, string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            DalResult dalResult = _bll.ExecuteMethod(this.Language , funcId, method, null, param);
+            LibClientInfo clientInfo = new LibClientInfo { Language = this.Language, SessionId = System.Web.HttpContext.Current.Session.SessionID };
+            DalResult dalResult = _bll.ExecuteMethod(clientInfo , funcId, method, null, param);
             string _msg = string.Empty;
             if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
             {
@@ -713,7 +729,8 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteSaveMethod(string method, LibTable[] tables)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            DalResult dalResult = (DalResult)_bll.ExecuteDalSaveMethod(this.Language, this.ProgID, method, tables);
+            LibClientInfo clientInfo = new LibClientInfo();
+            DalResult dalResult = (DalResult)_bll.ExecuteDalSaveMethod(clientInfo, this.ProgID, method, tables);
             this.AddMessagelist(dalResult.Messagelist);
             return dalResult;
         }
