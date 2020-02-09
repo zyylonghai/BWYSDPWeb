@@ -32,10 +32,11 @@ namespace AuthorityDal
         /// <returns>返回1表示登录成功，2表示已登录，3表示密码错误,0表示登录失败</returns>
         public int Login(string userid,string password)
         {
-            //SQLBuilder builder = new SQLBuilder("Account");
-            //string sql = builder.GetSQL("Account", new string[] { "A.UserId,A.Password,A.PasswordKey,A.loginIP,A.LoginDT,A.IsLogin" }, builder.Where("A.UserId={0}", userid));
+            SQLBuilder builder = new SQLBuilder("Account");
+            string sql = builder.GetSQL("Account", new string[] { "A.UserId,A.Password,A.PasswordKey,A.loginIP,A.LoginDT,A.IsLogin" }, builder.Where("A.UserId={0}", userid));
             //DataRow row = this.DataAccess.GetDataRow(sql);
-            LibTableObj account = this.DSContext.GetTableObj("Account");
+            LibTableObj account = this.DSContext["Account"];
+            
             this.DataAccess.FillTableObj(account.Where(account.Columns.UserId + "={0}",  userid));
             dynamic row = account.FindRow(0);
             if (row != null)

@@ -185,7 +185,7 @@ namespace BWYSDPBaseDal
         {
             //SQLBuilder sQLBuilder = new SQLBuilder("Account");
             LibDSContext dSContext = new LibDSContext("Account");
-            var userRole = dSContext.GetTableObj("UserRole");
+            var userRole = dSContext["UserRole"];
             string sql = dSContext.GetSQL("UserRole",null, dSContext.Where("B."+ userRole.Columns.UserId + "={0}", userid));
             return this.DataAccess.GetDataTable(sql);
         }
@@ -195,7 +195,7 @@ namespace BWYSDPBaseDal
         {
             //SQLBuilder sQLBuilder = new SQLBuilder("CodeRuleConfig");
             LibDSContext dSContext = new LibDSContext("CodeRuleConfig");
-            var ruleconfig = dSContext.GetTableObj("CodeRuleConfig");
+            var ruleconfig = dSContext["CodeRuleConfig"];
             //string sql = sQLBuilder.GetSQL("CodeRuleConfig", null, sQLBuilder.Where("A.ProgId={0}", progid));
             string sql = dSContext.GetSQL("CodeRuleConfig", null, dSContext.Where("A."+ ruleconfig.Columns.ProgId + "={0}", progid));
             return this.DataAccess.GetDataTable(sql);
