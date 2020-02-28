@@ -324,7 +324,7 @@ namespace BWYSDPWeb.BaseController
             {
                 if (this.LibTables == null)
                 {
-                    this.AddMessage("系统开小差了，请重新刷新页面。");
+                    this.AddMessage(13,null);
                     break;
                 }
                 foreach (LibTable t in this.LibTables)
@@ -741,11 +741,33 @@ namespace BWYSDPWeb.BaseController
         /// <summary>
         ///如果是页面处于刷新或提交则页面输出的是一串错误信息的json字符，否则以消息弹出框的形式弹出。
         /// </summary>
-        /// <param name="msg"></param>
+        /// <param name="msg">信息</param>
         public void ThrowErrorException(string msg)
         {
             ExceptionHelp help = new ExceptionHelp();
             help.ThrowError(this, msg);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msgcode">信息代码</param>
+        /// <param name="parms">formatter 中的参数值</param>
+        public void ThrowErrorException(int msgcode, params object[] parms)
+        {
+           string message= AppCom.GetMessageDesc(string .Format("msg{0}", msgcode.ToString().PadLeft(9, '0')));
+            ExceptionHelp help = new ExceptionHelp();
+            help.ThrowError(this, string.Format(message, parms));
+        }
+
+        public void AddMessage(int msgcode, object[] parms, LibMessageType msgtype = LibMessageType.Error)
+        {
+            if (this.MsgList == null) this.MsgList = new List<LibMessage>();
+            string message = AppCom.GetMessageDesc(string.Format("msg{0}", msgcode.ToString().PadLeft(9, '0')));
+            if (parms != null)
+            {
+                message = string.Format(message, parms);
+            }
+            this.MsgList.Add(new LibMessage { Message = message, MsgType = msgtype });
         }
 
         public void AddMessage(string msg, LibMessageType msgtype = LibMessageType.Error)

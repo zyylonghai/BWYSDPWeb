@@ -68,6 +68,15 @@ namespace BWYSDPBaseDal
         {
             return this.GetFieldDesc(string.Empty, string.Empty, msgid);
         }
+        protected void AddMessage(string msgid, object[] parms, LibMessageType type = LibMessageType.Error )
+        {
+            if (parms != null)
+            {
+                this.AddMessage(string.Format(this.GetMessageDesc(msgid), parms), type);
+            }
+            else
+                this.AddMessage(this.GetMessageDesc(msgid), type);
+        }
         #endregion 
 
         #region  锁相关
@@ -133,7 +142,9 @@ namespace BWYSDPBaseDal
             {
                 sQLBuilder = new SDPCRL.DAL.COM.SQLBuilder(dsid);
             }
-            string sql = sQLBuilder.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values },pageindex,pagesize,true ,false);
+            //LibDSContext dSContext = new LibDSContext(dsid);
+            //string sql = dSContext.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values }, pageindex, pagesize, true, false);
+            string sql = sQLBuilder.GetSQLByPage(tbnm, fields, new WhereObject { WhereFormat = whereformat.ToString(), Values = values }, pageindex, pagesize, true, false);
             return this.DataAccess.GetDataTable(sql);
         }
 
@@ -186,7 +197,7 @@ namespace BWYSDPBaseDal
             //SQLBuilder sQLBuilder = new SQLBuilder("Account");
             LibDSContext dSContext = new LibDSContext("Account");
             var userRole = dSContext["UserRole"];
-            string sql = dSContext.GetSQL("UserRole",null, dSContext.Where("B."+ userRole.Columns.UserId + "={0}", userid));
+            string sql = dSContext.GetSQL("UserRole",null, dSContext.Where(userRole.Columns.UserId + "={0}", userid));
             return this.DataAccess.GetDataTable(sql);
         }
 
@@ -197,69 +208,32 @@ namespace BWYSDPBaseDal
             LibDSContext dSContext = new LibDSContext("CodeRuleConfig");
             var ruleconfig = dSContext["CodeRuleConfig"];
             //string sql = sQLBuilder.GetSQL("CodeRuleConfig", null, sQLBuilder.Where("A.ProgId={0}", progid));
-            string sql = dSContext.GetSQL("CodeRuleConfig", null, dSContext.Where("A."+ ruleconfig.Columns.ProgId + "={0}", progid));
+            string sql = dSContext.GetSQL("CodeRuleConfig", null, dSContext.Where(ruleconfig.Columns.ProgId + "={0}", progid));
             return this.DataAccess.GetDataTable(sql);
         }
 
         public string GenerateNo(string progid, string ruleid)
         {
             DataTable dt = GetRuleDataByProgid(progid);
-            dt.DefaultView.Sort = "RuleId,SeqNo";
+            //dt.DefaultView.Sort = "RuleId,SeqNo";
             if (dt != null)
             {
-                DataRow[] rows = dt.Select(string.Format("RuleId='{0}'", ruleid));
+                LibTableObj tbobj = new LibTableObj(dt);
+                var rows = tbobj.Rows.Where(i => i.RuleId == ruleid).OrderBy(i=>new { i.RuleId, i.SeqNo }).ToList();
                 return DoGenerateNo(rows);
-                //if (rows != null && rows.Length > 0)
-                //{
-                //    string currdate = rows[0]["CurrDate"].ToString();
-                //    int currserial = Convert.ToInt32(rows[0]["CurrSerial"]);
-                //    string module = string.Empty;
-                //    int serialen = -1;
-                //    int index = 0;
-                //    //string suffix = string.Empty;
-                //    StringBuilder dateformat = new StringBuilder();
-                //    StringBuilder format = new StringBuilder();
-                //    foreach (DataRow dr in rows)
-                //    {
-                //        module = dr["ModuleId"].ToString();
-                //        switch (module)
-                //        {
-                //            case "yy":
-                //            case "yyyy":
-                //            case "MM":
-                //            case "dd":
-                //                dateformat.Append(module);
-                //                format.Append(module);
-                //                break;
-                //            case "prefix":
-                //            case "suffix":
-                //                format.Append(dr["FixValue"].ToString());
-                //                break;
-                //            case "serial":
-                //                format.Append("{" + index + "}");
-                //                index++;
-                //                serialen = Convert.ToInt32(dr["SeriaLen"]);
-                //                break;
-
-                //        }
-                //    }
-                //    if (serialen != -1)
-                //    {
-                //        currserial = DateTime.Now.ToString(dateformat.ToString()) == currdate ? currserial++ : 1;
-                //        //format.(format.ToString(), currserial.ToString().PadLeft(serialen, '0'));
-                //    }
-                //    return DateTime.Now.ToString(string.Format(format.ToString(), currserial.ToString().PadLeft(serialen, '0')));
-                //}
+                //DataRow[] rows = dt.Select(string.Format("RuleId='{0}'", ruleid));
+                //return DoGenerateNo(rows);
             }
             return string.Empty;
         }
         public string GenerateNoByprogid(string progid)
         {
             DataTable dt = GetRuleDataByProgid(progid);
-            dt.DefaultView.Sort = "RuleId,SeqNo";
+            //dt.DefaultView.Sort = "RuleId,SeqNo";
             if (dt != null)
             {
-                DataRow[] rows = dt.Select(string.Format("IsDefault={0}", true));
+                LibTableObj tbobj = new LibTableObj(dt);
+                var rows = tbobj.Rows.Where(i => i.IsDefault && ((DataRowObj)i).DataRowState!=DataRowState.Deleted).ToList();
                 return DoGenerateNo(rows);
             }
             return string.Empty;
@@ -333,7 +307,9 @@ namespace BWYSDPBaseDal
                 {
                     //该功能和规则编号，正被锁着。
                     //throw new LibExceptionBase("该功能和规则编号，正被锁着。");
-                    this.AddMessage("该功能和规则编号，正被锁着。", LibMessageType.Error);
+                    //this.AddMessage("该功能和规则编号，正被锁着。", LibMessageType.Error);
+                    //msg000000011 该功能和规则编号，正被锁着。
+                    this.AddMessage("msg000000011", null);
                 }
 
                 #endregion
@@ -396,6 +372,86 @@ namespace BWYSDPBaseDal
                 RemoveDataLock("CodeRuleConfig", rows[0]);
                 #endregion
                 return DateTime.Now.ToString(string.Format(format.ToString(), currserial.ToString().PadLeft(serialen, '0')));
+            }
+            return string.Empty;
+        }
+
+        private string DoGenerateNo(List<dynamic> rows)
+        {
+            if (rows != null && rows.Count > 0)
+            {
+                #region 判断是否有加锁
+                dynamic firstdr = rows[0];
+                DataRowObj rowobj = (DataRowObj)firstdr;
+                if (this.ExistDataLock("CodeRuleConfig", rowobj.Row))
+                {
+                    //该功能和规则编号，正被锁着。
+                    //throw new LibExceptionBase("该功能和规则编号，正被锁着。");
+                    //msg000000011       该功能和规则编号，正被锁着。
+                    this.AddMessage("msg000000011",null);
+                }
+
+                #endregion
+                #region 加锁，防止生成重复序列号
+
+                this.AddDataLock("CodeRuleConfig", rowobj.Row, 
+                    new DataColumn[] { 
+                        rowobj.Row.Table.Columns[rowobj.TableObj.Columns.ProgId], 
+                        rowobj.Row.Table.Columns[rowobj.TableObj.Columns.RuleId] }
+                    );
+                #endregion 
+                string currdate = firstdr.CurrDate;
+                int currserial = firstdr.CurrSerial;
+                string module = string.Empty;
+                int serialen = -1;
+                int index = 0;
+                StringBuilder dateformat = new StringBuilder();
+                StringBuilder format = new StringBuilder();
+                foreach (var dr in rows)
+                {
+                    module = dr.ModuleId;
+                    switch (module)
+                    {
+                        case "yy":
+                        case "yyyy":
+                        case "MM":
+                        case "dd":
+                            dateformat.Append(module);
+                            format.Append(module);
+                            break;
+                        case "prefix":
+                        case "suffix":
+                            format.Append(dr.FixValue);
+                            break;
+                        case "serial":
+                            format.Append("{" + index + "}");
+                            index++;
+                            serialen = Convert.ToInt32(dr.SeriaLen);
+                            break;
+
+                    }
+                }
+                if (serialen != -1)
+                {
+                    currserial = DateTime.Now.ToString(dateformat.ToString()) == currdate ? (currserial + 1) : 1;
+                }
+                #region 更新CodeRuleConfig表的当前日期和流水号
+                LibTableObj config = new LibTableObj("CodeRuleConfig", "CodeRuleConfig");
+                config.FillData(new DataRow[] { rowobj.Row });
+                dynamic rw = config.FindRow(0);
+                rw.CurrDate = DateTime.Now.ToString(dateformat.ToString());
+                rw.CurrSerial = currserial;
+                this.DataAccess.SaveChange(new LibTableObj[] { config });
+                #endregion 
+                #region 从容器中移除锁
+                RemoveDataLock("CodeRuleConfig", rowobj.Row);
+                #endregion
+                return DateTime.Now.ToString(string.Format(format.ToString(), currserial.ToString().PadLeft(serialen, '0')));
+            }
+            else
+            {
+                //msg000000012        找不到或未配置编码规则，请确认
+                this.AddMessage("msg000000012",null);
             }
             return string.Empty;
         }

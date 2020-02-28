@@ -33,7 +33,7 @@ namespace AuthorityDal
         public int Login(string userid,string password)
         {
             SQLBuilder builder = new SQLBuilder("Account");
-            string sql = builder.GetSQL("Account", new string[] { "A.UserId,A.Password,A.PasswordKey,A.loginIP,A.LoginDT,A.IsLogin" }, builder.Where("A.UserId={0}", userid));
+            //string sql = builder.GetSQL("Account", new string[] { "A.UserId,A.Password,A.PasswordKey,A.loginIP,A.LoginDT,A.IsLogin" }, builder.Where("A.UserId={0}", userid));
             //DataRow row = this.DataAccess.GetDataRow(sql);
             LibTableObj account = this.DSContext["Account"];
             

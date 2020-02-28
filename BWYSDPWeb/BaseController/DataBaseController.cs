@@ -1876,7 +1876,7 @@ namespace BWYSDPWeb.BaseController
         /// <summary>
         /// 取关联的子表
         /// </summary>
-        /// <param name="indexs"></param>
+        /// <param name="indexs">TableIndex集合</param>
         /// <returns></returns>
         public List<DataTable> GetChildTableByIndex(List<int> indexs)
         {
@@ -1910,13 +1910,15 @@ namespace BWYSDPWeb.BaseController
             if (tb != null)
             {
                 TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                TableExtendedProperties extprop2 = null;
                 if (extprop != null)
                 {
                     foreach (var item in this.LibTables)
                     {
                         for (int n = 0; n < item.Tables.Length; n++)
                         {
-                            if (((TableExtendedProperties)item.Tables[n].DataTable.ExtendedProperties[SysConstManage.ExtProp]).RelateTableIndex == extprop.TableIndex)
+                            extprop2 = ((TableExtendedProperties)item.Tables[n].DataTable.ExtendedProperties[SysConstManage.ExtProp]);
+                            if (extprop2.RelateTableIndex == extprop.TableIndex && extprop2.TableIndex!=extprop.TableIndex)
                             {
                                 result.Add(item.Tables[n].DataTable);
                             }

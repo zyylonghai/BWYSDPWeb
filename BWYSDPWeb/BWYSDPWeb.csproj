@@ -180,6 +180,7 @@
     <Compile Include="BllsysSettingController\ServerController.cs" />
     <Compile Include="Com\AppCom.cs" />
     <Compile Include="Com\CachHelp.cs" />
+    <Compile Include="Com\LibHtmlHelp.cs" />
     <Compile Include="Com\ViewFactory.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -198,6 +199,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\TempData.mdf" />
+    <Content Include="App_Data\TempData_log.ldf">
+      <DependentUpon>TempData.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-clearmin.min.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-table.css" />
@@ -1907,6 +1912,7 @@
     <Content Include="fonts\roboto-regular.woff2" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\com\checkBill.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -1980,7 +1986,6 @@
     <Content Include="Views\Shared\NotPermission.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Views\Com\" />
     <Folder Include="Views\stocktest\" />
     <Folder Include="Views\Stock\" />
