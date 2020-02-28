@@ -12,16 +12,23 @@ namespace AuthorityDal
 {
     public class AccountDal:AuthorityDal
     {
+        string _pwdkeyEncrykey = "bwyAccount";
         protected override void BeforeUpdate()
         {
             base.BeforeUpdate();
             #region 产生密码秘钥并加密密码
-            string pwd = this.LibTables[0].Tables[0].DataTable .Rows[0]["Password"].ToString();
+            //string pwd = this.LibTables[0].Tables[0].DataTable .Rows[0]["Password"].ToString();
+            //string pwdkey = DesCryptFactory.GenerateKey();
+            //pwd = DesCryptFactory.EncryptString(pwd, pwdkey);
+            //this.LibTables[0].Tables[0].DataTable .Rows[0]["Password"] = pwd;
+            //this.LibTables[0].Tables[0].DataTable .Rows[0]["PasswordKey"] = DesCryptFactory.AESEncrypt(pwdkey, _pwdkeyEncrykey);
+            var firstrow = this.LibTables[0].Tables[0].FindRow(0);
+            string pwd = firstrow.Password;
             string pwdkey = DesCryptFactory.GenerateKey();
             pwd = DesCryptFactory.EncryptString(pwd, pwdkey);
-            this.LibTables[0].Tables[0].DataTable .Rows[0]["Password"] = pwd;
-            this.LibTables[0].Tables[0].DataTable .Rows[0]["PasswordKey"] = DesCryptFactory.AESEncrypt(pwdkey, "bwyAccount");
-            #endregion 
+            firstrow.Password = pwd;
+            firstrow.PasswordKey = DesCryptFactory.AESEncrypt(pwdkey, _pwdkeyEncrykey);
+            #endregion
         }
 
         /// <summary>
@@ -32,7 +39,7 @@ namespace AuthorityDal
         /// <returns>返回1表示登录成功，2表示已登录，3表示密码错误,0表示登录失败</returns>
         public int Login(string userid,string password)
         {
-            SQLBuilder builder = new SQLBuilder("Account");
+            //SQLBuilder builder = new SQLBuilder("Account");
             //string sql = builder.GetSQL("Account", new string[] { "A.UserId,A.Password,A.PasswordKey,A.loginIP,A.LoginDT,A.IsLogin" }, builder.Where("A.UserId={0}", userid));
             //DataRow row = this.DataAccess.GetDataRow(sql);
             LibTableObj account = this.DSContext["Account"];
@@ -48,7 +55,7 @@ namespace AuthorityDal
                 }
                 string pwd = row.Password;
                 string pwdkey = row.PasswordKey;
-                pwdkey = DesCryptFactory.AESDecrypt(pwdkey, "bwyAccount");
+                pwdkey = DesCryptFactory.AESDecrypt(pwdkey, _pwdkeyEncrykey);
                 pwd = DesCryptFactory.DecryptString(pwd, pwdkey);
                 //this.AddMessage("test", LibMessageType.Error);
                 if (pwd == password)
