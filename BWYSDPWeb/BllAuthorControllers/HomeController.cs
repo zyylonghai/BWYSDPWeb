@@ -44,5 +44,11 @@ namespace BWYSDPWeb.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult LoginOut()
+        {
+            Session[SysConstManage.sdp_userinfo] = null;
+            return View("Login");
+        }
+
     }
 }

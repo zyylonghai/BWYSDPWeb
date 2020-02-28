@@ -201,14 +201,14 @@
                         <a style="cursor:default;"><strong>@User.Identity.Name</strong></a>
                     </li>
                     <li class="divider"></li>
-                    <li>
+                    @*<li>
                         <a href="#"><i class="fa fa-fw fa-user"></i>@Html.GetMessage("Profile")</a>
-                    </li>
+                    </li>*@
                     <li>
                         <a href="#"><i class="fa fa-fw fa-cog"></i>@Html.GetMessage("SysSettings")</a>
                     </li>
                     <li>
-                        <a href="login.html"><i class="fa fa-fw fa-sign-out"></i>@Html.GetMessage("Signout")</a>
+                        <a href="@Url.Action("LoginOut","Home")"><i class="fa fa-fw fa-sign-out"></i>@Html.GetMessage("Signout")</a>
                     </li>
                 </ul>
             </div>
