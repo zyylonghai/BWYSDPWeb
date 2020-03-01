@@ -130,6 +130,26 @@ namespace BWYSDPWeb.BllAuthorityControllers
                             }
                         }
                     }
+                    if (formpage.FormGroups != null)
+                    {
+                        foreach (LibFormGroup item in formpage.FormGroups)
+                        {
+                            if (formpage.ModuleOrder.FindFirst("ID", item.FormGroupID) == null) continue;
+                            if (item.FmGroupFields != null)
+                            {
+                                foreach (LibFormGroupField f in item.FmGroupFields)
+                                {
+                                    o = new ActionObj();
+                                    o.ObjectType = 2;
+                                    o.ObjectId = f.Name;
+                                    o.ObjectNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, f.FromTableNm, f.Name);
+                                    o.GroupId = item.FormGroupID;
+                                    o.GroupNm = AppCom.GetFieldDesc((int)Language, formpage.DSID, string.Empty, item.FormGroupName);
+                                    list.Add(o);
+                                }
+                            }
+                        }
+                    }
                     
                 }
                 vm = new ActionViewModel(list);

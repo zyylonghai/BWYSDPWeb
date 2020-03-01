@@ -1,4 +1,5 @@
 ﻿using BWYSDPWeb.Models;
+using ProgViewModel;
 using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
@@ -26,6 +27,7 @@ namespace BWYSDPWeb.Com
         //private string _dsid = null;
         private bool _hasSearchModal = true;// 是否有搜索控件。
         private string _pagetitle = string.Empty;
+        private StringBuilder _fmgroupAuthorisScriplst = null;
        //private Dictionary<string, bool> _fomGroupdic=null;
 
         #region 公开属性
@@ -34,6 +36,8 @@ namespace BWYSDPWeb.Com
         public string Package { get; set; }
 
         public Language Language { get; set; }
+
+        //public ProgBaseViewModel viewModel { get; set; }
 
         /// <summary>
         /// 用于存储 信息组的字段。
@@ -60,6 +64,7 @@ namespace BWYSDPWeb.Com
             _tbmodalFormfields = new Dictionary<string, string>();
             Childrengrids = new List<LibGridGroup>();
             _fileUpdateScriplst = new List<string>();
+            _fmgroupAuthorisScriplst = new StringBuilder("[");
             //_fomGroupdic = new Dictionary<string, bool>();
         }
         public ViewFactory(string progid)
@@ -159,8 +164,9 @@ namespace BWYSDPWeb.Com
         /// <summary>
         ///创建面板(PanelGroup)
         /// </summary>
-        public void CreatePanelGroup(string title)
+        public void CreatePanelGroup(string formgroupNm)
         {
+            string title = AppCom.GetFieldDesc((int)Language, DSID, string.Empty, formgroupNm);
             EndprePanel();
             string id = string.Format("PanelGroup{0}", _panelgroupdic.Count + 1);
             string contentid = string.Format("{0}_info", id);
@@ -180,6 +186,22 @@ namespace BWYSDPWeb.Com
 
 
             _panelgroupdic.Add(id, false);
+            //var exists = viewModel.AuthorityObjs.Where(i => i.GroupId == formgroupNm && i.ObjectType==2).ToList();
+            //if (exists.Count > 0)
+            //{
+            //    if (_fmgroupAuthorisScriplst == null) _fmgroupAuthorisScriplst = new List<string>();
+            //    //string s = string.Format("var sdp_fmauthors_{0}=[", id);
+            //    string s = string.Empty;
+            //    foreach (var item in exists)
+            //    {
+            //        if (!string.IsNullOrEmpty(s))
+            //        {
+            //            s += ",";
+            //        }
+            //        s += item.ObjectId;
+            //    }
+            //    _fmgroupAuthorisScriplst.Add(string.Format("var sdp_fmauthors_{0}=[{1}]", id, s));
+            //}
         }
 
 
@@ -187,7 +209,7 @@ namespace BWYSDPWeb.Com
         /// 添加信息组字段
         /// </summary>
         /// <param name="fields"></param>
-        public void AddFormGroupFields(LibCollection<LibFormGroupField> fields)
+        public void AddFormGroupFields(LibCollection<LibFormGroupField> fields,string formgroupnm)
         {
             int colcout = 0;
             List<string> valus = null;
@@ -195,6 +217,7 @@ namespace BWYSDPWeb.Com
             LibField libField = null;
             List<LibFormGroupField> textarealst = new List<LibFormGroupField>();
             List<LibFormGroupField> imgs = new List<LibFormGroupField>();
+            //string authoriscriptstr = string.Empty;
             foreach (LibFormGroupField field in fields)
             {
                 if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
@@ -204,6 +227,15 @@ namespace BWYSDPWeb.Com
                 }
                 if (!valus.Contains(field.Name))
                     valus.Add(field.Name);
+                string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
+                string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+                #region 加入用于权限判断的字段数组。
+                if (_fmgroupAuthorisScriplst.Length > 1)
+                {
+                    _fmgroupAuthorisScriplst.Append(",");
+                }
+                _fmgroupAuthorisScriplst.Append("{objectid:'"+ field.Name + "',groupid:'"+formgroupnm+"',id:'"+id+"'}");
+                #endregion 
                 if (field.ElemType == ElementType.Textarea) { textarealst.Add(field); continue; }
                 if (field.ElemType == ElementType.Img) { imgs.Add(field); continue; }
                 if (colcout % 12 == 0)
@@ -214,8 +246,6 @@ namespace BWYSDPWeb.Com
                     }
                     _page.Append("<div class=\"form-group\">");
                 }
-                string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
-                string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
                 #region 字段属性验证设置
                 validatorAttr = new StringBuilder();
                 validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
@@ -305,6 +335,11 @@ namespace BWYSDPWeb.Com
                 _page.Append("<input type=\"file\" id=\"" + id + "\"  name=\"" + name + "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('" + id + "','sdp_img_" + id + "')\" />");
                 _page.Append("</div>");//结束 container
             }
+
+            //#region 移除权限外的字段。
+            //if (_fmgroupAuthorisScriplst == null) _fmgroupAuthorisScriplst = new StringBuilder();
+            //_fmgroupAuthorisScriplst.Add(string.Format("var sdp_fmauthors_{0}=[{1}]", _fmgroupAuthorisScriplst.Count +1, authoriscriptstr));
+            //#endregion 
         }
 
         /// <summary>
@@ -410,9 +445,13 @@ namespace BWYSDPWeb.Com
                     table.Append(string.Format("{0}.SubTable.$subtableParam.deftbnm ='{1}';", param, childgrid.GdGroupFields[0].FromDefTableNm));
                     table.Append(string.Format("{0}.SubTable.$subtableParam.tablenm ='{1}';", param, childgrid.GdGroupFields[0].FromTableNm));
                     table.Append(string.Format("{0}.SubTable.$subtableParam.controlnm ='{1}';", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm));
-                    if (grid.HasSummary)
+                    if (childgrid.HasSummary)
                     {
                         table.Append(string.Format("{0}.SubTable.$table.showFooter={1};", param, childgrid.HasSummary ? "true" : "false"));
+                    }
+                    if (childgrid.SingleSelect)
+                    {
+                        table.Append(string.Format("{0}.SubTable.$table.singleSelect={1};", param, childgrid.SingleSelect ? "true" : "false"));
                     }
                     table.Append(string.Format("{0}.SubTable.$table.columns = [", param));
                     table.Append("{checkbox: true,visible: true }");
@@ -483,6 +522,10 @@ namespace BWYSDPWeb.Com
             if (grid.HasSummary)
             {
                 table.Append(string.Format("{0}.$table.showFooter={1};", param, grid.HasSummary ? "true" : "false"));
+            }
+            if (grid.SingleSelect)
+            {
+                table.Append(string.Format("{0}.$table.singleSelect={1};", param, grid.SingleSelect ? "true" : "false"));
             }
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
@@ -751,6 +794,8 @@ namespace BWYSDPWeb.Com
             _script.Append("var viewModelObj = JSON.parse(\"@Model\".replace(new RegExp('&quot;', \"gm\"), '\"'));");
             _script.Append("var authorityObjs = viewModelObj.AuthorityObjs;");
             _script.Append("Authorize(authorityObjs);");
+            _script.AppendFormat("var sdp_fmfieldauthoris={0};", _fmgroupAuthorisScriplst.Append("]").ToString());
+            _script.Append("FormGroupAuthorize(authorityObjs,sdp_fmfieldauthoris);");
             #endregion
 
             #region pageload

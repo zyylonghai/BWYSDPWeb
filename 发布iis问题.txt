@@ -1,0 +1,18 @@
+1.iis是在安装完.net framework 之后才安装的，需要进行iis注册，开始--运行--cmd，打开命令行提示符，输入命令如下
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe -i
+
+2.如果服务器是64系统，那么需要使用命令
+
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\aspnet_regiis.exe -i 来运行注册iis。
+
+
+
+
+
+项目使用localdb来作为本机测试数据库，发布到本机IIS后项目却链接不到数据库，查看windows日志为如下错误
+
+“无法获取本地应用程序数据路径。很可能是因为未加载用户配置文件。如果在 IIS 下执行 LocalDB，请确保为当前用户启用配置文件加载。”
+解决办法：
+
+1.选择项目对应的应用池=>高级设置=>应用程序池标识=>更改账户为LocalSystem

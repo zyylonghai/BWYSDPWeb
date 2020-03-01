@@ -46,7 +46,8 @@ namespace BWYSDPWeb.Controllers
 
         public ActionResult LoginOut()
         {
-            Session[SysConstManage.sdp_userinfo] = null;
+            Session.Clear();
+            //Session[SysConstManage.sdp_userinfo] = null;
             return View("Login");
         }
 

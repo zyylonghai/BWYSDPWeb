@@ -235,6 +235,14 @@ namespace BWYSDPWeb.BaseController
                                     {
                                         obj.GroupId = grid.GridGroupName;
                                     }
+                                    else
+                                    {
+                                        var formgroup = formpage.FormGroups.FindFirst("FormGroupID", obj.GroupId);
+                                        if (formgroup != null)
+                                        {
+                                            obj.GroupId = formgroup.FormGroupName;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -258,21 +266,6 @@ namespace BWYSDPWeb.BaseController
                         DataTable dt = this.GetFieldDescBydsid(dataSource.DSID);
                         CachHelp cachHelp = new CachHelp();
                         cachHelp.AddCachItem(dataSource.DSID, dt, DateTimeOffset.Now.AddMinutes(2));
-                        //if (formpage != null)
-                        //{
-                        #region 旧代码
-                        //StringBuilder html = new StringBuilder();
-                        //html.Append("<div class=\"container-fluid\">");
-                        ////页面内容
-                        //html.Append("<div class='panel panel-default'>");
-                        //html.Append("<div class='panel-heading'>" + progId + "</div>");
-                        //html.Append("<div class='panel-body'>");
-
-                        //html.Append("</div>");
-                        //html.Append("</div>");
-                        //html.Append("</div>");
-                        //fileoperation.WritText(html.ToString());
-                        #endregion
 
                         #region 根据排版模型对象 创建功能视图。
                         ViewFactory factory = new ViewFactory(progId);
@@ -297,10 +290,10 @@ namespace BWYSDPWeb.BaseController
                                             foreach (LibFormGroup formg in formpage.FormGroups)
                                             {
                                                 if (formg.FormGroupID != item.ID) continue;
-                                                factory.CreatePanelGroup(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formg.FormGroupName));
+                                                factory.CreatePanelGroup(formg.FormGroupName);
                                                 if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
                                                 {
-                                                    factory.AddFormGroupFields(formg.FmGroupFields);
+                                                    factory.AddFormGroupFields(formg.FmGroupFields, formg.FormGroupName);
                                                 }
                                             }
                                         }
@@ -364,7 +357,7 @@ namespace BWYSDPWeb.BaseController
                         #region 保存Formgroupfields
                         string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                         //Bll.SQLiteHelp sQLiteHelp = new Bll.SQLiteHelp("TempData");
-                        TempHelp sQLiteHelp = new TempHelp("TempData");
+                        TempHelp tempHelp = new TempHelp("TempData");
                         string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                         List<string> commandtextlst = new List<string>();
                         //commandtextlst.Append("begin;");
@@ -383,8 +376,8 @@ namespace BWYSDPWeb.BaseController
 
                         //commandtextlst.Append("commit;");
                         string c = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                        sQLiteHelp.Delete(string.Format("delete from formfields where progid='{0}'", progId));
-                        sQLiteHelp.Update(commandtextlst);
+                        tempHelp.Delete(string.Format("delete from formfields where progid='{0}'", progId));
+                        tempHelp.Update(commandtextlst);
                         string d = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
                         #endregion
 
@@ -951,19 +944,21 @@ namespace BWYSDPWeb.BaseController
         public ActionResult GetTableRow(string gridid, string tbnm, string tableNm, string rowid, string prowid, string cmd)
         {
             DataRow dr = null;
+            LibTableObj tbobj = null;
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
             if (libtable != null)
             {
-                DataTable tb;
+                DataTable tb=null;
                 DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
                     tb = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm).DataTable.Copy();
+                    tbobj = new LibTableObj(tb);
                     switch (cmd)
                     {
                         case "Add":
-
-                            dr = tb.NewRow();
+                            dr = ((DataRowObj)tbobj.NewRow()).Row;
+                            //dr = tb.NewRow();
                             TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
                             if (extprop != null)
                             {
@@ -1046,7 +1041,7 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
             }
-            UpdateTableRow(gridid, dr, cmd);
+            UpdateTableRow(gridid,tbobj .FindRow(dr) , cmd);
             return LibJson(dr);
         }
         [HttpPost]
@@ -1543,6 +1538,13 @@ namespace BWYSDPWeb.BaseController
                         primarycol = resultdt.PrimaryKey[0];
                     DataColumn col = new DataColumn(string.Format("{0}_{1}_sdp_{2}", this.SessionObj.FromFieldInfo.tableNm, this.SessionObj.FromFieldInfo.FieldNm, primarycol == null ? string.Empty : primarycol.ColumnName));
                     resultdt.Columns.Add(col);
+                    if (this.SessionObj.FromFieldInfo.RelateFields != null)
+                        foreach (string s in this.SessionObj.FromFieldInfo.RelateFields)
+                        {
+                            if (resultdt.Columns.Contains(s)) continue;
+                            col = new DataColumn(s);
+                            resultdt.Columns.Add(col);
+                        }
                     //this.SessionObj.FromFieldInfo = null;
                 }
                 return LibReturnForGrid(dt2.Rows.Count, resultdt);
@@ -1720,7 +1722,7 @@ namespace BWYSDPWeb.BaseController
         /// <param name="gridid"></param>
         /// <param name="row"></param>
         /// <param name="cmd"></param>
-        protected virtual void UpdateTableRow(string gridid, DataRow row, string cmd)
+        protected virtual void UpdateTableRow(string gridid, DataRowObj row, string cmd)
         {
 
         }
@@ -1743,6 +1745,18 @@ namespace BWYSDPWeb.BaseController
         protected virtual void BindSmodalDataExt(DataTable currpagedata, int flag,string fieldnm)
         {
 
+        }
+
+        /// <summary>
+        /// 添加来源主数据搜索 带出的关联字段（主要用于关联字段赋值到界面上的控件）
+        /// </summary>
+        /// <param name="tbnm"></param>
+        /// <param name="fieldnm"></param>
+        protected void AddRelateFieldsForSearchModal(string tbnm,string fieldnm)
+        {
+            if(this.SessionObj!=null &&this.SessionObj.FromFieldInfo==null) this.SessionObj.FromFieldInfo = new FromFieldInfo();
+            if (this.SessionObj.FromFieldInfo.RelateFields == null) this.SessionObj.FromFieldInfo.RelateFields = new List<string>();
+            this.SessionObj.FromFieldInfo.RelateFields.Add(string.Format("{0}__rsdp_{1}", tbnm, fieldnm));
         }
         #endregion
 

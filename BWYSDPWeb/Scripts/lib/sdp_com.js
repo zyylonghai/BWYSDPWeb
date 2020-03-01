@@ -353,9 +353,9 @@ function ShowComModal(title,html,okEvent) {
 function CloseComModal() {
     $("#sdp_Modal_com").modal('hide');
 }
-function AuthorityCheck(authorityarray, objid, groupid) {
+function AuthorityCheck(authorityObjs, objid, groupid) {
     let result = false;
-    $.each(authorityarray, function (i, o) {
+    $.each(authorityObjs, function (i, o) {
         if (o.ObjectId == objid && o.GroupId == groupid) {
             result = true;
         }
@@ -367,6 +367,16 @@ function Authorize(authorityObjs) {
     $.each(authorityObjs, function (i, o) {
         if (o.ObjectType == 1) {
             $('#' + o.ObjectId).hide();
+        }
+    });
+}
+function FormGroupAuthorize(authorityObjs,fields) {
+    $.each(fields, function (i, o) {
+        let result = AuthorityCheck(authorityObjs, o.objectid, o.groupid);
+        if (result) {
+            $("label[for='" + o.objectid + "']").hide();
+            $('#' + o.id).parent().hide();
+            $('#' + o.id).hide();
         }
     });
 }

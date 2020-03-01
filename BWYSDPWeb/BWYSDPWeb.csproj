@@ -220,6 +220,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="img\0.jpg" />
     <Content Include="img\components.png" />
     <Content Include="img\devices.png" />
     <Content Include="img\logo-big.svg" />
@@ -1910,9 +1911,9 @@
     <Content Include="fonts\roboto-mediumitalic.woff2" />
     <Content Include="fonts\roboto-regular.woff" />
     <Content Include="fonts\roboto-regular.woff2" />
+    <Content Include="App_Data\ServerInfo.db" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\com\checkBill.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -1986,6 +1987,7 @@
     <Content Include="Views\Shared\NotPermission.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Scripts\com\" />
     <Folder Include="Views\Com\" />
     <Folder Include="Views\stocktest\" />
     <Folder Include="Views\Stock\" />

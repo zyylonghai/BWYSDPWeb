@@ -106,7 +106,7 @@ namespace BWYSDPWeb.BllComController
             //dr.check1 = "skdfj";
             //dr.check2 = "chedk";
             var tbobj = this.LibTables[0].Tables[0];
-            tbobj.DataTable.Rows[0][tbobj.Columns.ID] = "T20102102";
+            tbobj.FindRow(0).ID = "T20102102";
             //this.ThrowErrorException("zyylonghai错误猜测是");
             //this.AddMessage("测试错误提示", SDPCRL.CORE.LibMessageType.Error);
             //this.AddMessage("测试错误提示2", SDPCRL.CORE.LibMessageType.Error);
@@ -125,15 +125,15 @@ namespace BWYSDPWeb.BllComController
             //dt.Rows.Add(dr);
         }
 
-        protected override void UpdateTableRow(string gridid, DataRow row, string cmd)
+        protected override void UpdateTableRow(string gridid, DataRowObj row, string cmd)
         {
             base.UpdateTableRow(gridid, row, cmd);
             //this.ThrowErrorException("抛出异常测试");
             if (string.Compare(gridid, "GridGroup1") == 0 && cmd== "Add")
             {
-                var tbobj = this.LibTables[1].Tables[0];
-                row[tbobj.Columns.yingdu] = "zyylonghai";
-                row[tbobj.Columns.xingzhuang] = "88888888";
+                dynamic  rowobj = row;
+                rowobj.yingdu = "zyylonghai";
+                rowobj.xingzhuang = "88888888";
             }
         }
 

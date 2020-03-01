@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using AuthorityViewModel;
 using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
+using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
@@ -29,16 +30,18 @@ namespace BWYSDPWeb.BllAuthorityControllers
                 SearchConditionField field = new SearchConditionField();
                 field.FieldNm = "ProgId";
                 field.DisplayNm = "功能ID";
-                field.TBAliasNm = 'a';
+                //field.TBAliasNm = 'a';
                 field.IsCondition = true;
                 fields.Add(field);
 
                 field = new SearchConditionField();
                 field.FieldNm = "ProgNm";
                 field.DisplayNm = "功能名称";
-                field.TBAliasNm = 'a';
+                //field.TBAliasNm = 'a';
                 field.IsCondition = true;
                 fields.Add(field);
+                this.AddRelateFieldsForSearchModal("JoleD", "ProgNm");
+                //this.SessionObj.FromFieldInfo.RelateFields.Add(string.Format("{0}__rsdp_{1}", "JoleD", "ProgNm"));
             }
         }
 
@@ -74,38 +77,56 @@ namespace BWYSDPWeb.BllAuthorityControllers
         {
             if (data != null)
             {
-                DataTable dt = this.LibTables[2].Tables[0].DataTable;
+                //DataTable dt = this.LibTables[2].Tables[0].DataTable;
+                var dt = this.LibTables[2].Tables[0];
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    if (dt.Rows[i].RowState == DataRowState.Deleted) continue;
-                    if (string.Compare(dt.Rows[i]["ProgId"].ToString(), progid, true) != 0) continue;
-                    if (dt.Rows[i].RowState == DataRowState.Added)
+                    var rowobj = dt.Rows[i];
+                    if (((DataRowObj)rowobj).DataRowState == DataRowState.Deleted) continue;
+                    if (string.Compare(rowobj.ProgId.ToString(), progid, true) != 0) continue;
+                    if (((DataRowObj)rowobj).DataRowState == DataRowState.Added)
                     {
-                        dt.Rows[i].Delete();
+                        dt.DeleteRow(i);
+                        //dt.Rows[i].Delete();
                         i--;
                     }
                     else
                     {
-                        dt.Rows[i].Delete();
+                        dt.DeleteRow(i);
+                        //dt.Rows[i].Delete();
                     }
                 }
-                
+                //for (int i = 0; i < dt.Rows.Count; i++)
+                //{
+                //    if (dt.Rows[i].RowState == DataRowState.Deleted) continue;
+                //    if (string.Compare(dt.Rows[i]["ProgId"].ToString(), progid, true) != 0) continue;
+                //    if (dt.Rows[i].RowState == DataRowState.Added)
+                //    {
+                //        dt.Rows[i].Delete();
+                //        i--;
+                //    }
+                //    else
+                //    {
+                //        dt.Rows[i].Delete();
+                //    }
+                //}
+
                 foreach (ActionObj item in data)
                 {
-                    DataRow dr = this.LibTables[2].Tables[0].NewRow();
-                    dr["ProgId"] = progid;
-                    dr["ObjectType"] = item.ObjectType;
-                    dr["ObjectId"] = item.ObjectId;
-                    dr["GroupId"] = item.GroupId;
-                    this.LibTables[2].Tables[0].DataTable.Rows.Add(dr);
+                    var dr = this.LibTables[2].Tables[0].NewRow();
+                    dr.ProgId = progid;
+                    dr.ObjectType = item.ObjectType;
+                    dr.ObjectId = item.ObjectId;
+                    dr.GroupId = item.GroupId;
+                    //this.LibTables[2].Tables[0].DataTable.Rows.Add(dr);
                 }
                 if (data.Where(i => (i.ObjectId == "bwysdp_btnedit" || i.ObjectId == "bwysdp_btnadd") && i.ObjectType == 1).Count()>=2)
                 {
-                    DataRow dr = this.LibTables[2].Tables[0].NewRow();
-                    dr["ProgId"] = progid;
-                    dr["ObjectType"] = 1;
-                    dr["ObjectId"] = "bwysdp_btnsave";
-                    dr["GroupId"] = progid;
+                    var dr = this.LibTables[2].Tables[0].NewRow();
+                    dr.ProgId = progid;
+                    dr.ObjectType = 1;
+                    dr.ObjectId = "bwysdp_btnsave";
+                    dr.GroupId = progid;
                     this.LibTables[2].Tables[0].DataTable.Rows.Add(dr);
                 }
                 
