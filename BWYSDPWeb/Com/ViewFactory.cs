@@ -121,10 +121,10 @@ namespace BWYSDPWeb.Com
         /// <param name="pagetitle"></param>
         public void BeginPage(string pagetitle)
         {
-            this._pagetitle = pagetitle;
+            this._pagetitle = AppCom.GetFieldDesc((int)Language, this.DSID, string.Empty, pagetitle);
             _page.Append("<div class=\"container-fluid\">");
             _page.Append("<div class=\"panel panel-default\">");
-            _page.Append("<div class=\"panel-heading\">" + pagetitle + "</div>");
+            _page.Append("<div class=\"panel-heading\">@Html.GetFieldDesc(\"" + DSID + "\",\"\",\""+ pagetitle + "\")</div>");
         }
         /// <summary>
         /// 创建body
@@ -133,20 +133,20 @@ namespace BWYSDPWeb.Com
         {
             _page.Append("<div class=\"panel-body\">");
             _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
-            _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnsave") + "</button>");
-            _page.Append("<button id=\"bwysdp_btnadd\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnadd") + "</button>");
-            _page.Append("<button id=\"bwysdp_btnedit\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnedit") + "</button>");
+            _page.Append("<button id=\"bwysdp_btnsave\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-save\"></i>@Html.GetMessage(\"sdp_btnsave\")</button>");
+            _page.Append("<button id=\"bwysdp_btnadd\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>@Html.GetMessage(\"sdp_btnadd\")</button>");
+            _page.Append("<button id=\"bwysdp_btnedit\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>@Html.GetMessage(\"sdp_btnedit\")</button>");
             //_page.Append("<i class=\"fa fa-fw fa-save\"></i>"+AppCom .GetFieldDesc ((int)Language ,string.Empty ,string.Empty , "sdp_btnsave") +"</button>");
-            _page.Append("<button id=\"bwysdp_btndelet\" type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
+            _page.Append("<button id=\"bwysdp_btndelet\" type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i>@Html.GetMessage(\"sdp_btnDelete\")</button>");
             //_page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnDelete") + "</button>");
-            _page.Append("<button id=\"bwysdp_btncopy\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btncopy") + "</button>");
+            _page.Append("<button id=\"bwysdp_btncopy\" type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i>@Html.GetMessage(\"sdp_btncopy\")</button>");
 
             //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-cut\"></i></button>");
             //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-copy\"></i></button>");
             //_page.Append("<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-fw fa-clipboard\"></i></button>");
 
             _page.Append("<button id=\"bwysdp_btnSearch\" type=\"button\" class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + this._pagetitle + "\" data-progid=\"" + this._progid + "\" data-deftb=\"\" data-tbstruct=\"" + GetMastTable() + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\" data-flag=\"1\">");
-            _page.Append("<i class=\"glyphicon glyphicon-search\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnsearch") + "</button>");
+            _page.Append("<i class=\"glyphicon glyphicon-search\"></i>@Html.GetMessage(\"sdp_btnsearch\")</button>");
 
             _page.Append("</div>");
             _page.Append("<br /><br />");
@@ -166,7 +166,7 @@ namespace BWYSDPWeb.Com
         /// </summary>
         public void CreatePanelGroup(string formgroupNm)
         {
-            string title = AppCom.GetFieldDesc((int)Language, DSID, string.Empty, formgroupNm);
+            //string title = AppCom.GetFieldDesc((int)Language, DSID, string.Empty, formgroupNm);
             EndprePanel();
             string id = string.Format("PanelGroup{0}", _panelgroupdic.Count + 1);
             string contentid = string.Format("{0}_info", id);
@@ -176,7 +176,7 @@ namespace BWYSDPWeb.Com
             //面板标题
             _page.Append("<div class=\"panel-heading\" style=\"background-color:#dff0d8; text-align:left\">");
             _page.Append("<h4 class=\"panel-title\">");
-            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">" + title + "</a>");
+            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">@Html.GetFieldDesc(\""+DSID+"\",\"\",\""+ formgroupNm + "\")</a>");
             _page.Append("</h4>");
             _page.Append("</div>");
 
@@ -252,19 +252,19 @@ namespace BWYSDPWeb.Com
                 validatorAttr.AppendFormat(" maxlength=\"{0}\"", field.FieldLength);
                 validatorAttr.AppendFormat(" {0} ", field.Readonly ? "readonly" : "");
                 #endregion
-                string displaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
+                //string displaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
                 //_page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName+ (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
-                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + displaynm + (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">@Html.GetFieldDesc(\"" + DSID + "\",\""+ field.FromTableNm + "\",\""+ field.Name + "\")" + (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
                 _page.Append("<div class=\"col-sm-" + field.Width + "\">");
                 switch (field.ElemType)
                 {
                     case ElementType.Date:
                         _dateElemlst.Add(id);
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromTableNm + "\",\"" + field.Name + "\")\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.DateTime:
                         _datetimeElemlst.Add(id);
-                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromTableNm + "\",\"" + field.Name + "\")\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Select:
                         _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" " + validatorAttr.ToString() + ">");
@@ -273,26 +273,26 @@ namespace BWYSDPWeb.Com
                         {
                             if (string.IsNullOrEmpty(keyval.FromkeyValueID))
                             {
-                                _page.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, this.DSID, field.FromDefTableNm, string.Format("{0}_{1}", field.Name, keyval.Key)) + "</option>");
+                                _page.Append("<option value=\"" + keyval.Key + "\">@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromDefTableNm + "\",\"" + string.Format("{0}_{1}", field.Name, keyval.Key) + "\")</option>");
                             }
                             else
-                                _page.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, keyval.FromkeyValueID, string.Empty, keyval.Key.ToString ()) + "</option>");
+                                _page.Append("<option value=\"" + keyval.Key + "\">@Html.GetFieldDesc(\"" + keyval.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + keyval.Key.ToString() + "\")</option>");
                         }
                         _page.Append("</select>");
                         break;
                     case ElementType.Text:
-                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromTableNm + "\",\"" + field.Name + "\")\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Password:
-                        _page.Append("<input type=\"password\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<input type=\"password\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromTableNm + "\",\"" + field.Name + "\")\" " + validatorAttr.ToString() + ">");
                         break;
                     case ElementType.Search:
                         libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
                         _page.Append("<div class=\"input-group\">");
-                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + displaynm + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromTableNm + "\",\"" + field.Name + "\")\" " + validatorAttr.ToString() + ">");
                         _page.Append("<label id=\"" +string.Format("{0}_desc", id) + "\" ></label>");
                         _page.Append("<span class=\"input-group-btn\">");
-                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromTableNm + "\",\"" + field.Name + "\")\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
                         _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
                         _page.Append("</button>");
                         _page.Append("</span>");
@@ -320,7 +320,7 @@ namespace BWYSDPWeb.Com
                 validatorAttr.Append(item.IsAllowNull ? " required=\"required\"" : "");
                 //validatorAttr.AppendFormat("maxlength=\"{0}\"", item.FieldLength);
                 #endregion
-                _page.Append("<label for=\"" + item.Name + "\" class=\"col-sm-1 control-label\">" + AppCom.GetFieldDesc((int)Language, this.DSID, item.FromTableNm, item.Name) + (item.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+                _page.Append("<label for=\"" + item.Name + "\" class=\"col-sm-1 control-label\">@Html.GetFieldDesc(\"" + DSID + "\",\"" + item.FromTableNm + "\",\"" + item.Name + "\")" + (item.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
                 _page.Append("<div class=\"col-sm-" + item.Width + "\">");
                 _page.Append("<textarea class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" rows=\"3\" " + validatorAttr.ToString() + " ></textarea>");
                 _page.Append("</div>");//结束 col-sm
@@ -357,7 +357,7 @@ namespace BWYSDPWeb.Com
             //面板标题
             _page.Append("<div class=\"panel-heading\" style=\"background-color:#dff0d8; text-align:left\">");
             _page.Append("<h4 class=\"panel-title\">");
-            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">" + AppCom .GetFieldDesc((int)Language ,this.DSID ,string.Empty ,grid.GridGroupName ) + "</a>");
+            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">@Html.GetFieldDesc(\"" + DSID + "\",\"" + string.Empty + "\",\"" + grid.GridGroupName + "\")</a>");
             _page.Append("</h4>");
             _page.Append("</div>");
 
@@ -371,21 +371,21 @@ namespace BWYSDPWeb.Com
             {
                 _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Add\">");
                 //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
-                _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngridadd") + "");//新增
+                _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btngridadd\")");//新增
                 _page.Append("</button>");
             }
             if (grid.HasEditRowButton)
             {
                 _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnEdit(this,'" + grid.GridGroupName + "')\" data-toggle=\"modal\"  data-target=\"#sdp_tbmdl_" + id + "\"  data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Edit\">");
                 //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
-                _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngridedit") + "");//编辑
+                _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btngridedit\")");//编辑
                 _page.Append("</button>");
             }
             if (grid.HasDeletRowButton)
             {
                 _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnDelete(this,'" + grid.GridGroupName + "','"+ grid.GdGroupFields[0].FromDefTableNm + "','"+ grid.GdGroupFields[0].FromTableNm + "','"+(string.IsNullOrEmpty(ControlClassNm )?"DataBase":ControlClassNm)+"')\">");
                 //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
-                _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btngriddelete") + "");//删除
+                _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btngriddelete\")");//删除
                 _page.Append("</button>");
             }
             if (grid.GdButtons != null)
@@ -394,7 +394,7 @@ namespace BWYSDPWeb.Com
                 {
                     _page.Append("<button id=\""+btn.GridButtonName+ "\" type=\"button\" class=\"btn btn-default\" onclick=\"return "+btn .GridButtonEvent+"\">");
                     //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
-                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>" + AppCom.GetFieldDesc((int)Language, this.DSID, string.Empty, btn.GridButtonName) + "");//删除
+                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>@Html.GetFieldDesc(\"" + this.DSID + "\",\"" + string.Empty + "\",\""+ btn.GridButtonName + "\")");//删除
                     _page.Append("</button>");
                 }
             }
@@ -466,8 +466,9 @@ namespace BWYSDPWeb.Com
                             libFromSource = GetSourceField(field.Name, field.FromDefTableNm, field.FromTableNm);
                         }
                         table.Append(",{");
-                        string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID,
-                                                                    (field.IsFromSourceField&& libFromSource !=null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
+                        string fielddisplaynm = "@Html.GetFieldDesc(\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID) + "\",\"" + ((field.IsFromSourceField&& libFromSource !=null) ? libFromSource.FromStructTableNm : field.FromTableNm)+ "\",\"" + field.Name + "\")";
+                        //string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID,
+                        //                                            (field.IsFromSourceField&& libFromSource !=null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
                         //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
                         table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible:{3},", field.Name, fielddisplaynm, field.HasSort ? "true" : "false", field.Hidden ? "false" : "true"));
                         table.Append("formatter: function (value, row, index) {");
@@ -543,8 +544,9 @@ namespace BWYSDPWeb.Com
                     libFromSource = GetSourceField(field.Name, field.FromDefTableNm, field.FromTableNm);
                 }
                 table.Append(",{");
-                string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID, 
-                      (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
+                string fielddisplaynm = "@Html.GetFieldDesc(\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID) + "\",\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm) + "\",\"" + field.Name + "\")";
+                //string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID, 
+                //      (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
                 //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
                 table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible: true,switchable:true,", field.Name, fielddisplaynm, field.HasSort ? "true" : "false"));
                 table.Append("formatter: function (value, row, index) {");
@@ -631,7 +633,7 @@ namespace BWYSDPWeb.Com
                 foreach (LibButton btn in btngroup.LibButtons)
                 {
                     _page.Append("<button id=\"" + btn.LibButtonName + "\" type=\"button\" class=\"btn btn-default\" onclick=\"return " + btn.LibButtonEvent + "\">");
-                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>" + AppCom.GetFieldDesc((int)Language, this.DSID, string.Empty, btn.LibButtonName) + "");
+                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>@Html.GetFieldDesc(\"" + this.DSID + "\",\"" +string.Empty+ "\",\"" + btn.LibButtonName + "\")");
                     _page.Append("</button>");
                 }
             }
@@ -642,7 +644,7 @@ namespace BWYSDPWeb.Com
         /// <summary>
         /// 结束视图页
         /// </summary>
-        public void EndPage()
+        public void EndPage(bool hasformandboy=true)
         {
             //KeyValuePair<string, bool> item = _panelgroupdic.FirstOrDefault(i => i.Value == false);
             //if (item.Key !=null)
@@ -663,8 +665,10 @@ namespace BWYSDPWeb.Com
             _page.Append("</div>");
             #endregion
             //_page.Append("</form>");//
-            _page.Append("}");//form  结束
-
+            if (hasformandboy)
+            {
+                _page.Append("}");//form  结束
+            }
             #region 添加搜索控件的模态框。
             if (this._hasSearchModal)
             {
@@ -713,14 +717,14 @@ namespace BWYSDPWeb.Com
                 #endregion
                 _page.Append(new ElementCollection().SearchModalCondition(1));
                 _page.Append("</div>");
-                _page.Append("<button id=\"sdp_smodalbtnSearch\" type=\"button\" class=\"btn btn-primary\">"+AppCom.GetFieldDesc((int)Language ,string.Empty ,string.Empty , "sdp_btnselect") +"</button>");
+                _page.Append("<button id=\"sdp_smodalbtnSearch\" type=\"button\" class=\"btn btn-primary\">@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnselect\")</button>");
                 _page.Append("<table id=\"sdp_smodaldata\"></table>");
 
                 _page.Append("</form>");
                 _page.Append("</div>");
                 _page.Append("<div class=\"modal-footer\">");
-                _page.Append("<button type=\"button\" class=\"btn btn-primary\">"+ AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnConfirm") + "</button>");
-                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">" + AppCom.GetFieldDesc((int)Language, string.Empty, string.Empty, "sdp_btnClose") + "</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-primary\">@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnConfirm\")</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnClose\")</button>");
                 _page.Append("</div>");
                 _page.Append("</div>");
                 _page.Append("</div>");
@@ -759,10 +763,12 @@ namespace BWYSDPWeb.Com
                 }
             }
             #endregion
-            _page.Append("</div>");//panel - body
-            _page.Append("</div>");//panel panel - default
-            _page.Append("</div>");//container - fluid
-
+            if (hasformandboy)
+            {
+                _page.Append("</div>");//panel - body
+                _page.Append("</div>");//panel panel - default
+                _page.Append("</div>");//container - fluid
+            }
             CreateJavaScript();
             _page.AppendLine();
             _page.Append(_script.ToString());
@@ -954,10 +960,10 @@ namespace BWYSDPWeb.Com
                     {
                         if (string.IsNullOrEmpty(keyval.FromkeyValueID))
                         {
-                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, this.DSID, field.FromDefTableNm, string.Format("{0}_{1}", field.Name, keyval.Key)) + "</option>");
+                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">@Html.GetFieldDesc(\"" + this.DSID + "\",\"" + field.FromDefTableNm + "\",\""+ string.Format("{0}_{1}", field.Name, keyval.Key) + "\")</option>");
                         }
                         else
-                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">" + AppCom.GetFieldDesc((int)Language, keyval.FromkeyValueID, string.Empty, keyval.Key.ToString()) + "</option>");
+                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">@Html.GetFieldDesc(\"" + keyval.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + keyval.Key.ToString() + "\")</option>");
                     }
                     fieldsbuilder.Append("</select>");
                     break;

@@ -257,7 +257,7 @@ namespace BWYSDPWeb.BaseController
                     //}
                     FileOperation fileoperation = new FileOperation();
 
-                    fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath, string.Format("{0}_{1}", progId, this.Language.ToString()));
+                    fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath,progId);
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
                         //LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progId, this.Package);
@@ -275,7 +275,7 @@ namespace BWYSDPWeb.BaseController
                         factory.DSID = formpage.DSID;
                         factory.Package = this.Package;
                         factory.Language = this.Language;
-                        factory.BeginPage(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formpage.FormId));
+                        factory.BeginPage(formpage.FormId);
                         factory.CreateBody();
                         factory.CreateForm();
                         if (formpage.ModuleOrder != null)
@@ -388,7 +388,7 @@ namespace BWYSDPWeb.BaseController
             //return View(progId);
             this.SessionObj.ProgBaseVM = viewModel;
             object viewObj =@JsonConvert .SerializeObject(viewModel);
-            return View(string.Format("{0}_{1}", progId, this.Language.ToString()), viewObj);
+            return View(string.Format("{0}", progId), viewObj);
         }
 
         [HttpPost]
