@@ -1,0 +1,36 @@
+﻿@Styles.Render("~/Content/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTableExport")
+@Scripts.Render("~/bundles/searchmodal")
+@Scripts.Render("~/bundles/TableModal")
+@Scripts.Render("~/Scripts/lib/laydate/laydate")
+<div class="container-fluid">
+    <nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+        <div class="cm-flex">
+            <div class="nav-tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#menusetting" data-toggle="tab">@Html.GetMessage("UserMenuSetting")</a></li>
+                    <li><a href="#skinsetting" data-toggle="tab">@Html.GetMessage("SkinSetting")</a></li>
+                    <li><a href="#" data-toggle="tab">@Html.GetMessage("Personalization")</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="menusetting">
+            @Html.ModelConvertoHtml("UserMenu", "Home");
+    </div>
+    <div class="tab-pane fade" id="skinsetting">
+        <button>skdjk</button>
+        <div>dksjldjflksjflksjfklsjfksjkflkfj</div>
+        <div>dksjldjflksjflksjfklsjfksjkflkfj</div>
+        <div>dksjldjflksjflksjfklsjfksjkflkfj</div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        localStorage.removeItem(GetAuthoriTick());
+    });
+</script>
