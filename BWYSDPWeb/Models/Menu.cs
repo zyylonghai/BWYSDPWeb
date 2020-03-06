@@ -10,7 +10,7 @@ namespace BWYSDPWeb.Models
         /// <summary>
         /// 菜单ID
         /// </summary>
-        public string MenuId { get; set; }
+        public long MenuId { get; set; }
         /// <summary>
         /// 功能ID
         /// </summary>
@@ -27,7 +27,7 @@ namespace BWYSDPWeb.Models
         /// <summary>
         /// 父节点菜单ID
         /// </summary>
-        public string PmenuId { get; set; }
+        public long PmenuId { get; set; }
 
     }
 }

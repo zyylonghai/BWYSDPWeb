@@ -1,0 +1,6 @@
+UserMenuSetting：个人菜单设置
+SkinSetting:皮肤设置
+Personalization:个性化设置
+
+OperateObjSetting: 操作对象设置
+DataObjSetting:数据对象设置

@@ -51,9 +51,10 @@ namespace BWYSDPWeb.BllAuthorityControllers
             if (flag == 3)
             {
                 #region 获取所有功能模型的Progid
-                FileOperation fileoperation = new FileOperation();
-                fileoperation.FilePath = string.Format(@"{0}\Models\{1}", this.ModelRootPath, SysConstManage.FormSourceNm);
-                string[] array = fileoperation.SearchFileNm();
+                //FileOperation fileoperation = new FileOperation();
+                //fileoperation.FilePath = string.Format(@"{0}\Models\{1}", this.ModelRootPath, SysConstManage.FormSourceNm);
+                //string[] array = fileoperation.SearchFileNm();
+                ProgInfo[] array = AppCom.GetAllProgid();
                 #region 添加列
                 DataColumn col = new DataColumn("ProgId");
                 currpagedata.Columns.Add(col);
@@ -61,11 +62,11 @@ namespace BWYSDPWeb.BllAuthorityControllers
                 col = new DataColumn("ProgNm");
                 currpagedata.Columns.Add(col);
                 #endregion
-                foreach (string item in array)
+                foreach (ProgInfo item in array)
                 {
                     DataRow row = currpagedata.NewRow();
-                    row["ProgId"] = item;
-                    row["ProgNm"] = AppCom.GetFieldDesc((int)this.Language, item, string.Empty, item);
+                    row["ProgId"] = item.ProgId;
+                    row["ProgNm"] = AppCom.GetFieldDesc((int)this.Language, item.ProgId, string.Empty, item.ProgId);
                     currpagedata.Rows.Add(row);
                 }
 

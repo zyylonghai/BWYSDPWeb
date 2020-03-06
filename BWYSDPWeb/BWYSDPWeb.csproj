@@ -167,6 +167,7 @@
     <Compile Include="BaseController\BaseController.cs" />
     <Compile Include="BaseController\DataBaseController.cs" />
     <Compile Include="BllAuthorControllers\HomeController.cs" />
+    <Compile Include="BllAuthorControllers\UserMenuController.cs" />
     <Compile Include="BllAuthorityControllers\AccountController.cs" />
     <Compile Include="BllAuthorityControllers\AuthorityController.cs" />
     <Compile Include="BllAuthorityControllers\JoleController.cs" />
@@ -1985,12 +1986,14 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Authority\_ActionDetailParse.cshtml" />
     <Content Include="Views\Shared\NotPermission.cshtml" />
+    <Content Include="Views\Home\SysSetting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\com\" />
     <Folder Include="Views\Com\" />
     <Folder Include="Views\stocktest\" />
     <Folder Include="Views\Stock\" />
+    <Folder Include="Views\UserMenu\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

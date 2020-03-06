@@ -1,6 +1,7 @@
 ﻿using BWYSDPWeb.Com;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
+using SDPCRL.CORE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,26 @@ namespace BWYSDPWeb
             factory.ControlClassNm = formpage.ControlClassNm;
             factory.DSID = formpage.DSID;
             factory.Package = package;
+            #region cookie
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[SysConstManage.PageinfoCookieNm];
+            //if (cookie == null)
+            //{
+            //    cookie = new HttpCookie(SysConstManage.PageinfoCookieNm);
+            //}
+            //if (cookie.Values[progid] != null)
+            //{
+            //    cookie.Values.Set(progid, package);
+            //}
+            //else
+            //{
+            //    cookie.Values.Add(progid, package);
+            //}
+            ////}
+            //System.Web.HttpContext.Current.Response.AppendCookie(cookie);
+            AppCom.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progid, package);
+            #endregion
+            factory.BeginPageForHtmlHelp();
+            factory.CreateFormForHtmlHelp();
             if (formpage.ModuleOrder != null)
             {
                 foreach (ModuleOrder item in formpage.ModuleOrder)
@@ -48,10 +69,10 @@ namespace BWYSDPWeb
                                 foreach (LibFormGroup formg in formpage.FormGroups)
                                 {
                                     if (formg.FormGroupID != item.ID) continue;
-                                    factory.CreatePanelGroup(formg.FormGroupName);
+                                    factory.CreatePanelGroupForHtmlhelp(formg.FormGroupName);
                                     if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
                                     {
-                                        factory.AddFormGroupFields(formg.FmGroupFields, formg.FormGroupName);
+                                        factory.AddFormGroupFieldsForHtmlhelp(formg.FmGroupFields, formg.FormGroupName);
                                     }
                                 }
                             }
@@ -65,7 +86,7 @@ namespace BWYSDPWeb
                                     if (factory.Childrengrids.FirstOrDefault(i => i.GridGroupID == grid.GridGroupID) != null) continue;
                                     if (grid.GdGroupFields != null)
                                     {
-                                        factory.CreateGridGroup(grid);
+                                        factory.CreateGridGroupForHtmlhelp(grid);
                                     }
                                 }
                             }
@@ -85,7 +106,7 @@ namespace BWYSDPWeb
             }
             factory.EndPage(false);
             #endregion
-            return new HtmlString(factory.PageHtml);
+            return new HtmlString(factory.PageHtmlForHtmlHelp);
         }
     }
 }

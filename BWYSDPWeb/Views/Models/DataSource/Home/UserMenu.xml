@@ -1,0 +1,418 @@
+<?xml version="1.0"?>
+<LibDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" DSID="UserMenu" DataSourceName="用户菜单" Package="Home">
+  <DefTables>
+    <LibDefineTable ID="36bdb51d-3c5b-4332-910e-73b40f848e35" TableName="UserMenu" DisplayName="用户菜单">
+      <TableStruct>
+        <LibDataTableStruct ID="a5bf02f1-3633-4c20-af65-f3841526fe72">
+          <Name>UserMenu</Name>
+          <DisplayName>UserMenu</DisplayName>
+          <Ignore>true</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey>
+            <string>MenuId</string>
+          </PrimaryKey>
+          <Fields>
+            <LibField>
+              <ID>3946b2e7-ddb1-42ed-b0de-e5508db4d5c7</ID>
+              <Name>MenuId</Name>
+              <AliasName />
+              <DisplayName>菜单ID</DisplayName>
+              <ObjFieldName>MenuId</ObjFieldName>
+              <OrignNm />
+              <FieldType>Long</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>true</AutoIncrement>
+              <AutoIncrementSeed>1000</AutoIncrementSeed>
+              <AutoIncrementStep>10</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>e72984db-d534-4657-84c7-98f75b59aea5</ID>
+              <Name>ProgId</Name>
+              <AliasName />
+              <DisplayName>ProgId</DisplayName>
+              <ObjFieldName>ProgId</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>2a8ce8ca-8465-47ca-952c-b4bcdfa19c71</ID>
+              <Name>Package</Name>
+              <AliasName />
+              <DisplayName>所属包</DisplayName>
+              <ObjFieldName>Package</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>f29f7934-620c-4e68-a48f-a52bb5f59530</ID>
+              <Name>MenuName</Name>
+              <AliasName />
+              <DisplayName>菜单显示名称</DisplayName>
+              <ObjFieldName>MenuName</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>50</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>a5331993-9e7a-4b52-8534-256dcf17e183</ID>
+              <Name>PmenuId</Name>
+              <AliasName />
+              <DisplayName>父节点菜单ID</DisplayName>
+              <ObjFieldName>PmenuId</ObjFieldName>
+              <OrignNm />
+              <FieldType>Long</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>5483f78e-26d9-4fde-905c-2e3ccdfcc5e9</ID>
+              <Name>UserId</Name>
+              <AliasName />
+              <DisplayName>用户ID</DisplayName>
+              <ObjFieldName>UId</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>27964a39-5c18-4761-8a84-c2d05cd1e61b</ID>
+              <Name>UserMenuCode</Name>
+              <AliasName />
+              <DisplayName>用户识别码</DisplayName>
+              <ObjFieldName>UserMenuCode</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>eebe86f8-18f5-41ee-96eb-60640634789a</ID>
+              <Name>Creater</Name>
+              <AliasName />
+              <DisplayName>创建者</DisplayName>
+              <ObjFieldName />
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>true</SysField>
+            </LibField>
+            <LibField>
+              <ID>e2028776-8e17-4661-a295-ce6e6fea8c3b</ID>
+              <Name>CreateDate</Name>
+              <AliasName />
+              <DisplayName>创建时间</DisplayName>
+              <ObjFieldName />
+              <OrignNm />
+              <FieldType>DateTime</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>true</SysField>
+            </LibField>
+            <LibField>
+              <ID>3daacbd5-9373-488f-9295-670a9e652de2</ID>
+              <Name>LastmodifyUser</Name>
+              <AliasName />
+              <DisplayName>最后修改者</DisplayName>
+              <ObjFieldName />
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>true</SysField>
+            </LibField>
+            <LibField>
+              <ID>d4b3dda2-747b-4b85-98c5-dc51d1cb5841</ID>
+              <Name>LastmodifyDate</Name>
+              <AliasName />
+              <DisplayName>最后修改日期</DisplayName>
+              <ObjFieldName />
+              <OrignNm />
+              <FieldType>DateTime</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>true</SysField>
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+        <LibDataTableStruct ID="c1d5f0cf-62b0-4537-94e9-2e744eda0189">
+          <Name>UserMenu_D</Name>
+          <DisplayName>虚拟表用于排版设计</DisplayName>
+          <Ignore>false</Ignore>
+          <TableIndex>1</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields>
+            <string>PmenuId</string>
+          </JoinFields>
+          <PrimaryKey>
+            <string>MenuId</string>
+            <string>PmenuId</string>
+          </PrimaryKey>
+          <Fields>
+            <LibField>
+              <ID>18a53b4f-1db6-45c8-8b12-3c076609e399</ID>
+              <Name>MenuId</Name>
+              <AliasName />
+              <DisplayName>MenuId</DisplayName>
+              <ObjFieldName>MenuId</ObjFieldName>
+              <OrignNm />
+              <FieldType>Long</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>true</AutoIncrement>
+              <AutoIncrementSeed>1000</AutoIncrementSeed>
+              <AutoIncrementStep>10</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>b15c5edb-3360-4db9-a3cc-916cfb58e589</ID>
+              <Name>ProgId</Name>
+              <AliasName />
+              <DisplayName>ProgId</DisplayName>
+              <ObjFieldName>ProgId</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>0af24023-329c-4b91-8ef5-0d8d9e1471f0</ID>
+              <Name>Package</Name>
+              <AliasName />
+              <DisplayName>Package</DisplayName>
+              <ObjFieldName>Package</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>d3854e36-bb21-4f03-a7fe-d64808de454b</ID>
+              <Name>MenuName</Name>
+              <AliasName />
+              <DisplayName>MenuName</DisplayName>
+              <ObjFieldName>MenuName</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>50</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>9fe006ca-f47d-472b-aad1-ef36d6a14657</ID>
+              <Name>PmenuId</Name>
+              <AliasName />
+              <DisplayName>PmenuId</DisplayName>
+              <ObjFieldName>PmenuId</ObjFieldName>
+              <OrignNm />
+              <FieldType>Long</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey>MenuId</RelatePrimarykey>
+              <AllowNull>false</AllowNull>
+              <IsActive>true</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>40c05ab5-6951-488b-85dc-f22a609bb3e2</ID>
+              <Name>UserId</Name>
+              <AliasName />
+              <DisplayName>UserId</DisplayName>
+              <ObjFieldName>UId</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>119cd766-781a-4136-8c1d-5e3676506b20</ID>
+              <Name>UserMenuCode</Name>
+              <AliasName />
+              <DisplayName>UserMenuCode</DisplayName>
+              <ObjFieldName>UserMenuCode</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>b5209439-beb6-4343-b957-99e42d64b30c</ID>
+              <Name>ProgNm</Name>
+              <AliasName />
+              <DisplayName>ProgNm</DisplayName>
+              <ObjFieldName>ProgNm</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </LibDefineTable>
+  </DefTables>
+</LibDataSource>

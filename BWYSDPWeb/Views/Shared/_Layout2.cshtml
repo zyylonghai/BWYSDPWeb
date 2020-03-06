@@ -205,7 +205,7 @@
                         <a href="#"><i class="fa fa-fw fa-user"></i>@Html.GetMessage("Profile")</a>
                     </li>*@
                     <li>
-                        <a href="#"><i class="fa fa-fw fa-cog"></i>@Html.GetMessage("SysSettings")</a>
+                        <a href="@Url.Action("SysSetting","Home")"><i class="fa fa-fw fa-cog"></i>@Html.GetMessage("SysSettings")</a>
                     </li>
                     <li>
                         <a href="@Url.Action("LoginOut","Home")"><i class="fa fa-fw fa-sign-out"></i>@Html.GetMessage("Signout")</a>

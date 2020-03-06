@@ -31,6 +31,7 @@ namespace Com
         /// <returns></returns>
         public static DataTable GetDataByPage(DataTable dt, int page, int rows)
         {
+            if (dt == null) return dt;
             DataTable resultdt = dt.Clone();
             for (int index = (page - 1) * rows; index < page * rows; index++)
             {

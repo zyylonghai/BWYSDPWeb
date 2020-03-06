@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="UserMenu" FormName="用户菜单" DSID="UserMenu" ControlClassNm="UserMenu" CssFile="" ScriptFile="" Package="Home">
+  <Buttons />
+  <ModuleOrder>
+    <ModuleOrder>
+      <moduleType>GridGroup</moduleType>
+      <ID>4ae9db7d-6d6d-4c62-9b97-43950ec03f1a</ID>
+    </ModuleOrder>
+    <ModuleOrder>
+      <moduleType>GridGroup</moduleType>
+      <ID>2ecae64a-54ad-4314-84c9-439f58083d2e</ID>
+    </ModuleOrder>
+  </ModuleOrder>
+  <FormGroups />
+  <GridGroups>
+    <LibGridGroup GridGroupID="4ae9db7d-6d6d-4c62-9b97-43950ec03f1a" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1" ControlClassNm="UserMenu" HasSummary="false" SingleSelect="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="GridGroup2">
+      <GdButtons />
+      <GdGroupFields>
+        <LibGridGroupField ID="44ab99cd-604e-4bb6-8e28-e0d4e61be734">
+          <Name>MenuId</Name>
+          <FromTableNm>UserMenu</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>菜单ID</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="193d18ff-bc2e-410b-a1cb-abd0ae5009e8">
+          <Name>MenuName</Name>
+          <FromTableNm>UserMenu</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>菜单显示名称</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+      </GdGroupFields>
+    </LibGridGroup>
+    <LibGridGroup GridGroupID="2ecae64a-54ad-4314-84c9-439f58083d2e" GridGroupName="GridGroup2" GridGroupDisplayNm="页面表格组2" ControlClassNm="" HasSummary="false" SingleSelect="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="">
+      <GdButtons />
+      <GdGroupFields>
+        <LibGridGroupField ID="6644731d-74a3-4d57-962d-0e42fee929b9">
+          <Name>MenuId</Name>
+          <FromTableNm>UserMenu_D</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>MenuId</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>true</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="27e94533-8aa8-4c10-b47b-0d79d1c988ff">
+          <Name>ProgId</Name>
+          <FromTableNm>UserMenu_D</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>ProgId</DisplayName>
+          <ElemType>Search</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="508b1625-e348-4b96-b693-a2b6412de146">
+          <Name>Package</Name>
+          <FromTableNm>UserMenu_D</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>Package</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>true</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="1805800d-0298-454b-810e-755d820f0f72">
+          <Name>MenuName</Name>
+          <FromTableNm>UserMenu_D</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>MenuName</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="acf1fae6-6d16-4193-9c0d-a7e50f20152d">
+          <Name>PmenuId</Name>
+          <FromTableNm>UserMenu_D</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>PmenuId</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>true</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="74c30ab6-8e3e-4885-9bc5-5d4b6cc19c54">
+          <Name>UserMenuCode</Name>
+          <FromTableNm>UserMenu_D</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>UserMenuCode</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="40150eea-3515-4f07-bdae-79227d2cb2f3">
+          <Name>ProgNm</Name>
+          <FromTableNm>UserMenu_D</FromTableNm>
+          <FromDefTableNm>UserMenu</FromDefTableNm>
+          <DisplayName>ProgNm</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>true</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+      </GdGroupFields>
+    </LibGridGroup>
+  </GridGroups>
+  <BtnGroups />
+</LibFormPage>

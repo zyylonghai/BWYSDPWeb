@@ -32,118 +32,131 @@ namespace BWYSDPWeb.BaseController
         public ActionResult LoadMenus()
         {
             List<Menu> mdata = new List<Menu>();
-            Menu m = new Menu();
-            //m.MenuId = "0001";
-            //m.MenuName = "主页";
-            //m.ProgId = "Index";
-            //m.Package = "Home";
+            DalResult result = this.ExecuteDalMethod("UserMenu", "GetUserMenus", this.UserInfo.UserId);
+            LibTableObj tableObj = (LibTableObj)result.Value;
+            if (tableObj != null && tableObj.Rows != null)
+            {
+                mdata= DataTableHelp.TableToList<Menu>(tableObj.DataTable);
+                //Menu m = null;
+                //foreach (var item in tableObj.Rows)
+                //{
+                    
+                //}
+            }
+            #region 旧数据
+            //Menu m = new Menu();
+            ////m.MenuId = "0001";
+            ////m.MenuName = "主页";
+            ////m.ProgId = "Index";
+            ////m.Package = "Home";
+            ////mdata.Add(m);
+
+            //m = new Menu();
+            //m.MenuId = "0101";
+            //m.MenuName = "供应链管理";
             //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "0101";
-            m.MenuName = "供应链管理";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010101";
+            //m.MenuName = "销售订单";
+            //m.ProgId = "SaleOrder";
+            //m.PmenuId = "0101";
+            //m.Package = "SCM";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010101";
-            m.MenuName = "销售订单";
-            m.ProgId = "SaleOrder";
-            m.PmenuId = "0101";
-            m.Package = "SCM";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010102";
+            //m.MenuName = "采购订单";
+            //m.ProgId = "PurchaseOrder";
+            //m.Package = "SCM";
+            //m.PmenuId = "0101";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010102";
-            m.MenuName = "采购订单";
-            m.ProgId = "PurchaseOrder";
-            m.Package = "SCM";
-            m.PmenuId = "0101";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010103";
+            //m.MenuName = "发货单";
+            //m.ProgId = "ShipOrder";
+            //m.Package = "SCM";
+            //m.PmenuId = "0101";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010103";
-            m.MenuName = "发货单";
-            m.ProgId = "ShipOrder";
-            m.Package = "SCM";
-            m.PmenuId = "0101";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "0102";
+            //m.MenuName = "库存管理";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "0102";
-            m.MenuName = "库存管理";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010201";
+            //m.MenuName = "库存报表";
+            //m.ProgId = "stockbaobiao";
+            //m.Package = "Stock";
+            //m.PmenuId = "0102";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010201";
-            m.MenuName = "库存报表";
-            m.ProgId = "stockbaobiao";
-            m.Package = "Stock";
-            m.PmenuId = "0102";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010202";
+            //m.MenuName = "库存调整";
+            //m.ProgId = "stockpage";
+            //m.Package = "Stock";
+            //m.PmenuId = "0102";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010202";
-            m.MenuName = "库存调整";
-            m.ProgId = "stockpage";
-            m.Package = "Stock";
-            m.PmenuId = "0102";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010203";
+            //m.MenuName = "库存调整2";
+            //m.ProgId = "stockpage2";
+            //m.Package = "Stock";
+            //m.PmenuId = "0102";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010203";
-            m.MenuName = "库存调整2";
-            m.ProgId = "stockpage2";
-            m.Package = "Stock";
-            m.PmenuId = "0102";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "0103";
+            //m.MenuName = "公共功能";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "0103";
-            m.MenuName = "公共功能";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010301";
+            //m.MenuName = "web测试";
+            //m.ProgId = "webceshi";
+            //m.Package = "com";
+            //m.PmenuId = "0103";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010301";
-            m.MenuName = "web测试";
-            m.ProgId = "webceshi";
-            m.Package = "com";
-            m.PmenuId = "0103";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010302";
+            //m.MenuName = "检验单";
+            //m.ProgId = "CheckBill";
+            //m.Package = "com";
+            //m.PmenuId = "0103";
+            //mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010303";
+            //m.MenuName = "物料主数据";
+            //m.ProgId = "Materials";
+            //m.Package = "com";
+            //m.PmenuId = "0103";
+            //mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010304";
+            //m.MenuName = "测试功能";
+            //m.ProgId = "WebTestFunc";
+            //m.Package = "com";
+            //m.PmenuId = "0103";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "010302";
-            m.MenuName = "检验单";
-            m.ProgId = "CheckBill";
-            m.Package = "com";
-            m.PmenuId = "0103";
-            mdata.Add(m);
-            m = new Menu();
-            m.MenuId = "010303";
-            m.MenuName = "物料主数据";
-            m.ProgId = "Materials";
-            m.Package = "com";
-            m.PmenuId = "0103";
-            mdata.Add(m);
-            m = new Menu();
-            m.MenuId = "010304";
-            m.MenuName = "测试功能";
-            m.ProgId = "WebTestFunc";
-            m.Package = "com";
-            m.PmenuId = "0103";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "0104";
+            //m.MenuName = "权限配置";
+            //mdata.Add(m);
 
-            m = new Menu();
-            m.MenuId = "0104";
-            m.MenuName = "权限配置";
-            mdata.Add(m);
-
-            m = new Menu();
-            m.MenuId = "010401";
-            m.MenuName = "角色";
-            m.ProgId = "Jole";
-            m.Package = "Authority";
-            m.PmenuId = "0104";
-            mdata.Add(m);
+            //m = new Menu();
+            //m.MenuId = "010401";
+            //m.MenuName = "角色";
+            //m.ProgId = "Jole";
+            //m.Package = "Authority";
+            //m.PmenuId = "0104";
+            //mdata.Add(m);
+            #endregion
 
             return Json(new { Message = "success", data = mdata, Flag = 0 }, JsonRequestBehavior.AllowGet);
         }
@@ -175,26 +188,29 @@ namespace BWYSDPWeb.BaseController
                     if (permresult != null)
                         return permresult;
                     DalResult result = this.ExecuteMethod("GetAuthority", this.UserInfo.UserId);
-                    DataTable data = (DataTable)result.Value;
+                    LibTableObj data = (LibTableObj)result.Value;
+                    
                     if (data != null)
                     {
-                        DataRow[] rows = data.Select(string.Format("JoleId='{0}'", "001"));//是否有管理员角色
-                        if (rows.Length == 0)//没有管理角色，则检查权限。
+                        //DataRow[] rows = data.Select(string.Format("JoleId='{0}'", "001"));//是否有管理员角色
+                        var rows = data.Rows.Where(i => i.JoleId == "001");//是否有管理员角色
+                        if (rows.Count() == 0)//没有管理角色，则检查权限。
                         {
-                            rows = data.Select(string.Format("ProgId='{0}'", this.ProgID));
-                            if (rows.Length == 0)
+                            //rows = data.Select(string.Format("ProgId='{0}'", this.ProgID));
+                            rows = data.Rows.Where(i => i.ProgId == this.ProgID);
+                            if (rows.Count () == 0)
                             {
                                 //msg000000009	用户{0}没有功能{1}使用权限
                                 return View("NotPermission", new NotPermission { Message = string.Format(AppCom.GetMessageDesc("msg000000009"), this.UserInfo.UserNm, this.ProgID) });
                             }
                             AuthorityObj obj = null;
-                            foreach (DataRow dr in rows)
+                            foreach (var dr in rows)
                             {
                                 obj = new AuthorityObj();
-                                if (LibSysUtils.IsNULLOrEmpty(dr["ObjectType"])) continue;
-                                obj.ObjectType = Convert.ToInt32(dr["ObjectType"]);
-                                obj.ObjectId = dr["ObjectId"].ToString();
-                                obj.GroupId = dr["GroupId"].ToString();
+                                if (LibSysUtils.IsNULLOrEmpty(dr.ObjectType)) continue;
+                                obj.ObjectType = Convert.ToInt32(dr.ObjectType);
+                                obj.ObjectId = dr.ObjectId;
+                                obj.GroupId = dr.GroupId;
                                 viewModel.AuthorityObjs.Add(obj);
                                 if (obj.ObjectType == 1) //操作对象
                                 {
@@ -390,9 +406,11 @@ namespace BWYSDPWeb.BaseController
             object viewObj =@JsonConvert .SerializeObject(viewModel);
             return View(string.Format("{0}", progId), viewObj);
         }
-
+        /// <summary></summary>
+        /// <param name="flag">标识1表示通过htmlhelp加载的模型，0表示正常的生成视图文件</param>
+        /// <returns></returns>
         [HttpPost]
-        public virtual ActionResult BasePageLoad()
+        public virtual ActionResult BasePageLoad(string flag)
         {
             if (this.SessionObj.MsgforSave == null || this.SessionObj.MsgforSave.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
@@ -407,19 +425,32 @@ namespace BWYSDPWeb.BaseController
 
                     #endregion
                     //DataRow row = null;
-                    foreach (var def in this.LibTables)
+                    if (this.LibTables != null)
                     {
-                        foreach (LibTableObj dtobj in def.Tables)
+                        foreach (var def in this.LibTables)
                         {
-                            if ((dtobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
+                            foreach (LibTableObj dtobj in def.Tables)
                             {
-                                //row = dt.NewRow();
+                                if ((dtobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
+                                {
+                                    //row = dt.NewRow();
 
-                                dtobj .DataTable .Rows.Add(dtobj .DataTable .NewRow());
+                                    dtobj.DataTable.Rows.Add(dtobj.DataTable.NewRow());
+                                }
                             }
                         }
                     }
                     PageLoad();
+                    if (flag == "1")
+                    {
+                        CachHelp cachelp = new CachHelp();
+                        string key = string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID);
+                        LibTable[] tbs = cachelp.GetCach(key) as LibTable[];
+                        if (tbs == null &&this.LibTables !=null)
+                        {
+                            cachelp.AddCachItem(key, this.LibTables, this.TimeOffset, new LibTableChangeMonitor2(key, this.LibTables, this.ProgID));
+                        }
+                    }
                 }
             }
             #region 处理MsgforSave
@@ -446,23 +477,11 @@ namespace BWYSDPWeb.BaseController
             var pid = allprogid.FirstOrDefault(i => i.ProgId.ToUpper() == q.ToUpper());
             if (pid != null)
             {
-                //LibPermissionSource permission = ModelManager.GetModelBypath<LibPermissionSource>(this.ModelRootPath, pid.ProgId, pid.Package);
-                //if (permission != null&& !permission .IsMenu)
-                //{
-                //    //msg000000007	该功能未开放
-                //    return View("NotPermission", new NotPermission { Message = AppCom .GetMessageDesc ("msg000000007") });
-                //}
-                //if (permission == null)
-                //{
-                //    //msg000000008	功能{0}未配置权限模型
-                //    return View("NotPermission", new NotPermission { Message =string.Format(AppCom.GetMessageDesc("msg000000008"),pid.ProgId) });
-                //}
                 var permresult = PermissionResult(pid.ProgId, pid.Package);
                 if (permresult != null)
                     return permresult;
                 return RedirectToAction("ConverToPage", pid.Package, new { progId = pid.ProgId });
             }
-            //this.AddMessage("找不到该功能", LibMessageType.Error);
             return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
         }
         [HttpPost]
@@ -592,7 +611,7 @@ namespace BWYSDPWeb.BaseController
                 foreach (LibTableObj tbojb in def.Tables)
                 {
                     tbextp = tbojb.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                    if (tbextp.TableIndex == 0) { continue; }
+                    if (tbextp.TableIndex == 0 || !tbextp .Ignore) { continue; }
                     if (tbextp.RelateTableIndex == 0)
                     {
                         if (mdt != null)
@@ -687,20 +706,24 @@ namespace BWYSDPWeb.BaseController
                 if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
                 this.SessionObj.MsgforSave.AddRange(this.MsgList);
             }
-            return RedirectToAction("ConverToPage", this.Package, new { progId = this.ProgID });
+            string actionnm = "ConverToPage";
+            string controlnm = this.Package;
+            object routvalue = new { progId = this.ProgID };
+            SaveSuccessRedirect(ref actionnm, ref controlnm, routvalue);
+            return RedirectToAction(actionnm, controlnm, routvalue);
         }
 
         public ActionResult Add()
         {
             this.SessionObj.OperateAction = OperatAction.Add;
-            return BasePageLoad();
+            return BasePageLoad("0");
         }
 
         public ActionResult Edit()
         {
             if (this.SessionObj.OperateAction == OperatAction.Preview)
                 this.SessionObj.OperateAction = OperatAction.Edit;
-            return BasePageLoad();
+            return BasePageLoad("0");
         }
 
         [HttpPost]
@@ -841,96 +864,100 @@ namespace BWYSDPWeb.BaseController
             ////    testlist.Add(t);
             ////}
             #endregion
-            //string a = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
-            var table = this.LibTables.FirstOrDefault(i => i.Name == deftb);
-            if (table == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-            #region 旧代码
-            //Dictionary<int, DataTable> dic = new Dictionary<int, DataTable>();
-            //DataTable mastdt = null;
-            //foreach (DataTable item in table.Tables)
-            //{
-            //    dic.Add(((TableExtendedProperties)item.ExtendedProperties["extProp"]).TableIndex, item);
-            //}
-            //foreach (DataTable itm in table.Tables)
-            //{
-            //    if (dic.TryGetValue(((TableExtendedProperties)itm.ExtendedProperties["extProp"]).RelateTableIndex, out mastdt))
-            //    {
-            //        break;
-            //    }
-            //}
-            //DataTable dt = mastdt.Copy();
-            //DataTable dt2 = null;
-            //DataColumn[] cols=null;
-            //foreach (DataTable d in table.Tables)
-            //{
-            //    if (d.TableName == mastdt.TableName) continue;
-            //    dt2 = d.Copy();
-            //    dt2.PrimaryKey = null;
-            //    dt.Merge(dt2, false);
-            //    //cols = new DataColumn[d.Columns .Count];
-            //    //d.Columns.CopyTo(cols, 0);
-
-            //    //foreach (DataColumn c in cols)
-            //    //{
-            //    //    if (!d.PrimaryKey.Contains(c))
-            //    //    {
-            //    //        dt.Columns.Add(c);
-            //    //    }
-            //    //}
-            //    //foreach (DataColumn col in d.Columns)
-            //    //{
-            //    //    if (!d.PrimaryKey.Contains(col))
-            //    //    {
-            //    //        dt.Columns.Add(col);
-            //    //    }
-            //    //}
-            //    //dt.Merge(d, false);
-            //}
-            ////foreach (DataTable tb in table.Tables)
-            ////{
-            ////    var q = from m in dt.AsEnumerable().
-            ////            join d in tb.AsEnumerable() on m.Field<Nullable>("") equals d.Field("")
-            ////            select 
-            ////}
-
-            ////var query =
-            ////   from rHead in dt.AsEnumerable()
-            ////   join rTail in dtTail.AsEnumerable()
-            ////   on rHead.Field<Int32>("GoodID") equals rTail.Field<Int32>("GoodID")
-            ////   select rHead.ItemArray.Concat(rTail.ItemArray.Skip(1));
-            #endregion
-            var tbobj = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
-            DataTable dt = tbobj ==null?null :tbobj .DataTable;
-            if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-            if (!string.IsNullOrEmpty(prowid))
+            DataTable dt = null;
+            if (this.LibTables != null)
             {
-                TableExtendedProperties extprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
-                DataTable relatedt = InternalGetParentTable(dt);
-                DataRow relaterow = AppSysUtils.GetRowByRowId(relatedt, Convert.ToInt32(prowid));
-                if (relaterow == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-                //StringBuilder where = new StringBuilder();
-                //ColExtendedProperties colextprop = null;
-                //DataColumn col2 = null;
-                //foreach (DataColumn col in dt.PrimaryKey)
+                //string a = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
+                var table = this.LibTables.FirstOrDefault(i => i.Name == deftb);
+                if (table == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+                #region 旧代码
+                //Dictionary<int, DataTable> dic = new Dictionary<int, DataTable>();
+                //DataTable mastdt = null;
+                //foreach (DataTable item in table.Tables)
                 //{
-                //    if (col.AutoIncrement) continue;
-                //    colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                //    col2 = string.IsNullOrEmpty(colextprop.MapPrimarykey) ? relatedt.Columns[col.ColumnName] : relatedt.Columns[colextprop.MapPrimarykey];
-                //    if (col2 == null) continue;
-
-                //    if (where.Length > 0)
-                //    {
-                //        where.Append(" and ");
-                //    }
-                //    where.AppendFormat("{0}='{1}'", col.ColumnName, relaterow[col2]);
+                //    dic.Add(((TableExtendedProperties)item.ExtendedProperties["extProp"]).TableIndex, item);
                 //}
-                string where = AppSysUtils.GetChildRowByParentRowToExpress(relaterow, dt);
-                dt = AppSysUtils.GetData(dt, where.ToString());
+                //foreach (DataTable itm in table.Tables)
+                //{
+                //    if (dic.TryGetValue(((TableExtendedProperties)itm.ExtendedProperties["extProp"]).RelateTableIndex, out mastdt))
+                //    {
+                //        break;
+                //    }
+                //}
+                //DataTable dt = mastdt.Copy();
+                //DataTable dt2 = null;
+                //DataColumn[] cols=null;
+                //foreach (DataTable d in table.Tables)
+                //{
+                //    if (d.TableName == mastdt.TableName) continue;
+                //    dt2 = d.Copy();
+                //    dt2.PrimaryKey = null;
+                //    dt.Merge(dt2, false);
+                //    //cols = new DataColumn[d.Columns .Count];
+                //    //d.Columns.CopyTo(cols, 0);
+
+                //    //foreach (DataColumn c in cols)
+                //    //{
+                //    //    if (!d.PrimaryKey.Contains(c))
+                //    //    {
+                //    //        dt.Columns.Add(c);
+                //    //    }
+                //    //}
+                //    //foreach (DataColumn col in d.Columns)
+                //    //{
+                //    //    if (!d.PrimaryKey.Contains(col))
+                //    //    {
+                //    //        dt.Columns.Add(col);
+                //    //    }
+                //    //}
+                //    //dt.Merge(d, false);
+                //}
+                ////foreach (DataTable tb in table.Tables)
+                ////{
+                ////    var q = from m in dt.AsEnumerable().
+                ////            join d in tb.AsEnumerable() on m.Field<Nullable>("") equals d.Field("")
+                ////            select 
+                ////}
+
+                ////var query =
+                ////   from rHead in dt.AsEnumerable()
+                ////   join rTail in dtTail.AsEnumerable()
+                ////   on rHead.Field<Int32>("GoodID") equals rTail.Field<Int32>("GoodID")
+                ////   select rHead.ItemArray.Concat(rTail.ItemArray.Skip(1));
+                #endregion
+                var tbobj = table.Tables.FirstOrDefault(i => i.TableName == tableNm);
+                dt = tbobj == null ? null : tbobj.DataTable;
+                if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+                if (!string.IsNullOrEmpty(prowid))
+                {
+                    TableExtendedProperties extprop = dt.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    DataTable relatedt = InternalGetParentTable(dt);
+                    DataRow relaterow = AppSysUtils.GetRowByRowId(relatedt, Convert.ToInt32(prowid));
+                    if (relaterow == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+                    //StringBuilder where = new StringBuilder();
+                    //ColExtendedProperties colextprop = null;
+                    //DataColumn col2 = null;
+                    //foreach (DataColumn col in dt.PrimaryKey)
+                    //{
+                    //    if (col.AutoIncrement) continue;
+                    //    colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                    //    col2 = string.IsNullOrEmpty(colextprop.MapPrimarykey) ? relatedt.Columns[col.ColumnName] : relatedt.Columns[colextprop.MapPrimarykey];
+                    //    if (col2 == null) continue;
+
+                    //    if (where.Length > 0)
+                    //    {
+                    //        where.Append(" and ");
+                    //    }
+                    //    where.AppendFormat("{0}='{1}'", col.ColumnName, relaterow[col2]);
+                    //}
+                    string where = AppSysUtils.GetChildRowByParentRowToExpress(relaterow, dt);
+                    dt = AppSysUtils.GetData(dt, where.ToString());
+                }
             }
             GetGridDataExt(gridid, dt);
-
             DataTable resultdt = AppSysUtils.GetDataByPage(dt, page, rows);
             //ConvertBinaryColValue(resultdt);
+            if(resultdt ==null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
             if (!string.IsNullOrEmpty(sort))
             {
                 resultdt.DefaultView.Sort = string.Format("{0} {1}", sort, sortOrder);
@@ -945,10 +972,11 @@ namespace BWYSDPWeb.BaseController
         {
             DataRow dr = null;
             LibTableObj tbobj = null;
+            if (this.LibTables == null) return LibJson(dr);
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
             if (libtable != null)
             {
-                DataTable tb=null;
+                DataTable tb = null;
                 DataTable relatetb = null;
                 if (libtable.Tables != null)
                 {
@@ -981,12 +1009,12 @@ namespace BWYSDPWeb.BaseController
                                 //}
                                 #endregion
                                 #region 填充主键列的值
-                                if (relatetb != null && (relatetb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex!=extprop .TableIndex)
+                                if (relatetb != null && (relatetb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex != extprop.TableIndex)
                                 {
                                     ColExtendedProperties colextprop = null;
                                     DataColumn relatecol = null;
                                     DataRow relaterow = null;
-                                    if (extprop.RelateTableIndex == 0)
+                                    if (extprop.RelateTableIndex == 0&& string.IsNullOrEmpty(prowid))
                                         relaterow = relatetb.Rows[0];
                                     else
                                     {
@@ -1747,6 +1775,11 @@ namespace BWYSDPWeb.BaseController
 
         }
 
+        protected virtual void SaveSuccessRedirect(ref string actionNm, ref string controlnm, object routvalues)
+        {
+            
+        }
+
         /// <summary>
         /// 添加来源主数据搜索 带出的关联字段（主要用于关联字段赋值到界面上的控件）
         /// </summary>
@@ -1769,6 +1802,7 @@ namespace BWYSDPWeb.BaseController
         }
         private void SetPrimaryKeyWithMastTB(DataTable table, DataTable mdt)
         {
+            if (mdt == null || mdt.Rows.Count == 0 || mdt.Rows.Count > 1) return;
             ColExtendedProperties colextp = null;
             foreach (DataRow dr in table.Rows)
             {

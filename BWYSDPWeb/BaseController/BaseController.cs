@@ -23,7 +23,7 @@ namespace BWYSDPWeb.BaseController
         //private List<LibMessage> MsgList = null;
         private SessionInfo _sessionobj = null;
         private string _rootpath = string.Empty;
-        private DateTimeOffset TimeOffset { get { return DateTime.Now.AddSeconds(30); } }
+        protected DateTimeOffset TimeOffset { get { return DateTime.Now.AddSeconds(30); } }
         #endregion
         #region 公开属性
 
@@ -57,8 +57,7 @@ namespace BWYSDPWeb.BaseController
         /// </summary>
         public OperatAction OperatAction
         {
-            get;
-            set;
+            get { return this.SessionObj == null ? this.OperatAction : this.SessionObj.OperateAction; }//set;
         }
         /// <summary>
         /// 当前功能存储在Session的信息
@@ -95,7 +94,9 @@ namespace BWYSDPWeb.BaseController
                 return string.Format(@"{0}Views", this.RootPath);
             }
         }
-
+        /// <summary>
+        /// 登陆的用户信息
+        /// </summary>
         public UserInfo UserInfo { get; set; }
         #endregion
 
@@ -114,7 +115,7 @@ namespace BWYSDPWeb.BaseController
             this.Language = this.UserInfo == null ? Language.CHS : this.UserInfo.Language;
             //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
-            this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;
+            //this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;
             this.LibTables = GetTableSchema(this.DSID);
             //if (this.LibTables != null)
             //{
@@ -155,35 +156,129 @@ namespace BWYSDPWeb.BaseController
         #region cookies
         public void AddorUpdateCookies(string cookieNm, string key, string value)
         {
-            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
-            if (cookie == null)
-            {
-                cookie = new HttpCookie(cookieNm);
-
-                //cookie.Values.Add(key, value);
-                //cookie.Values.Add("package", this.Package);
-            }
+            #region
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[key];
+            //if (cookie != null)
+            //{
+            //    cookie[key] = value;
+            //}
             //else
             //{
-            if (cookie.Values[key] != null)
-            {
-                cookie.Values.Set(key, value);
-            }
-            else
-            {
-                cookie.Values.Add(key, value);
-            }
+            //    cookie = new HttpCookie(key, value);
             //}
-            System.Web.HttpContext.Current.Response.AppendCookie(cookie);
+            //System.Web.HttpContext.Current.Response.AppendCookie(cookie);
+            #endregion
+
+            #region 
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
+            //if (cookie == null)
+            //{
+            //    cookie = new HttpCookie(cookieNm);
+            //    //cookie.Expires = DateTime.Now.AddDays(1);
+            //    //cookie.Values.Add(key, value);
+            //    //cookie.Values.Add("package", this.Package);
+            //}
+            ////else
+            ////{
+            //if (cookie.Values[key] != null)
+            //{
+            //    cookie.Values.Set(key, value);
+            //}
+            //else
+            //{
+            //    cookie.Values.Add(key, value);
+            //}
+            ////}
+            //System.Web.HttpContext.Current.Response.AppendCookie(cookie);
+            #endregion 
+
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
+            //Dictionary<string, string> values = null;
+            //if (cookie == null)
+            //{
+            //    cookie = new HttpCookie(cookieNm);
+            //}
+            //if (string.IsNullOrEmpty(cookie.Value))
+            //{
+            //    values = new Dictionary<string, string>();
+            //    values.Add(key, value);
+            //}
+            //else
+            //{
+            //    values = DecryptCookie(cookie.Value);
+            //    if (values.ContainsKey(key))
+            //    {
+            //        values[key] = value;
+            //    }
+            //    else
+            //    {
+            //        values.Add(key, value);
+            //    }
+
+            //}
+            //cookie.Value = EncryptionCookie(values);
+            //System.Web.HttpContext.Current.Response.AppendCookie(cookie);
+            AppCom.AddorUpdateCookies(cookieNm, key, value);
+
         }
         public string GetCookievalue(string cookieNm, string key)
         {
-            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
-            if (cookie != null)
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[key];
+            //if(cookie!=null) return cookie.Value;
+            //return string.Empty;
+            #region
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
+            //if (cookie != null)
+            //{
+            //    return cookie.Values[key];
+            //}
+            //return string.Empty;
+            #endregion
+
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
+            //if (cookie != null)
+            //{
+            //    Dictionary<string, string> values = DecryptCookie(cookie.Value);
+            //    if (values.ContainsKey(key)) return values[key];
+            //    return string.Empty;
+            //}
+            //return string.Empty;
+            return AppCom.GetCookievalue(cookieNm, key);
+        }
+
+        private Dictionary<string,string> DecryptCookie(string cookievalu)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            if (string.IsNullOrEmpty(cookievalu)) return result;
+            byte[] bts = Convert.FromBase64String(cookievalu);
+            string[] str = Encoding.Default.GetString(bts).Split ('&');
+            string[] item = null;
+            if (str != null && str.Length > 0)
             {
-                return cookie.Values[key];
+                foreach (string s in str)
+                {
+                    if (!string.IsNullOrEmpty(s))
+                    {
+                        item = s.Split('=');
+                        result.Add(item[0], item[1]);
+                    }
+                }
             }
-            return string.Empty;
+            return result;
+        }
+        private string EncryptionCookie(Dictionary<string ,string > valus)
+        {
+            string valu = string.Empty;
+            foreach (var item in valus)
+            {
+                if (!string.IsNullOrEmpty(valu))
+                {
+                    valu += "&";
+                }
+                valu += string.Format("{0}={1}", item.Key, item.Value);
+            }
+            byte[] vals = Encoding.Default.GetBytes(valu);
+            return  Convert.ToBase64String(vals);
         }
         #endregion
 
@@ -246,7 +341,8 @@ namespace BWYSDPWeb.BaseController
             tbs = DoCreateTableSchema();
             cachelp.RemoveCache(key);
             var policy = new CacheItemPolicy() { AbsoluteExpiration = this.TimeOffset };
-            cachelp.AddCachItem(key, tbs, this.TimeOffset, new LibTableChangeMonitor2(key, tbs, this.ProgID));
+            if (tbs != null)
+                cachelp.AddCachItem(key, tbs, this.TimeOffset, new LibTableChangeMonitor2(key, tbs, this.ProgID));
             //cachelp.AddCachItem(key, tbs, this.ProgID);
             this.LibTables = tbs;
             //if (tbs == null)

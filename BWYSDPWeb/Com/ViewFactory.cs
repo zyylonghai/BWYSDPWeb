@@ -115,6 +115,11 @@ namespace BWYSDPWeb.Com
                 return jsandcss.Append(_page.ToString()).ToString();
             }
         }
+
+        public string PageHtmlForHtmlHelp
+        {
+            get { return _page.ToString(); }
+        }
         /// <summary>
         /// 开始创建视图页
         /// </summary>
@@ -125,6 +130,14 @@ namespace BWYSDPWeb.Com
             _page.Append("<div class=\"container-fluid\">");
             _page.Append("<div class=\"panel panel-default\">");
             _page.Append("<div class=\"panel-heading\">@Html.GetFieldDesc(\"" + DSID + "\",\"\",\""+ pagetitle + "\")</div>");
+        }
+
+        public void BeginPageForHtmlHelp()
+        {
+            //this._pagetitle = AppCom.GetFieldDesc((int)Language, this.DSID, string.Empty, pagetitle);
+            _page.Append("<div class=\"container-fluid\">");
+            //_page.Append("<div class=\"panel panel-default\">");
+            //_page.Append("<div class=\"panel-heading\">@Html.GetFieldDesc(\"" + DSID + "\",\"\",\"" + pagetitle + "\")</div>");
         }
         /// <summary>
         /// 创建body
@@ -159,6 +172,16 @@ namespace BWYSDPWeb.Com
             //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
             _page.Append("@using(Html.BeginForm(\"Save\", \"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\"" + this.DSID + "\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\"sdp_form\",@enctype=\"multipart/form-data\" }))");
             _page.Append("{");
+        }
+
+        /// <summary>
+        /// 创建表格Form
+        /// </summary>
+        public void CreateFormForHtmlHelp()
+        {
+            _page.Append("<form id = \"\" class=\"form-horizontal\" action=\"/"+(string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm)+ "/Save?sdp_pageid=" + this._progid + "&sdp_dsid=" + this.DSID + "\" method = \"post\">");
+            //_page.Append("@using(Html.BeginForm(\"Save\", \"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\"" + this.DSID + "\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\""+string .Format("sdp_{0}form",this._progid) +"\",@enctype=\"multipart/form-data\" }))");
+            //_page.Append("{");
         }
 
         /// <summary>
@@ -202,6 +225,34 @@ namespace BWYSDPWeb.Com
             //    }
             //    _fmgroupAuthorisScriplst.Add(string.Format("var sdp_fmauthors_{0}=[{1}]", id, s));
             //}
+        }
+
+        /// <summary>
+        /// 创建面板(PanelGroup),于LibHtmlHelp类使用
+        /// </summary>
+        /// <param name="formgroupNm"></param>
+        public void CreatePanelGroupForHtmlhelp(string formgroupNm)
+        {
+            string title = AppCom.GetFieldDesc((int)Language, DSID, string.Empty, formgroupNm);
+            EndprePanel();
+            string id = string.Format("PanelGroup{0}", _panelgroupdic.Count + 1);
+            string contentid = string.Format("{0}_info", id);
+            _page.Append("<div class=\"panel-group\" id=\"" + id + "\">");
+            _page.Append("<div class=\"panel panel-default\">");
+
+            //面板标题
+            _page.Append("<div class=\"panel-heading\" style=\"background-color:#dff0d8; text-align:left\">");
+            _page.Append("<h4 class=\"panel-title\">");
+            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">"+ title + "</a>");
+            _page.Append("</h4>");
+            _page.Append("</div>");
+
+            //面板内容
+            _page.Append("<div id=\"" + contentid + "\" class=\"panel-collapse in \">");
+            _page.Append("<div class=\"panel-body\">");
+
+
+            _panelgroupdic.Add(id, false);
         }
 
 
@@ -343,6 +394,134 @@ namespace BWYSDPWeb.Com
         }
 
         /// <summary>
+        /// 添加信息组字段，于LibHtmlHelp类使用
+        /// </summary>
+        /// <param name="fields"></param>
+        public void AddFormGroupFieldsForHtmlhelp(LibCollection<LibFormGroupField> fields, string formgroupnm)
+        {
+            int colcout = 0;
+            List<string> valus = null;
+            StringBuilder validatorAttr = null;
+            LibField libField = null;
+            List<LibFormGroupField> textarealst = new List<LibFormGroupField>();
+            List<LibFormGroupField> imgs = new List<LibFormGroupField>();
+            //string authoriscriptstr = string.Empty;
+            foreach (LibFormGroupField field in fields)
+            {
+                if (!this.Formfields.TryGetValue(field.FromTableNm, out valus))
+                {
+                    valus = new List<string>();
+                    this.Formfields.Add(field.FromTableNm, valus);
+                }
+                if (!valus.Contains(field.Name))
+                    valus.Add(field.Name);
+                string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
+                string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+                #region 加入用于权限判断的字段数组。
+                if (_fmgroupAuthorisScriplst.Length > 1)
+                {
+                    _fmgroupAuthorisScriplst.Append(",");
+                }
+                _fmgroupAuthorisScriplst.Append("{objectid:'" + field.Name + "',groupid:'" + formgroupnm + "',id:'" + id + "'}");
+                #endregion 
+                if (field.ElemType == ElementType.Textarea) { textarealst.Add(field); continue; }
+                if (field.ElemType == ElementType.Img) { imgs.Add(field); continue; }
+                if (colcout % 12 == 0)
+                {
+                    if (colcout != 0)
+                    {
+                        _page.Append("</div>");
+                    }
+                    _page.Append("<div class=\"form-group\">");
+                }
+                #region 字段属性验证设置
+                validatorAttr = new StringBuilder();
+                validatorAttr.Append(field.IsAllowNull ? " required=\"required\"" : "");
+                validatorAttr.AppendFormat(" maxlength=\"{0}\"", field.FieldLength);
+                validatorAttr.AppendFormat(" {0} ", field.Readonly ? "readonly" : "");
+                #endregion
+                string displaynm = AppCom.GetFieldDesc((int)Language, this.DSID, field.FromTableNm, field.Name);
+                //_page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + field.DisplayName+ (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+                _page.Append("<label for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">"+displaynm + (field.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+                _page.Append("<div class=\"col-sm-" + field.Width + "\">");
+                switch (field.ElemType)
+                {
+                    case ElementType.Date:
+                        _dateElemlst.Add(id);
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\""+displaynm+"\" " + validatorAttr.ToString() + ">");
+                        break;
+                    case ElementType.DateTime:
+                        _datetimeElemlst.Add(id);
+                        _page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\""+displaynm+"\" " + validatorAttr.ToString() + ">");
+                        break;
+                    case ElementType.Select:
+                        _page.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" " + validatorAttr.ToString() + ">");
+                        libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                        foreach (LibKeyValue keyval in libField.Items)
+                        {
+                            if (string.IsNullOrEmpty(keyval.FromkeyValueID))
+                            {
+                                _page.Append("<option value=\"" + keyval.Key + "\">"+AppCom .GetFieldDesc (this.DSID , field.FromDefTableNm , string.Format("{0}_{1}", field.Name, keyval.Key) )+ "</option>");
+                            }
+                            else
+                                _page.Append("<option value=\"" + keyval.Key + "\">"+AppCom .GetFieldDesc (keyval.FromkeyValueID,string .Empty , keyval.Key.ToString()) +"</option>");
+                        }
+                        _page.Append("</select>");
+                        break;
+                    case ElementType.Text:
+                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\""+ AppCom.GetFieldDesc(this.DSID, field.FromTableNm, field.Name) + "\" " + validatorAttr.ToString() + ">");
+                        break;
+                    case ElementType.Password:
+                        _page.Append("<input type=\"password\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\""+ AppCom.GetFieldDesc(this.DSID, field.FromTableNm, field.Name) + "\" " + validatorAttr.ToString() + ">");
+                        break;
+                    case ElementType.Search:
+                        libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                        _page.Append("<div class=\"input-group\">");
+                        _page.Append("<input type=\"" + (field.IsNumber ? "number" : "text") + "\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\""+ AppCom.GetFieldDesc(this.DSID, field.FromTableNm, field.Name) + "\" " + validatorAttr.ToString() + ">");
+                        _page.Append("<label id=\"" + string.Format("{0}_desc", id) + "\" ></label>");
+                        _page.Append("<span class=\"input-group-btn\">");
+                        _page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\""+ AppCom.GetFieldDesc(this.DSID, field.FromTableNm, field.Name) + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                        _page.Append("<i class=\"glyphicon glyphicon-search\"></i>");
+                        _page.Append("</button>");
+                        _page.Append("</span>");
+                        _page.Append("</div>");
+                        this._searchModelIds.Add(id);
+                        //this._hasSearchModal = true;
+                        break;
+                }
+                _page.Append("</div>");//结束 col-sm
+                colcout += field.Width + 1;
+            }
+            _page.Append("</div>");// 结束 form-group
+            //textarea控件处理
+            foreach (LibFormGroupField item in textarealst)
+            {
+                _page.Append("<div class=\"form-group\">");
+                string id = string.Format("{0}_{1}", item.FromTableNm, item.Name);
+                string name = string.Format("{0}.{1}", item.FromTableNm, item.Name);
+                #region 字段属性验证设置
+                validatorAttr = new StringBuilder();
+                validatorAttr.Append(item.IsAllowNull ? " required=\"required\"" : "");
+                //validatorAttr.AppendFormat("maxlength=\"{0}\"", item.FieldLength);
+                #endregion
+                _page.Append("<label for=\"" + item.Name + "\" class=\"col-sm-1 control-label\">"+ AppCom.GetFieldDesc(this.DSID, item.FromTableNm, item.Name) + (item.IsAllowNull ? "<font color=\"red\">*</font>" : "") + "</label>");
+                _page.Append("<div class=\"col-sm-" + item.Width + "\">");
+                _page.Append("<textarea class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" rows=\"3\" " + validatorAttr.ToString() + " ></textarea>");
+                _page.Append("</div>");//结束 col-sm
+                _page.Append("</div>");// 结束 form-group
+            }
+            foreach (LibFormGroupField item in imgs)
+            {
+                string id = string.Format("{0}_{1}", item.FromTableNm, item.Name);
+                string name = string.Format("{0}.{1}", item.FromTableNm, item.Name);
+                _page.Append("<div class=\"container\">");
+                _page.Append("<img id=\"sdp_img_" + id + "\" src=\"~/img/0.jpg\" class=\"img-responsive\" onclick=\"ShowImgFile('" + id + "')\" style=\"cursor:pointer\" alt=\"Cinque Terre\" width=\"200\" height=\"200\"/>");
+                _page.Append("<input type=\"file\" id=\"" + id + "\"  name=\"" + name + "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('" + id + "','sdp_img_" + id + "')\" />");
+                _page.Append("</div>");//结束 container
+            }
+        }
+
+        /// <summary>
         /// 创建表格组
         /// </summary>
         /// <param name="title"></param>
@@ -404,6 +583,70 @@ namespace BWYSDPWeb.Com
 
             _gridGroupdic.Add(id, false);
             AddGridColumns(grid);
+        }
+
+        /// <summary>
+        /// 创建表格组，于LibHtmlHelp类使用
+        /// </summary>
+        /// <param name="title"></param>
+        public void CreateGridGroupForHtmlhelp(LibGridGroup grid)
+        {
+            EndprePanel();
+            string id = string.Format("GridGroup_{0}", grid.GridGroupName);
+            string contentid = string.Format("{0}_info", id);
+            _page.Append("<div class=\"panel-group\" id=\"" + id + "\">");
+            _page.Append("<div class=\"panel panel-default\">");
+
+            //面板标题
+            _page.Append("<div class=\"panel-heading\" style=\"background-color:#dff0d8; text-align:left\">");
+            _page.Append("<h4 class=\"panel-title\">");
+            _page.Append("<a data-toggle=\"collapse\" data-parent=\"#" + id + "\" href=\"#" + contentid + "\">"+AppCom .GetFieldDesc(this.DSID ,string .Empty ,grid.GridGroupName)+"</a>");
+            _page.Append("</h4>");
+            _page.Append("</div>");
+
+            //面板内容
+            _page.Append("<div id=\"" + contentid + "\" class=\"panel-collapse in \">");
+            _page.Append("<div class=\"panel-body\">");
+
+            #region toolbar
+            _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
+            if (grid.HasAddRowButton)
+            {
+                _page.Append("<button type=\"button\" class=\"btn btn-default\"  data-toggle=\"modal\" data-target=\"#sdp_tbmdl_" + id + "\" data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Add\">");
+                //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_addrow\" type=\"button\" class=\"btn btn-default\">");
+                _page.Append("<i class=\"glyphicon glyphicon-plus\"></i>"+AppCom .GetFieldDesc(string.Empty ,string.Empty , "sdp_btngridadd") + "");//新增
+                _page.Append("</button>");
+            }
+            if (grid.HasEditRowButton)
+            {
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnEdit(this,'" + grid.GridGroupName + "')\" data-toggle=\"modal\"  data-target=\"#sdp_tbmdl_" + id + "\"  data-gridid=\"" + grid.GridGroupName + "\" data-deftbnm=\"" + grid.GdGroupFields[0].FromDefTableNm + "\" data-tablenm=\"" + grid.GdGroupFields[0].FromTableNm + "\" data-controlnm=\"" + ControlClassNm + "\"  data-cmd=\"Edit\">");
+                //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_editrow\" type=\"button\" class=\"btn btn-default\">");
+                _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridedit") + "");//编辑
+                _page.Append("</button>");
+            }
+            if (grid.HasDeletRowButton)
+            {
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnDelete(this,'" + grid.GridGroupName + "','" + grid.GdGroupFields[0].FromDefTableNm + "','" + grid.GdGroupFields[0].FromTableNm + "','" + (string.IsNullOrEmpty(ControlClassNm) ? "DataBase" : ControlClassNm) + "')\">");
+                //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
+                _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngriddelete") + "");//删除
+                _page.Append("</button>");
+            }
+            if (grid.GdButtons != null)
+            {
+                foreach (LibGridButton btn in grid.GdButtons)
+                {
+                    _page.Append("<button id=\"" + btn.GridButtonName + "\" type=\"button\" class=\"btn btn-default\" onclick=\"return " + btn.GridButtonEvent + "\">");
+                    //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
+                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>" + AppCom.GetFieldDesc(this.DSID, string.Empty, btn.GridButtonName) + "");//删除
+                    _page.Append("</button>");
+                }
+            }
+            _page.Append("</div>");
+            #endregion
+            _page.Append("<table id=\"" + grid.GridGroupName + "\"></table>");
+
+            _gridGroupdic.Add(id, false);
+            AddGridColumnsForHtmlhelp(grid);
         }
 
         /// <summary>
@@ -622,6 +865,215 @@ namespace BWYSDPWeb.Com
         }
 
         /// <summary>
+        /// 添加表格列，于LibHtmlHelp类使用
+        /// </summary>
+        /// <param name="fields"></param>
+        private void AddGridColumnsForHtmlhelp(LibGridGroup grid)
+        {
+            StringBuilder table = new StringBuilder();
+            StringBuilder hidecolumns = new StringBuilder();
+            StringBuilder tbformfield = new StringBuilder();
+            StringBuilder childformfield = new StringBuilder();
+            LibFromSourceField libFromSource = null;
+            //LibField libField = null;
+            //StringBuilder validatorAttr = null;
+            int colcout = 0;
+            //List<string> valus = null;
+            if (grid.GdGroupFields == null || (grid.GdGroupFields != null && grid.GdGroupFields.Count == 0)) return;
+            string param = string.Format("tb{0}", _tableScriptlst.Count + 1);
+            table.Append(string.Format("var {0} = new LibTable(\"{1}\");", param, grid.GridGroupName));
+            table.Append(string.Format("{0}.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(grid.ControlClassNm) ? this.Package : grid.ControlClassNm, grid.GridGroupName, grid.GdGroupFields[0].FromDefTableNm, grid.GdGroupFields[0].FromTableNm));
+            table.Append(string.Format("{0}.$table.toolbar =\"#{1}_toolbar\";", param, grid.GridGroupName));
+            #region 是否显示父子表
+            if (!string.IsNullOrEmpty(grid.ChildGridNm)) // 显示父子表
+            {
+                table.Append(string.Format("{0}.$table.detailView =true;", param));
+                //找出子表格组
+                LibGridGroup childgrid = this.LibFormPage.GridGroups.FindFirst("GridGroupName", grid.ChildGridNm);
+                string childgridmodalid = string.Format("GridGroup_{0}", childgrid.GridGroupName);
+                Childrengrids.Add(childgrid);
+                _gridGroupdic.Add(childgridmodalid, true);
+                if (childgrid != null && childgrid.GdGroupFields != null && childgrid.GdGroupFields.Count > 0)
+                {
+                    table.Append(string.Format("{0}.SubTable =new LibTable(\"{1}\");", param, childgrid.GridGroupName));
+                    table.Append(string.Format("{0}.SubTable.$table.detailView =false;", param));
+                    table.Append(string.Format("{0}.SubTable.$table.hasoperation =false;", param));
+                    //table.Append(string.Format("{0}.SubTable.$table.url =\"/{1}/BindTableData?gridid={2}&deftb={3}&tableNm={4}\";", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm, childgrid.GridGroupName, childgrid.GdGroupFields[0].FromDefTableNm, childgrid.GdGroupFields[0].FromTableNm));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.gridid ='{1}';", param, childgrid.GridGroupName));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.deftbnm ='{1}';", param, childgrid.GdGroupFields[0].FromDefTableNm));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.tablenm ='{1}';", param, childgrid.GdGroupFields[0].FromTableNm));
+                    table.Append(string.Format("{0}.SubTable.$subtableParam.controlnm ='{1}';", param, string.IsNullOrEmpty(childgrid.ControlClassNm) ? this.Package : childgrid.ControlClassNm));
+                    if (childgrid.HasSummary)
+                    {
+                        table.Append(string.Format("{0}.SubTable.$table.showFooter={1};", param, childgrid.HasSummary ? "true" : "false"));
+                    }
+                    if (childgrid.SingleSelect)
+                    {
+                        table.Append(string.Format("{0}.SubTable.$table.singleSelect={1};", param, childgrid.SingleSelect ? "true" : "false"));
+                    }
+                    table.Append(string.Format("{0}.SubTable.$table.columns = [", param));
+                    table.Append("{checkbox: true,visible: true }");
+                    #region sdp_rowid 列
+                    table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible: false}");
+                    //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
+                    #endregion
+                    foreach (LibGridGroupField field in childgrid.GdGroupFields)
+                    {
+                        if (field.IsFromSourceField)
+                        {
+                            libFromSource = GetSourceField(field.Name, field.FromDefTableNm, field.FromTableNm);
+                        }
+                        table.Append(",{");
+                        //string fielddisplaynm = "@Html.GetFieldDesc(\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID) + "\",\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm) + "\",\"" + field.Name + "\")";
+                        string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID,
+                                                                    (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
+                        //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                        table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible:{3},", field.Name, fielddisplaynm, field.HasSort ? "true" : "false", field.Hidden ? "false" : "true"));
+                        table.Append("formatter: function (value, row, index) {");
+                        if (field.ElemType == ElementType.Date)
+                        {
+                            table.Append(string.Format("return \"<div {0}>\" + TimeConverToStr(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
+                        else if (field.ElemType == ElementType.Img)
+                        {
+                            table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
+                        else
+                            table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        table.Append("}");
+                        if (childgrid.HasSummary)
+                        {
+                            //设置汇总行，
+                            table.Append(",footerFormatter: function() {return '汇总'}");
+                            childgrid.HasSummary = false;
+                        }
+                        table.Append("}");
+
+                        #region 模态框 的控件
+                        if (field.Hidden) continue;
+                        if (colcout % 9 == 0)
+                        {
+                            if (colcout != 0)
+                            {
+                                childformfield.Append("</div>");
+                            }
+                            childformfield.Append("<div class=\"form-group\">");
+                        }
+                        CreatModalFieldsForHtmlHelp(childformfield, field, fielddisplaynm);
+
+                        colcout += field.Width + 1;
+                        #endregion
+                    }
+                    childformfield.Append("</div>");// 结束 form-group
+                    table.Append("];");
+                }
+                _tbmodalFormfields.Add(childgridmodalid, childformfield.ToString());
+
+                #region tablemodal脚本
+                string childmdparam = string.Format("childtbmodal{0}", Childrengrids.Count + 1);
+                table.Append(string.Format("var {0}=new libTableModal(\"{1}\");", childmdparam, string.Format("sdp_tbmdl_{0}", childgridmodalid)));
+                table.Append(string.Format("{0}.initialModal();", childmdparam));
+                table.Append("$('#sdp_tbmodalbtn" + childgridmodalid + "').click(function () {" + childmdparam + ".Confirm();});");
+                #endregion
+            }
+            colcout = 0;//重置colcout值
+            #endregion
+            if (grid.HasSummary)
+            {
+                table.Append(string.Format("{0}.$table.showFooter={1};", param, grid.HasSummary ? "true" : "false"));
+            }
+            if (grid.SingleSelect)
+            {
+                table.Append(string.Format("{0}.$table.singleSelect={1};", param, grid.SingleSelect ? "true" : "false"));
+            }
+            table.Append(string.Format("{0}.$table.columns = [", param));
+            table.Append("{checkbox: true,visible: true }");
+            #region sdp_rowid 列
+            table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible:true,switchable:false}");
+            hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
+            #endregion
+            //if (grid.GdGroupFields != null)
+            //{
+            //bool flag = false;//用于标识是否已设置了 汇总行。
+            foreach (LibGridGroupField field in grid.GdGroupFields)
+            {
+                if (field.IsFromSourceField)
+                {
+                    libFromSource = GetSourceField(field.Name, field.FromDefTableNm, field.FromTableNm);
+                }
+                table.Append(",{");
+                //string fielddisplaynm = "@Html.GetFieldDesc(\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID) + "\",\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm) + "\",\"" + field.Name + "\")";
+                string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID,
+                      (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
+                //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
+                table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible: true,switchable:true,", field.Name, fielddisplaynm, field.HasSort ? "true" : "false"));
+                table.Append("formatter: function (value, row, index) {");
+                if (field.ElemType == ElementType.Date)
+                {
+                    table.Append(string.Format("return \"<div {0}>\" + TimeConverToStr(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                }
+                else if (field.ElemType == ElementType.Img)
+                {
+                    table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                }
+                else
+                    table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                table.Append("}");
+                if (grid.HasSummary)
+                {
+                    //设置汇总行，
+                    table.Append(",footerFormatter: function() {return '汇总'}");
+                    grid.HasSummary = false;
+                }
+                table.Append("}");
+                if (field.Hidden)
+                {
+                    hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', '{1}');", grid.GridGroupName, field.Name));
+                }
+
+                #region 模态框 的控件
+                if (field.Hidden) continue;
+                if (colcout % 9 == 0)
+                {
+                    if (colcout != 0)
+                    {
+                        tbformfield.Append("</div>");
+                    }
+                    tbformfield.Append("<div class=\"form-group\">");
+                }
+                CreatModalFieldsForHtmlHelp(tbformfield, field, fielddisplaynm);
+                colcout += field.Width + 1;
+                #endregion
+            }
+            tbformfield.Append("</div>");// 结束 form-group
+            //}
+            table.Append("];");
+
+            #region 移除权限内的字段
+            //table.Append(string.Format("$.each({0},function (i, o)", string.Format("{0}.$table.columns", param)));
+            //table.Append("{ let result=AuthorityCheck(authorityObjs, o.field, \"" + grid.GridGroupName + "\");");
+            //table.Append("if(result){o.visible=false; o.switchable=false;" +
+            //    "$('#sdp_fieldlabel_" + grid.GdGroupFields[0].FromTableNm + "_'+o.field).hide();" +
+            //    "$('#sdp_fielddiv_" + grid.GdGroupFields[0].FromTableNm + "_'+o.field).hide();}");
+            //table.Append("});");
+            #endregion
+
+            table.Append(string.Format("{0}.initialTable();", param));
+            table.Append(hidecolumns);
+
+            #region tablemodal脚本
+            string mdparam = string.Format("tbmodal{0}", _tableScriptlst.Count + 1);
+            string gridid = string.Format("GridGroup_{0}", grid.GridGroupName);
+            table.Append(string.Format("var {0}=new libTableModal(\"{1}\");", mdparam, string.Format("sdp_tbmdl_{0}", gridid)));
+            table.Append(string.Format("{0}.initialModal();", mdparam));
+            table.Append("$('#sdp_tbmodalbtn" + gridid + "').click(function () {" + mdparam + ".Confirm();});");
+            #endregion
+            _tableScriptlst.Add(table.ToString());
+            _tbmodalFormfields.Add(string.Format("GridGroup_{0}", grid.GridGroupName), tbformfield.ToString());
+
+        }
+
+        /// <summary>
         /// 创建按钮组
         /// </summary>
         public void CreatBtnGroup(LibButtonGroup btngroup)
@@ -659,15 +1111,18 @@ namespace BWYSDPWeb.Com
             _page.Append("<div class=\"form-group\" style=\"margin-bottom:0\">");
             _page.Append("<div class=\"col-sm-offset-2 col-sm-10 text-right\">");
             _page.Append("<button type=\"submit\" class=\"btn btn-default\">提交</button>");
-            _page.Append("<button type=\"submit\" class=\"btn btn-primary\">暂存</button>");
+            //_page.Append("<button type=\"submit\" class=\"btn btn-primary\">暂存</button>");
             _page.Append("<button type=\"reset\" class=\"btn btn-default\">重置</button>");
             _page.Append("</div>");
             _page.Append("</div>");
             #endregion
-            //_page.Append("</form>");//
             if (hasformandboy)
             {
                 _page.Append("}");//form  结束
+            }
+            else
+            {
+                _page.Append("</form>");
             }
             #region 添加搜索控件的模态框。
             if (this._hasSearchModal)
@@ -717,14 +1172,14 @@ namespace BWYSDPWeb.Com
                 #endregion
                 _page.Append(new ElementCollection().SearchModalCondition(1));
                 _page.Append("</div>");
-                _page.Append("<button id=\"sdp_smodalbtnSearch\" type=\"button\" class=\"btn btn-primary\">@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnselect\")</button>");
+                _page.Append("<button id=\"sdp_smodalbtnSearch\" type=\"button\" class=\"btn btn-primary\">"+(hasformandboy ? "@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnselect\")":AppCom.GetMessageDesc("sdp_btnselect")) +"</button>");
                 _page.Append("<table id=\"sdp_smodaldata\"></table>");
 
                 _page.Append("</form>");
                 _page.Append("</div>");
                 _page.Append("<div class=\"modal-footer\">");
-                _page.Append("<button type=\"button\" class=\"btn btn-primary\">@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnConfirm\")</button>");
-                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnClose\")</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-primary\">"+(hasformandboy ? "@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnConfirm\")" : AppCom .GetMessageDesc("sdp_btnConfirm"))+"</button>");
+                _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">"+(hasformandboy ? "@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnClose\")" : AppCom .GetMessageDesc("sdp_btnClose"))+"</button>");
                 _page.Append("</div>");
                 _page.Append("</div>");
                 _page.Append("</div>");
@@ -769,14 +1224,18 @@ namespace BWYSDPWeb.Com
                 _page.Append("</div>");//panel panel - default
                 _page.Append("</div>");//container - fluid
             }
-            CreateJavaScript();
+            else
+            {
+                _page.Append("</div>");//container - fluid
+            }
+            CreateJavaScript(hasformandboy);
             _page.AppendLine();
             _page.Append(_script.ToString());
 
         }
 
         #region 私有函数
-        private void CreateJavaScript()
+        private void CreateJavaScript(bool hasformandboy)
         {
             _script.Append("<script type=\"text/javascript\">");
             #region 表单验证
@@ -796,16 +1255,19 @@ namespace BWYSDPWeb.Com
             _script.Append("$('#bwysdp_progid').val(\"" + this._progid + "\");");
             _script.Append("$('#bwysdp_dsid').val(\"" + this.DSID + "\");");
 
-            #region 获取权限对象数据
-            _script.Append("var viewModelObj = JSON.parse(\"@Model\".replace(new RegExp('&quot;', \"gm\"), '\"'));");
-            _script.Append("var authorityObjs = viewModelObj.AuthorityObjs;");
-            _script.Append("Authorize(authorityObjs);");
-            _script.AppendFormat("var sdp_fmfieldauthoris={0};", _fmgroupAuthorisScriplst.Append("]").ToString());
-            _script.Append("FormGroupAuthorize(authorityObjs,sdp_fmfieldauthoris);");
-            #endregion
+            if (hasformandboy)
+            {
+                #region 获取权限对象数据
+                _script.Append("var viewModelObj = JSON.parse(\"@Model\".replace(new RegExp('&quot;', \"gm\"), '\"'));");
+                _script.Append("var authorityObjs = viewModelObj.AuthorityObjs;");
+                _script.Append("Authorize(authorityObjs);");
+                _script.AppendFormat("var sdp_fmfieldauthoris={0};", _fmgroupAuthorisScriplst.Append("]").ToString());
+                _script.Append("FormGroupAuthorize(authorityObjs,sdp_fmfieldauthoris);");
+                #endregion
 
+            }
             #region pageload
-            _script.Append("$.ajax({url: \" /" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"\",type: 'Post',async: false,success: function (obj) {},");
+            _script.Append("$.ajax({url: \" /" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"flag="+(hasformandboy?0:1)+"\",type: 'Post',async: false,success: function (obj) {},");
             _script.Append("error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + \":\" + XMLHttpRequest.readyState.toString() + \", \" + textStatus + errorThrown);}");
             _script.Append(" });");
             #endregion
@@ -817,26 +1279,29 @@ namespace BWYSDPWeb.Com
             }
             #endregion
 
-            #region 页面按钮组 事件绑定
-            string tbs = "[";
-            for (int i = 1; i <= _tableScriptlst.Count; i++)
+            if (hasformandboy)
             {
-                if (i == 1)
-                { tbs += string.Format("tb{0}", i); continue; }
-                tbs += string.Format(",tb{0}", i);
-            }
-            tbs += "]";
-            _script.Append("$('#bwysdp_btnsave').click(function (){" +
-                "var objs=" + tbs + "; " +
-                "var datastr='['; " +
-                "$.each(objs,function(index,o){if(datastr.length==1){ datastr+=Serialobj(o);}else{datastr+=\",\"+Serialobj(o);}});" +
-                "datastr+=']';" +
-                "SDP_Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
-                "});");
-            _script.Append("$('#bwysdp_btnadd').click(function (){ SDP_Add(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
-            _script.Append("$('#bwysdp_btnedit').click(function(){ SDP_Edit(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
+                #region 页面按钮组 事件绑定
+                string tbs = "[";
+                for (int i = 1; i <= _tableScriptlst.Count; i++)
+                {
+                    if (i == 1)
+                    { tbs += string.Format("tb{0}", i); continue; }
+                    tbs += string.Format(",tb{0}", i);
+                }
+                tbs += "]";
+                _script.Append("$('#bwysdp_btnsave').click(function (){" +
+                    "var objs=" + tbs + "; " +
+                    "var datastr='['; " +
+                    "$.each(objs,function(index,o){if(datastr.length==1){ datastr+=Serialobj(o);}else{datastr+=\",\"+Serialobj(o);}});" +
+                    "datastr+=']';" +
+                    "SDP_Save(datastr,\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");" +
+                    "});");
+                _script.Append("$('#bwysdp_btnadd').click(function (){ SDP_Add(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
+                _script.Append("$('#bwysdp_btnedit').click(function(){ SDP_Edit(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
 
-            #endregion
+                #endregion
+            }
 
             #region 搜索控件 绑定input propertychange 事件
             foreach (string id in this._searchModelIds)
@@ -964,6 +1429,81 @@ namespace BWYSDPWeb.Com
                         }
                         else
                             fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">@Html.GetFieldDesc(\"" + keyval.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + keyval.Key.ToString() + "\")</option>");
+                    }
+                    fieldsbuilder.Append("</select>");
+                    break;
+                case ElementType.Text:
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
+                case ElementType.Password:
+                    fieldsbuilder.Append("<input type=\"password\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
+                case ElementType.Search:
+                    libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    //if (libField.SourceField == null || libField.SourceField.Count == 0)
+                    //{
+                    //}
+                    fieldsbuilder.Append("<div class=\"input-group\">");
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    fieldsbuilder.Append("<label id=\"" + string.Format("{0}_desc", id) + "\" ></label>");
+                    fieldsbuilder.Append("<span class=\"input-group-btn\">");
+                    //_page.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + displaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"2\">");
+                    fieldsbuilder.Append("<button class=\"btn btn-default\" type=\"button\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + fielddisplaynm + "\" data-fromdsid=\"\" data-deftb=\"\" data-tbstruct=\"" + field.FromTableNm + "\" data-fieldnm=\"" + field.Name + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\"   data-flag=\"" + ((libField.SourceField == null || libField.SourceField.Count == 0) ? 3 : 2) + "\">");
+                    fieldsbuilder.Append("<i class=\"glyphicon glyphicon-search\"></i>");
+                    fieldsbuilder.Append("</button>");
+                    fieldsbuilder.Append("</span>");
+                    fieldsbuilder.Append("</div>");
+                    this._hasSearchModal = true;
+                    break;
+                case ElementType.Img:
+                    fieldsbuilder.Append("<div class=\"container\">");
+                    fieldsbuilder.Append("<img id=\"sdp_img_" + id + "\" src=\"~/img/0.jpg\" class=\"img-responsive\" onclick=\"ShowImgFile('" + id + "')\" style=\"cursor:pointer\" alt=\"Cinque Terre\" width=\"100\" height=\"100\"/>");
+                    fieldsbuilder.Append("<input type=\"file\" id=\"" + id + "\"  name=\"" + name + "\"  style=\"display:none\" accept=\"image/*\" onchange=\"LoadImgToUI('" + id + "','sdp_img_" + id + "')\" />");
+                    fieldsbuilder.Append("</div>");//结束 container
+                    break;
+            }
+            fieldsbuilder.Append("</div>");//结束 col-sm
+            #endregion
+        }
+
+        /// <summary>创建表格模态框的控件，于LibHtmlHelp类使用</summary>
+        /// <param name="fieldsbuilder"></param>
+        /// <param name="field"></param>
+        /// <param name="fielddisplaynm"></param>
+        private void CreatModalFieldsForHtmlHelp(StringBuilder fieldsbuilder, LibGridGroupField field, string fielddisplaynm)
+        {
+            LibField libField = null;
+            #region 模态框 的控件
+            string id = string.Format("{0}_{1}", field.FromTableNm, field.Name);
+            string name = string.Format("{0}.{1}", field.FromTableNm, field.Name);
+
+            #region 字段属性验证设置
+            StringBuilder validatorAttr = new StringBuilder();
+            validatorAttr.AppendFormat(" {0} ", field.ReadOnly ? "readonly" : "");
+            #endregion
+
+            fieldsbuilder.Append("<label id=\"sdp_fieldlabel_" + id + "\" for=\"" + field.Name + "\" class=\"col-sm-1 control-label\">" + fielddisplaynm + "</label>");
+            fieldsbuilder.Append("<div id=\"sdp_fielddiv_" + id + "\" class=\"col-sm-" + field.Width + "\">");
+            switch (field.ElemType)
+            {
+                case ElementType.Date:
+                    _dateElemlst.Add(id);
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
+                case ElementType.DateTime:
+                    fieldsbuilder.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" placeholder=\"" + fielddisplaynm + "\" " + validatorAttr.ToString() + ">");
+                    break;
+                case ElementType.Select:
+                    fieldsbuilder.Append("<select class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" " + validatorAttr.ToString() + ">");
+                    libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    foreach (LibKeyValue keyval in libField.Items)
+                    {
+                        if (string.IsNullOrEmpty(keyval.FromkeyValueID))
+                        {
+                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">"+AppCom .GetFieldDesc (this.DSID , field.FromDefTableNm , string.Format("{0}_{1}", field.Name, keyval.Key))+ "</option>");
+                        }
+                        else
+                            fieldsbuilder.Append("<option value=\"" + keyval.Key + "\">"+AppCom .GetFieldDesc (keyval.FromkeyValueID , string.Empty , keyval.Key.ToString() )+ "</option>");
                     }
                     fieldsbuilder.Append("</select>");
                     break;

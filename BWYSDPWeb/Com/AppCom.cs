@@ -5,6 +5,8 @@ using SDPCRL.CORE.FileUtils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
+using System.Web;
 
 namespace BWYSDPWeb.Com
 {
@@ -75,5 +77,96 @@ namespace BWYSDPWeb.Com
             return results;
            
         }
+
+        #region cookie
+        public static void AddorUpdateCookies(string cookieNm, string key, string value)
+        {
+            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
+            Dictionary<string, string> values = null;
+            if (cookie == null)
+            {
+                cookie = new HttpCookie(cookieNm);
+            }
+            if (string.IsNullOrEmpty(cookie.Value))
+            {
+                values = new Dictionary<string, string>();
+                values.Add(key, value);
+            }
+            else
+            {
+                values = DecryptCookie(cookie.Value);
+                if (values.ContainsKey(key))
+                {
+                    values[key] = value;
+                }
+                else
+                {
+                    values.Add(key, value);
+                }
+
+            }
+            cookie.Value = EncryptionCookie(values);
+            System.Web.HttpContext.Current.Response.AppendCookie(cookie);
+        }
+
+        public static string GetCookievalue(string cookieNm, string key)
+        {
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[key];
+            //if(cookie!=null) return cookie.Value;
+            //return string.Empty;
+            #region
+            //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
+            //if (cookie != null)
+            //{
+            //    return cookie.Values[key];
+            //}
+            //return string.Empty;
+            #endregion
+
+            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[cookieNm];
+            if (cookie != null)
+            {
+                Dictionary<string, string> values = DecryptCookie(cookie.Value);
+                if (values.ContainsKey(key)) return values[key];
+                return string.Empty;
+            }
+            return string.Empty;
+        }
+
+        private static Dictionary<string, string> DecryptCookie(string cookievalu)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            if (string.IsNullOrEmpty(cookievalu)) return result;
+            byte[] bts = Convert.FromBase64String(cookievalu);
+            string[] str = Encoding.Default.GetString(bts).Split('&');
+            string[] item = null;
+            if (str != null && str.Length > 0)
+            {
+                foreach (string s in str)
+                {
+                    if (!string.IsNullOrEmpty(s))
+                    {
+                        item = s.Split('=');
+                        result.Add(item[0], item[1]);
+                    }
+                }
+            }
+            return result;
+        }
+        private static string EncryptionCookie(Dictionary<string, string> valus)
+        {
+            string valu = string.Empty;
+            foreach (var item in valus)
+            {
+                if (!string.IsNullOrEmpty(valu))
+                {
+                    valu += "&";
+                }
+                valu += string.Format("{0}={1}", item.Key, item.Value);
+            }
+            byte[] vals = Encoding.Default.GetBytes(valu);
+            return Convert.ToBase64String(vals);
+        }
+        #endregion
     }
 }
