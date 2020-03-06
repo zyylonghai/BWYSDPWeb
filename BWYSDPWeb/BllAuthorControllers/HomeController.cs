@@ -36,7 +36,14 @@ namespace BWYSDPWeb.Controllers
             {
                 userInfo.UserNm = lginfo.UserNm;
                 //userInfo.Language = (Language)Convert.ToInt32(formparams["language"]);
-                FormsAuthentication.SetAuthCookie(userInfo.UserNm, false);
+                string tick = string.Empty;
+                string md5 = DM5Help.Md5Encrypt(userInfo.UserId);
+                foreach (char c in md5)
+                {
+                    tick += ((Int32)c).ToString();
+                }
+                tick =string .Format("{0}${1}", tick , userInfo.UserNm);
+                FormsAuthentication.SetAuthCookie(tick, false);
                 Session[SysConstManage.sdp_userinfo] = userInfo;
             }
             if (lginfo.loginResult == 3)//密码错误

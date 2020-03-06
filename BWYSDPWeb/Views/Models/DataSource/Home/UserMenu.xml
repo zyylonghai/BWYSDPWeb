@@ -12,6 +12,7 @@
           <JoinFields />
           <PrimaryKey>
             <string>MenuId</string>
+            <string>UserId</string>
           </PrimaryKey>
           <Fields>
             <LibField>
@@ -125,7 +126,7 @@
               <FieldLength>20</FieldLength>
               <Decimalpoint>0</Decimalpoint>
               <RelatePrimarykey />
-              <AllowNull>true</AllowNull>
+              <AllowNull>false</AllowNull>
               <IsActive>true</IsActive>
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>
@@ -244,10 +245,12 @@
           <JoinTableIndex>0</JoinTableIndex>
           <JoinFields>
             <string>PmenuId</string>
+            <string>UserId</string>
           </JoinFields>
           <PrimaryKey>
             <string>MenuId</string>
             <string>PmenuId</string>
+            <string>UserId</string>
           </PrimaryKey>
           <Fields>
             <LibField>
@@ -361,7 +364,7 @@
               <FieldLength>20</FieldLength>
               <Decimalpoint>0</Decimalpoint>
               <RelatePrimarykey />
-              <AllowNull>true</AllowNull>
+              <AllowNull>false</AllowNull>
               <IsActive>false</IsActive>
               <AutoIncrement>false</AutoIncrement>
               <AutoIncrementSeed>0</AutoIncrementSeed>

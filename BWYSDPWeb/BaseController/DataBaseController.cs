@@ -1742,6 +1742,10 @@ namespace BWYSDPWeb.BaseController
 
         }
 
+        /// <summary>点击表格模态框确定是，当前行的扩展操作（供子类处理）</summary>
+        /// <param name="gridid"></param>
+        /// <param name="row"></param>
+        /// <param name="cmd"></param>
         protected virtual void UpdateTableAction(string gridid, DataRow row, string cmd)
         {
 

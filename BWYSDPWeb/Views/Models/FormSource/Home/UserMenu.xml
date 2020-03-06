@@ -24,7 +24,7 @@
           <ElemType>Text</ElemType>
           <Width>2</Width>
           <HasSort>false</HasSort>
-          <Hidden>false</Hidden>
+          <Hidden>true</Hidden>
           <ReadOnly>false</ReadOnly>
           <IsFromSourceField>false</IsFromSourceField>
           <DealfValue xsi:type="xsd:string" />
@@ -55,7 +55,7 @@
           <ElemType>Text</ElemType>
           <Width>2</Width>
           <HasSort>false</HasSort>
-          <Hidden>false</Hidden>
+          <Hidden>true</Hidden>
           <ReadOnly>true</ReadOnly>
           <IsFromSourceField>false</IsFromSourceField>
           <DealfValue xsi:type="xsd:string" />
@@ -107,7 +107,7 @@
           <ElemType>Text</ElemType>
           <Width>2</Width>
           <HasSort>false</HasSort>
-          <Hidden>false</Hidden>
+          <Hidden>true</Hidden>
           <ReadOnly>true</ReadOnly>
           <IsFromSourceField>false</IsFromSourceField>
           <DealfValue xsi:type="xsd:string" />
@@ -133,7 +133,7 @@
           <ElemType>Text</ElemType>
           <Width>2</Width>
           <HasSort>false</HasSort>
-          <Hidden>false</Hidden>
+          <Hidden>true</Hidden>
           <ReadOnly>true</ReadOnly>
           <IsFromSourceField>false</IsFromSourceField>
           <DealfValue xsi:type="xsd:string" />

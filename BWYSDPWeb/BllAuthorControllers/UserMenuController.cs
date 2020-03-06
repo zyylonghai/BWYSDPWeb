@@ -174,6 +174,18 @@ namespace BWYSDPWeb.BllAuthorControllers
             }
         }
 
+        protected override void UpdateTableRow(string gridid, DataRowObj row, string cmd)
+        {
+            base.UpdateTableRow(gridid, row, cmd);
+            if (gridid == "GridGroup2"|| gridid == "GridGroup1")
+            {
+                if (cmd == "Add")
+                {
+                    dynamic rowobj = row;
+                    rowobj.UId = this.UserInfo.UserId;
+                }
+            }
+    }
         protected override void GetGridDataExt(string gridid, DataTable dt)
         {
             base.GetGridDataExt(gridid, dt);
@@ -207,6 +219,7 @@ namespace BWYSDPWeb.BllAuthorControllers
             base.SaveSuccessRedirect(ref actionNm, ref controlnm, routvalues);
             actionNm = "SysSetting";
             controlnm = "Home";
+            routvalues = new { flag = 1 };
             //this.SessionObj.OperateAction = OperatAction.None;
             
         }

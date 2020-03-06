@@ -39,7 +39,9 @@
 
         function Initilmenus()
         {
-            var mdata = localStorage.getItem("m_data");
+            @*var tick = "@User.Identity.Name";
+            var arry = tick.split("$");*@
+            var mdata = localStorage.getItem(GetAuthoriTick());
             if (mdata != "" && mdata != undefined && mdata != null) {
                 loadmenuData(mdata);
                 return;
@@ -56,7 +58,7 @@
                     else {
                         if (obj.data != null || obj.data != undefined) {
                             var datastr = JSON.stringify(obj.data);
-                            localStorage.setItem("m_data", datastr);
+                            localStorage.setItem(GetAuthoriTick(), datastr);
                             loadmenuData(datastr);
                         }
                     }
@@ -100,6 +102,17 @@
         function hideMask() {
 
             $("#masklayer").hide();
+        }
+
+        function GetUserNm() {
+            var tick = "@User.Identity.Name";
+            var arry = tick.split("$");
+            return arry[1];
+        }
+        function GetAuthoriTick() {
+            var tick = "@User.Identity.Name";
+            var arry = tick.split("$");
+            return arry[0];
         }
     </script>
     @Scripts.Render("~/bundles/bootstrap")
@@ -198,7 +211,7 @@
                 <button class="btn btn-primary md-account-circle-white" data-toggle="dropdown"></button>
                 <ul class="dropdown-menu">
                     <li class="disabled text-center">
-                        <a style="cursor:default;"><strong>@User.Identity.Name</strong></a>
+                        <a style="cursor:default;"><strong>@User.Identity.Name.Split('$')[1]</strong></a>
                     </li>
                     <li class="divider"></li>
                     @*<li>
