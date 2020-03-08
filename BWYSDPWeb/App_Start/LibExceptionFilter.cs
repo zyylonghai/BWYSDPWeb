@@ -1,9 +1,5 @@
-﻿using BWYSDPWeb.Models;
-using SDPCRL.CORE;
+﻿using SDPCRL.CORE;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BWYSDPWeb.App_Start
@@ -12,6 +8,15 @@ namespace BWYSDPWeb.App_Start
     {
         public override void OnException(ExceptionContext filterContext)
         {
+            if (!filterContext.HttpContext.Request.IsAjaxRequest())
+            {
+                if (filterContext.Exception.GetType().Equals(typeof(System.Runtime.Remoting.RemotingException)))
+                {
+                    filterContext.HttpContext.Response.RedirectToRoute(new { controller = "Server", action = "ServerPage2" });
+                }
+                else 
+                    filterContext.HttpContext.Response.RedirectToRoute(new { controller = "Home", action = "ErrorView", msg = DM5Help.Md5Encrypt(filterContext.Exception.Message), title = DM5Help.Md5Encrypt("出现异常")});
+            }
             if (filterContext.Exception.GetType().Equals(typeof(LibExceptionBase)))
             {
                 filterContext.Result = new JsonResult

@@ -47,6 +47,7 @@ namespace BWYSDPWeb.Com
         public static string GetMessageDesc(string msgid)
         {
             UserInfo userInfo = System.Web.HttpContext.Current.Session[SysConstManage.sdp_userinfo] as UserInfo;
+            if (userInfo == null) return string.Empty;
             return GetFieldDesc((int)userInfo.Language, string.Empty, string.Empty, msgid);
         }
         public static string GetFieldDesc(string dsid, string tablenm, string fieldnm)
@@ -168,5 +169,6 @@ namespace BWYSDPWeb.Com
             return Convert.ToBase64String(vals);
         }
         #endregion
+
     }
 }

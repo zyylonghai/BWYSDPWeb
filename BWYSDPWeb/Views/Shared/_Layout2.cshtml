@@ -105,15 +105,76 @@
         }
 
         function GetUserNm() {
-            var tick = "@User.Identity.Name";
-            var arry = tick.split("$");
-            return arry[1];
+            var identitystr = $.cookie("tick").fromBase64();
+            var identity = JSON.parse(identitystr.split('=')[1]);
+            return identity.UserNm;
+            //var arry = tick.split("$");
+            //return arry[1];
         }
         function GetAuthoriTick() {
-            var tick = "@User.Identity.Name";
+            var identitystr = $.cookie("tick").fromBase64();
+            var identity = JSON.parse(identitystr.split('=')[1]);
+            return identity.CertificateID;
+            @*var tick = "@User.Identity.Name";
             var arry = tick.split("$");
-            return arry[0];
+            return arry[0];*@
         }
+    String.prototype.fromBase64 = function(){
+    //base64 转字符串，反过来即可
+    let code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    let str = this,res = '',binaryStr = '';
+    var tail = 0;//如果有=号则处理
+    for(let i=0,max = str.length;i<max;i++){
+        if(str[i]== '='){
+            tail ++;
+        }else{
+            let char = str[i],index = code.indexOf(char);
+            //每个字符6位
+            let temp = index.toString(2);
+            binaryStr += new Array(7 - temp.length).join('0') + temp;
+        }
+    }
+    //如果有=号，则需要重新处理下字符串
+    binaryStr = binaryStr.substr(0,binaryStr.length - tail * 2);
+    //split
+    for(let i=0,max=binaryStr.length;i<max;i+=8){
+        let temp = binaryStr.substr(i,8);
+        if(temp.length > 0){
+        let index = parseInt(temp,2);
+        let char = String.fromCodePoint(Math.abs(index));
+        res += char;
+        }
+    }
+    return res;
+        }
+String.prototype.toBase64 = function(){
+    //字符串转base64，转为二级制（补全8位），然后按照6位（最高64）分割，然后补充后导0，添加=
+    let code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+        str = this,
+        res = '',
+        binaryStr = '';
+    for(let i=0,max = str.length;i<max;i++){
+        let temp = str.charCodeAt(i).toString(2);
+        binaryStr += new Array(9 - temp.length).join('0') + temp;
+    }
+    let tail = binaryStr.length % 6,
+        left = binaryStr.substr(0,binaryStr.length - tail),
+        right = binaryStr.substr(binaryStr.length - tail,binaryStr.length);
+    //left first
+    for(let i=0,max=left.length;i<max;i+=6){
+        let temp = left.substr(i,6);
+        let index = parseInt(temp,2);
+        res += code[index];
+    }
+    //right after
+    if(tail){
+        right = right + new Array(7-right.length).join('0');
+        res += code[parseInt(right,2)];
+        //根据题目要求，去掉=
+        res += new Array((6 - tail)/2 + 1 ).join('=');
+    }
+    return res;
+}
     </script>
     @Scripts.Render("~/bundles/bootstrap")
 </head>
@@ -211,12 +272,15 @@
                 <button class="btn btn-primary md-account-circle-white" data-toggle="dropdown"></button>
                 <ul class="dropdown-menu">
                     <li class="disabled text-center">
-                        <a style="cursor:default;"><strong>@User.Identity.Name.Split('$')[1]</strong></a>
-                    </li>
+                        <a style="cursor:default;"><strong>@User.Identity.Name</strong></a>
+                     </li>
                     <li class="divider"></li>
-                    @*<li>
-                        <a href="#"><i class="fa fa-fw fa-user"></i>@Html.GetMessage("Profile")</a>
-                    </li>*@
+                    @if (Html.HasAdminRole())
+                    {
+                    <li>
+                        <a href="@Url.Action("ServerPage", "Server")"><i class="fa fa-fw fa-user"></i>@Html.GetMessage("ServerSetting")</a>
+                    </li>
+                    }
                     <li>
                         <a href="@Url.Action("SysSetting","Home")"><i class="fa fa-fw fa-cog"></i>@Html.GetMessage("SysSettings")</a>
                     </li>
@@ -229,7 +293,7 @@
     </header>
     <div id="global">
         @RenderBody()
-        <footer class="cm-footer"><span class="pull-left">Connected as John Smith</span><span class="pull-right">&copy; PAOMEDIA SARL</span></footer>
+        <footer class="cm-footer"><span class="pull-left">Connected as @User.Identity.Name</span><span class="pull-right">&copy; PAOMEDIA SARL</span></footer>
     </div>
     <div id="masklayer" class="masklayer"></div>
     <div id="sdp_fuzzySearch" style="display:none;width:300px; height:260px;">

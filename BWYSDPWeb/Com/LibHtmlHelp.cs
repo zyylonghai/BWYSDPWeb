@@ -1,4 +1,5 @@
 ﻿using BWYSDPWeb.Com;
+using Newtonsoft.Json;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.CORE;
@@ -23,7 +24,7 @@ namespace BWYSDPWeb
             return new HtmlString(AppCom.GetFieldDesc(dsid, tablenm, fieldnm));
         }
 
-        public static HtmlString ModelConvertoHtml(this HtmlHelper htmlhelp, string progid,string package)
+        public static HtmlString ModelConvertoHtml(this HtmlHelper htmlhelp, string progid,string package,bool hasform=true)
         {
             StringBuilder builder = new StringBuilder();
             string _rootpath =System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", "");
@@ -37,6 +38,7 @@ namespace BWYSDPWeb
             factory.ControlClassNm = formpage.ControlClassNm;
             factory.DSID = formpage.DSID;
             factory.Package = package;
+            factory.HasCreateForm = hasform;
             #region cookie
             //HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[SysConstManage.PageinfoCookieNm];
             //if (cookie == null)
@@ -56,7 +58,8 @@ namespace BWYSDPWeb
             AppCom.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progid, package);
             #endregion
             factory.BeginPageForHtmlHelp();
-            factory.CreateFormForHtmlHelp();
+            if (hasform)
+                factory.CreateFormForHtmlHelp();
             if (formpage.ModuleOrder != null)
             {
                 foreach (ModuleOrder item in formpage.ModuleOrder)
@@ -107,6 +110,14 @@ namespace BWYSDPWeb
             factory.EndPage(false);
             #endregion
             return new HtmlString(factory.PageHtmlForHtmlHelp);
+        }
+
+        public static bool HasAdminRole(this HtmlHelper htmlhelp)
+        {
+            string identityjson = AppCom.GetCookievalue(SysConstManage.sdp_IdentityTick, "key");
+            IdentityCredential identityCredential = JsonConvert.DeserializeObject<IdentityCredential>(identityjson);
+            
+            return identityCredential !=null && identityCredential.HasAdminRole;
         }
     }
 }

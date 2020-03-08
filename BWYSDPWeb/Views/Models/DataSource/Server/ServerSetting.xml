@@ -1,0 +1,352 @@
+<?xml version="1.0"?>
+<LibDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" DSID="ServerSetting" DataSourceName="数据层服务配置" Package="Server">
+  <DefTables>
+    <LibDefineTable ID="0707f738-6cfc-4f39-baf5-72e367e6009f" TableName="ServerSetting" DisplayName="数据层服务配置">
+      <TableStruct>
+        <LibDataTableStruct ID="02d522c2-f3e1-46df-9d4f-59de6e2bcaf4">
+          <Name>ServerSetting</Name>
+          <DisplayName>数据层服务配置</DisplayName>
+          <Ignore>false</Ignore>
+          <TableIndex>0</TableIndex>
+          <JoinTableIndex>0</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey>
+            <string>serverNm</string>
+          </PrimaryKey>
+          <Fields>
+            <LibField>
+              <ID>b8f21a19-5876-4736-b402-d668d2410ff0</ID>
+              <Name>conectType</Name>
+              <AliasName />
+              <DisplayName>连接方式</DisplayName>
+              <ObjFieldName>conectType</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>10</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items>
+                <LibKeyValue>
+                  <ID>9f99edc8-f25f-4e2a-823b-efafd97ee4cf</ID>
+                  <Key xsi:type="xsd:string">TCP</Key>
+                  <Value xsi:type="xsd:string">TCP</Value>
+                  <Remark />
+                </LibKeyValue>
+                <LibKeyValue>
+                  <ID>e4a2f3b6-621f-4a4b-a098-635e362d0e8d</ID>
+                  <Key xsi:type="xsd:string">HTTP</Key>
+                  <Value xsi:type="xsd:string">HTTP</Value>
+                  <Remark />
+                </LibKeyValue>
+              </Items>
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>534e162e-36f5-46b9-83d4-3b7590b39a11</ID>
+              <Name>serverNm</Name>
+              <AliasName />
+              <DisplayName>服务名</DisplayName>
+              <ObjFieldName>serverNm</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>c8d4a2c5-3d30-4adb-8c0f-1426a815ad6b</ID>
+              <Name>ipAddress</Name>
+              <AliasName />
+              <DisplayName>IP地址</DisplayName>
+              <ObjFieldName>ipAddress</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>false</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>9c2dd544-3ce6-46d6-a8f1-42b97f0d4665</ID>
+              <Name>point</Name>
+              <AliasName />
+              <DisplayName>端口</DisplayName>
+              <ObjFieldName />
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>54397bab-1a12-4908-a395-8a9e9b6c1c7b</ID>
+              <Name>accountid</Name>
+              <AliasName />
+              <DisplayName>帐套</DisplayName>
+              <ObjFieldName>accountid</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>50</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>0389094f-9126-4186-b46b-415e7b071549</ID>
+              <Name>accountname</Name>
+              <AliasName />
+              <DisplayName>账套名</DisplayName>
+              <ObjFieldName>accountname</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>c5311224-1e76-4706-851b-024a4c518829</ID>
+              <Name>IsCurrentServer</Name>
+              <AliasName />
+              <DisplayName>是否当前服务</DisplayName>
+              <ObjFieldName />
+              <OrignNm />
+              <FieldType>Byte</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <Items>
+                <LibKeyValue>
+                  <ID>8279f6c5-97f8-4aa3-8560-8a523d2088e9</ID>
+                  <FromkeyValueID>IsOk</FromkeyValueID>
+                  <Key xsi:type="xsd:string">0</Key>
+                  <Value xsi:type="xsd:string">否</Value>
+                  <Remark />
+                </LibKeyValue>
+                <LibKeyValue>
+                  <ID>f6700f12-1b98-4306-897a-080fceb20c01</ID>
+                  <FromkeyValueID>IsOk</FromkeyValueID>
+                  <Key xsi:type="xsd:string">1</Key>
+                  <Value xsi:type="xsd:string">是</Value>
+                  <Remark />
+                </LibKeyValue>
+              </Items>
+              <SysField>false</SysField>
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+        <LibDataTableStruct ID="b6344c3d-af97-4036-9594-9abeafc49677">
+          <Name>ServerSetting_grid</Name>
+          <DisplayName>ServerSetting_grid</DisplayName>
+          <Ignore>false</Ignore>
+          <TableIndex>1</TableIndex>
+          <JoinTableIndex>1</JoinTableIndex>
+          <JoinFields />
+          <PrimaryKey>
+            <string>serverNm</string>
+          </PrimaryKey>
+          <Fields>
+            <LibField>
+              <ID>5d489659-e4b8-4471-95da-c7f76cf51a99</ID>
+              <Name>conectType</Name>
+              <AliasName />
+              <DisplayName>连接方式</DisplayName>
+              <ObjFieldName>conectType</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>10</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>59c06975-05c3-4dd0-91ac-cde3b220d297</ID>
+              <Name>serverNm</Name>
+              <AliasName />
+              <DisplayName>服务名</DisplayName>
+              <ObjFieldName>serverNm</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>937d2b85-bb00-47d3-9016-a5e9ec6ef0ec</ID>
+              <Name>ipAddress</Name>
+              <AliasName />
+              <DisplayName>IP地址</DisplayName>
+              <ObjFieldName>ipAddress</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>20</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>b56e85a9-5e42-4b3c-85b7-1ac3d35a3a31</ID>
+              <Name>point</Name>
+              <AliasName />
+              <DisplayName>端口</DisplayName>
+              <ObjFieldName>point</ObjFieldName>
+              <OrignNm />
+              <FieldType>Interger</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>be33eaca-83d4-41fa-ab9b-49b18ab1f093</ID>
+              <Name>accountid</Name>
+              <AliasName />
+              <DisplayName>帐套</DisplayName>
+              <ObjFieldName>accountid</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>50</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SourceField />
+              <Items />
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>c7c4edfe-cca3-49ff-ace1-89ec5cd49d0f</ID>
+              <Name>accountname</Name>
+              <AliasName />
+              <DisplayName>账户名</DisplayName>
+              <ObjFieldName>accountname</ObjFieldName>
+              <OrignNm />
+              <FieldType>String</FieldType>
+              <FieldLength>30</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <SysField>false</SysField>
+            </LibField>
+            <LibField>
+              <ID>b3d1b5af-cf59-4b5a-9a0a-17d0678b92b2</ID>
+              <Name>IsCurrentServer</Name>
+              <AliasName />
+              <DisplayName>是否当前服务</DisplayName>
+              <ObjFieldName>IsCurrentServer</ObjFieldName>
+              <OrignNm />
+              <FieldType>Byte</FieldType>
+              <FieldLength>0</FieldLength>
+              <Decimalpoint>0</Decimalpoint>
+              <RelatePrimarykey />
+              <AllowNull>true</AllowNull>
+              <IsActive>false</IsActive>
+              <AutoIncrement>false</AutoIncrement>
+              <AutoIncrementSeed>0</AutoIncrementSeed>
+              <AutoIncrementStep>0</AutoIncrementStep>
+              <Items>
+                <LibKeyValue>
+                  <ID>8279f6c5-97f8-4aa3-8560-8a523d2088e9</ID>
+                  <FromkeyValueID>IsOk</FromkeyValueID>
+                  <Key xsi:type="xsd:string">0</Key>
+                  <Value xsi:type="xsd:string">否</Value>
+                  <Remark />
+                </LibKeyValue>
+                <LibKeyValue>
+                  <ID>f6700f12-1b98-4306-897a-080fceb20c01</ID>
+                  <FromkeyValueID>IsOk</FromkeyValueID>
+                  <Key xsi:type="xsd:string">1</Key>
+                  <Value xsi:type="xsd:string">是</Value>
+                  <Remark />
+                </LibKeyValue>
+              </Items>
+              <SysField>false</SysField>
+            </LibField>
+          </Fields>
+        </LibDataTableStruct>
+      </TableStruct>
+    </LibDefineTable>
+  </DefTables>
+</LibDataSource>

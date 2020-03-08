@@ -179,13 +179,14 @@ function BindToTable(ctrnm,tbnm,dsid,flag,fieldnm) {
     sdp_searchtb.initialTable();
     sdp_searchtb.testid = tbnm;
     sdp_searchtb.flag = flag;
+    sdp_searchtb.ctrnm = ctrnm;
 
-    sdp_searchtb.DbClickRow = function (dr, elem, tbname, flag) {
+    sdp_searchtb.DbClickRow = function (dr, elem, tbname,flag) {
         if (flag == 1) {
             $.ajax({
                 async: false,
                 type: "Post",
-                url: '/DataBase/FillAndEdit',
+                url: '/' + this.ctrnm + '/FillAndEdit',
                 data: { dr, "tablenm": tbname, "flag": flag },
                 dataType: "Json",
                 success: function (obj) {

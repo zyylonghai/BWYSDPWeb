@@ -13,7 +13,7 @@
   </ModuleOrder>
   <FormGroups />
   <GridGroups>
-    <LibGridGroup GridGroupID="4ae9db7d-6d6d-4c62-9b97-43950ec03f1a" GridGroupName="GridGroup1" GridGroupDisplayNm="页面表格组1" ControlClassNm="UserMenu" HasSummary="false" SingleSelect="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="GridGroup2">
+    <LibGridGroup GridGroupID="4ae9db7d-6d6d-4c62-9b97-43950ec03f1a" GridGroupName="Menusetting" GridGroupDisplayNm="菜单清单" ControlClassNm="UserMenu" HasSummary="false" SingleSelect="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="GridGroup2">
       <GdButtons />
       <GdGroupFields>
         <LibGridGroupField ID="44ab99cd-604e-4bb6-8e28-e0d4e61be734">

@@ -10,8 +10,8 @@
             <div class="nav-tabs-container">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#menusetting" data-toggle="tab">@Html.GetMessage("UserMenuSetting")</a></li>
-                    <li><a href="#skinsetting" data-toggle="tab">@Html.GetMessage("SkinSetting")</a></li>
-                    <li><a href="#" data-toggle="tab">@Html.GetMessage("Personalization")</a></li>
+                    <li><a href="#userinfosetting" data-toggle="tab">@Html.GetMessage("UserInfoSetting")</a></li>
+                    <li><a href="#personalization" data-toggle="tab">@Html.GetMessage("Personalization")</a></li>
                 </ul>
             </div>
         </div>
@@ -19,13 +19,17 @@
 </div>
 <div id="myTabContent" class="tab-content">
     <div class="tab-pane fade in active" id="menusetting">
-            @Html.ModelConvertoHtml("UserMenu", "Home");
+        @Html.ModelConvertoHtml("UserMenu", "Home");
     </div>
-    <div class="tab-pane fade" id="skinsetting">
-        <button>skdjk</button>
-        <div>dksjldjflksjflksjfklsjfksjkflkfj</div>
-        <div>dksjldjflksjflksjfklsjfksjkflkfj</div>
-        <div>dksjldjflksjflksjfklsjfksjkflkfj</div>
+    <div class="tab-pane fade" id="userinfosetting">
+        <div class="container-fluid">
+            可以修改用户信息，用户登录密码等功能
+        </div>
+    </div>
+    <div class="tab-pane fade" id="personalization">
+        <div class="container-fluid">
+            系统皮肤，首页界面排版等功能
+        </div>
     </div>
 </div>
 

@@ -1,132 +1,58 @@
-﻿
-@{
-    Layout = null;
-}
+﻿@Styles.Render("~/Content/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTableExport")
+@Scripts.Render("~/bundles/searchmodal")
+@Scripts.Render("~/bundles/TableModal")
+@Scripts.Render("~/Scripts/lib/laydate/laydate")
+@*<div class="container-fluid">*@
+    <form  class="form-horizontal" action="ServerSave?sdp_pageid=ServerSetting&sdp_dsid=ServerSetting" method="post">
+        @Html.ModelConvertoHtml("ServerSetting", "Server", false);
+    </form>
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <style type="text/css">
-        .masklayer {
-            position: absolute;
-            top: 0px;
-            filter: alpha(opacity=60);
-            background-color: #777;
-            z-index: 1002;
-            left: 0px;
-            opacity: 0.5;
-            -moz-opacity: 0.5;
-        }
-    </style>
-    <title>ServerPage</title>
-
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-
-    <script type="text/javascript">
-        $(function () {
-
+<script type="text/javascript">
+    $(function () {
+        $('#ServerSetting_accountid').click(function () { GetAccout(); });
         });
 
-            function GetAccout()
-            {
-                $.ajax({
-                    url: "@Url.Action("GetAccout")",
-                    data: "conntype=" + $('#conectType').val() + "&ip=" + $('#ipAddress').val() + "&point=" + $('#point').val()+"",
-                    type: 'Get',
-                    async: false,
-                    success: function (obj) {
-                        if (obj.Flag == 1) {
+    function GetAccout() {
+        var connectype = GetInputValue("conectType");
+        var ip = GetInputValue("ipAddress");
+        var point = GetInputValue("point");
+        $.ajax({
+            url: "@Url.Action("GetAccout")",
+            data: "conntype=" + connectype + "&ip=" + ip + "&point=" + point + "",
+            type: 'Get',
+            async: false,
+            success: function (obj) {
+                if (obj.Flag == 1) {
 
-                        }
-                        else {
-                            debugger
-                            if (obj.data != null || obj.data != undefined) {
-                                $('#accountid').children().remove();
-                                //var o = JSON.parse(obj.data);
-                                jQuery.each(obj.data, function (i, val) {
-                                    $('#accountid').append(" <option value='" + val.accountid + "'>" + val.accountname + "</option>");
-                                });
+                }
+                else {
+                    if (obj.data != null || obj.data != undefined) {
+                        let accountid = GetInputId("accountid");
+                        $('#' + accountid).children().remove();
+                        //var o = JSON.parse(obj.data);
+                        jQuery.each(obj.data, function (i, val) {
+                            $('#' + accountid).append(" <option value='" + val.accountid + "'>" + val.accountname + "</option>");
+                        });
 
-                            }
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
                     }
-                });
-        }
-            function showMask() {
-                debugger
-                $("#masklayer").css("height", $(document).height());
-                $("#masklayer").css("width", $(document).width());
-                $("#masklayer").show();
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
             }
+        });
+    }
+    function showMask() {
+        $("#masklayer").css("height", $(document).height());
+        $("#masklayer").css("width", $(document).width());
+        $("#masklayer").show();
+    }
             //隐藏遮罩层
-            function hideMask() {
+    function hideMask() {
 
-                $("#masklayer").hide();
-            }
-    </script>
-</head>
-<body>
-    <div class="container" style="background-color:antiquewhite">
-        <form class="form-horizontal" role="form" action="Save">
-            <div class="form-group">
-                <label for="conectType" class="col-sm-2 control-label">连接方式</label>
-                <div class="col-sm-2">
-                    <select class="form-control" name="conectType" id="conectType">
-                        <option value="TCP">TCP</option>
-                        <option value="HTTP">HTTP</option>
-                        @*<option value="3">类型2</option>*@
-                    </select>
-                    @*<input type="text" class="form-control" id="conectType" name="conectType"
-                        placeholder="连接方式">*@
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="serverNm" class="col-sm-2 control-label">服务名</label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control" id="serverNm" name="serverNm"
-                           placeholder="服务名">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="ipAddress" class="col-sm-2 control-label">IP地址</label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control" id="ipAddress" name="ipAddress"
-                           placeholder="IP地址">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="point" class="col-sm-2 control-label">端口</label>
-                <div class="col-sm-2">
-                    <input type="text" class="form-control" id="point" name="point"
-                           placeholder="端口">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="accountname" class="col-sm-2 control-label">帐套</label>
-                <div class="col-sm-2">
-                    <select class="form-control" name="accountid" id="accountid" onclick="GetAccout()">
-                        <option value="1"></option>
-                    </select>
-                    @*<input type="text" class="form-control" id="accountid" name="accountid"
-                        placeholder="帐套">*@
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default">登录</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div id="masklayer" class="masklayer"></div>
-</body>
-</html>
+        $("#masklayer").hide();
+    }
+</script>

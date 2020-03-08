@@ -13,4 +13,13 @@ namespace BWYSDPWeb.Models
         public Language Language { get; set; }
 
     }
+
+    //public class IdentityCredential
+    //{
+    //    public string CertificateID { get; set; }
+
+    //    public string UserNm { get; set; }
+
+    //    public bool HasAdminRole { get; set; }
+    //}
 }

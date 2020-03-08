@@ -403,6 +403,42 @@ function DoSetPageStatus(ispreview) {
         $('#bwysdp_ispreview').val(0);
 }
 
+function GetInputValue(fldobjNm) {
+    let result;
+    $.ajax({
+        url: "/DataBase/GetInputID",
+        data: { fieldobjnm:fldobjNm },
+        type: 'Get',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            result= $('#' + obj.id).val();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
+    return result;
+}
+
+function GetInputId(fldobjNm) {
+    let result;
+    $.ajax({
+        url: "/DataBase/GetInputID",
+        data: { fieldobjnm:fldobjNm },
+        type: 'Get',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            result= obj.id;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
+    return result;
+}
+
 
 //function GetMsgForSave() {
 //    $.ajax({

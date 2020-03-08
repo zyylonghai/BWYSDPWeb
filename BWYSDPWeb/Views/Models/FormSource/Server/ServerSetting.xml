@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<LibFormPage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FormId="ServerSetting" FormName="数据层服务配置" DSID="ServerSetting" ControlClassNm="Server" CssFile="" ScriptFile="" Package="Server">
+  <Buttons />
+  <ModuleOrder>
+    <ModuleOrder>
+      <moduleType>GridGroup</moduleType>
+      <ID>09a2a3d2-7c6b-4102-af1e-0f68d56f01eb</ID>
+    </ModuleOrder>
+  </ModuleOrder>
+  <FormGroups />
+  <GridGroups>
+    <LibGridGroup GridGroupID="09a2a3d2-7c6b-4102-af1e-0f68d56f01eb" GridGroupName="GridGroup1" GridGroupDisplayNm="已配置的服务列表" ControlClassNm="Server" HasSummary="false" SingleSelect="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="">
+      <GdButtons />
+      <GdGroupFields>
+        <LibGridGroupField ID="1c1dc93b-91c5-45b3-ae6a-3214542904db">
+          <Name>conectType</Name>
+          <FromTableNm>ServerSetting</FromTableNm>
+          <FromDefTableNm>ServerSetting</FromDefTableNm>
+          <DisplayName>连接方式</DisplayName>
+          <ElemType>Select</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="7431bcea-8d32-4263-91e4-73b76090463f">
+          <Name>serverNm</Name>
+          <FromTableNm>ServerSetting</FromTableNm>
+          <FromDefTableNm>ServerSetting</FromDefTableNm>
+          <DisplayName>服务名</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="5aec9296-9ceb-4416-ace6-9aae61c230f9">
+          <Name>ipAddress</Name>
+          <FromTableNm>ServerSetting</FromTableNm>
+          <FromDefTableNm>ServerSetting</FromDefTableNm>
+          <DisplayName>IP地址</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="54b850ff-447c-41f3-a16c-2e2f5cba38f5">
+          <Name>point</Name>
+          <FromTableNm>ServerSetting</FromTableNm>
+          <FromDefTableNm>ServerSetting</FromDefTableNm>
+          <DisplayName>端口</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="301a047a-8de1-4ba2-8ba6-c5211c7637db">
+          <Name>accountid</Name>
+          <FromTableNm>ServerSetting</FromTableNm>
+          <FromDefTableNm>ServerSetting</FromDefTableNm>
+          <DisplayName>帐套</DisplayName>
+          <ElemType>Select</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <Formatter>accountname</Formatter>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="f5dcbaa4-5075-49ab-bd49-d44c19b46707">
+          <Name>accountname</Name>
+          <FromTableNm>ServerSetting</FromTableNm>
+          <FromDefTableNm>ServerSetting</FromDefTableNm>
+          <DisplayName>账套名</DisplayName>
+          <ElemType>Text</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>true</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <Formatter />
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+        <LibGridGroupField ID="fe6ae666-cf33-4b7d-bae9-72965e640aa3">
+          <Name>IsCurrentServer</Name>
+          <FromTableNm>ServerSetting</FromTableNm>
+          <FromDefTableNm>ServerSetting</FromDefTableNm>
+          <DisplayName>是否当前服务</DisplayName>
+          <ElemType>Select</ElemType>
+          <Width>2</Width>
+          <HasSort>false</HasSort>
+          <Hidden>false</Hidden>
+          <ReadOnly>false</ReadOnly>
+          <IsFromSourceField>false</IsFromSourceField>
+          <DealfValue xsi:type="xsd:string" />
+        </LibGridGroupField>
+      </GdGroupFields>
+    </LibGridGroup>
+  </GridGroups>
+  <BtnGroups />
+</LibFormPage>

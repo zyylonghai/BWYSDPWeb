@@ -1,6 +1,8 @@
-UserMenuSetting：个人菜单设置
+﻿UserMenuSetting：个人菜单设置
 SkinSetting:皮肤设置
 Personalization:个性化设置
+UserInfoSetting:个人信息设置
+ServerSetting: 数据层服务配置
 
 OperateObjSetting: 操作对象设置
 DataObjSetting:数据对象设置

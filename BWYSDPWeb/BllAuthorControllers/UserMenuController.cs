@@ -47,6 +47,7 @@ namespace BWYSDPWeb.BllAuthorControllers
         protected override void BeforeSave()
         {
             base.BeforeSave();
+            
             LibTableObj tbobj = this.LibTables[0].Tables[1];
             LibTableObj mtbobj = this.LibTables[0].Tables[0];
             if (tbobj !=null && tbobj.Rows.Count > 0)
@@ -177,7 +178,7 @@ namespace BWYSDPWeb.BllAuthorControllers
         protected override void UpdateTableRow(string gridid, DataRowObj row, string cmd)
         {
             base.UpdateTableRow(gridid, row, cmd);
-            if (gridid == "GridGroup2"|| gridid == "GridGroup1")
+            if (gridid == "GridGroup2"|| gridid == "Menusetting")
             {
                 if (cmd == "Add")
                 {

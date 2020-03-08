@@ -1,9 +1,12 @@
 ﻿using BWYSDPWeb.BaseController;
+using BWYSDPWeb.Models;
+using Newtonsoft.Json;
 using SDPCRL.COM;
 using SDPCRL.CORE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -36,23 +39,36 @@ namespace BWYSDPWeb.Controllers
             {
                 userInfo.UserNm = lginfo.UserNm;
                 //userInfo.Language = (Language)Convert.ToInt32(formparams["language"]);
-                string tick = string.Empty;
-                string md5 = DM5Help.Md5Encrypt(userInfo.UserId);
-                foreach (char c in md5)
+                string tick = IdentityHelp.GenerateTick (userInfo.UserId);
+                IdentityCredential identity = new IdentityCredential
                 {
-                    tick += ((Int32)c).ToString();
-                }
-                tick =string .Format("{0}${1}", tick , userInfo.UserNm);
-                FormsAuthentication.SetAuthCookie(tick, false);
+                    CertificateID = tick,
+                    UserNm = lginfo.UserNm,
+                    HasAdminRole = lginfo.HasAdminRole
+                };
+                string identitystr = JsonConvert.SerializeObject(identity);
+                Com.AppCom.AddorUpdateCookies(SysConstManage .sdp_IdentityTick, "key", identitystr);
+                FormsAuthentication.SetAuthCookie(userInfo.UserNm, false);
                 Session[SysConstManage.sdp_userinfo] = userInfo;
             }
             if (lginfo.loginResult == 3)//密码错误
             {
-                this.ThrowErrorException("密码错误");
+                //msg000000015     密码错误
+                this.ThrowErrorException(15);
                 //this.AddMessage("密码错误");
                 //this.AddMessage()
             }
+            if (lginfo.loginResult == -1)
+            {
+                //msg000000016    用户{0}不存在
+                this.ThrowErrorException(16,userInfo.UserId);
+            }
             return RedirectToAction("Index");
+        }
+
+        public ActionResult LoginPage()
+        {
+            return View("Login");
         }
 
         public ActionResult LoginOut()
@@ -68,7 +84,18 @@ namespace BWYSDPWeb.Controllers
             if (userinfo == null)
                 return View("Login");
             else
+            {
+                this.Authentication();
                 return View("SysSetting");
+            }
+        }
+
+        public ActionResult ErrorView(string  msg, string title)
+        {
+            ErrorObject error = new ErrorObject();
+            error.Message = DM5Help.Md5Decrypt (msg);
+            error.Title = DM5Help.Md5Decrypt(title);
+            return View("Error", error);
         }
 
     }

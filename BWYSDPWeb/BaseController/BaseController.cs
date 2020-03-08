@@ -527,6 +527,7 @@ namespace BWYSDPWeb.BaseController
         public ViewResult LibReturnError(List<ErrorMessage> errors)
         {
             ErrorObject error = new ErrorObject();
+            error.Title = "错误信息：";
             //string _msg = string.Empty;
             foreach (var m in errors)
             {
@@ -723,11 +724,20 @@ namespace BWYSDPWeb.BaseController
         {
             if (cols[fieldnm].DataType == typeof(Date))
             {
-                newrow[fieldnm] = new Date { value = valu.ToString () };
+                newrow[fieldnm] = new Date { value = valu.ToString() };
             }
             else if (cols[fieldnm].DataType == typeof(byte[]))
             {
-                newrow[fieldnm] = Convert .FromBase64String(valu.ToString());
+                newrow[fieldnm] = Convert.FromBase64String(valu.ToString());
+            }
+            else if (cols[fieldnm].DataType == typeof(DateTime) && LibSysUtils.IsNULLOrEmpty(valu))
+            {
+                newrow[fieldnm] = DBNull.Value;
+                //if (LibSysUtils.IsNULLOrEmpty(valu))
+                //{
+                //    
+                //}
+
             }
             else
                 newrow[fieldnm] = valu;
@@ -912,6 +922,20 @@ namespace BWYSDPWeb.BaseController
         protected override void OnResultExecuted(ResultExecutedContext filterContext)
         {
             base.OnResultExecuted(filterContext);
+        }
+
+        /// <summary>
+        /// 身份验证
+        /// </summary>
+        protected void Authentication()
+        {
+            string identityjson = AppCom.GetCookievalue(SysConstManage.sdp_IdentityTick, "key");
+            IdentityCredential identityCredential = JsonConvert.DeserializeObject<IdentityCredential>(identityjson);
+            if (string.IsNullOrEmpty(identityjson)||!IdentityHelp.CompareTick(this.UserInfo.UserId, identityCredential.CertificateID))
+            {
+                //msg000000014    身份验证失败!请重新登录
+                this.ThrowErrorException(14);
+            }
         }
         #endregion
 

@@ -197,7 +197,7 @@ namespace Bll
             }
         }
 
-        public bool Update(ServerInfo info)
+        public bool Update(ServerInfo info,string oldservernm)
         {
             using (SQLiteConnection cn = new SQLiteConnection(connectStr))
             {
@@ -208,14 +208,14 @@ namespace Bll
                     cmd.Connection = cn;
                     try
                     {
-                        cmd.CommandText = string.Format("update ServerInfo set ipAddress='{0}',connectype='{1}',accountid='{2}',point={3},accountname='{4}',IsCurrentServer='{5}' where serverNm='{6}'",
+                        cmd.CommandText = string.Format("update ServerInfo set ipAddress='{0}',connectype='{1}',accountid='{2}',point={3},accountname='{4}',IsCurrentServer='{5}',serverNm='{6}' where serverNm='{7}'",
                             info.ipAddress,
                             info.connectype,
                             info.accountid,
                             info.point,
                             info.accountname,
                             info.IsCurrentServer,
-                            info.serverNm);
+                            info.serverNm,oldservernm);
                         cmd.ExecuteNonQuery();
                         return true;
                     }

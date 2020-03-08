@@ -46,6 +46,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BWYResFactory, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\library\BWYResFactory.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -1987,6 +1991,7 @@
     <Content Include="Views\Authority\_ActionDetailParse.cshtml" />
     <Content Include="Views\Shared\NotPermission.cshtml" />
     <Content Include="Views\Home\SysSetting.cshtml" />
+    <Content Include="Views\Server\ServerPage2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\com\" />

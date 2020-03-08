@@ -25,6 +25,22 @@ namespace Bll
                 //    SDPCRL.BLL.BUS.ServerInfo.IPAddress = info.ipAddress;
                 //    SDPCRL.BLL.BUS.ServerInfo.Point = info.point;
                 //}
+                if (info == null)
+                {
+                    var all = new SQLite().SelectAllServer();
+                    if (all != null && all.Count > 0)
+                    {
+                        //522 至少需要有一个数据层服务是当前连接。
+                        throw new SDPCRL.CORE.LibExceptionBase(522);
+                    }
+                    else
+                    {
+                        SDPCRL.BLL.BUS.ServerInfo.IPAddress = string.Empty;
+                        SDPCRL.BLL.BUS.ServerInfo.ConnectType = string.Empty;
+                        SDPCRL.BLL.BUS.ServerInfo.Point = 0;
+                    }
+
+                }
             }
             else
             {

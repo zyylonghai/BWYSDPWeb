@@ -37,6 +37,9 @@ namespace BWYSDPWeb.Com
 
         public Language Language { get; set; }
 
+        /// <summary>是否创建Form表单(该属性只对通过HtmlHelp生成的 有效)</summary>
+        public bool HasCreateForm { get; set; }
+
         //public ProgBaseViewModel viewModel { get; set; }
 
         /// <summary>
@@ -179,7 +182,7 @@ namespace BWYSDPWeb.Com
         /// </summary>
         public void CreateFormForHtmlHelp()
         {
-            _page.Append("<form id = \"\" class=\"form-horizontal\" action=\"/"+(string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm)+ "/Save?sdp_pageid=" + this._progid + "&sdp_dsid=" + this.DSID + "\" method = \"post\">");
+            _page.Append("<form id = \"form_"+this._progid+"\" class=\"form-horizontal\" action=\"/"+(string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm)+ "/Save?sdp_pageid=" + this._progid + "&sdp_dsid=" + this.DSID + "\" method = \"post\">");
             //_page.Append("@using(Html.BeginForm(\"Save\", \"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\"" + this.DSID + "\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\""+string .Format("sdp_{0}form",this._progid) +"\",@enctype=\"multipart/form-data\" }))");
             //_page.Append("{");
         }
@@ -724,7 +727,20 @@ namespace BWYSDPWeb.Com
                             table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                         }
                         else
+                        {
+                            if (!string.IsNullOrEmpty(field.Formatter))
+                            {
+                                if (field.Formatter.Contains(SysConstManage.DollarSign))
+                                {
+                                    table.Append(string.Format("return {0};", field.Formatter.Split('.')[1]));
+                                }
+                                else
+                                {
+                                    table.Append(string.Format("return \"<div {0}>\" + row." + field.Formatter + " + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                                }
+                            }
                             table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
                         table.Append("}");
                         if (childgrid.HasSummary)
                         {
@@ -802,7 +818,20 @@ namespace BWYSDPWeb.Com
                     table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                 }
                 else
+                {
+                    if (!string.IsNullOrEmpty(field.Formatter))
+                    {
+                        if (field.Formatter.Contains(SysConstManage.DollarSign))
+                        {
+                            table.Append(string.Format("return {0};", field.Formatter.Split('.')[1]));
+                        }
+                        else
+                        {
+                            table.Append(string.Format("return \"<div {0}>\" + row." + field.Formatter + " + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
+                    }
                     table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                }
                 table.Append("}");
                 if (grid.HasSummary)
                 {
@@ -939,7 +968,20 @@ namespace BWYSDPWeb.Com
                             table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                         }
                         else
+                        {
+                            if (!string.IsNullOrEmpty(field.Formatter))
+                            {
+                                if (field.Formatter.Contains(SysConstManage.DollarSign))
+                                {
+                                    table.Append(string.Format("return {0};", field.Formatter.Split('.')[1]));
+                                }
+                                else
+                                {
+                                    table.Append(string.Format("return \"<div {0}>\" + row." + field.Formatter + " + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                                }
+                            }
                             table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
                         table.Append("}");
                         if (childgrid.HasSummary)
                         {
@@ -1017,7 +1059,21 @@ namespace BWYSDPWeb.Com
                     table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                 }
                 else
-                    table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                {
+                    if (!string.IsNullOrEmpty(field.Formatter))
+                    {
+                        if (field.Formatter.Contains(SysConstManage.DollarSign))
+                        {
+                            table.Append(string.Format("return {0};", field.Formatter.Split('.')[1]));
+                        }
+                        else
+                        {
+                            table.Append(string.Format("return \"<div {0}>\" + row." + field.Formatter + " + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
+                    }
+                    else
+                        table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                }
                 table.Append("}");
                 if (grid.HasSummary)
                 {
@@ -1122,7 +1178,8 @@ namespace BWYSDPWeb.Com
             }
             else
             {
-                _page.Append("</form>");
+                if (HasCreateForm)
+                    _page.Append("</form>");
             }
             #region 添加搜索控件的模态框。
             if (this._hasSearchModal)
