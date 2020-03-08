@@ -529,8 +529,19 @@ namespace BWYSDPWeb.BaseController
         [HttpPost]
         public ActionResult Save()
         {
+            #region 数据有效性验证
+            if (this.LibTables == null)
+            {
+                //msg000000017   出现严重异常，LibTables为NUll,请刷新页面重试。
+                this.ThrowErrorException(17);
+            }
+            if (this.LibTables[0].Tables[0] == null || this.LibTables[0].Tables[0].Rows.Count == 0)
+            {
+                //msg000000018   出现严重异常，主表无数据，请确认。
+                this.ThrowErrorException(18);
+            }
+            #endregion 
             //HttpPostedFileBase file = this.Request.Files[0];
-
             #region 处理前端传回的数据
             var formdata = this.Request.Form;
             string[] array;

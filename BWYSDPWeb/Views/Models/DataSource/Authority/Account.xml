@@ -19,6 +19,7 @@
               <Name>UserId</Name>
               <AliasName />
               <DisplayName>账户号</DisplayName>
+              <ObjFieldName>UserId</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>20</FieldLength>
@@ -38,6 +39,7 @@
               <Name>UserNm</Name>
               <AliasName />
               <DisplayName>账户名</DisplayName>
+              <ObjFieldName>UserNm</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>30</FieldLength>
@@ -57,6 +59,7 @@
               <Name>Password</Name>
               <AliasName />
               <DisplayName>密码</DisplayName>
+              <ObjFieldName>Password</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>150</FieldLength>
@@ -76,6 +79,7 @@
               <Name>Status</Name>
               <AliasName />
               <DisplayName>状态</DisplayName>
+              <ObjFieldName>Status</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>2</FieldLength>
@@ -117,6 +121,7 @@
               <Name>Creater</Name>
               <AliasName />
               <DisplayName>创建者</DisplayName>
+              <ObjFieldName />
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>30</FieldLength>
@@ -155,6 +160,7 @@
               <Name>LastmodifyUser</Name>
               <AliasName />
               <DisplayName>最后修改者</DisplayName>
+              <ObjFieldName />
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>30</FieldLength>
@@ -174,6 +180,7 @@
               <Name>LastmodifyDate</Name>
               <AliasName />
               <DisplayName>最后修改日期</DisplayName>
+              <ObjFieldName />
               <OrignNm />
               <FieldType>DateTime</FieldType>
               <FieldLength>0</FieldLength>
@@ -193,6 +200,7 @@
               <Name>Confirmpwd</Name>
               <AliasName />
               <DisplayName>确认密码</DisplayName>
+              <ObjFieldName>Confirmpwd</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>150</FieldLength>
@@ -212,6 +220,7 @@
               <Name>loginIP</Name>
               <AliasName />
               <DisplayName>最后登录IP</DisplayName>
+              <ObjFieldName>loginIP</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>15</FieldLength>
@@ -231,6 +240,7 @@
               <Name>LoginDT</Name>
               <AliasName />
               <DisplayName>最后登录时间</DisplayName>
+              <ObjFieldName>LoginDT</ObjFieldName>
               <OrignNm />
               <FieldType>DateTime</FieldType>
               <FieldLength>0</FieldLength>
@@ -250,6 +260,7 @@
               <Name>IsLogin</Name>
               <AliasName />
               <DisplayName>是否已登录</DisplayName>
+              <ObjFieldName>IsLogin</ObjFieldName>
               <OrignNm />
               <FieldType>Byte</FieldType>
               <FieldLength>0</FieldLength>
@@ -284,6 +295,7 @@
               <Name>PasswordKey</Name>
               <AliasName />
               <DisplayName>密码秘钥</DisplayName>
+              <ObjFieldName>PasswordKey</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>150</FieldLength>
@@ -323,6 +335,7 @@
               <Name>UserId</Name>
               <AliasName />
               <DisplayName>账户号</DisplayName>
+              <ObjFieldName>UserId</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>20</FieldLength>
@@ -342,6 +355,7 @@
               <Name>JoleId</Name>
               <AliasName />
               <DisplayName>角色编号</DisplayName>
+              <ObjFieldName>JoleId</ObjFieldName>
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>15</FieldLength>
@@ -431,6 +445,7 @@
               <Name>Creater</Name>
               <AliasName />
               <DisplayName>创建者</DisplayName>
+              <ObjFieldName />
               <OrignNm />
               <FieldType>String</FieldType>
               <FieldLength>30</FieldLength>
@@ -450,6 +465,7 @@
               <Name>CreateDate</Name>
               <AliasName />
               <DisplayName>创建时间</DisplayName>
+              <ObjFieldName />
               <OrignNm />
               <FieldType>DateTime</FieldType>
               <FieldLength>0</FieldLength>

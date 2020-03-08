@@ -12,7 +12,8 @@
 
 <script type="text/javascript">
     $(function () {
-        $('#ServerSetting_accountid').click(function () { GetAccout(); });
+        let accountid = GetInputId("accountid");
+        $('#' + accountid).click(function () { GetAccout(); });
         });
 
     function GetAccout() {

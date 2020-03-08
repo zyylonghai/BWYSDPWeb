@@ -13,6 +13,13 @@ namespace BWYSDPWeb.BllComController
 {
     public class CodeRuleConfigController : ComController
     {
+        protected override void PageLoad()
+        {
+            base.PageLoad();
+            var tbobj = this.LibTables[0].Tables[0];
+            tbobj.DeleteRow(0);
+            tbobj.DataTable.AcceptChanges();
+        }
         protected override void SetSearchFieldExt(List<SearchConditionField> fields, string fieldNm, int flag)
         {
             base.SetSearchFieldExt(fields, fieldNm, flag);
