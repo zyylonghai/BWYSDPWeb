@@ -570,6 +570,9 @@ namespace BWYSDPWeb.Com
                 _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btngriddelete\")");//删除
                 _page.Append("</button>");
             }
+            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"\">");
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//删除
+            _page.Append("</button>");
             if (grid.GdButtons != null)
             {
                 foreach (LibGridButton btn in grid.GdButtons)
@@ -634,6 +637,10 @@ namespace BWYSDPWeb.Com
                 _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngriddelete") + "");//删除
                 _page.Append("</button>");
             }
+            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"\">");
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//删除
+            _page.Append("</button>");
+
             if (grid.GdButtons != null)
             {
                 foreach (LibGridButton btn in grid.GdButtons)
@@ -1075,7 +1082,7 @@ namespace BWYSDPWeb.Com
                         table.Append(string.Format("return \"<div {0}>\" + value + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                 }
                 table.Append("}");
-                if (grid.HasSummary)
+                if(grid.HasSummary)
                 {
                     //设置汇总行，
                     table.Append(",footerFormatter: function() {return '汇总'}");

@@ -6,8 +6,12 @@ namespace BWYSDPWeb.App_Start
 {
     public class LibException : HandleErrorAttribute
     {
+        LogHelp logHelp { get { return new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", "")); } }
         public override void OnException(ExceptionContext filterContext)
         {
+            #region 写日志
+            logHelp.WriteLog(filterContext .HttpContext.Request .Url .ToString (),filterContext.Exception);
+            #endregion 
             if (!filterContext.HttpContext.Request.IsAjaxRequest())
             {
                 if (filterContext.Exception.GetType().Equals(typeof(System.Runtime.Remoting.RemotingException)))

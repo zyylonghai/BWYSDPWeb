@@ -147,6 +147,7 @@ function LibTable(id)
         controlnm: "",
         cmd:""
     };
+    this.$queryParams = {};
     this.testid = id;
     this.flag = 0;//标识。主要用于搜索模态框是单据上的搜索，还是来源主数据的搜索。1标识单据的搜索，2标识来源主数据的搜索
     this.ctrnm="",//
@@ -219,8 +220,10 @@ LibTable.prototype = {
                     page: (params.offset / params.limit) + 1,   //页码
                     sort: params.sort,      //排序列名  
                     sortOrder: params.order //排位命令（desc，asc） 
+                    
                     //defindfield:"zyy"
                 };
+                tbobj.AddqueryParams(temp, params);
                 return temp;
             },
             columns: this.$table.columns,
@@ -426,7 +429,10 @@ LibTable.prototype = {
         //    thisobj.RowsOfEdit.splice(index, 1);
         //});
     },
-    DbClickRow: function (row, elem, tbnm) { }
+    DbClickRow: function (row, elem, tbnm) { },
+    AddqueryParams: function (params,search) {
+
+    }
     
 }
 

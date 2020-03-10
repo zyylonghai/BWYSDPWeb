@@ -21,7 +21,7 @@
             background-color:cyan;
         }
     </style>
-    <title>Clearmin template</title>
+    <title>BWY SYSTEM</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
@@ -279,6 +279,9 @@ String.prototype.toBase64 = function(){
                     {
                     <li>
                         <a href="@Url.Action("ServerPage", "Server")"><i class="fa fa-fw fa-user"></i>@Html.GetMessage("ServerSetting")</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("LogSearch", "Home")"><i class="fa fa-fw fa-user"></i>@Html.GetMessage("LogSearch")</a>
                     </li>
                     }
                     <li>

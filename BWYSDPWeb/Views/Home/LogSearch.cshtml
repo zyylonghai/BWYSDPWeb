@@ -1,0 +1,115 @@
+﻿@Styles.Render("~/Content/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTable")
+@Scripts.Render("~/bundles/bootstrapTableExport")
+@Scripts.Render("~/bundles/searchmodal")
+@Scripts.Render("~/bundles/TableModal")
+@Scripts.Render("~/Scripts/lib/laydate/laydate")
+<div class="container-fluid">
+    <nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+        <div class="cm-flex">
+            <div class="nav-tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#ExceptionLog" data-toggle="tab">@Html.GetMessage("ExceptionLog")</a></li>
+                    <li><a href="#OperationLog" data-toggle="tab">@Html.GetMessage("OperationLog")</a></li>
+                    @*<li><a href="#personalization" data-toggle="tab">@Html.GetMessage("Personalization")</a></li>*@
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="ExceptionLog">
+        <div class="container-fluid">
+            <div class="panel-group" id="exception">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#exception" href="#content">@Html.GetMessage("ExceptionLogList")</a>
+                        </h4>
+                    </div>
+                    <div id="content" class="panel-collapse in">
+                        <div class="panel-body">
+                            <div id="extb_toolbar" class="btn-group">
+                                <button id="btndelete" type="button" class="btn btn-default">清除</button>
+                            </div>
+                            <table id="excetiontb"></table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="OperationLog">
+        <div class="container-fluid">
+        </div>
+    </div>
+    @*<div class="tab-pane fade" id="personalization">
+            <div class="container-fluid">
+            </div>
+        </div>*@
+</div>
+
+<script>
+    $(function () {
+        var tb = new LibTable("excetiontb");
+        tb.$table.url = "@Url.Action("GetExceptionData")";
+        tb.$table.columns = [
+            { checkbox: true, visible: true },
+            {
+                field: 'FileNm', title: '日志文件', align: 'center', sortable: false, visible: true, switchable: true,
+                formatter: function (value, row, index) {
+                    return "<a href='javascript:;' class='btn btn-xs green' onclick=\"Showlogcontent('"+value +"')\" title='查看'>" + value + "</span></a>";
+                }
+            },
+            { field: 'DateTime', title: '产生时间', align: 'center', sortable: false, visible: true, switchable: true },
+            { field: 'Head', title: 'url', align: 'center', sortable: false, visible: true, switchable: true}
+        ];
+        tb.$table.hasoperation = false;
+        tb.$table.toolbar = "#extb_toolbar";
+        tb.$table.search = true;
+        tb.initialTable();
+        tb.AddqueryParams = function (params, search) {
+            params.url = search.search;
+        }
+
+        $('#btndelete').click(function () {
+            var seletdr = $('#excetiontb').bootstrapTable('getSelections');
+            var files = [];
+            $.each(seletdr, function (index, dr) {
+                files.push(dr.FileNm);
+            });
+            $.ajax({
+                type: "POST",
+                url: '/Home/Deletelogfile',
+                data: {files },
+                //data: fileData,
+                dataType: "Json",
+                success: function (data) {
+                    $('#excetiontb').bootstrapTable('refresh');
+                },
+                error: function () {
+                }
+            });
+        });
+    });
+    function Showlogcontent(file) {
+        var html;
+        $.ajax({
+            type: "POST",
+            url: '/Home/ReadLogfile',
+            data: { filenm:file },
+            //data: fileData,
+            dataType: "Json",
+            success: function (data) {
+                html = "<div>" + data.message + "</div>";
+                ShowComModal("异常信息", html);
+                $('#sdp_comModal_btnok').hide();
+            },
+            error: function () {
+            }
+        });
+    }
+</script>
+
+

@@ -1992,6 +1992,7 @@
     <Content Include="Views\Shared\NotPermission.cshtml" />
     <Content Include="Views\Home\SysSetting.cshtml" />
     <Content Include="Views\Server\ServerPage2.cshtml" />
+    <Content Include="Views\Home\LogSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\com\" />
