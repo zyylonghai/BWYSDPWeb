@@ -52,6 +52,7 @@ namespace Bll
                     }
                     //cmd.Connection.Close();
                 }
+                cn.Close();
 
             }
 
@@ -238,6 +239,7 @@ namespace Bll
                         transaction.Rollback();
                     }
                 }
+                cn.Close();
             }
         }
 
