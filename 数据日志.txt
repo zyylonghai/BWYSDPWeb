@@ -1,0 +1,16 @@
+数据日志(DataLogsM)
+(
+     logId,/*日志ID 主键*/
+     ProgId,/*功能ID*/
+     TableNm, /*实际表名*/
+     RowKey, /*数据行的主键值*/
+)
+数据日志明细(DataLogsD)
+(
+   logId,/*日志ID 主键*/
+   Action, /*动作：1 新增，2 修改，3 删除*/
+   UserId, /*登录用户账号*/
+   Ip, /*客户端Ip*/
+   DT, /*更新日期时间*/
+   Content, /*日志内容*/
+)

@@ -89,6 +89,44 @@ namespace BWYSDPWeb.BllComController
             //}
             #endregion
             string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
+            //var obj = new { a = "kk", b = 2 };
+            //Newtonsoft.Json.Linq.JObject jsonobj = new Newtonsoft.Json.Linq.JObject();
+            //jsonobj.Add("nm", "zyytest");
+            //jsonobj.Add("DT", System.DateTime.Now);
+            //jsonobj.Add("age", 22);
+            //jsonobj.Add("isright", true);
+            //jsonobj.Add("aa", 33.66);
+            //jsonobj.Add("bb", new byte[] { 101, 102 });
+
+            //Newtonsoft.Json.Linq.JObject jsonobj2 = new Newtonsoft.Json.Linq.JObject();
+            //jsonobj2.Add("nm", "zyytest");
+            //jsonobj2.Add("aa", 33.66);
+            //jsonobj2.Add("isright", true);
+            //jsonobj2.Add("DT", System.DateTime.Now);
+            //jsonobj2.Add("age", 22);
+            //jsonobj2.Add("bb", new byte[] { 101, 102 });
+
+            //Newtonsoft.Json.Linq.JObject jsonobj3 = new Newtonsoft.Json.Linq.JObject();
+            //jsonobj3.Add("nm", "zyytest");
+            //jsonobj3.Add("DT", System.DateTime.Now);
+            //jsonobj3.Add("age", 22);
+            //jsonobj3.Add("isright", true);
+            //jsonobj3.Add("aa", 33.66);
+            //jsonobj3.Add("bb", new byte[] { 101, 102 });
+
+            //if (object.Equals(jsonobj , jsonobj3))
+            //{
+                
+            //}
+
+            //string objson = JsonConvert.SerializeObject(jsonobj);
+            //Object o = JsonConvert.DeserializeObject(objson);
+            //Newtonsoft.Json.Linq.JObject jobj = (Newtonsoft.Json.Linq.JObject)o;
+            //foreach (var item in jobj)
+            //{
+               
+            //}
+            //string a = jobj["a"].ToString ();
             //row = this.LibTables[1].Tables[1].NewRow();
             //row["BillNo"] = "T201903160001";
             //row["RowNo"] = 2;
@@ -105,8 +143,8 @@ namespace BWYSDPWeb.BllComController
             //var dr = this.LibTables[0].Tables[1].NewRow();
             //dr.check1 = "skdfj";
             //dr.check2 = "chedk";
-            var tbobj = this.LibTables[0].Tables[0];
-            tbobj.FindRow(0).ID = "T20102102";
+            //var tbobj = this.LibTables[0].Tables[0];
+            //tbobj.FindRow(0).ID = "T20102102";
             //this.ThrowErrorException("zyylonghai错误猜测是");
             //this.AddMessage("测试错误提示", SDPCRL.CORE.LibMessageType.Error);
             //this.AddMessage("测试错误提示2", SDPCRL.CORE.LibMessageType.Error);

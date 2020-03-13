@@ -4,16 +4,7 @@
         <a href="#action" data-toggle="tab">操作对象设置</a>
     </li>
     <li><a href="#data" data-toggle="tab">数据对象设置</a></li>
-    @*<li class="dropdown">
-            <a href="#" id="myTabDrop1" class="dropdown-toggle"
-               data-toggle="dropdown">
-                Java <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
-                <li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>
-                <li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>
-            </ul>
-        </li>*@
+    <li><a href="#userSearch" data-toggle="tab">用户数据查询权设置</a></li>
 </ul>
 <form id="content">
     <div id="myTabContent" class="tab-content">
@@ -23,7 +14,7 @@
                     if (Model != null)
                     {
                         string pregroupid = string.Empty;
-                        var groups = Model.ActObjList.GroupBy(i =>new { i.GroupId,i.GroupNm }).ToList();
+                        var groups = Model.ActObjList.GroupBy(i => new { i.GroupId, i.GroupNm }).ToList();
                         foreach (var item in groups)
                         {
                             var list = Model.ActObjList.Where(i => i.GroupId == item.Key.GroupId).ToList();
@@ -36,11 +27,11 @@
                                             {
                                                 if (o.IsAuthority)
                                                 {
-                                                   <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
+                                                    <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)" checked="checked" />@o.ObjectNm</li>
                                                 }
                                                 else
                                                 {
-                                                   <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)"/>@o.ObjectNm</li>
+                                                    <li><input type="checkbox" name="@string.Format("{0}.{1}", o.GroupId, o.ObjectId)" />@o.ObjectNm</li>
                                                 }
                                             }
                                         </ul>
@@ -86,6 +77,9 @@
                     }
                 }
             </div>
+        </div>
+        <div class="tab-pane fade" id="userSearch">
+
         </div>
     </div>
 </form>

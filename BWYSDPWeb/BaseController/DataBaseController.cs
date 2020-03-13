@@ -1428,7 +1428,7 @@ namespace BWYSDPWeb.BaseController
                             foreach (DataColumn col in dtobj.DataTable.Columns)
                             {
                                 colextprop = col.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                                if (!colextprop.IsActive) continue;
+                                if (!colextprop.IsActive || col.ColumnName ==SysConstManage.Sdp_LogId) continue;
                                 if (this.SessionObj.ProgBaseVM != null && 
                                     this.SessionObj.ProgBaseVM.AuthorityObjs.FirstOrDefault(i => i.ObjectType == 2 && i.ObjectId ==(string .IsNullOrEmpty(colextprop .AliasName )?col.ColumnName:colextprop .AliasName))!=null)
                                 {

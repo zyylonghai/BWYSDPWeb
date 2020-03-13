@@ -12,6 +12,7 @@ namespace BWYSDPWeb.Com
 {
     public class AppCom
     {
+        public static LogHelp LogHelp { get { return new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", "")); } }
         /// <summary>
         /// 获取字段或字符串的多语言描述
         /// </summary>
@@ -78,6 +79,8 @@ namespace BWYSDPWeb.Com
             return results;
            
         }
+
+
 
         #region cookie
         public static void AddorUpdateCookies(string cookieNm, string key, string value)

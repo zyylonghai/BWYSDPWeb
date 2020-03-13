@@ -1,4 +1,5 @@
 ﻿using BWYSDPWeb.BaseController;
+using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using Com;
 using Newtonsoft.Json;
@@ -121,8 +122,8 @@ namespace BWYSDPWeb.Controllers
             DataTable dt =(DataTable)cach.GetCach("sdp_logdata");
             if (dt == null || dt.Rows.Count == 0)
             {
-                LogHelp logHelp = new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", ""));
-                var loginfos = logHelp.GetLogInfos().OrderByDescending(i => i.DateTime).ToList();
+                //LogHelp logHelp = new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", ""));
+                var loginfos = AppCom.LogHelp .GetLogInfos().OrderByDescending(i => i.DateTime).ToList();
                 dt = LibSysUtils.ToDataTable(loginfos);
                 cach.AddCachItem("sdp_logdata", dt, DateTime.Now.AddSeconds(60));
             }
@@ -139,8 +140,8 @@ namespace BWYSDPWeb.Controllers
 
         public ActionResult Deletelogfile(List<string> files)
         {
-            LogHelp logHelp = new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", ""));
-            logHelp.DeleteLogFileBatch(files);
+            //LogHelp logHelp = new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", ""));
+           AppCom .LogHelp.DeleteLogFileBatch(files);
             CachHelp cach = new CachHelp();
             cach.RemoveCache("sdp_logdata");
             return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
@@ -148,9 +149,9 @@ namespace BWYSDPWeb.Controllers
 
         public ActionResult ReadLogfile(string filenm)
         {
-            LogHelp logHelp = new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", ""));
-            logHelp.ReadLogFile(filenm);
-            return Json(new { message = logHelp.ReadLogFile(filenm) }, JsonRequestBehavior.AllowGet);
+            //LogHelp logHelp = new LogHelp(System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", ""));
+            AppCom.LogHelp.ReadLogFile(filenm);
+            return Json(new { message = AppCom.LogHelp.ReadLogFile(filenm) }, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
