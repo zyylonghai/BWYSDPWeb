@@ -155,6 +155,7 @@ namespace BWYSDPWeb.BllsysSettingController
             info.serverNm = this.Request.Params["serverNm"] ?? string.Empty;
             info.IsCurrentServer = true;
             SQLite sqlite = new SQLite();
+            sqlite.SetAllServerNoCurrent();
             //var dt= sqlite.SelectAllServer();
             sqlite.Insert(info);
 

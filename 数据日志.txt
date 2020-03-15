@@ -1,16 +1,54 @@
-数据日志(DataLogsM)
+﻿数据日志(DataLogsM)
 (
-     logId,/*日志ID 主键*/
-     ProgId,/*功能ID*/
-     TableNm, /*实际表名*/
-     RowKey, /*数据行的主键值*/
+     ID(自增长，主键)
+     LogId, /*日志id*/
+     TableNm,/*实际表名*/
 )
 数据日志明细(DataLogsD)
 (
-   logId,/*日志ID 主键*/
+   ID,/*主键 来源DataLogsM*/ 
    Action, /*动作：1 新增，2 修改，3 删除*/
    UserId, /*登录用户账号*/
    Ip, /*客户端Ip*/
    DT, /*更新日期时间*/
-   Content, /*日志内容*/
+   FieldNm,/*字段名*/
+   FieldValue, /*新的字段值*/
+   OldFieldValue, /*旧的字段值*/
 )
+主键（ID，Action，UserId，Ip，DT）
+
+
+
+
+/***************************************存储过程***************************************/
+
+USE [BWYDB_Log]
+GO
+/****** Object:  StoredProcedure [dbo].[p_addlogM]    Script Date: 03/15/2020 13:37:05 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+  ALTER proc [dbo].[p_addlogM]
+  @logid nvarchar(50),
+  @tablenm nvarchar(50),
+  @logtbnm varchar(35) output
+  as
+  begin
+     declare @minqty bigint
+     select @logtbnm=ab.name,@minqty=ab.rows from(SELECT top 1 a.name, b.rows
+     FROM sysobjects AS a INNER JOIN sysindexes AS b ON a.id = b.id
+     WHERE (a.type = 'u') AND (b.indid IN (0, 1)) order by b.rows) ab
+     if(@minqty>=5000000)
+     begin
+      set @logtbnm= 'DataLogsM'+CONVERT(varchar(35), CONVERT(int, substring(@logtbnm,10,10))+1)
+      exec('CREATE TABLE [dbo].'+@logtbnm+'(
+                                            [ID] [bigint] IDENTITY(1,1) NOT NULL primary key,
+                                            [LogId] [nvarchar](50) NOT NULL,
+                                            [TableNm] [nvarchar](30) NOT NULL)')
+     end
+     declare @sqlstr varchar(1000)
+     set @sqlstr='insert into '+ @logtbnm+'(LogId,TableNm) values('''+@logid+''','''+@tablenm+''')'
+     EXEC(@sqlstr)
+     exec('select top 1 '''+@logtbnm+''' as logtbnm, ID from '+@logtbnm+' order by ID desc')
+  end

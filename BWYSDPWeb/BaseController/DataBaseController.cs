@@ -282,7 +282,7 @@ namespace BWYSDPWeb.BaseController
                         }
                         else
                         {
-                            rows = data.Rows.Where(i => i.JoleId == "001" && i.ProgId!=DBNull.Value&& i.ProgId == this.ProgID);
+                            rows = data.Rows.Where(i => i.JoleId == "001" && i.ProgId == this.ProgID);
                             if (rows.Count() > 0)
                             {
                                 CheckAuthorityObj(viewModel, formpage, rows);

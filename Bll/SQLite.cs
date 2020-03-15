@@ -74,10 +74,12 @@ namespace Bll
                             info.accountname,
                             info.IsCurrentServer);
                         cmd.ExecuteNonQuery();
+                        cn.Close();
                         return true;
                     }
                     catch (Exception ex)
                     {
+                        cn.Close();
                         return false;
                     }
                 }
@@ -247,6 +249,32 @@ namespace Bll
                         return false;
                     }
                 }
+            }
+        }
+
+        public bool SetAllServerNoCurrent()
+        {
+            using (SQLiteConnection cn = new SQLiteConnection(connectStr))
+            {
+                //在打开数据库时，会判断数据库是否存在，如果不存在，则在当前目录下创建一个 
+                cn.Open();
+                using (SQLiteCommand cmd = new SQLiteCommand())
+                {
+                    cmd.Connection = cn;
+                    try
+                    {
+                        cmd.CommandText = string.Format("update ServerInfo set IsCurrentServer='{0}'", false);
+                        cmd.ExecuteNonQuery();
+                        cn.Close();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        cn.Close();
+                        return false;
+                    }
+                }
+                
             }
         }
     }

@@ -571,7 +571,7 @@ namespace BWYSDPWeb.Com
                 _page.Append("</button>");
             }
             _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"\">");
-            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//删除
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//复制
             _page.Append("</button>");
             if (grid.GdButtons != null)
             {
