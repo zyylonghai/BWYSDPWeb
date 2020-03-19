@@ -777,7 +777,10 @@ namespace BWYSDPWeb.BaseController
         {
             if (_bll == null) this._bll = new BllDataBase();
             string _msg = string.Empty;
-            LibClientInfo clientInfo = new LibClientInfo { Language = this.Language, SessionId = System.Web.HttpContext.Current.Session.SessionID};
+            LibClientInfo clientInfo = new LibClientInfo { 
+                Language = this.Language, 
+                SessionId = System.Web.HttpContext.Current.Session.SessionID,
+                UserId = this.UserInfo == null ? string.Empty : this.UserInfo.UserId };
             DalResult dalResult = _bll.ExecuteMethod(clientInfo ,this.ProgID, method, this.LibTables, param);
             if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
             {
@@ -809,7 +812,10 @@ namespace BWYSDPWeb.BaseController
         public DalResult ExecuteDalMethod(string funcId, string method, params object[] param)
         {
             if (_bll == null) this._bll = new BllDataBase();
-            LibClientInfo clientInfo = new LibClientInfo { Language = this.Language, SessionId = System.Web.HttpContext.Current.Session.SessionID };
+            LibClientInfo clientInfo = new LibClientInfo { 
+                Language = this.Language, 
+                SessionId = System.Web.HttpContext.Current.Session.SessionID, 
+                UserId=this.UserInfo==null?string .Empty : this.UserInfo.UserId };
             DalResult dalResult = _bll.ExecuteMethod(clientInfo , funcId, method, null, param);
             string _msg = string.Empty;
             if (dalResult != null && dalResult.ErrorMsglst != null && dalResult.ErrorMsglst.Count > 0)
@@ -840,6 +846,10 @@ namespace BWYSDPWeb.BaseController
         {
             if (_bll == null) this._bll = new BllDataBase();
             LibClientInfo clientInfo = new LibClientInfo();
+            clientInfo.UserId = this.UserInfo == null ? string.Empty : this.UserInfo.UserId;
+            clientInfo.SessionId = System.Web.HttpContext.Current.Session.SessionID;
+            clientInfo.Language = this.Language;
+            clientInfo.IP = System.Web.HttpContext.Current.Request.UserHostAddress;
             DalResult dalResult = (DalResult)_bll.ExecuteDalSaveMethod(clientInfo, this.ProgID, method, tables);
             this.AddMessagelist(dalResult.Messagelist);
             return dalResult;

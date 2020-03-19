@@ -22,33 +22,54 @@
 
 /***************************************存储过程***************************************/
 
-USE [BWYDB_Log]
-GO
-/****** Object:  StoredProcedure [dbo].[p_addlogM]    Script Date: 03/15/2020 13:37:05 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-  ALTER proc [dbo].[p_addlogM]
+ALTER proc [dbo].[p_addlogM]
   @logid nvarchar(50),
   @tablenm nvarchar(50),
+  @ID bigint output,
+  @logtbnm nvarchar(35) output
+  as
+  begin
+     insert into DataLogsM(LogId,TableNm) values(@logid,@tablenm)
+     select top 1 @ID=ID From DataLogsM order by ID desc
+     set @logtbnm='DataLogsD'+CONVERT(nvarchar(35),@ID%100)
+
+	 if not exists(SELECT a.name FROM sysobjects AS a INNER JOIN sysindexes AS b ON a.id = b.id WHERE (a.type = 'u') AND (b.indid IN (0, 1)) and a.name=@logtbnm)
+	 begin
+	    exec('CREATE TABLE [dbo].'+@logtbnm+'(
+                                    [ID] [bigint] NOT NULL ,
+                                    [Action] [char](1) NOT NULL, 
+                                    [UserId] [nvarchar](30) NOT NULL ,
+                                    [IP] [nvarchar](15) NOT NULL ,
+                                    [DT] [datetime] NOT NULL ,
+                                    [FieldNm] [nvarchar](30) NOT NULL ,
+                                    [FieldValue] [ntext] NULL,
+                                    [OldFieldValue] [ntext] NULL,
+                                    CONSTRAINT [PK_'+@logtbnm+'] PRIMARY KEY CLUSTERED (
+                                    [ID] ASC,
+                                    [Action] ASC,
+                                    [UserId] ASC,
+                                    [IP] ASC,
+                                    [DT] ASC,
+                                    [FieldNm] ASC)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+                                    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]')
+	 end
+	 select @ID as 'ID',@logtbnm as 'logtbnm'
+     --declare @sqlstr varchar(1000)
+     --set @sqlstr='insert into '+ @logtbnm+'(LogId,TableNm) values('''+@logid+''','''+@tablenm+''')'
+     --EXEC(@sqlstr)
+     --exec('select top 1 '''+@logtbnm+''' as logtbnm, ID from '+@logtbnm+' order by ID desc')
+  end
+
+
+
+
+  ALTER proc [dbo].[p_GetlogM]
+  @logid nvarchar(50),
+  @tablenm nvarchar(50),
+  @ID bigint output,
   @logtbnm varchar(35) output
   as
   begin
-     declare @minqty bigint
-     select @logtbnm=ab.name,@minqty=ab.rows from(SELECT top 1 a.name, b.rows
-     FROM sysobjects AS a INNER JOIN sysindexes AS b ON a.id = b.id
-     WHERE (a.type = 'u') AND (b.indid IN (0, 1)) order by b.rows) ab
-     if(@minqty>=5000000)
-     begin
-      set @logtbnm= 'DataLogsM'+CONVERT(varchar(35), CONVERT(int, substring(@logtbnm,10,10))+1)
-      exec('CREATE TABLE [dbo].'+@logtbnm+'(
-                                            [ID] [bigint] IDENTITY(1,1) NOT NULL primary key,
-                                            [LogId] [nvarchar](50) NOT NULL,
-                                            [TableNm] [nvarchar](30) NOT NULL)')
-     end
-     declare @sqlstr varchar(1000)
-     set @sqlstr='insert into '+ @logtbnm+'(LogId,TableNm) values('''+@logid+''','''+@tablenm+''')'
-     EXEC(@sqlstr)
-     exec('select top 1 '''+@logtbnm+''' as logtbnm, ID from '+@logtbnm+' order by ID desc')
+  select @ID=ID from DataLogsM where LogId=@logid and TableNm=@tablenm
+  set @logtbnm='DataLogsD'+CONVERT(nvarchar(35),@ID%100)
   end

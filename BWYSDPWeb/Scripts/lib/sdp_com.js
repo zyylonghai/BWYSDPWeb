@@ -133,6 +133,10 @@ function SDP_Edit(ctrNm) {
     });
 }
 
+function SDP_datalogSearch(ctrNm) {
+
+}
+
 function TableBtnEdit(obj, grid) {
     let exist = $(obj).attr("data-toggle");
     if (!exist)
@@ -439,37 +443,3 @@ function GetInputId(fldobjNm) {
     return result;
 }
 
-
-//function GetMsgForSave() {
-//    $.ajax({
-//        url: "/DataBase/GetMsgforSave",
-//        data:"" ,
-//        type: 'Post',
-//        async: false,
-//        dataType: "json",
-//        success: function (obj) {
-//            if (obj != null && obj != undefined && obj.Messagelist != null && obj.Messagelist != undefined) {
-//                let _errors = "";
-//                let _warnings = "";
-//                $.each(obj.Messagelist, function (index, o) {
-//                    if (o.MsgType == 1) {
-//                        _errors += o.Message + "<br/>";
-//                    }
-//                    else if (o.MsgType == 2) {
-//                        _warnings += o.Message + "<br/>";
-//                    }
-                    
-
-//                });
-//                if (_errors.length > 0)
-//                    ShowMsg(_errors, 'error');
-//                if (_warnings.length > 0)
-//                    ShowMsg(_warnings, 'warning');
-                
-//            }
-//        },
-//        error: function (XMLHttpRequest, textStatus, errorThrown) {
-//            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
-//        }
-//    });
-//}

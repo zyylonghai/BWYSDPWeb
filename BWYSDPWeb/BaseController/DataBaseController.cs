@@ -1783,6 +1783,24 @@ namespace BWYSDPWeb.BaseController
             }
             return Json(new { id = string.Empty }, JsonRequestBehavior.AllowGet);
         }
+        #endregion
+
+        #region 数据日志查询相关
+        [HttpGet]
+        public ActionResult DataLogSearch()
+        {
+            if (this.LibTables != null)
+            {
+                foreach (LibTable libTable in this.LibTables)
+                {
+                    foreach (LibTableObj tableObj in libTable.Tables)
+                    {
+                        
+                    }
+                }
+            }
+            return Json(new { });
+        }
         #endregion 
 
         #region Msgforsave信息取值

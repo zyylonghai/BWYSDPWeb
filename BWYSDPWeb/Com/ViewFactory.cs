@@ -164,6 +164,7 @@ namespace BWYSDPWeb.Com
             _page.Append("<button id=\"bwysdp_btnSearch\" type=\"button\" class=\"btn btn-default\" data-toggle=\"modal\" data-target=\"#searchModal\" data-modalnm=\"" + this._pagetitle + "\" data-progid=\"" + this._progid + "\" data-deftb=\"\" data-tbstruct=\"" + GetMastTable() + "\"  data-controlnm=\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "\" data-flag=\"1\">");
             _page.Append("<i class=\"glyphicon glyphicon-search\"></i>@Html.GetMessage(\"sdp_btnsearch\")</button>");
 
+            _page.Append("<button id=\"bwysdp_btnlogSearch\" type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-search\"></i>@Html.GetMessage(\"sdp_btnlogSearch\")</button>");
             _page.Append("</div>");
             _page.Append("<br /><br />");
         }
@@ -1363,6 +1364,7 @@ namespace BWYSDPWeb.Com
                     "});");
                 _script.Append("$('#bwysdp_btnadd').click(function (){ SDP_Add(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
                 _script.Append("$('#bwysdp_btnedit').click(function(){ SDP_Edit(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
+                _script.Append("$('#bwysdp_btnlogSearch').click(function(){ SDP_datalogSearch(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
 
                 #endregion
             }
