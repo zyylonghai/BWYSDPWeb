@@ -1785,37 +1785,13 @@ namespace BWYSDPWeb.BaseController
         }
         #endregion
 
-        #region 数据日志查询相关
-        [HttpGet]
-        public ActionResult DataLogSearch()
-        {
-            if (this.LibTables != null)
-            {
-                foreach (LibTable libTable in this.LibTables)
-                {
-                    foreach (LibTableObj tableObj in libTable.Tables)
-                    {
-                        
-                    }
-                }
-            }
-            return Json(new { });
-        }
-        #endregion 
 
-        #region Msgforsave信息取值
-        //[HttpPost]
-        //public ActionResult GetMsgforSave()
-        //{
-        //    LibMessage[] msglist = null;
-        //    if (this.SessionObj.MsgforSave != null)
-        //    {
-        //        msglist = new LibMessage[this.SessionObj.MsgforSave.Count];
-        //        this.SessionObj.MsgforSave.CopyTo(msglist);
-        //        this.SessionObj.MsgforSave.Clear();
-        //    }
-        //    return Json(new { Messagelist = msglist }, JsonRequestBehavior.AllowGet);
-        //}
+        #region 信息取值
+        [HttpGet]
+        public ActionResult GetMessageBymsgid(string msgid)
+        {
+            return Json(new {message=AppCom .GetMessageDesc(msgid ) },JsonRequestBehavior.AllowGet);
+        }
         #endregion
         #region 受保护方法
         protected virtual void GetGridDataExt(string gridid, DataTable dt)

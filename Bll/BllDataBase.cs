@@ -88,5 +88,12 @@ namespace Bll
         {
             return  (DalResult)this.ExecuteDalMethod(clientInfo, funcId, method,libTables, param);
         }
+
+        public DataTable[] GeDataLog(int language, string method, params object[] param)
+        {
+            return (DataTable[])this.ExecuteLogDalMethod(language, "DataLogFunc", method, param);
+        }
+
+
     }
 }

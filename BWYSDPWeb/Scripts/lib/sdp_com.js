@@ -134,7 +134,20 @@ function SDP_Edit(ctrNm) {
 }
 
 function SDP_datalogSearch(ctrNm) {
-
+    $.ajax({
+        url: "/Home/DataLogSearch",
+        data: "",
+        type: 'Post',
+        async: false,
+        success: function (content) {
+            ShowComModal("数据日志明细", content, function () {
+                CloseComModal();
+            });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
 }
 
 function TableBtnEdit(obj, grid) {
@@ -435,6 +448,24 @@ function GetInputId(fldobjNm) {
         dataType: "json",
         success: function (obj) {
             result= obj.id;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
+    return result;
+}
+
+function GetMessage(msgId) {
+    let result;
+    $.ajax({
+        url: "/DataBase/GetMessageBymsgid",
+        data: { msgId: msgId },
+        type: 'Get',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            result = obj.message;
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);

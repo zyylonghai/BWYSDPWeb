@@ -914,6 +914,12 @@ namespace BWYSDPWeb.BaseController
         {
             return (string)ExecuteMethod("GenerateNoByprogid", this.ProgID).Value;
         }
+
+        public DataTable[] GetDataLog(string method, params object[] param)
+        {
+            if (_bll == null) this._bll = new BllDataBase();
+            return _bll.GeDataLog((int)this.Language, method, param);
+        }
         #endregion
 
         #region 受保护方法

@@ -1993,6 +1993,7 @@
     <Content Include="Views\Home\SysSetting.cshtml" />
     <Content Include="Views\Server\ServerPage2.cshtml" />
     <Content Include="Views\Home\LogSearch.cshtml" />
+    <Content Include="Views\Shared\_DataLogDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\com\" />

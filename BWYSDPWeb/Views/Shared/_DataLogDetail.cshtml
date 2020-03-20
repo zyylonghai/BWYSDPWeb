@@ -1,0 +1,64 @@
+﻿@model ProgViewModel.DataLogViewModel
+<ul class="nav nav-tabs">
+    @{
+        for (int i = 0; i < Model.DataLogObjs.Count; i++)
+        {
+            var item = Model.DataLogObjs[i];
+            if (i == 0)
+            {
+                <li class="active"><a href="#@item.TableNm" data-toggle="tab">@Html.GetMessage("" + item.TableNm + "")</a></li>
+            }
+            else
+            {
+                <li><a href="#@item.TableNm" data-toggle="tab">@Html.GetMessage("" + item.TableNm + "")</a></li>
+            }
+        }
+        }
+</ul>
+<div id="myTabContent" class="tab-content">
+    @{ 
+        foreach (var item in Model.DataLogObjs)
+        {
+        <div class="tab-pane fade" id="@item.TableNm">
+                <div class="panel-group" id="heard_@item.TableNm">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="background-color:#dff0d8; text-align:left">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#heard_@item.TableNm" href="#content_@item.TableNm">@Html.GetMessage(""+ item.TableNm+"")</a>
+                            </h4>
+                        </div>
+                        <div id="content_@item.TableNm" class="panel-collapse in">
+                            <div class="panel-body">
+                                <table id="tb_@item.TableNm">
+                                    <thead>
+                                        <tr>
+                                            @foreach (string fldnm in item.cols)
+                                            {
+                                                <th data-field="DT">更新时间</th>
+                                                <th data-field="UserId">账号</th>
+                                                <th data-field="IP">客户端IP</th>
+                                                <th data-field="Action">更新动作</th>
+                                                <th data-field="@fldnm">@fldnm</th>
+                                            }
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+<script>
+    $(function () {
+        var tbs = $('#myTabContent').find('table').each(function (index, o) {
+            $('#' + o.id).bootstrapTable({
+                data:[]
+            });
+        });
+    })
+
+</script>

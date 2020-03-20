@@ -88,8 +88,21 @@ namespace BWYSDPWeb.BllComController
             //    this.LibTables[1].Tables[1].Rows.Add(row);
             //}
             #endregion
-            string b = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff");
-            //var obj = new { a = "kk", b = 2 };
+            string b = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
+            string b2 = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
+            var obj = new { a = "kk", b = 2 };
+
+            //LibTableObj detail = this.LibTables[1].Tables[0];
+            //for (int i = 0; i < 101; i++)
+            //{
+            //   var row= detail.NewRow();
+            //    row.yingdu = string.Format("{0}{1}", "硬度", i);
+            //    row.naiwendu = string.Format("{0}{1}", "耐温度", i);
+            //    row.xingzhuang = string.Format("{0}{1}", "xingzhuang", i);
+            //    row.midu = string.Format("{0}{1}", "midu", i);
+            //}
+
+
             //Newtonsoft.Json.Linq.JObject jsonobj = new Newtonsoft.Json.Linq.JObject();
             //jsonobj.Add("nm", "zyytest");
             //jsonobj.Add("DT", System.DateTime.Now);
@@ -116,7 +129,7 @@ namespace BWYSDPWeb.BllComController
 
             //if (object.Equals(jsonobj , jsonobj3))
             //{
-                
+
             //}
 
             //string objson = JsonConvert.SerializeObject(jsonobj);
@@ -124,7 +137,7 @@ namespace BWYSDPWeb.BllComController
             //Newtonsoft.Json.Linq.JObject jobj = (Newtonsoft.Json.Linq.JObject)o;
             //foreach (var item in jobj)
             //{
-               
+
             //}
             //string a = jobj["a"].ToString ();
             //row = this.LibTables[1].Tables[1].NewRow();

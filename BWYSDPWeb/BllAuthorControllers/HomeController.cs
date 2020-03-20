@@ -3,6 +3,8 @@ using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using Com;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ProgViewModel;
 using SDPCRL.COM;
 using SDPCRL.CORE;
 using System;
@@ -154,6 +156,95 @@ namespace BWYSDPWeb.Controllers
             return Json(new { message = AppCom.LogHelp.ReadLogFile(filenm) }, JsonRequestBehavior.AllowGet);
         }
         #endregion
+
+        #region 数据日志查询相关
+        [HttpPost]
+        public ActionResult DataLogSearch()
+        {
+            Dictionary<string, List<string>> tablenmAndlogids = new Dictionary<string, List<string>>();
+            List<string> logids = null;
+            DataLogViewModel vm = new DataLogViewModel();
+            ColExtendedProperties colextprop = null;
+            DataLogObj logObj = null;
+            if (this.LibTables != null)
+            {
+                foreach (LibTable libTable in this.LibTables)
+                {
+                    foreach (LibTableObj tableObj in libTable.Tables)
+                    {
+                        logids = new List<string>();
+                        tablenmAndlogids.Add(tableObj.TableName, logids);
+                        logObj = new DataLogObj { TableNm = tableObj.TableName };
+                        if (logObj.cols == null) logObj.cols = new string[] { };
+
+                        vm.DataLogObjs.Add(logObj);
+                        foreach (DataColumn c in tableObj.DataTable .Columns)
+                        {
+                            colextprop = Newtonsoft.Json.JsonConvert.DeserializeObject<ColExtendedProperties>(c.ExtendedProperties[SysConstManage.ExtProp].ToString());
+                            if (!colextprop.IsActive || c.ColumnName ==SysConstManage.Sdp_LogId) continue;
+                            Array.Resize(ref logObj.cols, logObj.cols.Length + 1);
+                            logObj.cols[logObj.cols.Length - 1] = c.ColumnName;
+                        }
+                        foreach (DataRow dr in tableObj.DataTable.Rows)
+                        {
+                            logids.Add(dr[SysConstManage.Sdp_LogId].ToString());
+                        }
+                    }
+                }
+                string b = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
+                DataTable[] result = (DataTable[])this.GetDataLog("SearchData", tablenmAndlogids);
+                string b2 = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
+                if (result != null && result.Length > 0)
+                {
+                    string tbName = string.Empty;
+                    string fldnm = string.Empty;
+                    string fldvalue = string.Empty;
+                    bool hasfind = false;
+                    for (int i = 0; i < result.Length; i++)
+                    {
+                        tbName = result[i].TableName.Split(SysConstManage.Underline)[0];
+                        var o = vm.DataLogObjs.FirstOrDefault(a => a.TableNm == tbName);
+                        if (o != null)
+                        {
+                            if (o.datas == null) o.datas = new object[] { };
+                            List<JObject> jObjects = new List<JObject>();
+                            JObject first = new JObject();
+                            first.Add("DT", result[i].Rows[0]["DT"].ToString ());
+                            first.Add("UserId", result[i].Rows[0]["UserId"].ToString());
+                            first.Add("IP", result[i].Rows[0]["IP"].ToString());
+                            first.Add("Action", result[i].Rows[0]["Action"].ToString());
+                            jObjects.Add(first);
+                            foreach (DataRow row in result[i].Rows)
+                            {
+                                fldnm = row["FieldNm"].ToString();
+                                fldvalue = row["FieldValue"].ToString();
+                                foreach (var jobj in jObjects)
+                                {
+                                    if (jobj.Properties().FirstOrDefault(a => a.Name == fldnm) != null)
+                                    {
+                                        JObject jo = new JObject();
+                                        jo.Add(fldnm, fldvalue);
+                                        jObjects.Add(jo);
+                                        hasfind = true;
+                                        break;
+                                    }
+                                }
+                                if (!hasfind)
+                                {
+                                    first.Add(fldnm, fldvalue);
+                                    hasfind = false;
+                                }
+                            }
+                            Array.Resize(ref o.datas, o.datas.Length + 1);
+                            o.datas[o.datas.Length - 1] = jObjects;
+                        }
+                        string json = o.GetdataJson();
+                    }
+                }
+            }
+              return PartialView("_DataLogDetail", vm);
+        }
+        #endregion 
 
     }
 }
