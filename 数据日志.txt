@@ -22,38 +22,55 @@
 
 /***************************************存储过程***************************************/
 
-ALTER proc [dbo].[p_addlogM]
+USE [BWYDB_Log]
+GO
+/****** Object:  StoredProcedure [dbo].[p_addlogM]    Script Date: 03/22/2020 15:11:08 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+  ALTER proc [dbo].[p_addlogM]
   @logid nvarchar(50),
   @tablenm nvarchar(50),
   @ID bigint output,
-  @logtbnm nvarchar(35) output
+  @logtbnm varchar(35) output
   as
   begin
+     --declare @minqty bigint
+     
      insert into DataLogsM(LogId,TableNm) values(@logid,@tablenm)
      select top 1 @ID=ID From DataLogsM order by ID desc
-     set @logtbnm='DataLogsD'+CONVERT(nvarchar(35),@ID%100)
+     set @logtbnm='DataLogsD'+CONVERT(varchar(35),@ID%100)
+     
+     if not exists(SELECT a.name
+     FROM sysobjects AS a INNER JOIN sysindexes AS b ON a.id = b.id
+     WHERE (a.type = 'u') AND (b.indid IN (0, 1)) and a.name =@logtbnm)
+     begin
+       exec('CREATE TABLE [dbo].'+@logtbnm+'(
+                                        [ID] [bigint] NOT NULL ,
+                                        [Action] [char](1) NOT NULL, 
+                                        [UserId] [nvarchar](30) NOT NULL ,
+                                        [IP] [nvarchar](15) NOT NULL ,
+                                        [DT] [datetime] NOT NULL ,
+                                        [FieldNm] [nvarchar](30) NOT NULL ,
+                                        [FieldValue] [ntext] NULL,
+                                        [OldFieldValue] [ntext] NULL,
+                                        CONSTRAINT [PK_'+@logtbnm+'] PRIMARY KEY CLUSTERED (
+                                        [ID] ASC,
+                                        [Action] ASC,
+                                        [UserId] ASC,
+                                        [IP] ASC,
+                                        [DT] ASC,
+                                        [FieldNm] ASC)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+                                        ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]')
+     end
+     --if(@minqty>=2)
+     --begin
+     -- set @logtbnm= 'DataLogsD'+CONVERT(varchar(35), CONVERT(int, substring(@logtbnm,10,10))+1)
 
-	 if not exists(SELECT a.name FROM sysobjects AS a INNER JOIN sysindexes AS b ON a.id = b.id WHERE (a.type = 'u') AND (b.indid IN (0, 1)) and a.name=@logtbnm)
-	 begin
-	    exec('CREATE TABLE [dbo].'+@logtbnm+'(
-                                    [ID] [bigint] NOT NULL ,
-                                    [Action] [char](1) NOT NULL, 
-                                    [UserId] [nvarchar](30) NOT NULL ,
-                                    [IP] [nvarchar](15) NOT NULL ,
-                                    [DT] [datetime] NOT NULL ,
-                                    [FieldNm] [nvarchar](30) NOT NULL ,
-                                    [FieldValue] [ntext] NULL,
-                                    [OldFieldValue] [ntext] NULL,
-                                    CONSTRAINT [PK_'+@logtbnm+'] PRIMARY KEY CLUSTERED (
-                                    [ID] ASC,
-                                    [Action] ASC,
-                                    [UserId] ASC,
-                                    [IP] ASC,
-                                    [DT] ASC,
-                                    [FieldNm] ASC)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-                                    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]')
-	 end
-	 select @ID as 'ID',@logtbnm as 'logtbnm'
+     --end
+
+     
      --declare @sqlstr varchar(1000)
      --set @sqlstr='insert into '+ @logtbnm+'(LogId,TableNm) values('''+@logid+''','''+@tablenm+''')'
      --EXEC(@sqlstr)
@@ -63,6 +80,15 @@ ALTER proc [dbo].[p_addlogM]
 
 
 
+
+
+USE [BWYDB_Log]
+GO
+/****** Object:  StoredProcedure [dbo].[p_GetlogM]    Script Date: 03/22/2020 15:11:43 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
   ALTER proc [dbo].[p_GetlogM]
   @logid nvarchar(50),
   @tablenm nvarchar(50),
@@ -71,5 +97,32 @@ ALTER proc [dbo].[p_addlogM]
   as
   begin
   select @ID=ID from DataLogsM where LogId=@logid and TableNm=@tablenm
-  set @logtbnm='DataLogsD'+CONVERT(nvarchar(35),@ID%100)
+  set @logtbnm='DataLogsD'+CONVERT(varchar(35),@ID%100)
   end
+
+
+
+
+
+
+
+
+
+
+USE [BWYDB_Log]
+GO
+/****** Object:  StoredProcedure [dbo].[p_searclog]    Script Date: 03/22/2020 15:12:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[p_searclog]
+@tablenm nvarchar(35),
+@logid nvarchar(50)
+as
+declare @logtbnm nvarchar(35)
+declare @id bigint
+select @id=ID From DataLogsM where TableNm=@tablenm and LogId =@logid
+set @logtbnm='DataLogsD'+CONVERT(nvarchar(35),@id%100)
+exec('select ID,Action,UserId,IP,DT,FieldNm,FieldValue,OldFieldValue from '+@logtbnm+' where ID='+@id+'  order by DT')
+
