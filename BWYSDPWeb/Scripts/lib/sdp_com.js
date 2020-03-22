@@ -474,3 +474,11 @@ function GetMessage(msgId) {
     return result;
 }
 
+function CurrentDate() {
+    var datetm = new Date();
+    var year = datetm.getFullYear();
+    var month = datetm.getMonth() + 1 < 10 ? "0" + (datetm.getMonth() + 1) : datetm.getMonth() + 1;
+    var day = datetm.getDate() < 10 ? "0" + datetm.getDate() : datetm.getDate();
+    return year + "-" + month + "-" + day;
+}
+

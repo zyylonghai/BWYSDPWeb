@@ -164,6 +164,7 @@ namespace BWYSDPWeb.Controllers
             Dictionary<string, List<string>> tablenmAndlogids = new Dictionary<string, List<string>>();
             List<string> logids = null;
             DataLogViewModel vm = new DataLogViewModel();
+            vm.DSID = this.DSID;
             ColExtendedProperties colextprop = null;
             DataLogObj logObj = null;
             if (this.LibTables != null)
@@ -175,7 +176,7 @@ namespace BWYSDPWeb.Controllers
                         logids = new List<string>();
                         tablenmAndlogids.Add(tableObj.TableName, logids);
                         logObj = new DataLogObj { TableNm = tableObj.TableName };
-                        if (logObj.cols == null) logObj.cols = new string[] { };
+                        if (logObj.cols == null) logObj.cols = new ColInfo []{ };
 
                         vm.DataLogObjs.Add(logObj);
                         foreach (DataColumn c in tableObj.DataTable .Columns)
@@ -183,22 +184,24 @@ namespace BWYSDPWeb.Controllers
                             colextprop = Newtonsoft.Json.JsonConvert.DeserializeObject<ColExtendedProperties>(c.ExtendedProperties[SysConstManage.ExtProp].ToString());
                             if (!colextprop.IsActive || c.ColumnName ==SysConstManage.Sdp_LogId) continue;
                             Array.Resize(ref logObj.cols, logObj.cols.Length + 1);
-                            logObj.cols[logObj.cols.Length - 1] = c.ColumnName;
+                            logObj.cols[logObj.cols.Length - 1] =new ColInfo {Nm=c.ColumnName , Type =c.DataType };
                         }
                         foreach (DataRow dr in tableObj.DataTable.Rows)
                         {
-                            logids.Add(dr[SysConstManage.Sdp_LogId].ToString());
+                            if (!string.IsNullOrEmpty(dr[SysConstManage.Sdp_LogId].ToString()))
+                                logids.Add(dr[SysConstManage.Sdp_LogId].ToString());
                         }
                     }
                 }
                 string b = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
+                //tablenmAndlogids.Where (i=>i.Value .Count() >0).ToList ()
                 DataTable[] result = (DataTable[])this.GetDataLog("SearchData", tablenmAndlogids);
                 string b2 = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
                 if (result != null && result.Length > 0)
                 {
                     string tbName = string.Empty;
                     string fldnm = string.Empty;
-                    string fldvalue = string.Empty;
+                    string  fldvalue = string.Empty;
                     bool hasfind = false;
                     for (int i = 0; i < result.Length; i++)
                     {
@@ -206,23 +209,53 @@ namespace BWYSDPWeb.Controllers
                         var o = vm.DataLogObjs.FirstOrDefault(a => a.TableNm == tbName);
                         if (o != null)
                         {
-                            if (o.datas == null) o.datas = new object[] { };
+                            //if (o.datas == null) o.datas = new object[] { };
+                            hasfind = false;
                             List<JObject> jObjects = new List<JObject>();
                             JObject first = new JObject();
                             first.Add("DT", result[i].Rows[0]["DT"].ToString ());
                             first.Add("UserId", result[i].Rows[0]["UserId"].ToString());
                             first.Add("IP", result[i].Rows[0]["IP"].ToString());
-                            first.Add("Action", result[i].Rows[0]["Action"].ToString());
+                            switch (result[i].Rows[0]["Action"].ToString())
+                            {
+                                case "1":
+                                    first.Add("Action", "新增");
+                                    break;
+                                case "2":
+                                    first.Add("Action", "修改");
+                                    break;
+                                case "3":
+                                    break;
+                            }
                             jObjects.Add(first);
                             foreach (DataRow row in result[i].Rows)
                             {
                                 fldnm = row["FieldNm"].ToString();
-                                fldvalue = row["FieldValue"].ToString();
+                                fldvalue = row["FieldValue"].ToString ();
+                                //if (o.cols.FirstOrDefault(i => i.Nm == fldnm && i.Type.Equals(typeof(byte[]))) != null)
+                                //{
+                                //    fldvalue =(byte[])Convert.FromBase64String(fldvalue.ToString()); 
+                                //}
                                 foreach (var jobj in jObjects)
                                 {
                                     if (jobj.Properties().FirstOrDefault(a => a.Name == fldnm) != null)
                                     {
                                         JObject jo = new JObject();
+                                        jo.Add("DT", row["DT"].ToString());
+                                        jo.Add("UserId", row["UserId"].ToString());
+                                        jo.Add("IP", row["IP"].ToString());
+                                        switch (row["Action"].ToString())
+                                        {
+                                            case "1":
+                                                jo.Add("Action", "新增");
+                                                break;
+                                            case "2":
+                                                jo.Add("Action", "修改");
+                                                break;
+                                            case "3":
+                                                break;
+                                        }
+                                        //jo.Add("Action", row["Action"].ToString());
                                         jo.Add(fldnm, fldvalue);
                                         jObjects.Add(jo);
                                         hasfind = true;
@@ -235,10 +268,15 @@ namespace BWYSDPWeb.Controllers
                                     hasfind = false;
                                 }
                             }
-                            Array.Resize(ref o.datas, o.datas.Length + 1);
-                            o.datas[o.datas.Length - 1] = jObjects;
+                            if (o.datas == null) o.datas = jObjects;
+                            else
+                            {
+                                o.datas.Add(new JObject());
+                                o.datas.AddRange(jObjects);
+                            }
+                            //Array.Resize(ref o.datas, o.datas.Length + 1);
+                            //o.datas[o.datas.Length - 1] = jObjects;
                         }
-                        string json = o.GetdataJson();
                     }
                 }
             }

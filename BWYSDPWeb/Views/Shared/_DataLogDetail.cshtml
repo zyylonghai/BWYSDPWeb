@@ -19,6 +19,7 @@
     @{ 
         foreach (var item in Model.DataLogObjs)
         {
+            <input type="hidden" id="json_@item.TableNm" value="@item.GetdataJson()"/>
         <div class="tab-pane fade" id="@item.TableNm">
                 <div class="panel-group" id="heard_@item.TableNm">
                     <div class="panel panel-default">
@@ -32,13 +33,20 @@
                                 <table id="tb_@item.TableNm">
                                     <thead>
                                         <tr>
-                                            @foreach (string fldnm in item.cols)
+                                            <th data-field="DT">更新时间</th>
+                                            <th data-field="UserId">账号</th>
+                                            <th data-field="IP">客户端IP</th>
+                                            <th data-field="Action">更新动作</th>
+                                            @foreach (var fldnm in item.cols)
                                             {
-                                                <th data-field="DT">更新时间</th>
-                                                <th data-field="UserId">账号</th>
-                                                <th data-field="IP">客户端IP</th>
-                                                <th data-field="Action">更新动作</th>
-                                                <th data-field="@fldnm">@fldnm</th>
+                                                if (fldnm.Type.Equals(typeof(byte[])))
+                                                {
+                                                    <th data-field="@fldnm.Nm" data-formatter="imgformatter">@Html.GetFieldDesc(Model.DSID, item.TableNm, fldnm.Nm)</th>
+                                                }
+                                                else
+                                                {
+                                                <th data-field="@fldnm.Nm">@Html.GetFieldDesc(Model.DSID, item.TableNm, fldnm.Nm)</th>
+                                                }
                                             }
 
                                         </tr>
@@ -55,10 +63,16 @@
 <script>
     $(function () {
         var tbs = $('#myTabContent').find('table').each(function (index, o) {
+            var dt = JSON.parse($('#json_' + o.id.replace('tb_', '')).val().replace(new RegExp('&quot;', "gm"), '"'));
+            if (dt == null || dt == undefined) dt = [];
             $('#' + o.id).bootstrapTable({
-                data:[]
+                data: dt
+
             });
         });
     })
 
+    function imgformatter(value, row, index) {
+        return ImgFormatter(value);
+    }
 </script>

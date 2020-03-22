@@ -93,9 +93,9 @@ namespace BWYSDPWeb.BllComController
             var obj = new { a = "kk", b = 2 };
 
             //LibTableObj detail = this.LibTables[1].Tables[0];
-            //for (int i = 0; i < 101; i++)
+            //for (int i = 0; i < 10; i++)
             //{
-            //   var row= detail.NewRow();
+            //    var row = detail.NewRow();
             //    row.yingdu = string.Format("{0}{1}", "硬度", i);
             //    row.naiwendu = string.Format("{0}{1}", "耐温度", i);
             //    row.xingzhuang = string.Format("{0}{1}", "xingzhuang", i);
@@ -183,8 +183,8 @@ namespace BWYSDPWeb.BllComController
             if (string.Compare(gridid, "GridGroup1") == 0 && cmd== "Add")
             {
                 dynamic  rowobj = row;
-                rowobj.yingdu = "zyylonghai";
-                rowobj.xingzhuang = "88888888";
+                //rowobj.yingdu = "zyylonghai";
+                //rowobj.xingzhuang = "88888888";
             }
         }
 

@@ -12,11 +12,11 @@
 
 <script type="text/javascript">
     $(function () {
-        let accountid = GetInputId("accountid");
-        $('#' + accountid).click(function () { GetAccout(); });
-        });
+        //let accountid = GetInputId("accountid");
+        //$('#' + accountid).click(function () { GetAccout(); });
+    });
 
-    function GetAccout() {
+    function GetAccout(obj) {
         var connectype = GetInputValue("conectType");
         var ip = GetInputValue("ipAddress");
         var point = GetInputValue("point");
@@ -25,16 +25,17 @@
             data: "conntype=" + connectype + "&ip=" + ip + "&point=" + point + "",
             type: 'Get',
             async: false,
-            success: function (obj) {
-                if (obj.Flag == 1) {
+            success: function (o) {
+                if (o.Flag == 1) {
 
                 }
                 else {
-                    if (obj.data != null || obj.data != undefined) {
-                        let accountid = GetInputId("accountid");
+                    if (o.data != null || o.data != undefined) {
+                        //let accountid = GetInputId("accountid");
+                        let accountid = obj.id;
                         $('#' + accountid).children().remove();
                         //var o = JSON.parse(obj.data);
-                        jQuery.each(obj.data, function (i, val) {
+                        jQuery.each(o.data, function (i, val) {
                             $('#' + accountid).append(" <option value='" + val.accountid + "'>" + val.accountname + "</option>");
                         });
 

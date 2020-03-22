@@ -9,7 +9,7 @@
   </ModuleOrder>
   <FormGroups />
   <GridGroups>
-    <LibGridGroup GridGroupID="09a2a3d2-7c6b-4102-af1e-0f68d56f01eb" GridGroupName="GridGroup1" GridGroupDisplayNm="已配置的服务列表" ControlClassNm="Server" HasSummary="false" SingleSelect="false" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="">
+    <LibGridGroup GridGroupID="09a2a3d2-7c6b-4102-af1e-0f68d56f01eb" GridGroupName="GridGroup1" GridGroupDisplayNm="已配置的服务列表" ControlClassNm="Server" HasSummary="false" SingleSelect="true" HasAddRowButton="true" HasEditRowButton="true" HasDeletRowButton="true" ChildGridNm="">
       <GdButtons />
       <GdGroupFields>
         <LibGridGroupField ID="1c1dc93b-91c5-45b3-ae6a-3214542904db">
@@ -77,6 +77,10 @@
           <Formatter>accountname</Formatter>
           <IsFromSourceField>false</IsFromSourceField>
           <DealfValue xsi:type="xsd:string" />
+          <Onclick>GetAccout(obj)</Onclick>
+          <OnChange />
+          <Onblur />
+          <Keydown />
         </LibGridGroupField>
         <LibGridGroupField ID="f5dcbaa4-5075-49ab-bd49-d44c19b46707">
           <Name>accountname</Name>

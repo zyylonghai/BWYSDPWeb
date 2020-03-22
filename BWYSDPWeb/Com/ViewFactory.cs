@@ -28,6 +28,9 @@ namespace BWYSDPWeb.Com
         private bool _hasSearchModal = true;// 是否有搜索控件。
         private string _pagetitle = string.Empty;
         private StringBuilder _fmgroupAuthorisScriplst = null;
+        private List<ElementEventInfo> _elementeventlst = null;
+        private List<string> _defaultvalue = null;
+
        //private Dictionary<string, bool> _fomGroupdic=null;
 
         #region 公开属性
@@ -68,6 +71,8 @@ namespace BWYSDPWeb.Com
             Childrengrids = new List<LibGridGroup>();
             _fileUpdateScriplst = new List<string>();
             _fmgroupAuthorisScriplst = new StringBuilder("[");
+            _elementeventlst = new List<ElementEventInfo>();
+            _defaultvalue = new List<string>();
             //_fomGroupdic = new Dictionary<string, bool>();
         }
         public ViewFactory(string progid)
@@ -362,6 +367,30 @@ namespace BWYSDPWeb.Com
                 //_page.Append("<input type=\"text\" class=\"form-control\" id=\"" + id + "\" name=\"" + id + "\" placeholder=\""+field.DisplayName+"\">");
                 _page.Append("</div>");//结束 col-sm
                 colcout += field.Width + 1;
+                #region 元素事件信息集合
+                if (!string.IsNullOrEmpty(field.Onclick))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onclick, Eventfunc = field.Onclick });
+                }
+                if (!string.IsNullOrEmpty(field.OnChange))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.OnChange, Eventfunc = field.OnChange });
+                }
+                if (!string.IsNullOrEmpty(field.Onblur))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onblur, Eventfunc = field.Onblur });
+                }
+                if (!string.IsNullOrEmpty(field.Keydown))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Keydown, Eventfunc = field.Keydown });
+                }
+                #endregion
+                #region 默认值
+                if (!string.IsNullOrEmpty(field.DealfValue.ToString ()))
+                {
+                    _defaultvalue.Add(string.Format("{0}:{1}",id , field.DealfValue.ToString()));
+                }
+                #endregion 
             }
             _page.Append("</div>");// 结束 form-group
             //textarea控件处理
@@ -495,6 +524,30 @@ namespace BWYSDPWeb.Com
                 }
                 _page.Append("</div>");//结束 col-sm
                 colcout += field.Width + 1;
+                #region 元素事件信息集合
+                if (!string.IsNullOrEmpty(field.Onclick))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onclick, Eventfunc = field.Onclick });
+                }
+                if (!string.IsNullOrEmpty(field.OnChange))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.OnChange, Eventfunc = field.OnChange });
+                }
+                if (!string.IsNullOrEmpty(field.Onblur))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onblur, Eventfunc = field.Onblur });
+                }
+                if (!string.IsNullOrEmpty(field.Keydown))
+                {
+                    _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Keydown, Eventfunc = field.Keydown });
+                }
+                #endregion 
+                #region 默认值
+                if (!string.IsNullOrEmpty(field.DealfValue.ToString()))
+                {
+                    _defaultvalue.Add(string.Format("{0}:{1}", id, field.DealfValue.ToString()));
+                }
+                #endregion 
             }
             _page.Append("</div>");// 结束 form-group
             //textarea控件处理
@@ -1313,7 +1366,7 @@ namespace BWYSDPWeb.Com
             #region 禁用页面的enter建
             _script.Append("$(window).keydown(function (e) {");
             _script.Append("var key = window.event ? e.keyCode : e.which;");
-            _script.Append("if (key.toString()== \"13\") {");
+            _script.Append(" if (key.toString()== \"13\") {");
             _script.Append(" return false;}});");
             #endregion
 
@@ -1379,6 +1432,41 @@ namespace BWYSDPWeb.Com
                 _script.Append("});");
             }
             #endregion
+
+            #region 元素事件绑定
+            if (_elementeventlst.Count > 0)
+            {
+                foreach (ElementEventInfo e in _elementeventlst)
+                {
+                    switch (e.Event)
+                    {
+                        case ElementEventType.Onclick:
+                            _script.Append("$('#" + e.ElementID + "').click(function (){let obj=this;" + e.Eventfunc + ";});");
+                            break;
+                        case ElementEventType.OnChange:
+                            break;
+                        case ElementEventType.Onblur:
+                            break;
+                        case ElementEventType.Keydown:
+                            _script.Append("$('#" + e.ElementID + "').keydown(function (event){let obj=this;" + e.Eventfunc + ";});");
+                            break;
+                    }
+                }
+            }
+            #endregion
+
+            #region 默认值赋值
+            foreach (string item in _defaultvalue)
+            {
+                string[] array = item.Split(':');
+                if (array[1].Contains("$"))
+                {
+                    _script.Append("$('#" + array[0] + "').val(" + array[1].Split ('.')[1] + ");");
+                }
+                else
+                    _script.Append("$('#" + array[0] + "').val(\""+array[1]+"\");");
+            }
+            #endregion 
 
             //#region msgforsave 函数
             //_script.Append("GetMsgForSave();");
@@ -1529,6 +1617,26 @@ namespace BWYSDPWeb.Com
                     break;
             }
             fieldsbuilder.Append("</div>");//结束 col-sm
+
+            #region 元素事件信息集合
+            if (!string.IsNullOrEmpty(field.Onclick))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onclick, Eventfunc = field.Onclick });
+            }
+            if (!string.IsNullOrEmpty(field.OnChange))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.OnChange, Eventfunc = field.OnChange });
+            }
+            if (!string.IsNullOrEmpty(field.Onblur))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onblur, Eventfunc = field.Onblur });
+            }
+            if (!string.IsNullOrEmpty(field.Keydown))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Keydown, Eventfunc = field.Keydown });
+            }
+            #endregion
+
             #endregion
         }
 
@@ -1604,6 +1712,25 @@ namespace BWYSDPWeb.Com
                     break;
             }
             fieldsbuilder.Append("</div>");//结束 col-sm
+            #region 元素事件信息集合
+            if (!string.IsNullOrEmpty(field.Onclick))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onclick, Eventfunc = field.Onclick });
+            }
+            if (!string.IsNullOrEmpty(field.OnChange))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.OnChange, Eventfunc = field.OnChange });
+            }
+            if (!string.IsNullOrEmpty(field.Onblur))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Onblur, Eventfunc = field.Onblur });
+            }
+            if (!string.IsNullOrEmpty(field.Keydown))
+            {
+                _elementeventlst.Add(new ElementEventInfo { ElementID = id, Event = ElementEventType.Keydown, Eventfunc = field.Keydown });
+            }
+            #endregion
+
             #endregion
         }
 
@@ -1677,5 +1804,20 @@ namespace BWYSDPWeb.Com
             str.Append("</label>");
             return str.ToString();
         }
+    }
+
+    public class ElementEventInfo
+    {
+        public string ElementID { get; set; }
+        public ElementEventType Event { get; set; }
+        public string Eventfunc { get; set; }
+
+    }
+    public enum ElementEventType
+    {
+        Onclick=1,
+        OnChange=2,
+        Onblur=3,
+        Keydown=4
     }
 }
