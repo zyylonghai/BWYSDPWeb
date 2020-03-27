@@ -482,3 +482,12 @@ function CurrentDate() {
     return year + "-" + month + "-" + day;
 }
 
+function FindKeyValue(keyvaluearray, key) {
+    var result = { key: "", value:""};
+    $.each(keyvaluearray, function (i, o) {
+        if (o.key == key)
+            result = o;
+    });
+    return result;
+}
+

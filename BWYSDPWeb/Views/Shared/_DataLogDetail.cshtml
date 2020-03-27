@@ -66,8 +66,10 @@
             var dt = JSON.parse($('#json_' + o.id.replace('tb_', '')).val().replace(new RegExp('&quot;', "gm"), '"'));
             if (dt == null || dt == undefined) dt = [];
             $('#' + o.id).bootstrapTable({
-                data: dt
-
+                data: dt,
+                pagination: true,   //启动分页
+                sidePagination: "client",
+                pageList: [10, 25, 50, 100]
             });
         });
     })

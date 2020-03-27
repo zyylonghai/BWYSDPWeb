@@ -787,6 +787,27 @@ namespace BWYSDPWeb.Com
                         {
                             table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                         }
+                        else if (field.ElemType == ElementType.Select)
+                        {
+                            LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                            table.Append("var keyvalues=[");
+                            foreach (LibKeyValue item in libField.Items)
+                            {
+                                if (libField.Items.IndexOf(item) > 0)
+                                {
+                                    table.Append(",");
+                                }
+                                if (string.IsNullOrEmpty(item.FromkeyValueID))
+                                {
+                                    table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromDefTableNm + "\",\"" + string.Format("{0}_{1}", field.Name, item.Key) + "\")\"}");
+                                }
+                                else
+                                    table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + item.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + item.Key.ToString() + "\")\"}");
+                            }
+                            table.Append("];");
+                            table.Append("var o=FindKeyValue(keyvalues,value);");
+                            table.Append(string.Format("return \"<div {0}>\" +o.value+ \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
                         else
                         {
                             if (!string.IsNullOrEmpty(field.Formatter))
@@ -877,6 +898,27 @@ namespace BWYSDPWeb.Com
                 else if (field.ElemType == ElementType.Img)
                 {
                     table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                }
+                else if (field.ElemType == ElementType.Select)
+                {
+                    LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    table.Append("var keyvalues=[");
+                    foreach (LibKeyValue item in libField.Items)
+                    {
+                        if (libField.Items.IndexOf(item) > 0)
+                        {
+                            table.Append(","); 
+                        }
+                        if (string.IsNullOrEmpty(item.FromkeyValueID))
+                        {
+                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromDefTableNm + "\",\"" + string.Format("{0}_{1}", field.Name, item.Key) + "\")\"}");
+                        }
+                        else 
+                        table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + item.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + item.Key.ToString() + "\")\"}");
+                    }
+                    table.Append("];");
+                    table.Append("var o=FindKeyValue(keyvalues,value);");
+                    table.Append(string.Format("return \"<div {0}>\" +o.value+ \"</div>\";", field.ReadOnly ? "readonly" : ""));
                 }
                 else
                 {
@@ -1028,6 +1070,27 @@ namespace BWYSDPWeb.Com
                         {
                             table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
                         }
+                        else if (field.ElemType == ElementType.Select)
+                        {
+                            LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                            table.Append("var keyvalues=[");
+                            foreach (LibKeyValue item in libField.Items)
+                            {
+                                if (libField.Items.IndexOf(item) > 0)
+                                {
+                                    table.Append(",");
+                                }
+                                if (string.IsNullOrEmpty(item.FromkeyValueID))
+                                {
+                                    table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromDefTableNm + "\",\"" + string.Format("{0}_{1}", field.Name, item.Key) + "\")\"}");
+                                }
+                                else
+                                    table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + item.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + item.Key.ToString() + "\")\"}");
+                            }
+                            table.Append("];");
+                            table.Append("var o=FindKeyValue(keyvalues,value);");
+                            table.Append(string.Format("return \"<div {0}>\" +o.value+ \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                        }
                         else
                         {
                             if (!string.IsNullOrEmpty(field.Formatter))
@@ -1118,6 +1181,27 @@ namespace BWYSDPWeb.Com
                 else if (field.ElemType == ElementType.Img)
                 {
                     table.Append(string.Format("return \"<div {0}>\" + ImgFormatter(value) + \"</div>\";", field.ReadOnly ? "readonly" : ""));
+                }
+                else if (field.ElemType == ElementType.Select)
+                {
+                    LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    table.Append("var keyvalues=[");
+                    foreach (LibKeyValue item in libField.Items)
+                    {
+                        if (libField.Items.IndexOf(item) > 0)
+                        {
+                            table.Append(",");
+                        }
+                        if (string.IsNullOrEmpty(item.FromkeyValueID))
+                        {
+                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromDefTableNm + "\",\"" + string.Format("{0}_{1}", field.Name, item.Key) + "\")\"}");
+                        }
+                        else
+                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + item.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + item.Key.ToString() + "\")\"}");
+                    }
+                    table.Append("];");
+                    table.Append("var o=FindKeyValue(keyvalues,value);");
+                    table.Append(string.Format("return \"<div {0}>\" +o.value+ \"</div>\";", field.ReadOnly ? "readonly" : ""));
                 }
                 else
                 {
