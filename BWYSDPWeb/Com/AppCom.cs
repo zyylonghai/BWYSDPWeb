@@ -64,6 +64,8 @@ namespace BWYSDPWeb.Com
             FileOperation fileoperation = new FileOperation();
             fileoperation.FilePath = string.Format(@"{0}\Models\{1}", string.Format(@"{0}Views", rootpath), SysConstManage.FormSourceNm);
             List<LibFileInfo> allfiles = fileoperation.SearchAllFileInfo();
+            fileoperation .FilePath = string.Format(@"{0}\Models\{1}", string.Format(@"{0}Views", rootpath), SysConstManage.ReportSourceNm);
+            allfiles.AddRange(fileoperation.SearchAllFileInfo());
             if (allfiles != null)
             {
                 ProgInfo p = null;

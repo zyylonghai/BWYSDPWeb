@@ -32,6 +32,8 @@ namespace BWYSDPWeb.Models
         /// 功能的ViewModel
         /// </summary>
         public ProgBaseViewModel ProgBaseVM { get; set; }
+
+        public object ExtInfo { get; set; }
     }
 
     public class FromFieldInfo

@@ -150,6 +150,26 @@ function SDP_datalogSearch(ctrNm) {
     });
 }
 
+function SDP_RptBtnSearch(ctrnm) {
+    $.ajax({
+        url: "/" + ctrnm + "/RptSearchData",
+        data: $('#sdp_rptForm').serialize() + '&rptcols=' + $('#sdp_rptCols').val(),
+        type: 'Post',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            var grids = $("#sdp_rptForm").find("table");
+            $.each(grids, function (index, o) {
+                $('#' + o.id).bootstrapTable('refreshOptions', { pageNumber: 1 });
+                //$('#' + o.id).bootstrapTable('refresh');
+            });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
+}
+
 function TableBtnEdit(obj, grid) {
     let exist = $(obj).attr("data-toggle");
     if (!exist)
@@ -234,6 +254,13 @@ function TimeConverToStr(tm) {
 
 function ImgFormatter(img) {
     return "<img src=\"data:image/*;base64," + img+"\" class=\"img-responsive\"  width=\"100\" height=\"100\"/>";
+}
+
+function NullFormatter(value) {
+    if (value == 'null' || value == undefined)
+        return "";
+    return value;
+    
 }
 
 function Showfuzzydiv(id) {

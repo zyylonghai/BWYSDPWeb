@@ -7,6 +7,7 @@ using ProgViewModel;
 using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
+using SDPCRL.COM.ModelManager.Reports;
 using SDPCRL.CORE;
 using SDPCRL.CORE.FileUtils;
 using System;
@@ -170,25 +171,12 @@ namespace BWYSDPWeb.BaseController
         public ActionResult ConverToPage(string progId, string flag)
         {
             ProgBaseViewModel viewModel = new ProgBaseViewModel();
+            ProgType progType = ProgType.Form;
             if (this.UserInfo == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                this.Authentication();
-                //string identityjson = AppCom.GetCookievalue(SysConstManage.sdp_IdentityTick, "key");
-                //if (string.IsNullOrEmpty(identityjson))
-                //{
-                //    return RedirectToAction("Index", "Home");
-                //}
-                //IdentityCredential identityCredential = JsonConvert.DeserializeObject<IdentityCredential>(identityjson);
-                //if (!IdentityHelp.CompareTick(this.UserInfo.UserId, identityCredential.CertificateID))
-                //{
-                //    //msg000000014    身份验证失败!请重新登录
-                //    this.ThrowErrorException(14);
-                //}
-            }
+            this.Authentication();
             if (this.Request.Url.Segments.Length > 2)
             {
                 string packagepath = this.Request.Url.Segments[1];
@@ -198,99 +186,111 @@ namespace BWYSDPWeb.BaseController
                     this.ProgID = progId;
                     this.Package = packagepath.Replace("/", "");
                     LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, this.ProgID, this.Package);
-                    #region 权限验证
-                    var permresult = PermissionResult(this.ProgID, this.Package);
-                    if (permresult != null)
-                        return permresult;
-                    DalResult result = this.ExecuteMethod("GetAuthority", this.UserInfo.UserId);
-                    LibTableObj data = (LibTableObj)result.Value;
-                    
-                    if (data != null)
+                    LibReportsSource rptpage = null;
+                    if (formpage == null)
                     {
-                        //DataRow[] rows = data.Select(string.Format("JoleId='{0}'", "001"));//是否有管理员角色
-                        var rows = data.Rows.Where(i => i.JoleId == "001");//是否有管理员角色
-                        if (rows.Count() == 0)//没有管理角色，则检查权限。
+                        rptpage = ModelManager.GetModelBypath<LibReportsSource>(this.ModelRootPath, this.ProgID, this.Package);
+                        if (rptpage != null)
                         {
-                            //rows = data.Select(string.Format("ProgId='{0}'", this.ProgID));
-                            rows = data.Rows.Where(i => i.ProgId == this.ProgID);
-                            if (rows.Count() == 0)
-                            {
-                                //msg000000009	用户{0}没有功能{1}使用权限
-                                return View("NotPermission", new NotPermission { Message = string.Format(AppCom.GetMessageDesc("msg000000009"), this.UserInfo.UserNm, this.ProgID) });
-                            }
-                            CheckAuthorityObj(viewModel, formpage, rows);
-                            #region 旧代码
-                            //AuthorityObj obj = null;
-                            //foreach (var dr in rows)
-                            //{
-                            //    obj = new AuthorityObj();
-                            //    if (LibSysUtils.IsNULLOrEmpty(dr.ObjectType)) continue;
-                            //    obj.ObjectType = Convert.ToInt32(dr.ObjectType);
-                            //    obj.ObjectId = dr.ObjectId;
-                            //    obj.GroupId = dr.GroupId;
-                            //    viewModel.AuthorityObjs.Add(obj);
-                            //    if (obj.ObjectType == 1) //操作对象
-                            //    {
-                            //        if (formpage.FormId == obj.GroupId)
-                            //        {
-                            //            continue;
-                            //        }
-                            //        #region 检查按钮组
-                            //        var exist = formpage.BtnGroups.FindFirst("BtnGroupID", obj.GroupId);
-                            //        if (exist != null)
-                            //        {
-                            //            var btn = exist.LibButtons.FindFirst("LibButtonID", obj.ObjectId);
-                            //            if (btn != null)
-                            //            {
-                            //                obj.ObjectId = btn.LibButtonName;
-                            //                continue;
-                            //            }
-                            //        }
-                            //        #endregion
-                            //        #region 检查表格组的自定义按钮
-                            //        var exist2 = formpage.GridGroups.FindFirst("GridGroupID", obj.GroupId);
-                            //        if (exist2 != null)
-                            //        {
-                            //            obj.GroupId = exist2.GridGroupName;
-                            //            var btn = exist2.GdButtons.FindFirst("GridButtonID", obj.ObjectId);
-                            //            if (btn != null)
-                            //            {
-                            //                obj.ObjectId = btn.GridButtonName;
-                            //                continue;
-                            //            }
-                            //        }
-                            //        #endregion 
-                            //    }
-                            //    else if (obj.ObjectType == 2)//数据对象
-                            //    {
-                            //        var grid = formpage.GridGroups.FindFirst("GridGroupID", obj.GroupId);
-                            //        if (grid != null)
-                            //        {
-                            //            obj.GroupId = grid.GridGroupName;
-                            //        }
-                            //        else
-                            //        {
-                            //            var formgroup = formpage.FormGroups.FindFirst("FormGroupID", obj.GroupId);
-                            //            if (formgroup != null)
-                            //            {
-                            //                obj.GroupId = formgroup.FormGroupName;
-                            //            }
-                            //        }
-                            //    }
-                            //}
-                            #endregion 
+                            progType = ProgType.Report;
                         }
-                        else
-                        {
-                            rows = data.Rows.Where(i => i.JoleId == "001" && i.ProgId == this.ProgID);
-                            if (rows.Count() > 0)
-                            {
-                                CheckAuthorityObj(viewModel, formpage, rows);
-                            }
-                        }
-
                     }
-                    #endregion
+                    if (progType == ProgType.Form)//目前暂时 实现单据功能的权限验证
+                    {
+                        #region 权限验证
+                        var permresult = PermissionResult(this.ProgID, this.Package);
+                        if (permresult != null)
+                            return permresult;
+                        DalResult result = this.ExecuteMethod("GetAuthority", this.UserInfo.UserId);
+                        LibTableObj data = (LibTableObj)result.Value;
+
+                        if (data != null)
+                        {
+                            //DataRow[] rows = data.Select(string.Format("JoleId='{0}'", "001"));//是否有管理员角色
+                            var rows = data.Rows.Where(i => i.JoleId == "001");//是否有管理员角色
+                            if (rows.Count() == 0)//没有管理角色，则检查权限。
+                            {
+                                //rows = data.Select(string.Format("ProgId='{0}'", this.ProgID));
+                                rows = data.Rows.Where(i => i.ProgId == this.ProgID);
+                                if (rows.Count() == 0)
+                                {
+                                    //msg000000009	用户{0}没有功能{1}使用权限
+                                    return View("NotPermission", new NotPermission { Message = string.Format(AppCom.GetMessageDesc("msg000000009"), this.UserInfo.UserNm, this.ProgID) });
+                                }
+                                CheckAuthorityObj(viewModel, formpage, rows);
+                                #region 旧代码
+                                //AuthorityObj obj = null;
+                                //foreach (var dr in rows)
+                                //{
+                                //    obj = new AuthorityObj();
+                                //    if (LibSysUtils.IsNULLOrEmpty(dr.ObjectType)) continue;
+                                //    obj.ObjectType = Convert.ToInt32(dr.ObjectType);
+                                //    obj.ObjectId = dr.ObjectId;
+                                //    obj.GroupId = dr.GroupId;
+                                //    viewModel.AuthorityObjs.Add(obj);
+                                //    if (obj.ObjectType == 1) //操作对象
+                                //    {
+                                //        if (formpage.FormId == obj.GroupId)
+                                //        {
+                                //            continue;
+                                //        }
+                                //        #region 检查按钮组
+                                //        var exist = formpage.BtnGroups.FindFirst("BtnGroupID", obj.GroupId);
+                                //        if (exist != null)
+                                //        {
+                                //            var btn = exist.LibButtons.FindFirst("LibButtonID", obj.ObjectId);
+                                //            if (btn != null)
+                                //            {
+                                //                obj.ObjectId = btn.LibButtonName;
+                                //                continue;
+                                //            }
+                                //        }
+                                //        #endregion
+                                //        #region 检查表格组的自定义按钮
+                                //        var exist2 = formpage.GridGroups.FindFirst("GridGroupID", obj.GroupId);
+                                //        if (exist2 != null)
+                                //        {
+                                //            obj.GroupId = exist2.GridGroupName;
+                                //            var btn = exist2.GdButtons.FindFirst("GridButtonID", obj.ObjectId);
+                                //            if (btn != null)
+                                //            {
+                                //                obj.ObjectId = btn.GridButtonName;
+                                //                continue;
+                                //            }
+                                //        }
+                                //        #endregion 
+                                //    }
+                                //    else if (obj.ObjectType == 2)//数据对象
+                                //    {
+                                //        var grid = formpage.GridGroups.FindFirst("GridGroupID", obj.GroupId);
+                                //        if (grid != null)
+                                //        {
+                                //            obj.GroupId = grid.GridGroupName;
+                                //        }
+                                //        else
+                                //        {
+                                //            var formgroup = formpage.FormGroups.FindFirst("FormGroupID", obj.GroupId);
+                                //            if (formgroup != null)
+                                //            {
+                                //                obj.GroupId = formgroup.FormGroupName;
+                                //            }
+                                //        }
+                                //    }
+                                //}
+                                #endregion
+                            }
+                            else
+                            {
+                                rows = data.Rows.Where(i => i.JoleId == "001" && i.ProgId == this.ProgID);
+                                if (rows.Count() > 0)
+                                {
+                                    CheckAuthorityObj(viewModel, formpage, rows);
+                                }
+                            }
+
+                        }
+                        #endregion
+                    }
                     this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, progId, this.Package);
                     //this.AddorUpdateCookies(SysConstManage.PageinfoCookieNm, SysConstManage .PackageCookieKey, packagepath.Replace("/", ""));
                     //if (string.IsNullOrEmpty (flag ) && this.SessionObj .OperateAction==OperatAction.Preview)
@@ -303,125 +303,153 @@ namespace BWYSDPWeb.BaseController
                     if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
                     {
                         //LibFormPage formpage = ModelManager.GetModelBypath<LibFormPage>(this.ModelRootPath, progId, this.Package);
-                        if (formpage == null) { return View("NotFindPage"); }
-                        LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, formpage.DSID, this.Package);
-                        DataTable dt = this.GetFieldDescBydsid(dataSource.DSID);
-                        CachHelp cachHelp = new CachHelp();
-                        cachHelp.AddCachItem(dataSource.DSID, dt, DateTimeOffset.Now.AddMinutes(2));
-
-                        #region 根据排版模型对象 创建功能视图。
-                        ViewFactory factory = new ViewFactory(progId);
-                        factory.LibDataSource = dataSource;
-                        factory.LibFormPage = formpage;
-                        factory.ControlClassNm = formpage.ControlClassNm;
-                        factory.DSID = formpage.DSID;
-                        factory.Package = this.Package;
-                        factory.Language = this.Language;
-                        factory.BeginPage(formpage.FormId);
-                        factory.CreateBody();
-                        factory.CreateForm();
-                        if (formpage.ModuleOrder != null)
+                        if (formpage == null&&rptpage ==null) { return View("NotFindPage"); }
+                        if (progType == ProgType.Report)
                         {
-                            foreach (ModuleOrder item in formpage.ModuleOrder)
+                            #region 创建报表功能视图
+                            ReportViewFactory rptfactory = new ReportViewFactory(progId);
+                            rptfactory.ControlClassNm = rptpage.ControlClassNm;
+                            rptfactory.ScriptFile = rptpage.ScriptFile;
+                            rptfactory.Package = this.Package;
+                            rptfactory.Language = this.Language;
+                            //rptfactory.DSID = progId;
+                            rptfactory.BeginPage(progId);
+                            rptfactory.CreateBody();
+                            rptfactory.CreateForm();
+
+                            if (rptpage.GridGroups != null)
                             {
-                                switch (item.moduleType)
+                                foreach (LibReportGrid grid in rptpage.GridGroups)
                                 {
-                                    case ModuleType.FormGroup:
-                                        if (formpage.FormGroups != null)
-                                        {
-                                            foreach (LibFormGroup formg in formpage.FormGroups)
-                                            {
-                                                if (formg.FormGroupID != item.ID) continue;
-                                                factory.CreatePanelGroup(formg.FormGroupName);
-                                                if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
-                                                {
-                                                    factory.AddFormGroupFields(formg.FmGroupFields, formg.FormGroupName);
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    case ModuleType.GridGroup:
-                                        if (formpage.GridGroups != null)
-                                        {
-                                            foreach (LibGridGroup grid in formpage.GridGroups)
-                                            {
-                                                if (grid.GridGroupID != item.ID) continue;
-                                                if (factory.Childrengrids.FirstOrDefault(i => i.GridGroupID == grid.GridGroupID) != null) continue;
-                                                if (grid.GdGroupFields != null)
-                                                {
-                                                    factory.CreateGridGroup(grid);
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    case ModuleType.ButtonGroup:
-                                        if (formpage.BtnGroups != null)
-                                        {
-                                            foreach (LibButtonGroup btngroup in formpage.BtnGroups)
-                                            {
-                                                if (btngroup.BtnGroupID != item.ID) continue;
-                                                factory.CreatBtnGroup(btngroup);
-                                            }
-                                        }
-                                        break;
+                                    rptfactory.CreateGridGroup(grid);
                                 }
                             }
+
+                            rptfactory.EndPage();
+                            fileoperation.WritText(rptfactory.PageHtml);
+                            #endregion 
                         }
-                        #region 旧代码
-                        //if (formpage.FormGroups != null)
-                        //{
-                        //    foreach (LibFormGroup formg in formpage.FormGroups)
-                        //    {
-
-                        //        factory.CreatePanelGroup(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formg.FormGroupName));
-                        //        if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
-                        //        {
-                        //            factory.AddFormGroupFields(formg.FmGroupFields);
-                        //        }
-                        //    }
-                        //}
-                        //if (formpage.GridGroups != null)
-                        //{
-                        //    foreach (LibGridGroup grid in formpage.GridGroups)
-                        //    {
-                        //        if (grid.GdGroupFields != null)
-                        //        {
-                        //            factory.CreateGridGroup(grid);
-                        //        }
-                        //    }
-                        //}
-                        #endregion
-                        factory.EndPage();
-
-                        fileoperation.WritText(factory.PageHtml);
-                        #endregion
-
-                        #region 保存Formgroupfields
-                        string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                        //Bll.SQLiteHelp sQLiteHelp = new Bll.SQLiteHelp("TempData");
-                        TempHelp tempHelp = new TempHelp("TempData");
-                        string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                        List<string> commandtextlst = new List<string>();
-                        //commandtextlst.Append("begin;");
-                        foreach (KeyValuePair<string, List<string>> item in factory.Formfields)
+                        else
                         {
-                            foreach (string f in item.Value)
+                            LibDataSource dataSource = ModelManager.GetModelBypath<LibDataSource>(this.ModelRootPath, formpage.DSID, this.Package);
+                            DataTable dt = this.GetFieldDescBydsid(dataSource.DSID);
+                            CachHelp cachHelp = new CachHelp();
+                            cachHelp.AddCachItem(dataSource.DSID, dt, DateTimeOffset.Now.AddMinutes(2));
+
+                            #region 根据排版模型对象 创建功能视图。
+                            ViewFactory factory = new ViewFactory(progId);
+                            factory.LibDataSource = dataSource;
+                            factory.LibFormPage = formpage;
+                            factory.ControlClassNm = formpage.ControlClassNm;
+                            factory.DSID = formpage.DSID;
+                            factory.Package = this.Package;
+                            factory.Language = this.Language;
+                            factory.BeginPage(formpage.FormId);
+                            factory.CreateBody();
+                            factory.CreateForm();
+                            if (formpage.ModuleOrder != null)
                             {
-                                commandtextlst.Add(string.Format("insert into formfields values('{0}','{1}','{2}')", progId, item.Key, f));
+                                foreach (ModuleOrder item in formpage.ModuleOrder)
+                                {
+                                    switch (item.moduleType)
+                                    {
+                                        case ModuleType.FormGroup:
+                                            if (formpage.FormGroups != null)
+                                            {
+                                                foreach (LibFormGroup formg in formpage.FormGroups)
+                                                {
+                                                    if (formg.FormGroupID != item.ID) continue;
+                                                    factory.CreatePanelGroup(formg.FormGroupName);
+                                                    if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
+                                                    {
+                                                        factory.AddFormGroupFields(formg.FmGroupFields, formg.FormGroupName);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case ModuleType.GridGroup:
+                                            if (formpage.GridGroups != null)
+                                            {
+                                                foreach (LibGridGroup grid in formpage.GridGroups)
+                                                {
+                                                    if (grid.GridGroupID != item.ID) continue;
+                                                    if (factory.Childrengrids.FirstOrDefault(i => i.GridGroupID == grid.GridGroupID) != null) continue;
+                                                    if (grid.GdGroupFields != null)
+                                                    {
+                                                        factory.CreateGridGroup(grid);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case ModuleType.ButtonGroup:
+                                            if (formpage.BtnGroups != null)
+                                            {
+                                                foreach (LibButtonGroup btngroup in formpage.BtnGroups)
+                                                {
+                                                    if (btngroup.BtnGroupID != item.ID) continue;
+                                                    factory.CreatBtnGroup(btngroup);
+                                                }
+                                            }
+                                            break;
+                                    }
+                                }
                             }
+                            #region 旧代码
+                            //if (formpage.FormGroups != null)
+                            //{
+                            //    foreach (LibFormGroup formg in formpage.FormGroups)
+                            //    {
+
+                            //        factory.CreatePanelGroup(AppCom.GetFieldDesc((int)Language, factory.DSID, string.Empty, formg.FormGroupName));
+                            //        if (formg.FmGroupFields != null && formg.FmGroupFields.Count > 0)
+                            //        {
+                            //            factory.AddFormGroupFields(formg.FmGroupFields);
+                            //        }
+                            //    }
+                            //}
+                            //if (formpage.GridGroups != null)
+                            //{
+                            //    foreach (LibGridGroup grid in formpage.GridGroups)
+                            //    {
+                            //        if (grid.GdGroupFields != null)
+                            //        {
+                            //            factory.CreateGridGroup(grid);
+                            //        }
+                            //    }
+                            //}
+                            #endregion
+                            factory.EndPage();
+
+                            fileoperation.WritText(factory.PageHtml);
+                            #endregion
+
+                            #region 保存Formgroupfields
+                            string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            //Bll.SQLiteHelp sQLiteHelp = new Bll.SQLiteHelp("TempData");
+                            TempHelp tempHelp = new TempHelp("TempData");
+                            string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            List<string> commandtextlst = new List<string>();
+                            //commandtextlst.Append("begin;");
+                            foreach (KeyValuePair<string, List<string>> item in factory.Formfields)
+                            {
+                                foreach (string f in item.Value)
+                                {
+                                    commandtextlst.Add(string.Format("insert into formfields values('{0}','{1}','{2}')", progId, item.Key, f));
+                                }
+                            }
+
+                            //for (int i = 0; i < 1000; i++)
+                            //{
+                            //    commandtextlst.Add(string.Format("insert into formfields values('{0}','{1}','{2}')", progId,"test",string.Format("field{0}",i)));
+                            //}
+
+                            //commandtextlst.Append("commit;");
+                            string c = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            tempHelp.Delete(string.Format("delete from formfields where progid='{0}'", progId));
+                            tempHelp.Update(commandtextlst);
+                            string d = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
+                            #endregion
                         }
-
-                        //for (int i = 0; i < 1000; i++)
-                        //{
-                        //    commandtextlst.Add(string.Format("insert into formfields values('{0}','{1}','{2}')", progId,"test",string.Format("field{0}",i)));
-                        //}
-
-                        //commandtextlst.Append("commit;");
-                        string c = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                        tempHelp.Delete(string.Format("delete from formfields where progid='{0}'", progId));
-                        tempHelp.Update(commandtextlst);
-                        string d = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
-                        #endregion
 
                     }
                     //Server.MapPath("/")
@@ -432,6 +460,7 @@ namespace BWYSDPWeb.BaseController
             object viewObj =@JsonConvert .SerializeObject(viewModel);
             return View(string.Format("{0}", progId), viewObj);
         }
+
         /// <summary></summary>
         /// <param name="flag">标识1表示通过htmlhelp加载的模型，0表示正常的生成视图文件</param>
         /// <returns></returns>
@@ -1762,6 +1791,75 @@ namespace BWYSDPWeb.BaseController
         }
         #endregion
 
+        #region 报表相关
+        //[HttpGet]
+        //public ActionResult ReportConverToPage(string progId,string packagepath)
+        //{
+        //    FileOperation fileoperation = new FileOperation();
+
+        //    fileoperation.FilePath = string.Format(@"{0}Views\{1}\{2}.cshtml", this.RootPath, packagepath, progId);
+        //    if (!fileoperation.ExistsFile())//不存在视图文件,需要创建
+        //    {
+
+        //    }
+        //}
+
+        public string RptBindTableData(string gridid,string dsid,string tbnm, int page, int rows, string sort, string sortOrder, string Mobile)
+        {
+            List<LibSearchCondition> conds = this.SessionObj.Conds;
+            DataTable dt = null;
+            if (conds != null)
+            {
+                string[] fields = this.SessionObj.ExtInfo.ToString().Split(',');
+ 
+                DalResult dalresult = this.ExecuteMethod("InternalSearchByPage", dsid, tbnm, fields, conds, page, rows);
+                if (dalresult.Messagelist == null || dalresult.Messagelist.Count == 0)
+                {
+                    dt = ((DataTable)dalresult.Value);
+                    GetRptGridDataExt(gridid, dt);
+                    ConvertBinaryColValue(dt);
+                    //if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+                    if (dt!=null &&!string.IsNullOrEmpty(sort))
+                    {
+                        dt.DefaultView.Sort = string.Format("{0} {1}", sort, sortOrder);
+                        dt = dt.DefaultView.ToTable();
+                    }
+                }
+            }
+            if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
+            var result = new { total = (dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), rows = dt };
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        [HttpPost]
+        public ActionResult RptSearchData()
+        {
+            var formdata = this.Request.Form;
+            List<string> fieldkeys = formdata.AllKeys.Where(i => i.Contains(SysConstManage.sdp_smodalsymbol)).ToList();
+            List<LibSearchCondition> conds = new List<LibSearchCondition>();
+            LibSearchCondition cond = null;
+            foreach (string key in fieldkeys)
+            {
+                cond = new LibSearchCondition();
+                cond.FieldNm = key.Replace(SysConstManage.sdp_smodalsymbol, "");
+                cond.Values = new object[2];
+                cond.Symbol = (SmodalSymbol)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodalsymbol, cond.FieldNm)]);
+                cond.Values[0] = formdata[string.Format("{0}{1}_1", SysConstManage.sdp_smodalval, cond.FieldNm)];
+                cond.Values[1] = formdata[string.Format("{0}{1}_2", SysConstManage.sdp_smodalval, cond.FieldNm)];
+                cond.Logic = (Smodallogic)Convert.ToInt32(formdata[string.Format("{0}{1}", SysConstManage.sdp_smodallogic, cond.FieldNm)]);
+                cond.FieldNm = cond.FieldNm.Replace("_", ".");
+                if (LibSysUtils.IsNULLOrEmpty(cond.Values[0]) && LibSysUtils.IsNULLOrEmpty(cond.Values[1])) continue;
+                conds.Add(cond);
+            }
+            //SetSearchCondition(conds, "");
+            this.SessionObj.Conds = conds;
+            string fields = this.Request.Params["rptcols"];
+            this.SessionObj.ExtInfo = fields.Substring(0, fields.Length - 1);
+            return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion 
+
         #region 前端取InputID
         [HttpGet]
         public ActionResult GetInputID(string fieldobjnm)
@@ -1882,6 +1980,14 @@ namespace BWYSDPWeb.BaseController
         {
             
         }
+
+        #region 报表相关 扩展函数
+        protected virtual void GetRptGridDataExt(string gridid, DataTable dt)
+        {
+            
+        }
+        #endregion 
+
         #endregion
 
         #region 私有函数

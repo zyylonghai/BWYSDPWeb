@@ -186,6 +186,7 @@
     <Compile Include="Com\AppCom.cs" />
     <Compile Include="Com\CachHelp.cs" />
     <Compile Include="Com\LibHtmlHelp.cs" />
+    <Compile Include="Com\ReportViewFactory.cs" />
     <Compile Include="Com\ViewFactory.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

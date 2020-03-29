@@ -16,4 +16,12 @@ namespace Com
         Edit=2,
         Delete=3
     }
+
+    public enum ProgType
+    {
+        /// <summary>单据功能</summary>
+        Form=1,
+        /// <summary>报表功能</summary>
+        Report=2
+    }
 }
