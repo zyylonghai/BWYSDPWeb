@@ -27,6 +27,8 @@ namespace BWYSDPWeb.Com
         public string ScriptFile { get; set; }
 
         public Language Language { get; set; }
+
+        public LibDataSource LibDataSource { get; set; }
         #endregion
         public ReportViewFactory(string progid)
         {
@@ -367,7 +369,31 @@ namespace BWYSDPWeb.Com
                 {
                     table.Append(string.Format("return \"<div >\" + ImgFormatter(value) + \"</div>\";"));
                 }
-
+                else if (field.ElemType == ElementType.Select)
+                {
+                    if (LibDataSource == null)
+                    {
+                        LibDataSource = AppCom.GetDataSource(grid.DSID);
+                    }
+                    LibField libField = GetField(field.FromDefTableNm, field.FromTableNm, field.Name);
+                    table.Append("var keyvalues=[");
+                    foreach (LibKeyValue item in libField.Items)
+                    {
+                        if (libField.Items.IndexOf(item) > 0)
+                        {
+                            table.Append(",");
+                        }
+                        if (string.IsNullOrEmpty(item.FromkeyValueID))
+                        {
+                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + grid .DSID + "\",\"" + field.FromDefTableNm + "\",\"" + string.Format("{0}_{1}", field.Name, item.Key) + "\")\"}");
+                        }
+                        else
+                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + item.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + item.Key.ToString() + "\")\"}");
+                    }
+                    table.Append("];");
+                    table.Append("var o=FindKeyValue(keyvalues,value);");
+                    table.Append(string.Format("return \"<div>\" +o.value+ \"</div>\";"));
+                }
                 else
                 {
                     if (!string.IsNullOrEmpty(field.Formatter))
@@ -497,6 +523,15 @@ namespace BWYSDPWeb.Com
                 _page.Append("</div>");
                 _gridGroupdic[griditem.Key] = true;
             }
+        }
+
+
+        private LibField GetField(string deftable, string table, string fieldNm)
+        {
+            var deftb = this.LibDataSource.DefTables.FindFirst("TableName", deftable);
+            var tbstruct = deftb.TableStruct.FindFirst("Name", table);
+            var field = tbstruct.Fields.FindFirst("Name", fieldNm);
+            return field;
         }
         #endregion 
     }

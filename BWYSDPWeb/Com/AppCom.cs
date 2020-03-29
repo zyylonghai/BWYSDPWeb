@@ -1,5 +1,6 @@
 ﻿using Bll;
 using BWYSDPWeb.Models;
+using SDPCRL.COM.ModelManager;
 using SDPCRL.CORE;
 using SDPCRL.CORE.FileUtils;
 using System;
@@ -80,6 +81,24 @@ namespace BWYSDPWeb.Com
             }
             return results;
            
+        }
+
+        public static LibDataSource GetDataSource(string dsid)
+        {
+            //ProgInfo[] results = null;
+            string rootpath = System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", "");
+            FileOperation fileoperation = new FileOperation();
+            fileoperation.FilePath = string.Format(@"{0}\Models\{1}", string.Format(@"{0}Views", rootpath), SysConstManage.DataSourceNm);
+            List<LibFileInfo> allfiles = fileoperation.SearchAllFileInfo();
+            if (allfiles != null)
+            {
+                foreach (var item in allfiles)
+                {
+                    if (item.FileName == dsid)
+                        return ModelManager.GetModelBypath<LibDataSource>(string.Format(@"{0}Views", rootpath), dsid, item.Folder);
+                }
+            }
+            return null;
         }
 
 
