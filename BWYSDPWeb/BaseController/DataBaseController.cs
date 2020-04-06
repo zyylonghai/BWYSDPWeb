@@ -315,17 +315,29 @@ namespace BWYSDPWeb.BaseController
                             //rptfactory.DSID = progId;
                             rptfactory.BeginPage(progId);
                             rptfactory.CreateBody();
-                            rptfactory.CreateForm();
-
-                            if (rptpage.GridGroups != null)
+                            if (rptpage.Layoutmode == LayoutMode.Custom)
                             {
-                                foreach (LibReportGrid grid in rptpage.GridGroups)
+                                if (rptpage.Containers != null)
                                 {
-                                    rptfactory.CreateGridGroup(grid);
+                                    foreach (LibReportContainer container in rptpage.Containers)
+                                    {
+                                        rptfactory.CreatContainer(container);
+                                    }
                                 }
+                                rptfactory.EndPage(false);
                             }
-
-                            rptfactory.EndPage();
+                            else
+                            {
+                                rptfactory.CreateForm();
+                                if (rptpage.GridGroups != null)
+                                {
+                                    foreach (LibReportGrid grid in rptpage.GridGroups)
+                                    {
+                                        rptfactory.CreateGridGroup(grid);
+                                    }
+                                }
+                                rptfactory.EndPage();
+                            }
                             fileoperation.WritText(rptfactory.PageHtml);
                             #endregion 
                         }
@@ -1810,9 +1822,11 @@ namespace BWYSDPWeb.BaseController
             DataTable dt = null;
             if (conds != null)
             {
-                string[] fields = this.SessionObj.ExtInfo.ToString().Split(',');
- 
-                DalResult dalresult = this.ExecuteMethod("InternalSearchByPage", dsid, tbnm, fields, conds, page, rows);
+                Dictionary<string, string> dic = (Dictionary<string, string>)this.SessionObj.ExtInfo;
+                string[] fields = dic["fields"].Split(SysConstManage.Comma);
+                string[] sumaryfields = string.IsNullOrEmpty(dic["sumaryfields"]) ? null : dic["sumaryfields"].Split(SysConstManage.Comma);
+
+                DalResult dalresult = this.ExecuteMethod("RptSearchByPage", dsid, tbnm, fields,sumaryfields, conds, page, rows);
                 if (dalresult.Messagelist == null || dalresult.Messagelist.Count == 0)
                 {
                     dt = ((DataTable)dalresult.Value);
@@ -1855,7 +1869,12 @@ namespace BWYSDPWeb.BaseController
             //SetSearchCondition(conds, "");
             this.SessionObj.Conds = conds;
             string fields = this.Request.Params["rptcols"];
-            this.SessionObj.ExtInfo = fields.Substring(0, fields.Length - 1);
+            string sumaryfields = this.Request.Params["rptsumarycols"] ?? string.Empty;
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("fields", fields.Substring(0, fields.Length - 1));
+            dic.Add("sumaryfields", sumaryfields.Substring(0, sumaryfields.Length - 1));
+            this.SessionObj.ExtInfo = dic;
+            //this.SessionObj.ExtInfo =string .Format("{0}:{1}", fields.Substring(0, fields.Length - 1), sumaryfields.Substring(0, sumaryfields.Length - 1));
             return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         #endregion 

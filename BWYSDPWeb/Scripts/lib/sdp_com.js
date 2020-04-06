@@ -153,7 +153,7 @@ function SDP_datalogSearch(ctrNm) {
 function SDP_RptBtnSearch(ctrnm) {
     $.ajax({
         url: "/" + ctrnm + "/RptSearchData",
-        data: $('#sdp_rptForm').serialize() + '&rptcols=' + $('#sdp_rptCols').val(),
+        data: $('#sdp_rptForm').serialize() + '&rptcols=' + $('#sdp_rptCols').val() + '&rptsumarycols=' + $('#sdp_rptsumaryCols').val(),
         type: 'Post',
         async: false,
         dataType: "json",
@@ -517,4 +517,5 @@ function FindKeyValue(keyvaluearray, key) {
     });
     return result;
 }
+
 

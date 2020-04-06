@@ -203,9 +203,12 @@ namespace BWYSDPWeb.Controllers
                     string fldnm = string.Empty;
                     string  fldvalue = string.Empty;
                     bool hasfind = false;
+                    DataTable table = null;
                     for (int i = 0; i < result.Length; i++)
                     {
-                        tbName = result[i].TableName.Split(SysConstManage.Underline)[0];
+                        table = result[i];
+                        if (table.Rows.Count <= 0) continue;
+                        tbName = table.TableName.Split(SysConstManage.Underline)[0];
                         var o = vm.DataLogObjs.FirstOrDefault(a => a.TableNm == tbName);
                         if (o != null)
                         {
@@ -213,10 +216,10 @@ namespace BWYSDPWeb.Controllers
                             hasfind = false;
                             List<JObject> jObjects = new List<JObject>();
                             JObject first = new JObject();
-                            first.Add("DT", result[i].Rows[0]["DT"].ToString ());
-                            first.Add("UserId", result[i].Rows[0]["UserId"].ToString());
-                            first.Add("IP", result[i].Rows[0]["IP"].ToString());
-                            switch (result[i].Rows[0]["Action"].ToString())
+                            first.Add("DT", table.Rows[0]["DT"].ToString ());
+                            first.Add("UserId", table.Rows[0]["UserId"].ToString());
+                            first.Add("IP", table.Rows[0]["IP"].ToString());
+                            switch (table.Rows[0]["Action"].ToString())
                             {
                                 case "1":
                                     first.Add("Action", "新增");
@@ -228,7 +231,7 @@ namespace BWYSDPWeb.Controllers
                                     break;
                             }
                             jObjects.Add(first);
-                            foreach (DataRow row in result[i].Rows)
+                            foreach (DataRow row in table.Rows)
                             {
                                 fldnm = row["FieldNm"].ToString();
                                 fldvalue = row["FieldValue"].ToString ();

@@ -1326,7 +1326,7 @@ namespace BWYSDPWeb.Com
                 if (HasCreateForm)
                     _page.Append("</form>");
             }
-            #region 添加搜索控件的模态框。
+            #region 添加搜索控件和页面搜索功能的模态框。
             if (this._hasSearchModal)
             {
                 //用于搜索控件的模态框
@@ -1380,7 +1380,7 @@ namespace BWYSDPWeb.Com
                 _page.Append("</form>");
                 _page.Append("</div>");
                 _page.Append("<div class=\"modal-footer\">");
-                _page.Append("<button type=\"button\" class=\"btn btn-primary\">"+(hasformandboy ? "@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnConfirm\")" : AppCom .GetMessageDesc("sdp_btnConfirm"))+"</button>");
+                _page.Append("<button type=\"button\" id=\"modal_footer_btnconfirm\" class=\"btn btn-primary\">" + (hasformandboy ? "@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnConfirm\")" : AppCom .GetMessageDesc("sdp_btnConfirm"))+"</button>");
                 _page.Append("<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">"+(hasformandboy ? "@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnClose\")" : AppCom .GetMessageDesc("sdp_btnClose"))+"</button>");
                 _page.Append("</div>");
                 _page.Append("</div>");

@@ -53,13 +53,17 @@
             DoSearch(flag, controlnm, fromdsid, deftb, tbstruct, fieldnm);
         });
         if (flag == 1) {/*调出的搜索模态框为单据上的搜索*/
-            $('#searchModal').find(".modal-footer").css("display", "none");
+            //$('#searchModal').find(".modal-footer").css("display", "none");
             GetFields(tbstruct, controlnm, null, flag);
         }
         else {/*调出的搜索模态框为来源字段上的搜索*/
             $('#searchModal').find(".modal-footer").css("display", "block");
             GetFields(tbstruct, controlnm, fieldnm,flag);
         }
+        $('#modal_footer_btnconfirm').unbind('click');
+        $('#modal_footer_btnconfirm').click(function () {
+            modal_btnConfirmClick(flag, controlnm, tbstruct);
+        });
     });
     drag("searchModal");
 });
@@ -176,6 +180,8 @@ function BindToTable(ctrnm,tbnm,dsid,flag,fieldnm) {
         }
     });
     sdp_searchtb.$table.columns = cols;
+    sdp_searchtb.$table.height = 500;
+    sdp_searchtb.$table.singleSelect = true;
     sdp_searchtb.initialTable();
     sdp_searchtb.testid = tbnm;
     sdp_searchtb.flag = flag;
@@ -254,5 +260,92 @@ function BindToTable(ctrnm,tbnm,dsid,flag,fieldnm) {
             });
             $("#searchModal").modal('hide');
         }
+    }
+}
+
+function modal_btnConfirmClick(flag, ctrnm, tbstruct) {
+    var seletdr = $('#sdp_smodaldata').bootstrapTable('getSelections');
+    if (seletdr == null || seletdr.length == 0) {
+        ShowMsg('未选择行', 'error');
+        $(obj).removeAttr("data-toggle");
+        return false;
+    }
+    if (seletdr.length > 1) {
+        ShowMsg('只能选择一行', 'error');
+        $(obj).removeAttr("data-toggle");
+        return;
+    }
+    var dr = seletdr[0];
+    if (flag == 1) {
+        $.ajax({
+            async: false,
+            type: "Post",
+            url: '/' + ctrnm + '/FillAndEdit',
+            data: { dr, "tablenm": tbstruct, "flag": flag },
+            dataType: "Json",
+            success: function (obj) {
+                $("#searchModal").modal('hide');
+                var grids = $("#sdp_form").find("table");
+                $.each(grids, function (index, o) {
+                    $('#' + o.id).bootstrapTable('refresh');
+                });
+                //SetPageDisabled();
+            },
+            error: function () {
+
+            }
+        });
+    }
+    else {
+        let fromfieldnm;
+        let fieldnm;
+        let fromfielddesc;
+        let relatefields = [];
+        $.each(dr, function (name, val) {
+            let index = name.indexOf("_sdp_");
+            if (index != -1) {
+                fieldnm = name.substring(0, index);
+                fromfieldnm = name.substring(index + 5);
+                //$('#' + tbname + '_' + fieldnm).val(dr.)
+            }
+            else {
+                index = name.indexOf("sdp_desc");
+                if (index != -1) {
+                    fromfielddesc = name.substring(index + 8);
+                }
+                else {
+                    let arr = name.split("_rsdp_");
+                    if (arr != null && arr.length > 1) {
+                        var o = new Object();
+                        o.aliasnm = arr[0];
+                        o.fieldnm = arr[1];
+                        relatefields.push(o);
+                    }
+                }
+            }
+        });
+        $.each(dr, function (name, val) {
+            if (name == fromfieldnm) {
+                $('#' + fieldnm).val(val);
+            }
+            else if (name == fromfielddesc) {
+                $('#' + fieldnm + '_desc').text(val);
+                $.each(relatefields, function (n, o) {
+                    if (o.fieldnm == name) {
+                        $('#' + o.aliasnm).val(val);
+                        $('#' + o.aliasnm + o.fieldnm).val(val);
+                    }
+                });
+            }
+            else {
+                $.each(relatefields, function (n, o) {
+                    if (o.fieldnm == name) {
+                        $('#' + o.aliasnm).val(val);
+                        $('#' + o.aliasnm + o.fieldnm).val(val);
+                    }
+                });
+            }
+        });
+        $("#searchModal").modal('hide');
     }
 }

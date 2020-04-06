@@ -93,6 +93,7 @@ namespace BWYSDPWeb.Com
             //_page.Append("</div>");
             //_page.Append("<br /><br />");
         }
+        #region Gridview
         /// <summary>
         /// 创建表格Form
         /// </summary>
@@ -100,7 +101,7 @@ namespace BWYSDPWeb.Com
         {
             //_page.Append("<form class=\"form-horizontal\" action=\"Save\">");
             _page.Append("@using(Html.BeginForm(\"\", \"\",new { sdp_pageid =\"" + this._progid + "\",sdp_dsid=\"\" },FormMethod.Post,new{@class=\"form-horizontal\",@id=\"sdp_rptForm\",@enctype=\"multipart/form-data\" }))");
-            _page.Append("{ <input type=\"hidden\" id=\"sdp_rptCols\"/>");
+            _page.Append("{ <input type=\"hidden\" id=\"sdp_rptCols\"/> <input type=\"hidden\" id=\"sdp_rptsumaryCols\"/>");
         }
 
         /// <summary>
@@ -129,40 +130,55 @@ namespace BWYSDPWeb.Com
             #region 查询条件
             if (grid.ReportFields != null)
             {
+                int accout = 0;
                 //_page.Append("<div class=\"content-head mgb10\">");
+                
                 foreach (LibReportField f in grid.ReportFields)
                 {
                     if (f.IsSearchCondition)
                     {
+                        if (accout % 2 == 0)
+                        {
+                            if (accout != 0)
+                            {
+                                _page.Append("</div>"); //结束row
+                                _page.Append("<br />");
+                            }
+                            _page.Append("<div class=\"row clearfix\">");
+                        }
                         string nm = string.Format("{0}_{1}", LibSysUtils.ToCharByTableIndex(f.FromTableIndex), f.Name);
-                        _page.Append("<label class=\"form-inline\"><label> @Html.GetFieldDesc(\"" + (string.IsNullOrEmpty(f.FromTableNm) ? _progid : grid.DSID) + "\",\"" + (f.FromTableNm) + "\",\"" + f.Name + "\")</label>");
-
-                        _page.AppendFormat("<select class=\"form-control\" name=\"{0}{1}\">", SysConstManage.sdp_smodalsymbol, nm);
+                        _page.Append("<div class=\"col-md-1 column\">");
+                        _page.Append("<label> @Html.GetFieldDesc(\"" + (string.IsNullOrEmpty(f.FromTableNm) ? _progid : grid.DSID) + "\",\"" + (f.FromTableNm) + "\",\"" + f.Name + "\")</label>");
+                        _page.Append("</div>"); //结束column
+                        _page.Append("<div class=\"col-md-5 column\">");
+                        _page.AppendFormat("<select  name=\"{0}{1}\">", SysConstManage.sdp_smodalsymbol, nm);
                         foreach (var item in Enum.GetValues(typeof(SmodalSymbol)))
                         {
                             _page.AppendFormat("<option value=\"{0}\">{1}</option>", (int)item, ReSourceManage.GetResource(item));
                         }
                         _page.Append("</select>");
+                        _page.AppendFormat("<input type=\"text\"  name=\"{0}{1}_1\" placeholder=\"{2}\"/>", SysConstManage.sdp_smodalval, nm,(f.ElemType ==ElementType.Date||f.ElemType ==ElementType.DateTime)?"例：20200101":"");
+                        _page.AppendFormat("<input type=\"text\"  name=\"{0}{1}_2\" placeholder=\"{2}\"/>", SysConstManage.sdp_smodalval, nm, (f.ElemType == ElementType.Date || f.ElemType == ElementType.DateTime) ? "例：20200101" : "");
 
-                        _page.AppendFormat("<input type=\"text\" class=\"form-control\" name=\"{0}{1}_1\"/>", SysConstManage.sdp_smodalval, nm);
-                        _page.AppendFormat("<input type=\"text\" class=\"form-control\" name=\"{0}{1}_2\"/>", SysConstManage.sdp_smodalval, nm);
-
-                        _page.AppendFormat("<select class=\"form-control\" name=\"{0}{1}\">", SysConstManage.sdp_smodallogic, nm);
+                        _page.AppendFormat("<select  name=\"{0}{1}\">", SysConstManage.sdp_smodallogic, nm);
                         foreach (var item in Enum.GetValues(typeof(Smodallogic)))
                         {
                             _page.AppendFormat("<option value=\"{0}\">{1}</option>", (int)item, ReSourceManage.GetResource(item));
                         }
                         _page.Append("</select>");
 
-                        _page.Append("</label>");
+                        //_page.Append("</label>");
 
-                        _page.Append("<label class=\"form-inline\"> &nbsp;&nbsp;&nbsp;&nbsp; </label>");
+                        //_page.Append("<label class=\"form-inline\"> &nbsp;&nbsp;&nbsp;&nbsp; </label>");
+                        _page.Append("</div>"); //结束column
+                        accout++;
                     }
                 }
+                _page.Append("</div>"); //结束row
                 //_page.Append("</div>");
             }
 
-            _page.Append("<label class=\"form-inline\"> &nbsp;&nbsp;&nbsp;&nbsp; </label>");
+            //_page.Append("<label class=\"form-inline\"> &nbsp;&nbsp;&nbsp;&nbsp; </label>");
 
 
 
@@ -170,28 +186,20 @@ namespace BWYSDPWeb.Com
             #endregion 
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
-            //_page.Append("<form class=\"form-inline\">" +
-            //    "< div class=\"form-group\">" +
-            //    "<label class=\"sr-only\" for=\"product_line\">产品线</label>" +
-            //    "<div class=\"input-group\">" +
-            //    "<div class=\"input-group-addon\">产品线</div>" +
-            //    "<select class=\"form-control\" name=\"product_line\" id=\"productLine\"><option value = \"\" > 请选择产品线...</option></select>" +
-            //    "</div>" +
-            //    "</div>" +
-            //    "<div class=\"form-group\">" +
-            //    "<label class=\"sr-only\" for=\"msg_type\">消息类型</label>" +
-            //    "<div class=\"input-group\">" +
-            //    "<div class=\"input-group-addon\">消息类型</div>" +
-            //    "<select class=\"form-control\" name=\"msg_type\" id=\"msgType\"><option value = \"\" > 请选择消息类型...</option></select>" +
-            //    "</div>" +
-            //    "</div>" +
-            //    "<div class=\"form-group\">" +
-            //    "<label class=\"sr-only\" for=\"msg_type\">消息类型</label>" +
-            //    "<div class=\"input-group\"><div class=\"input-group-addon\">消息类型</div>" +
-            //    "<input type = \"text\" class=\"form-control\" name=\"searchTexts\" id=\"searchText\" placeholder=\"请输入消息名称或内容关键字...\">" +
-            //    "</div>" +
-            //    "<button type = \"button\" class=\"btn btn-primary queryButton\">查询</button>" +
-            //    "</form>");
+            #region 默认的分组按钮
+            _page.Append("<button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">分组按<span class=\"caret\"></span></button>");
+            _page.Append("<ul class=\"dropdown-menu\" role=\"menu\">");
+            foreach (LibReportField f in grid.ReportFields)
+            {
+                if (f.IsGroupBy)
+                {
+                    string fielddisplaynm = "@Html.GetFieldDesc(\"" + (string.IsNullOrEmpty(f.FromTableNm) ? _progid : grid.DSID) + "\",\"" + (f.FromTableNm) + "\",\"" + f.Name + "\")";
+                    _page.AppendFormat("<li><a href=\"#\">{0}</a></li>",fielddisplaynm);
+                }
+            }
+            
+            _page.Append("</ul>");
+            #endregion 
             if (grid.GdButtons != null)
             {
                 foreach (LibGridButton btn in grid.GdButtons)
@@ -204,7 +212,7 @@ namespace BWYSDPWeb.Com
             }
             _page.Append("</div>");
             #endregion
-            _page.Append("<table id=\"" + grid.GridGroupName + "\"></table>");
+            _page.Append("<table id=\"" + grid.GridGroupName + "\" class=\"table table-striped table-hover\"></table>");
 
             _gridGroupdic.Add(id, false);
             AddGridColumns(grid);
@@ -218,6 +226,7 @@ namespace BWYSDPWeb.Com
         {
             StringBuilder table = new StringBuilder();
             StringBuilder rptcols = new StringBuilder();
+            StringBuilder rptsumarycols = new StringBuilder();
             StringBuilder hidecolumns = new StringBuilder();
             //StringBuilder tbformfield = new StringBuilder();
             StringBuilder childformfield = new StringBuilder();
@@ -348,8 +357,10 @@ namespace BWYSDPWeb.Com
             table.Append(string.Format("{0}.$table.showFooter={1};", param, "true" ));
             table.Append(string.Format("{0}.$table.singleSelect={1};", param, "true"));
             table.Append(string.Format("{0}.$table.hasoperation={1};", param, "false"));
+            table.Append(string.Format("{0}.$table.height={1};", param, grid.TableHeight));
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
+            table.Append (",{field:'rownumber',title:'行号',align:'center'}");
             #region sdp_rowid 列
             //table.Append(",{field:'sdp_rowid',title: 'sdp_rowid',align: 'center',visible:true,switchable:false}");
             //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
@@ -411,12 +422,22 @@ namespace BWYSDPWeb.Com
                         table.Append(string.Format("return \"<div>\" + NullFormatter(value) + \"</div>\";"));
                 }
                 table.Append("}");//结束 formatter
+                if (field.IsSummary)
+                {
+                    string cnm = string.Format("{0}.{1}", LibSysUtils.ToCharByTableIndex(field.FromTableIndex), field.Name);
+                    rptcols.Append("$('#sdp_rptsumaryCols').val($('#sdp_rptsumaryCols').val()+\"" + cnm + "\"+',');");
+                    table.Append(",footerFormatter: function(rows) {if (rows != undefined && rows.length > 0) { return rows[0].sum_" + field .Name+ ".toFixed(3);}else return '';}");
+                }
                 if (hasfooter)
                 {
                     table.Append(",footerFormatter: function(value) {return '汇总';}");
                     hasfooter = false;
                 }
                 table.Append("}");
+                //if (field.IsSummary) //汇总字段需要 多该字段的汇总列
+                //{
+                //    table.Append(",{field:'sum_"+field.Name+"',title: '',align: 'center',visible:true,switchable:false}");
+                //}
 
                 #region 存储报表列
                 string colnm = string.Format("{0}.{1}", LibSysUtils.ToCharByTableIndex(field.FromTableIndex), field.Name);
@@ -450,14 +471,139 @@ namespace BWYSDPWeb.Com
             //_tbmodalFormfields.Add(string.Format("GridGroup_{0}", grid.GridGroupName), tbformfield.ToString());
 
         }
+        #endregion
+
+        #region custom 自定义布局
+        public void CreatContainer(LibReportContainer reportContainer)
+        {
+            if (reportContainer.ReportRows != null)
+            {
+                StringBuilder css = null;
+                foreach (LibReportRow row in reportContainer.ReportRows)
+                {
+                    #region css
+                    css = new StringBuilder();
+                    css.AppendFormat("border-top-width:{0}px;",row.TopBorder);
+                    css.Append("border-top-style:solid;");
+                    css.AppendFormat("border-top-color:{0};", row.TopBorderColor);
+
+                    css.AppendFormat("border-bottom-width:{0}px;", row.BottomBorder);
+                    css.Append("border-bottom-style:solid;");
+                    css.AppendFormat("border-bottom-color:{0};", row.BottomBorderColor);
+
+                    css.AppendFormat("border-left-width:{0}px;", row.LeftBorder);
+                    css.Append("border-left-style:solid;");
+                    css.AppendFormat("border-left-color:{0};", row.LeftBorderColor);
+
+                    css.AppendFormat("border-right-width:{0}px;", row.RightBorder);
+                    css.Append("border-right-style:solid;");
+                    css.AppendFormat("border-right-color:{0};", row.RightBorderColor);
+                    #endregion 
+                    _page.AppendFormat("<div class=\"row clearfix\" style=\"{0}\"> ",css.ToString());
+                    if (row.ReportCols != null)
+                    {
+                        foreach (LibReportColumn col in row.ReportCols)
+                        {
+                            #region css
+                            css = new StringBuilder();
+                            css.AppendFormat("border-top-width:{0}px;", col.TopBorder);
+                            css.Append("border-top-style:solid;");
+                            css.AppendFormat("border-top-color:{0};", col.TopBorderColor);
+
+                            css.AppendFormat("border-bottom-width:{0}px;", col.BottomBorder);
+                            css.Append("border-bottom-style:solid;");
+                            css.AppendFormat("border-bottom-color:{0};", col.BottomBorderColor);
+
+                            css.AppendFormat("border-left-width:{0}px;", col.LeftBorder);
+                            css.Append("border-left-style:solid;");
+                            css.AppendFormat("border-left-color:{0};", col.LeftBorderColor);
+
+                            css.AppendFormat("border-right-width:{0}px;", col.RightBorder);
+                            css.Append("border-right-style:solid;");
+                            css.AppendFormat("border-right-color:{0};", col.RightBorderColor);
+                            #endregion 
+                            _page.AppendFormat(" <div class=\"col-md-{0} column\" style=\"{1}\">", col.Width, css.ToString());
+                            if (col.Elements != null)
+                            {
+                                foreach (LibReportElement elem in col.Elements)
+                                {
+                                    #region css
+                                    css = new StringBuilder();
+                                    switch (elem.HorizontalAlignment)
+                                    {
+                                        case HorizontalAlignment.Left:
+                                            css.Append("text-align:left ;");
+                                            break;
+                                        case HorizontalAlignment.Right:
+                                            css.Append("text-align:right ;");
+                                            break;
+                                        case HorizontalAlignment.Center:
+                                            css.Append("text-align:center;");
+                                            break;
+                                    }
+                                    switch (elem.VerticalAlignment)
+                                    {
+                                        case VerticalAlignment.Top:
+                                            css.Append("vertical-align:top ;");
+                                            break;
+                                        case VerticalAlignment.Bottom:
+                                            css.Append("vertical-align:bottom ;");
+                                            break;
+                                        case VerticalAlignment.Center:
+                                            if (elem.Height > 0)
+                                                css.AppendFormat("font-weight:{0}px;", elem.Height.ToString());
+                                            break;
+                                    }
+                                    css.AppendFormat("width:{0};", (elem.Width == 0 ? "100%" : elem.Width.ToString()+"px"));
+                                    css.AppendFormat("height:{0};", (elem.Height == 0 ? "100%" : elem.Height.ToString()+"px"));
+                                    css.AppendFormat("font-size:{0}px;", elem.FontSize);
+                                    if (!string.IsNullOrEmpty(elem.FontColor))
+                                        css.AppendFormat("color:{0};", elem.FontColor);
+                                    #endregion
+                                    switch (elem.ElemType)
+                                    {
+                                        case ElementType.Label:
+                                            _page.AppendFormat("<label style=\"{0}\">{1}</label>",css.ToString (), elem.ValueSource);
+                                            break;
+                                        case ElementType.Img:
+                                            _page.AppendFormat("<img src=\"~/img/0.jpg\" style=\"width:{0}; height:{1}\"/>",(elem .Width==0?"100%":elem .Width.ToString () + "px") ,(elem .Height ==0?"100%":elem.Height.ToString () + "px"));
+                                            break;
+                                        case ElementType.Date:
+                                            break;
+                                        case ElementType.DateTime:
+                                            break;
+                                        case ElementType.Text:
+                                            break;
+                                        case ElementType.Textarea:
+                                            break;
+                                    }
+                                }
+                            }
+                            _page.Append("</div>"); //结束 col
+                        }
+                    }
+                    _page.Append("</div>"); // 结束 row
+                }
+            }
+        }
+
+        private void SetCss<T>(StringBuilder css,T obj)
+        {
+            
+        }
+
+        #endregion
 
         /// <summary>
         /// 结束视图页
         /// </summary>
-        public void EndPage()
+        public void EndPage(bool hasform=true)
         {
             EndprePanel();
-            _page.Append("}");//form  结束
+            if (hasform)
+            {
+                _page.Append("}");//form  结束
+            }
             _page.Append("</div>");//panel - body
             _page.Append("</div>");//panel panel - default
             _page.Append("</div>");//container - fluid

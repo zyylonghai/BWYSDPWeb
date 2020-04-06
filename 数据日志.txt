@@ -124,5 +124,8 @@ declare @logtbnm nvarchar(35)
 declare @id bigint
 select @id=ID From DataLogsM where TableNm=@tablenm and LogId =@logid
 set @logtbnm='DataLogsD'+CONVERT(nvarchar(35),@id%100)
-exec('select ID,Action,UserId,IP,DT,FieldNm,FieldValue,OldFieldValue from '+@logtbnm+' where ID='+@id+'  order by DT')
+if(@logtbnm is not null)
+begin
+ exec('select ID,Action,UserId,IP,DT,FieldNm,FieldValue,OldFieldValue from '+@logtbnm+' where ID='+@id+'  order by DT')
+end
 
