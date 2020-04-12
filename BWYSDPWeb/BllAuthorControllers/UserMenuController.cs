@@ -175,12 +175,12 @@ namespace BWYSDPWeb.BllAuthorControllers
             }
         }
 
-        protected override void UpdateTableRow(string gridid, DataRowObj row, string cmd)
+        protected override void UpdateTableRow(string gridid, DataRowObj row, DataGridAction cmd)
         {
             base.UpdateTableRow(gridid, row, cmd);
             if (gridid == "GridGroup2"|| gridid == "Menusetting")
             {
-                if (cmd == "Add")
+                if (cmd ==DataGridAction.Add)
                 {
                     dynamic rowobj = row;
                     rowobj.UId = this.UserInfo.UserId;

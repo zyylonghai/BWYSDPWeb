@@ -1,4 +1,5 @@
-﻿using BWYSDPWeb.Models;
+﻿using BWYSDPWeb.BaseController;
+using BWYSDPWeb.Models;
 using Newtonsoft.Json;
 using SDPCRL.COM;
 using System;
@@ -176,11 +177,11 @@ namespace BWYSDPWeb.BllComController
             //dt.Rows.Add(dr);
         }
 
-        protected override void UpdateTableRow(string gridid, DataRowObj row, string cmd)
+        protected override void UpdateTableRow(string gridid, DataRowObj row, DataGridAction cmd)
         {
             base.UpdateTableRow(gridid, row, cmd);
             //this.ThrowErrorException("抛出异常测试");
-            if (string.Compare(gridid, "GridGroup1") == 0 && cmd== "Add")
+            if (string.Compare(gridid, "GridGroup1") == 0 && cmd== DataGridAction.Add)
             {
                 dynamic  rowobj = row;
                 //rowobj.yingdu = "zyylonghai";

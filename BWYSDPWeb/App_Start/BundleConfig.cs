@@ -54,8 +54,9 @@ namespace BWYSDPWeb
                 ));
             //bootstrapTableExport
             bundles.Add(new ScriptBundle("~/bundles/bootstrapTableExport").Include(
-                     "~/Scripts/lib/bootstrap-table-export.js",
-                     "~/Scripts/lib/tableExport.js",
+                      "~/Scripts/lib/bootstrap-table-export.js",
+                      "~/Scripts/lib/tableExport.min.js",
+                      //"~/Scripts/lib/FileSaver.min.js",
                      "~/Scripts/lib/jquery.base64.js"
                 ));
             //laydate

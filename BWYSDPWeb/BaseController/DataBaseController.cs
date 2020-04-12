@@ -1067,6 +1067,7 @@ namespace BWYSDPWeb.BaseController
         {
             DataRow dr = null;
             LibTableObj tbobj = null;
+            DataGridAction gridAction=DataGridAction.None;
             if (this.LibTables == null) return LibJson(dr);
             var libtable = this.LibTables.FirstOrDefault(i => i.Name == tbnm);
             if (libtable != null)
@@ -1080,6 +1081,7 @@ namespace BWYSDPWeb.BaseController
                     switch (cmd)
                     {
                         case "Add":
+                            gridAction = DataGridAction.Add;
                             dr = ((DataRowObj)tbobj.NewRow()).Row;
                             //dr = tb.NewRow();
                             TableExtendedProperties extprop = tb.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
@@ -1151,6 +1153,7 @@ namespace BWYSDPWeb.BaseController
                             //tb.Rows.Add(dr);
                             break;
                         case "Edit":
+                            gridAction = DataGridAction.Edit;
                             if (!string.IsNullOrEmpty(rowid))
                             {
                                 DataRow[] drs = tb.Select(string.Format("{0}={1}", SysConstManage.sdp_rowid, rowid));
@@ -1159,12 +1162,12 @@ namespace BWYSDPWeb.BaseController
                             }
                             break;
                         case "Delet":
-
+                            gridAction = DataGridAction.Delet;
                             break;
                     }
                 }
             }
-            UpdateTableRow(gridid,tbobj .FindRow(dr) , cmd);
+            UpdateTableRow(gridid,tbobj .FindRow(dr) ,gridAction);
             return LibJson(dr);
         }
         [HttpPost]
@@ -1178,6 +1181,7 @@ namespace BWYSDPWeb.BaseController
                 string[] array;
                 DataTable tb = null;
                 DataTable relatetb = null;
+                DataGridAction gridAction =DataGridAction.None ;
                 if (libtable.Tables != null)
                 {
                     var tbobj = libtable.Tables.FirstOrDefault(i => i.TableName == tableNm);
@@ -1195,6 +1199,7 @@ namespace BWYSDPWeb.BaseController
                     switch (cmd)
                     {
                         case "Add":
+                            gridAction = DataGridAction.Add;
                             dr = tb.NewRow();
                             foreach (FormFields f in fieldlst)
                             {
@@ -1257,6 +1262,7 @@ namespace BWYSDPWeb.BaseController
                             #endregion
                             break;
                         case "Edit":
+                            gridAction = DataGridAction.Edit;
                             var sdprowid = fieldlst.FirstOrDefault(i => i.FieldNm.Contains(SysConstManage.sdp_rowid));
                             if (sdprowid != null)
                             {
@@ -1268,6 +1274,7 @@ namespace BWYSDPWeb.BaseController
                             }
                             break;
                         case "Delet":
+                            gridAction = DataGridAction.Delet;
                             if (fieldlst != null && fieldlst.Count > 0)
                             {
                                 string rowid = string.Empty;
@@ -1357,6 +1364,20 @@ namespace BWYSDPWeb.BaseController
                                 #endregion
                             }
                             break;
+                        case "Copy":
+                            gridAction = DataGridAction.Copy;
+                            if (fieldlst != null && fieldlst.Count > 0)
+                            {
+                                string rowid = fieldlst[0].FieldValue.ToString();
+                                DataRow[] rows = tb.Select(string.Format("{0}={1}", SysConstManage.sdp_rowid, rowid));
+                                if (rows != null && rows.Length > 0)
+                                {
+                                    dr = tb.NewRow();
+                                    DataTableHelp.CopyRow(rows[0], dr, new string[] { SysConstManage.sdp_rowid });
+                                    tb.Rows.Add(dr);
+                                }
+                            }
+                            break;
                     }
                 }
                 try
@@ -1424,7 +1445,7 @@ namespace BWYSDPWeb.BaseController
                     //    tb.Rows.Remove(dr);
                     this.ThrowErrorException(ex.Message);
                 }
-                UpdateTableAction(gridid, dr, cmd);
+                UpdateTableAction(gridid, dr, gridAction);
             }
             return Json(new { message = "" }, JsonRequestBehavior.AllowGet);
         }
@@ -1816,17 +1837,24 @@ namespace BWYSDPWeb.BaseController
         //    }
         //}
 
-        public string RptBindTableData(string gridid,string dsid,string tbnm, int page, int rows, string sort, string sortOrder, string Mobile)
+        public string RptBindTableData(string gridid,string dsid,string tbnm, string  page, string rows, string sort, string sortOrder, string Mobile)
         {
             List<LibSearchCondition> conds = this.SessionObj.Conds;
             DataTable dt = null;
+            bool ispage = true;
             if (conds != null)
             {
                 Dictionary<string, string> dic = (Dictionary<string, string>)this.SessionObj.ExtInfo;
                 string[] fields = dic["fields"].Split(SysConstManage.Comma);
                 string[] sumaryfields = string.IsNullOrEmpty(dic["sumaryfields"]) ? null : dic["sumaryfields"].Split(SysConstManage.Comma);
-
-                DalResult dalresult = this.ExecuteMethod("RptSearchByPage", dsid, tbnm, fields,sumaryfields, conds, page, rows);
+                DalResult dalresult = null;
+                if (!LibSysUtils.IsNumberic(page) && !LibSysUtils.IsNumberic(rows))
+                {
+                    dalresult = this.ExecuteMethod("RptSearch", dsid, tbnm, fields, sumaryfields, conds);
+                    ispage = false;
+                }
+                else
+                     dalresult = this.ExecuteMethod("RptSearchByPage", dsid, tbnm, fields,sumaryfields, conds, Convert .ToInt32(page),Convert .ToInt32(rows));
                 if (dalresult.Messagelist == null || dalresult.Messagelist.Count == 0)
                 {
                     dt = ((DataTable)dalresult.Value);
@@ -1841,7 +1869,7 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
-            var result = new { total = (dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), rows = dt };
+            var result = new { total =ispage?(dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0):dt.Rows .Count , rows = dt };
 
             return JsonConvert.SerializeObject(result);
         }
@@ -1934,7 +1962,7 @@ namespace BWYSDPWeb.BaseController
         /// <param name="gridid"></param>
         /// <param name="row"></param>
         /// <param name="cmd"></param>
-        protected virtual void UpdateTableAction(string gridid, DataRow row, string cmd)
+        protected virtual void UpdateTableAction(string gridid, DataRow row, DataGridAction cmd)
         {
 
         }
@@ -1942,7 +1970,7 @@ namespace BWYSDPWeb.BaseController
         /// <param name="gridid"></param>
         /// <param name="row"></param>
         /// <param name="cmd"></param>
-        protected virtual void UpdateTableRow(string gridid, DataRowObj row, string cmd)
+        protected virtual void UpdateTableRow(string gridid, DataRowObj row, DataGridAction cmd)
         {
 
         }

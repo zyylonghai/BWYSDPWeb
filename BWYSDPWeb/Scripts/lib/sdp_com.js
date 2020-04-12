@@ -242,6 +242,35 @@ function TableBtnDelete(obj, grid,tbnm,tablenm,ctrl) {
 
 }
 
+function TableBtnCopy(obj, grid, tbnm, tablenm, ctrl) {
+    var seletdr = $('#' + grid).bootstrapTable('getSelections');
+    if (seletdr == null || seletdr.length == 0) {
+        ShowMsg('未选择被复制的行', 'error');
+        return false;
+    }
+    if (seletdr.length > 1) {
+        ShowMsg('只能选择一行进行复制', 'error');
+        return false;
+    }
+    var rowids = [];
+    $.each(seletdr, function (index, o) {
+        rowids.push({ FieldNm: "sdp_rowid", FieldValue: o.sdp_rowid });
+    });
+    $.ajax({
+        url: "/" + ctrl + "/TableAction",
+        data: 'gridid=' + grid + '&tbnm=' + tbnm + '&tableNm=' + tablenm + '&cmd=Copy&row=' + JSON.stringify(rowids) + '',
+        type: 'Post',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            $('#' + grid).bootstrapTable('refresh');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
+}
+
 function TimeConverToStr(tm) {
     //var datetime = Date.parse(new Date(stringTime));
     //datetime.setTime(time);

@@ -201,15 +201,16 @@ LibTable.prototype = {
             cardView: this.$table.cardView,                    //是否显示详细视图
             detailView: this.$table.detailView,                  //是否显示父子表
             showExport: this.$table.showExport, //是否显示导出
-            exportDataType: "basic", //默认basic：只导出当前页的表格数据；all：导出所有数据；selected：导出选中的数据
-            //exportTypes: ['excel'] ,//导出文件类型 ，支持多种类型文件导出
-            //exportOptions: {
-            //    ignoreColumn: [0, 1],  //忽略某一列的索引  
-            //    fileName: '贷款总表',  //文件名称设置  
-            //    worksheetName: 'sheet1',  //表格工作区名称  
-            //    tableName: '贷款总表',
-            //    excelstyles: ['background-color', 'color', 'font-size', 'font-weight', 'border-top']
-            //},
+            exportDataType: "all", //默认basic：只导出当前页的表格数据；all：导出所有数据；selected：导出选中的数据
+            exportTypes: ['csv', 'txt', 'sql', 'doc', 'excel', 'xlsx', 'pdf'] ,//导出文件类型 ，支持多种类型文件导出
+            exportOptions: {
+                ignoreColumn: [0, 1],  //忽略某一列的索引  
+                //fileName: '贷款总表',  //文件名称设置  
+                //worksheetName: 'sheet1',  //表格工作区名称  
+                //tableName: '贷款总表',
+                //excelstyles: ['background-color', 'color', 'font-size', 'font-weight', 'border-top'],
+                onCellHtmlData: DoOnCellHtmlData,
+            },
             showFooter: this.$table.showFooter,
             singleSelect: this.$table.singleSelect,
             //得到查询的参数
@@ -497,5 +498,23 @@ function saveData(gridid, index, field, value){
         field: field,       //列名
         value: value        //cell值
     });
+}
+//处理导出内容,这个方法可以自定义某一行、某一列、甚至某个单元格的内容,也就是将其值设置为自己想要的内容
+function DoOnCellHtmlData(cell, row, col, data) {
+    if (row == 0) {
+        return data;
+    }
+
+    //由于备注列超过6个字的话,通过span标签处理只显示前面6个字,如果直接导出的话会导致内容不完整,因此要将携带完整内容的span标签中title属性的值替换
+    //if (col == 4 || col == 11 || col == 7) {
+    //    var spanObj = $(data);//将带 <span title="val"></span> 标签的字符串转换为jQuery对象
+    //    var title = spanObj.attr("title");//读取<span title="val"></span>中title属性的值
+    //    //var span = cell[0].firstElementChild;//读取cell数组中的第一个值下的第一个元素
+    //    if (typeof (title) != 'undefined') {
+    //        return title;
+    //    }
+    //}
+
+    return data;
 }
 

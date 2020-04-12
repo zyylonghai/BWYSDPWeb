@@ -983,4 +983,14 @@ namespace BWYSDPWeb.BaseController
         /// </summary>
         Preview = 4
     }
+
+    /// <summary>表格上的新增，删除，编辑，复制等按钮动作</summary>
+    public enum DataGridAction
+    {
+        None=-1,
+        Add=0,
+        Edit=1,
+        Delet=2,
+        Copy=3
+    }
 }

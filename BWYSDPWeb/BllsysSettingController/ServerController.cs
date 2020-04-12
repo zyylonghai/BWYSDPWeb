@@ -202,10 +202,10 @@ namespace BWYSDPWeb.BllsysSettingController
             return Json(new { data, Flag=0 }, JsonRequestBehavior.AllowGet);
         }
 
-        protected override void UpdateTableAction(string gridid, DataRow row, string cmd)
+        protected override void UpdateTableAction(string gridid, DataRow row, DataGridAction cmd)
         {
             base.UpdateTableAction(gridid, row, cmd);
-            if (cmd != "Delet")
+            if (cmd != DataGridAction.Delet)
             {
                 var tbobj = this.LibTables[0].Tables[0];
                 var rowobj = tbobj.FindRow(row);

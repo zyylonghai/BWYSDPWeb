@@ -50,7 +50,7 @@ namespace BWYSDPWeb.Com
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
                     //jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
-                    jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
+                    //jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
                 //}
                 //if (_gridGroupdic.Count > 0)
                 //{
@@ -59,7 +59,7 @@ namespace BWYSDPWeb.Com
                 //}
                 //if (_dateElemlst.Count > 0 || _datetimeElemlst.Count > 0) //加载日期控件的js，css
                 //{
-                    jsandcss.Append("@Scripts.Render(\"~/Scripts/lib/laydate/laydate\")");
+                    //jsandcss.Append("@Scripts.Render(\"~/Scripts/lib/laydate/laydate\")");
                 //}
                 if (!string.IsNullOrEmpty(ScriptFile))
                 {

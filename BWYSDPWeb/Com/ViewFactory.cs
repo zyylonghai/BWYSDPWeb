@@ -624,7 +624,7 @@ namespace BWYSDPWeb.Com
                 _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btngriddelete\")");//删除
                 _page.Append("</button>");
             }
-            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnCopy(this,'" + grid.GridGroupName + "','" + grid.GdGroupFields[0].FromDefTableNm + "','" + grid.GdGroupFields[0].FromTableNm + "','" + (string.IsNullOrEmpty(ControlClassNm) ? "DataBase" : ControlClassNm) + "')\">");
             _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//复制
             _page.Append("</button>");
             if (grid.GdButtons != null)
@@ -633,7 +633,7 @@ namespace BWYSDPWeb.Com
                 {
                     _page.Append("<button id=\""+btn.GridButtonName+ "\" type=\"button\" class=\"btn btn-default\" onclick=\"return "+btn .GridButtonEvent+"\">");
                     //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
-                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>@Html.GetFieldDesc(\"" + this.DSID + "\",\"" + string.Empty + "\",\""+ btn.GridButtonName + "\")");//删除
+                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>@Html.GetFieldDesc(\"" + this.DSID + "\",\"" + string.Empty + "\",\""+ btn.GridButtonName + "\")");//
                     _page.Append("</button>");
                 }
             }
@@ -691,8 +691,8 @@ namespace BWYSDPWeb.Com
                 _page.Append("<i class=\"glyphicon glyphicon-trash\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngriddelete") + "");//删除
                 _page.Append("</button>");
             }
-            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"\">");
-            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//删除
+            _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnCopy(this,'" + grid.GridGroupName + "','" + grid.GdGroupFields[0].FromDefTableNm + "','" + grid.GdGroupFields[0].FromTableNm + "','" + (string.IsNullOrEmpty(ControlClassNm) ? "DataBase" : ControlClassNm) + "')\">");
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//复制
             _page.Append("</button>");
 
             if (grid.GdButtons != null)
@@ -701,7 +701,7 @@ namespace BWYSDPWeb.Com
                 {
                     _page.Append("<button id=\"" + btn.GridButtonName + "\" type=\"button\" class=\"btn btn-default\" onclick=\"return " + btn.GridButtonEvent + "\">");
                     //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
-                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>" + AppCom.GetFieldDesc(this.DSID, string.Empty, btn.GridButtonName) + "");//删除
+                    _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>" + AppCom.GetFieldDesc(this.DSID, string.Empty, btn.GridButtonName) + "");
                     _page.Append("</button>");
                 }
             }
@@ -1169,7 +1169,7 @@ namespace BWYSDPWeb.Com
                 }
                 table.Append(",{");
                 //string fielddisplaynm = "@Html.GetFieldDesc(\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID) + "\",\"" + ((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm) + "\",\"" + field.Name + "\")";
-                string fielddisplaynm = AppCom.GetFieldDesc((int)Language, (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID,
+                string fielddisplaynm = AppCom.GetFieldDesc((field.IsFromSourceField && libFromSource != null) ? libFromSource.FromDataSource : this.DSID,
                       (field.IsFromSourceField && libFromSource != null) ? libFromSource.FromStructTableNm : field.FromTableNm, field.Name);
                 //table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},", field.Name, field.DisplayName, field.HasSort ? "true" : "false"));
                 table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible: true,switchable:true,", field.Name, fielddisplaynm, field.HasSort ? "true" : "false"));
@@ -1188,16 +1188,21 @@ namespace BWYSDPWeb.Com
                     table.Append("var keyvalues=[");
                     foreach (LibKeyValue item in libField.Items)
                     {
+                        string val = string.Empty;
                         if (libField.Items.IndexOf(item) > 0)
                         {
                             table.Append(",");
                         }
                         if (string.IsNullOrEmpty(item.FromkeyValueID))
                         {
-                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + DSID + "\",\"" + field.FromDefTableNm + "\",\"" + string.Format("{0}_{1}", field.Name, item.Key) + "\")\"}");
+                            val = AppCom.GetFieldDesc(DSID, field.FromDefTableNm, string.Format("{0}_{1}", field.Name, item.Key));
+                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\""+val+"\"}");
                         }
                         else
-                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\"@Html.GetFieldDesc(\"" + item.FromkeyValueID + "\",\"" + string.Empty + "\",\"" + item.Key.ToString() + "\")\"}");
+                        {
+                            val = AppCom.GetFieldDesc(item.FromkeyValueID, string.Empty, item.Key.ToString());
+                            table.Append("{fromkeyvalueid:\"" + item.FromkeyValueID + "\",key:\"" + item.Key + "\",value:\""+val+"\"}");
+                        }
                     }
                     table.Append("];");
                     table.Append("var o=FindKeyValue(keyvalues,value);");
