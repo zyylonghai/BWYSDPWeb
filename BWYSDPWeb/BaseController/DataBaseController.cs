@@ -1839,6 +1839,7 @@ namespace BWYSDPWeb.BaseController
 
         public string RptBindTableData(string gridid,string dsid,string tbnm, string  page, string rows, string sort, string sortOrder, string Mobile)
         {
+            string a = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             List<LibSearchCondition> conds = this.SessionObj.Conds;
             DataTable dt = null;
             bool ispage = true;
@@ -1870,7 +1871,7 @@ namespace BWYSDPWeb.BaseController
             }
             if (dt == null) { var result2 = new { total = 0, rows = DBNull.Value }; return JsonConvert.SerializeObject(result2); }
             var result = new { total =ispage?(dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0):dt.Rows .Count , rows = dt };
-
+            string b = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
             return JsonConvert.SerializeObject(result);
         }
 
@@ -1900,9 +1901,60 @@ namespace BWYSDPWeb.BaseController
             string sumaryfields = this.Request.Params["rptsumarycols"] ?? string.Empty;
             Dictionary<string, string> dic = new Dictionary<string, string>();
             dic.Add("fields", fields.Substring(0, fields.Length - 1));
-            dic.Add("sumaryfields", sumaryfields.Substring(0, sumaryfields.Length - 1));
+            dic.Add("sumaryfields", string.IsNullOrEmpty(sumaryfields)?string.Empty : sumaryfields.Substring(0, sumaryfields.Length - 1));
             this.SessionObj.ExtInfo = dic;
             //this.SessionObj.ExtInfo =string .Format("{0}:{1}", fields.Substring(0, fields.Length - 1), sumaryfields.Substring(0, sumaryfields.Length - 1));
+            return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult RptDataExportExcel(string gridid, string dsid, string tbnm)
+        {
+            List<LibSearchCondition> conds = this.SessionObj.Conds;
+            DataTable dt = null;
+            if (conds != null)
+            {
+                Dictionary<string, string> dic = (Dictionary<string, string>)this.SessionObj.ExtInfo;
+                string[] fields = dic["fields"].Split(SysConstManage.Comma);
+                string[] sumaryfields = string.IsNullOrEmpty(dic["sumaryfields"]) ? null : dic["sumaryfields"].Split(SysConstManage.Comma);
+                DalResult dalresult = null;
+                dalresult = this.ExecuteMethod("RptSearch", dsid, tbnm, fields, sumaryfields, conds);
+                if (dalresult.Messagelist == null || dalresult.Messagelist.Count == 0)
+                {
+                    dt = ((DataTable)dalresult.Value);
+                    GetRptGridDataExt(gridid, dt);
+                    ConvertBinaryColValue(dt);
+                }
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    string field = null;
+                    string tbalism = null;
+                    this.DSID = dsid;
+                    this.CreateTableSchema();
+                    Dictionary<string, string> tbnmdic = new Dictionary<string, string>();
+                    foreach (DataColumn c in dt.Columns)
+                    {
+                        field = fields.FirstOrDefault(i => i.Contains(c.ColumnName));
+                        if (field != null)
+                        {
+                            tbalism = field.Split(SysConstManage.Point)[0];
+                            if (tbnmdic.ContainsKey(tbalism))
+                            {
+                                c.Caption = AppCom.GetFieldDesc(dsid, tbnmdic[tbalism], c.ColumnName);
+                                continue; 
+                            }
+                            int tableindex = LibSysUtils.ToTableIndexByChar(tbalism[0]);
+                            tbnmdic[tbalism] = this.GetTableByIndex(tableindex).TableName;
+                            c.Caption = AppCom.GetFieldDesc(dsid, tbnmdic[tbalism], c.ColumnName);
+                        }
+                        c.Caption = AppCom.GetFieldDesc(dsid, tbnm, c.ColumnName);
+                    }
+                }
+                byte[] data = new ExcelsOperateHelp().TableToExcel(dt, "kkkkk");
+                return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SearchResult.xlsx");
+                //this.Response.BinaryWrite(data);
+                //this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                //this.Response.AddHeader("content-disposition", "attachment;  filename=zyytest.xlsx");
+            }
             return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }
         #endregion 

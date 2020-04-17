@@ -98,6 +98,7 @@ namespace BWYSDPWeb.Com
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
                     //jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/jquerybase64\")");
                     jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
                 }
                 if (_gridGroupdic.Count > 0)

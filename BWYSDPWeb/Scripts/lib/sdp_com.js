@@ -160,6 +160,18 @@ function SDP_RptBtnSearch(ctrnm) {
         success: function (obj) {
             var grids = $("#sdp_rptForm").find("table");
             $.each(grids, function (index, o) {
+                //var $grid = $('#' + o.id);
+                //var options = $grid.bootstrapTable('getOptions');
+                //$grid.bootstrapTable('destroy').bootstrapTable({
+                //    url: options.url,
+                //    height: options.height,
+                //    columns: options.columns,
+                //    showColumns: options.showColumns,
+                //    toolbar: options.toolbar,
+                //    fixedColumns: options.fixedColumns,
+                //    fixedNumber: options.fixedNumber,
+                //    fixedRightNumber: options.fixedRightNumber
+                //});
                 $('#' + o.id).bootstrapTable('refreshOptions', { pageNumber: 1 });
                 //$('#' + o.id).bootstrapTable('refresh');
             });
@@ -168,6 +180,22 @@ function SDP_RptBtnSearch(ctrnm) {
             alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
         }
     });
+}
+function SDP_RptExportExcel(ctrnm, gridid, dsid, tbnm) {
+    window.location.href = "/" + ctrnm + "/RptDataExportExcel?sdp_pageid=" + $('#bwysdp_progid').val() + "&sdp_dsid=" + $('#bwysdp_dsid').val()+"&gridid=" + gridid + "&dsid=" + dsid + "&tbnm=" + tbnm;
+    //$.ajax({
+    //    url: "/" + ctrnm + "/RptDataExportExcel",
+    //    data: 'gridid=' + gridid + '&dsid=' + dsid + '&tbnm=' + tbnm,
+    //    type: 'Post',
+    //    async: false,
+    //    dataType: "text",
+    //    success: function (obj) {
+
+    //    },
+    //    error: function (XMLHttpRequest, textStatus, errorThrown) {
+    //        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+    //    }
+    //});
 }
 
 function TableBtnEdit(obj, grid) {

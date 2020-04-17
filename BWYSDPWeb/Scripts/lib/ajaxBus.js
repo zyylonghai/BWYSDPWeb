@@ -55,7 +55,12 @@ $.ajax = function (opt) {
                     ShowMsg(responseobj.msg, 'error');
             }
             else {
-                ShowMsg('ajax error: '+XMLHttpRequest.status+':' + textStatus+':' + errorThrown, 'error');
+                if (XMLHttpRequest.status == 0) {
+                    //0 - 本地响应成功。
+                    ShowMsg(XMLHttpRequest.status + ':' + textStatus + ':' + errorThrown, 'promt');
+                }
+                else
+                    ShowMsg('ajax error: ' + XMLHttpRequest.status + ':' + textStatus + ':' + errorThrown, 'error');
             }
             //错误方法增强处理 
             fn.error(XMLHttpRequest, textStatus, errorThrown);

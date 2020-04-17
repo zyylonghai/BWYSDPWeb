@@ -178,6 +178,7 @@
     <Compile Include="BllComController\CheckBillController.cs" />
     <Compile Include="BllComController\CodeRuleConfigController.cs" />
     <Compile Include="BllComController\ComController.cs" />
+    <Compile Include="BllComController\exportTestController.cs" />
     <Compile Include="BllSCMController\SaleOrderController.cs" />
     <Compile Include="BllSCMController\SCMController.cs" />
     <Compile Include="BllStockController\StockController.cs" />

@@ -19,7 +19,7 @@ namespace BWYSDPWeb.Com
         private List<string> _tableScriptlst = null;
         private string _pagetitle = string.Empty;
         private string _progid = null;
-
+        private int fixnumber = 2;
         #region 公开属性
         public string ControlClassNm { get; set; }
         //public string DSID { get; set; }
@@ -46,32 +46,25 @@ namespace BWYSDPWeb.Com
                 StringBuilder jsandcss = new StringBuilder();
                 //if (_hasSearchModal)
                 //{
-                    jsandcss.Append("@Styles.Render(\"~/Content/bootstrapTable\")");
-                    jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTable\")");
-                    jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
-                    //jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
-                    //jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
-                //}
-                //if (_gridGroupdic.Count > 0)
-                //{
-                //    //jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
-                //    jsandcss.Append("@Scripts.Render(\"~/bundles/TableModal\")");
-                //}
-                //if (_dateElemlst.Count > 0 || _datetimeElemlst.Count > 0) //加载日期控件的js，css
-                //{
-                    //jsandcss.Append("@Scripts.Render(\"~/Scripts/lib/laydate/laydate\")");
-                //}
+                #region 样式
+                jsandcss.Append("@Styles.Render(\"~/Content/bootstrapTable\")");
+                if (fixnumber > 1)
+                {
+                    jsandcss.Append("@Styles.Render(\"~/Content/fixedcolumns\")");
+                }
+                #endregion
+
+                #region  js
+                jsandcss.Append("@Scripts.Render(\"~/bundles/RptbootstrapTable\")");
+                jsandcss.Append("@Scripts.Render(\"~/bundles/bootstrapTableExport\")");
+                if (fixnumber > 1)
+                    jsandcss.Append("@Scripts.Render(\"~/bundles/fixedcolumns\")");
                 if (!string.IsNullOrEmpty(ScriptFile))
                 {
                     _page.AppendLine();
                     _page.Append("<script src = \"/Scripts/" + Package + "/" + ScriptFile + "\" ></script>");
                 }
-                //if (_hasSearchModal)
-                //{
-                //    if (_gridGroupdic.Count == 0)
-                //        jsandcss.Append("@Scripts.Render(\"~/bundles/sdp_com\")");
-                //    jsandcss.Append("@Scripts.Render(\"~/bundles/searchmodal\")");
-                //}
+                #endregion
                 return jsandcss.Append(_page.ToString()).ToString();
             }
         }
@@ -185,7 +178,7 @@ namespace BWYSDPWeb.Com
             _page.Append("<button id=\"sdp_rptbtnSearch\" type=\"button\" class=\"btn btn-primary\">@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btnselect\")</button>");
             #endregion 
             #region toolbar
-            _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"btn-group\">");
+            _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"toolbar form-inline\">");
             #region 默认的分组按钮
             _page.Append("<button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">分组按<span class=\"caret\"></span></button>");
             _page.Append("<ul class=\"dropdown-menu\" role=\"menu\">");
@@ -199,7 +192,14 @@ namespace BWYSDPWeb.Com
             }
             
             _page.Append("</ul>");
-            #endregion 
+            #endregion
+
+            #region  导出excel按钮
+            _page.Append("<button id=\"\" type=\"button\" class=\"btn btn-default\" onclick=\"return SDP_RptExportExcel('" + (string.IsNullOrEmpty(ControlClassNm) ? this.Package : ControlClassNm) + "','" + grid.GridGroupName + "','" + grid.DSID + "','" + grid.FromTable + "')\">");
+            //_page.Append("<button id=\"" + grid.GridGroupName + "_sdp_deletrow\" type=\"button\" class=\"btn btn-default\">");
+            _page.Append("<i class=\"glyphicon glyphicon-pause\"></i>导出excel");//导出excel
+            _page.Append("</button>");
+            #endregion
             if (grid.GdButtons != null)
             {
                 foreach (LibGridButton btn in grid.GdButtons)
@@ -354,9 +354,21 @@ namespace BWYSDPWeb.Com
             //colcout = 0;//重置colcout值
             #endregion
 
-            table.Append(string.Format("{0}.$table.showFooter={1};", param, "true" ));
-            table.Append(string.Format("{0}.$table.singleSelect={1};", param, "true"));
-            table.Append(string.Format("{0}.$table.hasoperation={1};", param, "false"));
+            #region 固定列处理
+            //LibReportField[] fixcols= grid.ReportFields.Find("IsFixCol", true);
+            var fieldlst = grid.ReportFields.Tolist().OrderByDescending(i => i.IsFixCol).ToList();
+            //StringBuilder fixcolbuilder = new StringBuilder();
+            //if (fixcols != null && fixcols.Length > 0)
+            //{
+            //   foreach (LibRelateField f ) 
+            //}
+            #endregion 
+
+            table.Append(string.Format("{0}.$table.showToggle={1};", param, "false")); //不显示明细视图与列表切换按钮
+            table.Append(string.Format("{0}.$table.showRefresh={1};", param, "false")); //不显示刷新按钮
+            table.Append(string.Format("{0}.$table.showFooter={1};", param, "true" ));//汇总
+            table.Append(string.Format("{0}.$table.singleSelect={1};", param, "true")); //单选
+            table.Append(string.Format("{0}.$table.hasoperation={1};", param, "false")); 
             table.Append(string.Format("{0}.$table.height={1};", param, grid.TableHeight));
             table.Append(string.Format("{0}.$table.columns = [", param));
             table.Append("{checkbox: true,visible: true }");
@@ -366,8 +378,10 @@ namespace BWYSDPWeb.Com
             //hidecolumns.Append(string.Format("$('#{0}').bootstrapTable('hideColumn', 'sdp_rowid');", grid.GridGroupName));
             #endregion
             bool hasfooter = true;
-            foreach (LibReportField field in grid.ReportFields)
+            //int fixnumber = 1;
+            foreach (LibReportField field in fieldlst)
             {
+                if (field.IsFixCol) fixnumber++;
                 table.Append(",{");
                 string fielddisplaynm = "@Html.GetFieldDesc(\"" + (string.IsNullOrEmpty(field.FromTableNm) ? _progid : grid.DSID) + "\",\"" + (field.FromTableNm) + "\",\"" + field.Name + "\")";
                 table.Append(string.Format("field:'{0}',title: '{1}',align: 'center',sortable:{2},visible: true,switchable:true,", field.Name, fielddisplaynm, field.HasSort ? "true" : "false"));
@@ -440,6 +454,7 @@ namespace BWYSDPWeb.Com
                 //}
 
                 #region 存储报表列
+                if (field.Isdefine) continue;
                 string colnm = string.Format("{0}.{1}", LibSysUtils.ToCharByTableIndex(field.FromTableIndex), field.Name);
                 rptcols.Append("$('#sdp_rptCols').val($('#sdp_rptCols').val()+\""+colnm+"\"+',');");
                 #endregion
@@ -448,6 +463,11 @@ namespace BWYSDPWeb.Com
             //tbformfield.Append("</div>");// 结束 form-group
             //}
             table.Append("];");
+            if (fixnumber > 1) //有固定列设置
+            {
+                table.Append(string.Format("{0}.$table.fixedColumns={1};", param, "true"));
+                table.Append(string.Format("{0}.$table.fixedNumber={1};", param, fixnumber));
+            }
 
             #region 移除权限内的字段
             //table.Append(string.Format("$.each({0},function (i, o)", string.Format("{0}.$table.columns", param)));

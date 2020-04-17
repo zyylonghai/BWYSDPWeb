@@ -138,6 +138,8 @@ function LibTable(id)
         showExport: true,                  //是否显示导出按钮
         singleSelect: false,                //设置True 将禁止多选
         idField: "",                        //指定主键列
+        fixedColumns: false,
+        fixedNumber:0,
         columns: []
     };
     this.$subtableParam = {
@@ -202,7 +204,7 @@ LibTable.prototype = {
             detailView: this.$table.detailView,                  //是否显示父子表
             showExport: this.$table.showExport, //是否显示导出
             exportDataType: "all", //默认basic：只导出当前页的表格数据；all：导出所有数据；selected：导出选中的数据
-            exportTypes: ['csv', 'txt', 'sql', 'doc', 'excel', 'xlsx', 'pdf'] ,//导出文件类型 ，支持多种类型文件导出
+            exportTypes: ['csv', 'txt', 'sql', 'doc', 'excel', 'xlsx'] ,//导出文件类型 ，支持多种类型文件导出
             exportOptions: {
                 ignoreColumn: [0, 1],  //忽略某一列的索引  
                 //fileName: '贷款总表',  //文件名称设置  
@@ -213,6 +215,8 @@ LibTable.prototype = {
             },
             showFooter: this.$table.showFooter,
             singleSelect: this.$table.singleSelect,
+            fixedColumns: this.$table.fixedColumns,
+            fixedNumber: this.$table.fixedNumber,
             //得到查询的参数
             queryParams: function (params) {
                 //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的

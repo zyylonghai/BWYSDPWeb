@@ -117,16 +117,6 @@ namespace BWYSDPWeb.BaseController
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
             //this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;
             this.LibTables = GetTableSchema(this.DSID);
-            //if (this.LibTables != null)
-            //{
-            //    foreach (LibTable item in this.LibTables)
-            //    {
-            //        foreach (DataTable dt in item.Tables)
-            //        {
-            //            dt.RowChanged += Dt_RowChanged;
-            //        }
-            //    }
-            //}
             #region get temp data from db
             if (this.LibTables == null && !request.Url.ToString().Contains("BasePageLoad"))
             {
@@ -137,16 +127,6 @@ namespace BWYSDPWeb.BaseController
             //this.Package = GetCookievalue(SysConstManage.PageinfoCookieNm, SysConstManage.PackageCookieKey);
             //this.ProgID = GetCookievalue(SysConstManage.PageinfoCookieNm, SysConstManage.ProgidCookieKey);
         }
-
-        //private void Dt_RowChanged(object sender, DataRowChangeEventArgs e)
-        //{
-
-        //    Bll.DelegateFactory df = new Bll.DelegateFactory();
-        //    df.SaveRowChange(System.Web.HttpContext.Current.Session.SessionID, this.ProgID, e.Row, e.Action, (int)this.OperatAction);
-        //    //TempDataDelegate compressfile = new TempDataDelegate(InsertTemp);
-        //    //AsyncCallback callback = new AsyncCallback(CallBackMethod);
-        //    //IAsyncResult iar = compressfile.BeginInvoke(e.Row ,e.Action , callback, compressfile);
-        //}
 
         // GET: Base
         //public ActionResult Index()

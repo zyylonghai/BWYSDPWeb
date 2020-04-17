@@ -52,12 +52,27 @@ namespace BWYSDPWeb
                       "~/Scripts/lib/TableSetting.js"
                       
                 ));
+            //bootstrapTable
+            bundles.Add(new ScriptBundle("~/bundles/RptbootstrapTable").Include(
+                      "~/Scripts/lib/bootstrap-table.min.js",
+                      "~/Scripts/lib/bootstrap-table-zh-CN.js",
+                      "~/Scripts/lib/TableSetting.js"
+
+                ));
             //bootstrapTableExport
             bundles.Add(new ScriptBundle("~/bundles/bootstrapTableExport").Include(
                       "~/Scripts/lib/bootstrap-table-export.js",
                       "~/Scripts/lib/tableExport.min.js",
-                      //"~/Scripts/lib/FileSaver.min.js",
+                      "~/Scripts/lib/xlsx.core.min.js"
+                     //"~/Scripts/lib/jspdf.plugin.autotable.js",
+                     //"~/Scripts/lib/jquery.base64.js"
+                ));
+            bundles.Add(new ScriptBundle("~/bundles/jquerybase64").Include(
                      "~/Scripts/lib/jquery.base64.js"
+                ));
+            //fixed-columns
+            bundles.Add(new ScriptBundle("~/bundles/fixedcolumns").Include(
+                     "~/Scripts/lib/bootstrap-table-fixed-columns.min.js"
                 ));
             //laydate
             bundles.Add(new ScriptBundle("~/Scripts/lib/laydate/laydate").Include(
@@ -78,6 +93,7 @@ namespace BWYSDPWeb
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       //"~/Content/bootstrap.css",
                       "~/Content/bootstrap.min.css",
+                      //"~/Content/bootstrap4.3.min.css",
                       "~/Content/bootstrap-clearmin.min.css",
                       "~/Content/roboto.css",
                       "~/Content/material-design.css",
@@ -91,6 +107,14 @@ namespace BWYSDPWeb
             //bootstrapTable
             bundles.Add(new StyleBundle("~/Content/bootstrapTable").Include(
                      "~/Content/bootstrap-table.css"
+                     
+                ));
+
+            //bootstrapTable
+            bundles.Add(new StyleBundle("~/Content/fixedcolumns").Include(
+                //"~/Content/bootstrap-table.css",
+                "~/Content/_float.css",
+                "~/Content/bootstrap-table-fixed-columns.min.css"
 
                 ));
             #endregion
