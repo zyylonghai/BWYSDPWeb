@@ -106,13 +106,16 @@ namespace BWYSDPWeb
             #region 控件的css 
             //bootstrapTable
             bundles.Add(new StyleBundle("~/Content/bootstrapTable").Include(
-                     "~/Content/bootstrap-table.css"
+                     "~/Content/bootstrap-table.min.css"
                      
                 ));
 
             //bootstrapTable
             bundles.Add(new StyleBundle("~/Content/fixedcolumns").Include(
-                //"~/Content/bootstrap-table.css",
+                //"~/Content/all.min.css",
+                //"~/Content/default.css",
+                //"~/Content/hint.css",
+                //"~/Content/docs.min.css",
                 "~/Content/_float.css",
                 "~/Content/bootstrap-table-fixed-columns.min.css"
 

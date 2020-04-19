@@ -365,7 +365,8 @@ namespace BWYSDPWeb.Com
             #endregion 
 
             table.Append(string.Format("{0}.$table.showToggle={1};", param, "false")); //不显示明细视图与列表切换按钮
-            table.Append(string.Format("{0}.$table.showRefresh={1};", param, "false")); //不显示刷新按钮
+            //table.Append(string.Format("{0}.$table.showRefresh={1};", param, "false")); //不显示刷新按钮
+            //table.Append(string.Format("{0}.$table.showExport={1};", param, "false")); //不显示导出按钮
             table.Append(string.Format("{0}.$table.showFooter={1};", param, "true" ));//汇总
             table.Append(string.Format("{0}.$table.singleSelect={1};", param, "true")); //单选
             table.Append(string.Format("{0}.$table.hasoperation={1};", param, "false")); 

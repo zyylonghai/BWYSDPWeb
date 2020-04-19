@@ -212,7 +212,9 @@
     </Content>
     <Content Include="Content\bootstrap-clearmin.min.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\bootstrap-table-fixed-columns.min.css" />
     <Content Include="Content\bootstrap-table.css" />
+    <Content Include="Content\bootstrap-table.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\c3.min.css" />
@@ -222,6 +224,7 @@
     <Content Include="Content\roboto.css" />
     <Content Include="Content\small-n-flat.css" />
     <Content Include="Content\summernote.css" />
+    <Content Include="Content\_float.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -1932,9 +1935,11 @@
     <Content Include="Scripts\lib\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\lib\bootstrap-datetimepicker.zh-CN.js" />
     <Content Include="Scripts\lib\bootstrap-table-export.js" />
+    <Content Include="Scripts\lib\bootstrap-table-fixed-columns.min.js" />
     <Content Include="Scripts\lib\bootstrap-table-resizable.js" />
     <Content Include="Scripts\lib\bootstrap-table-zh-CN.js" />
     <Content Include="Scripts\lib\bootstrap-table.js" />
+    <Content Include="Scripts\lib\bootstrap-table.min.js" />
     <Content Include="Scripts\lib\c3.min.js" />
     <Content Include="Scripts\lib\clearmin.min.js" />
     <Content Include="Scripts\lib\colResizable-1.6.js" />
@@ -1961,8 +1966,10 @@
     <Content Include="Scripts\lib\SearchModal.js" />
     <Content Include="Scripts\lib\summernote.min.js" />
     <Content Include="Scripts\lib\tableExport.js" />
+    <Content Include="Scripts\lib\tableExport.min.js" />
     <Content Include="Scripts\lib\TableModal.js" />
     <Content Include="Scripts\lib\TableSetting.js" />
+    <Content Include="Scripts\lib\xlsx.core.min.js" />
     <Content Include="Scripts\Message_zh.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
@@ -1996,6 +2003,7 @@
     <Content Include="Views\Server\ServerPage2.cshtml" />
     <Content Include="Views\Home\LogSearch.cshtml" />
     <Content Include="Views\Shared\_DataLogDetail.cshtml" />
+    <Content Include="Views\SCM\index2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\com\" />

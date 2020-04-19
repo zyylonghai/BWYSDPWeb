@@ -92,16 +92,31 @@ namespace BWYSDPWeb.BllComController
             string b = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
             string b2 = System.DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
             var obj = new { a = "kk", b = 2 };
+            var mtb = this.LibTables[0].Tables[0];
+            var mrow = mtb.Rows[0];
+            mrow.Checker = "zyy";
+            mrow.matId = "kxcu0001";
+            mrow.Qty = 12;
+            mrow.CheckDT = new Date { value = DateTime.Now.ToString() };
+            mrow.CompanyId = "zyycompany";
+            mrow.departmentId = "IT";
+            mrow.billStatus = 1;
 
-            //LibTableObj detail = this.LibTables[1].Tables[0];
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    var row = detail.NewRow();
-            //    row.yingdu = string.Format("{0}{1}", "硬度", i);
-            //    row.naiwendu = string.Format("{0}{1}", "耐温度", i);
-            //    row.xingzhuang = string.Format("{0}{1}", "xingzhuang", i);
-            //    row.midu = string.Format("{0}{1}", "midu", i);
-            //}
+            //var mtb2 = this.LibTables[0].Tables[1];
+            //dynamic row = mtb2.NewRow();
+            //row.check1 = "check1";
+            //row.check2 = "check2";
+
+
+            var detail = this.LibTables[1].Tables[0];
+            for (int i = 0; i < 10000; i++)
+            {
+                var row = detail.NewRow();
+                row.yingdu = string.Format("{0}{1}", "硬度", i);
+                row.naiwendu = string.Format("{0}{1}", "耐温度", i);
+                row.xingzhuang = string.Format("{0}{1}", "xingzhuang", i);
+                row.midu = string.Format("{0}{1}", "midu", i);
+            }
 
 
             //Newtonsoft.Json.Linq.JObject jsonobj = new Newtonsoft.Json.Linq.JObject();

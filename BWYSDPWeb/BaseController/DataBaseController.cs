@@ -1699,7 +1699,8 @@ namespace BWYSDPWeb.BaseController
             DalResult result = this.ExecuteMethod("InternalSearchByPage", dsid, tableNm, null, conds, page, rows);
             if (result.Messagelist == null || result.Messagelist.Count == 0)
             {
-                dt = ((DataTable)result.Value);
+                DataTable[] tables = ((DataTable[])result.Value);
+                dt = tables[0];
                 BindSmodalDataExt(dt, flag,fieldnm);
                 if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
                 {
@@ -1739,7 +1740,7 @@ namespace BWYSDPWeb.BaseController
                     //        }
                     //    }
                     //}
-                    return LibReturnForGrid((dt.Rows.Count > 0 ? (int)dt.Rows[0][SysConstManage.sdp_total_row] : 0), dt);
+                    return LibReturnForGrid((dt.Rows.Count > 0 ? (int)tables[1].Rows[0][SysConstManage.sdp_total_row] : 0), dt);
                 }
             }
             return LibReturnForGrid(0, null);
@@ -1783,7 +1784,9 @@ namespace BWYSDPWeb.BaseController
                             DalResult result = this.ExecuteMethod("InternalSearchByPage", cond.DSID, cond.TableNm, new string[] { fromSourceField.FromFieldNm, fromSourceField.FromFieldDesc }, conds, 1, 20);
                             if (result.Messagelist == null || result.Messagelist.Count == 0)
                             {
-                                DataTable dt = ((DataTable)result.Value);
+                                DataTable[] tables = ((DataTable[])result.Value);
+                                DataTable dt = tables[0];
+                                //DataTable dt = ((DataTable)result.Value);
                                 if (this.MsgList == null || this.MsgList.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
                                 {
                                     if (dt != null)
