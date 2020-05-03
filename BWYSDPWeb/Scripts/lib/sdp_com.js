@@ -158,6 +158,9 @@ function SDP_RptBtnSearch(ctrnm) {
         async: false,
         dataType: "json",
         success: function (obj) {
+            $('#sdp_rptgridgroupbtn').children().each(function (i, o) {
+
+            });
             var grids = $("#sdp_rptForm").find("table");
             $.each(grids, function (index, o) {
                 //var $grid = $('#' + o.id);
@@ -196,6 +199,35 @@ function SDP_RptExportExcel(ctrnm, gridid, dsid, tbnm) {
     //        alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
     //    }
     //});
+}
+function SDP_RptGroupBy(ctrnm, tableid) {
+    let fields = [];
+    let gridid = "";
+    $('#sdp_rptgridgroupbtn').children().each(function (i, o) {
+        gridid = $(o).find('input').data('gridid');
+        if ($(o).find('input')[0].checked) {
+            fields.push($(o).find('input').data('field'));
+        }
+    });
+    $.ajax({
+        url: "/" + ctrnm + "/RptSearchDataByGroup",
+        data: { fields },
+        type: 'Post',
+        async: false,
+        dataType: "json",
+        success: function (obj) {
+            $('#' + gridid).bootstrapTable('refreshOptions', { pageNumber: 1 });
+            //var grids = $("#sdp_rptForm").find("table");
+            //$.each(grids, function (index, o) {
+            //    if (o.id != undefined && o.id != '')
+            //        $('#' + o.id).bootstrapTable('refreshOptions', { pageNumber: 1 });
+            //});
+            
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status.toString() + ":" + XMLHttpRequest.readyState.toString() + "," + textStatus + errorThrown);
+        }
+    });
 }
 
 function TableBtnEdit(obj, grid) {

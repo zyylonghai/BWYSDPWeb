@@ -1851,6 +1851,9 @@ namespace BWYSDPWeb.BaseController
                 Dictionary<string, string> dic = (Dictionary<string, string>)this.SessionObj.ExtInfo;
                 string[] fields = dic["fields"].Split(SysConstManage.Comma);
                 string[] sumaryfields = string.IsNullOrEmpty(dic["sumaryfields"]) ? null : dic["sumaryfields"].Split(SysConstManage.Comma);
+                string groupfieldstr =string.Empty;
+                dic.TryGetValue("groupfields", out groupfieldstr);
+                //string[] groupfields = dic.TryGetValue("groupfields", out groupfieldstr) ? groupfieldstr.Split(SysConstManage.Comma) : null;
                 DalResult dalresult = null;
                 if (!LibSysUtils.IsNumberic(page) && !LibSysUtils.IsNumberic(rows))
                 {
@@ -1858,7 +1861,7 @@ namespace BWYSDPWeb.BaseController
                     ispage = false;
                 }
                 else
-                     dalresult = this.ExecuteMethod("RptSearchByPage", dsid, tbnm, fields,sumaryfields, conds, Convert .ToInt32(page),Convert .ToInt32(rows));
+                     dalresult = this.ExecuteMethod("RptSearchByPage", dsid, tbnm, fields,sumaryfields,(string.IsNullOrEmpty(groupfieldstr)?null :groupfieldstr), conds, Convert .ToInt32(page),Convert .ToInt32(rows));
                 if (dalresult.Messagelist == null || dalresult.Messagelist.Count == 0)
                 {
                     dt = ((DataTable)dalresult.Value);
@@ -1957,6 +1960,41 @@ namespace BWYSDPWeb.BaseController
                 //this.Response.BinaryWrite(data);
                 //this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 //this.Response.AddHeader("content-disposition", "attachment;  filename=zyytest.xlsx");
+            }
+            return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult RptSearchDataByGroup(string[] fields)
+        {
+            if (this.SessionObj != null )
+            {
+                Dictionary<string, string> dic = (Dictionary<string, string>)this.SessionObj.ExtInfo;
+                if (dic != null)
+                {
+                    string fstr = string.Empty;
+                    if (fields == null || fields.Length == 0)
+                    {
+                        if (dic.TryGetValue("groupfields", out fstr))
+                        {
+                            fstr = string.Empty;
+                            dic.Remove("groupfields");
+                        }
+                        return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
+                    }
+                    foreach (string f in fields)
+                    {
+                        if (!string.IsNullOrEmpty(fstr))
+                        {
+                            fstr += SysConstManage .Comma;
+                        }
+                        fstr += f;
+                    }
+                    if (!dic.ContainsKey("groupfields"))
+                    {
+                        dic.Add("groupfields", "");
+                    }
+                    dic["groupfields"] = fstr;
+                }
             }
             return Json(new { data = "", flag = 0 }, JsonRequestBehavior.AllowGet);
         }

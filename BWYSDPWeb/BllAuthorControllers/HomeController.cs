@@ -1,4 +1,5 @@
-﻿using BWYSDPWeb.BaseController;
+﻿using Bll;
+using BWYSDPWeb.BaseController;
 using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using Com;
@@ -80,6 +81,8 @@ namespace BWYSDPWeb.Controllers
 
         public ActionResult LoginOut()
         {
+            TempHelp sQLiteHelp = new TempHelp("TempData");
+            sQLiteHelp.ClearTempBysessionid(Session.SessionID);
             Session.Clear();
             //Session[SysConstManage.sdp_userinfo] = null;
             return View("Login");

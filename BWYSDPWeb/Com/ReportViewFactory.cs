@@ -180,14 +180,14 @@ namespace BWYSDPWeb.Com
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"toolbar form-inline\">");
             #region 默认的分组按钮
-            _page.Append("<button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">分组按<span class=\"caret\"></span></button>");
-            _page.Append("<ul class=\"dropdown-menu\" role=\"menu\">");
+            _page.Append("<button type=\"button\" class=\"btn btn-default dropdown-toggle\" aria-label=\"columns\" data-toggle=\"dropdown\" aria-expanded=\"false\">分组按<span class=\"caret\"></span></button>");
+            _page.Append("<ul id=\"sdp_rptgridgroupbtn\" class=\"dropdown-menu\" role=\"menu\">");
             foreach (LibReportField f in grid.ReportFields)
             {
                 if (f.IsGroupBy)
                 {
                     string fielddisplaynm = "@Html.GetFieldDesc(\"" + (string.IsNullOrEmpty(f.FromTableNm) ? _progid : grid.DSID) + "\",\"" + (f.FromTableNm) + "\",\"" + f.Name + "\")";
-                    _page.AppendFormat("<li><a href=\"#\">{0}</a></li>",fielddisplaynm);
+                    _page.AppendFormat("<li role=\"menuitem\"><label><input type=\"checkbox\" data-field=\"{1}\" data-gridid=\"{2}\"  value=\"2\"/>{0}</label></li>", fielddisplaynm, string.Format("{0}.{1}", LibSysUtils.ToCharByTableIndex(f.FromTableIndex), f.Name),grid .GridGroupName);
                 }
             }
             
@@ -672,6 +672,9 @@ namespace BWYSDPWeb.Com
             #endregion
             //查询按钮事件
             _script.Append("$('#sdp_rptbtnSearch').click(function (){ SDP_RptBtnSearch(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\");});");
+            //分组按钮事件
+            _script.Append("$('#sdp_rptgridgroupbtn').children().each(function(i,o){ $(o).click(function(){SDP_RptGroupBy(\"" + (string.IsNullOrEmpty(this.ControlClassNm) ? "DataBase" : this.ControlClassNm) + "\",'');})});");
+
 
             _script.Append("})");
             _script.Append("</script>");

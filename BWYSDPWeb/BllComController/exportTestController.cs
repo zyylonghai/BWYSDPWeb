@@ -18,7 +18,7 @@ namespace BWYSDPWeb.BllComController
             mrow.matid = "matid";
             mrow.plantId = "1000";
             mrow.staffid = "staffid";
-            mrow.Hetong = "hetong";
+            mrow.Hetong = "hetong2";
             mrow.address = "fujianshenglonghai";
             mrow.lianxiren = "13526253664";
             mrow.Field8 = "Field8";
@@ -39,7 +39,7 @@ namespace BWYSDPWeb.BllComController
             for (int i = 0; i < 10000; i++)
             {
                 dynamic drow = detail.NewRow();
-                drow.matid = "matid"+i.ToString ();
+                drow.matid = "matidzyy"+i.ToString ();
                 drow.rowstatu = 1;
                 drow.DField5 = "Field5" + i.ToString();
                 drow.DField6 = "Field6" + i.ToString();
