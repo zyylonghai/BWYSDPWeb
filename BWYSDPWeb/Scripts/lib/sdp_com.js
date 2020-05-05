@@ -334,10 +334,12 @@ function TableBtnCopy(obj, grid, tbnm, tablenm, ctrl) {
 function TimeConverToStr(tm) {
     //var datetime = Date.parse(new Date(stringTime));
     //datetime.setTime(time);
+    if (tm == undefined) return "";
     var datetm = new Date(tm);
     var year = datetm.getFullYear();
     var month = datetm.getMonth() + 1 < 10 ? "0" + (datetm.getMonth() + 1) : datetm.getMonth() + 1;
     var day = datetm.getDate() < 10 ? "0" + datetm.getDate() : datetm.getDate();
+    if (isNaN(year)) return tm.value;
     return year + "-" + month + "-" + day;
 }
 

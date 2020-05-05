@@ -1201,9 +1201,19 @@ namespace BWYSDPWeb.BaseController
                         case "Add":
                             gridAction = DataGridAction.Add;
                             dr = tb.NewRow();
+                            DataColumn col = null;
                             foreach (FormFields f in fieldlst)
                             {
-                                dr[f.FieldNm.Replace(string.Format("{0}{1}", tableNm, SysConstManage.Underline), "")] = f.FieldValue;
+                                col=tb.Columns[f.FieldNm.Replace(string.Format("{0}{1}", tableNm, SysConstManage.Underline), "")];
+                                if (col != null)
+                                {
+                                    DataTableHelp.SetColomnValue(dr, col, f.FieldValue);
+                                    //if (col.DataType == typeof(Date))
+                                    //{
+                                        
+                                    //}
+                                    //dr[col] = f.FieldValue;
+                                }
                             }
                             //tb.Rows.Add(dr);
                             #region 旧代码
@@ -1396,12 +1406,14 @@ namespace BWYSDPWeb.BaseController
                                     col = tb.Columns[array[1]];
                                     if (col != null)
                                     {
-                                        if (col.DataType == typeof(bool))
-                                        {
-                                            dr[col] = Convert.ToBoolean(Convert.ToInt32(formparams[nm]));
-                                        }
-                                        else
-                                            dr[col] = formparams[nm];
+                                        DataTableHelp.SetColomnValue(dr, col, formparams[nm]);
+                                        //if (col.DataType == typeof(bool))
+                                        //{
+                                        //    dr[col] = Convert.ToBoolean(Convert.ToInt32(formparams[nm]));
+                                        //}
+                                        //else
+                                        //    dr[col] = formparams[nm];
+
                                     }
                                     
                                 }
