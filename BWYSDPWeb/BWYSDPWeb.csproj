@@ -202,6 +202,7 @@
     <Compile Include="Models\SessionInfo.cs" />
     <Compile Include="Models\TableObj.cs" />
     <Compile Include="Models\TestInfo.cs" />
+    <Compile Include="Models\TransInfo.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

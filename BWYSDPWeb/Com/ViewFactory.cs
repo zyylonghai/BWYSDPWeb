@@ -171,7 +171,25 @@ namespace BWYSDPWeb.Com
             _page.Append("<i class=\"glyphicon glyphicon-search\"></i>@Html.GetMessage(\"sdp_btnsearch\")</button>");
 
             _page.Append("<button id=\"bwysdp_btnlogSearch\" type=\"button\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-search\"></i>@Html.GetMessage(\"sdp_btnlogSearch\")</button>");
+
             _page.Append("</div>");
+
+
+            #region 转单按钮
+            var transmenues = AppCom.GetAllTransTargetProgs(this._progid);
+            if (transmenues != null && transmenues.Length > 0)
+            {
+                _page.Append("<div class=\"btn-group\" role=\"group\">");//按钮组
+                _page.Append("<button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\">@Html.GetMessage(\"sdp_btnTranslist\")<span class=\"caret\"></span></button>");
+                _page.Append("<ul class=\"dropdown-menu\" role=\"menu\">");
+                foreach (TransInfo p in transmenues)
+                {
+                    _page.Append("<li><a href=\"/" + p.TargetPackage + "/ConverToPage?progId=" + p.TargetProgId + "\"  target=\"_blank\">@Html.GetFieldDesc(\"" + p.TargetProgId + "\",\"\",\"" + p.TargetProgId + "\")</a></li>");
+                }
+                _page.Append("</ul>");
+                _page.Append("</div>");
+            }
+            #endregion 
             _page.Append("<br /><br />");
         }
         /// <summary>
@@ -626,7 +644,7 @@ namespace BWYSDPWeb.Com
                 _page.Append("</button>");
             }
             _page.Append("<button type=\"button\" class=\"btn btn-default\" onclick=\"return TableBtnCopy(this,'" + grid.GridGroupName + "','" + grid.GdGroupFields[0].FromDefTableNm + "','" + grid.GdGroupFields[0].FromTableNm + "','" + (string.IsNullOrEmpty(ControlClassNm) ? "DataBase" : ControlClassNm) + "')\">");
-            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>" + AppCom.GetFieldDesc(string.Empty, string.Empty, "sdp_btngridCopy") + "");//复制
+            _page.Append("<i class=\"glyphicon glyphicon-pencil\"></i>@Html.GetFieldDesc(\"" + string.Empty + "\",\"" + string.Empty + "\",\"sdp_btngridCopy\")");//复制
             _page.Append("</button>");
             if (grid.GdButtons != null)
             {

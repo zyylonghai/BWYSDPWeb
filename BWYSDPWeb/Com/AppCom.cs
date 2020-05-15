@@ -1,6 +1,7 @@
 ﻿using Bll;
 using BWYSDPWeb.Models;
 using SDPCRL.COM.ModelManager;
+using SDPCRL.COM.ModelManager.Trans;
 using SDPCRL.CORE;
 using SDPCRL.CORE.FileUtils;
 using System;
@@ -81,6 +82,35 @@ namespace BWYSDPWeb.Com
             }
             return results;
            
+        }
+
+        public static TransInfo[] GetAllTransTargetProgs(string srcprogid)
+        {
+            TransInfo[] results = null;
+            string rootpath = System.Web.HttpContext.Current.Server.MapPath("/").Replace("//", "");
+            FileOperation fileoperation = new FileOperation();
+            fileoperation.FilePath = string.Format(@"{0}\Models\{1}", string.Format(@"{0}Views", rootpath), SysConstManage.TransSourceNm);
+            List<LibFileInfo> allfiles = fileoperation.SearchAllFileInfo();
+            if (allfiles != null)
+            {
+                LibTransSource transSource = null;
+                TransInfo p = null;
+                foreach (var item in allfiles)
+                {
+                   transSource = ModelManager.GetModelBypath<LibTransSource>(string.Format(@"{0}Views", rootpath), item.FileName, item.Folder);
+                    if (transSource != null && transSource.SrcProgId == srcprogid)
+                    {
+                        p = new TransInfo();
+                        p.TargetProgId = transSource.TargetProgId;
+                        p.TargetPackage = transSource.TargetPackage;
+                        p.TransModelId = transSource.TransId;
+                        if (results == null) results = new TransInfo[] { };
+                        Array.Resize(ref results, results.Length + 1);
+                        results[results.Length - 1] = p;
+                    }
+                }
+            }
+            return results;
         }
 
         public static LibDataSource GetDataSource(string dsid)

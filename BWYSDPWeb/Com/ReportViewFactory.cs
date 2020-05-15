@@ -180,7 +180,7 @@ namespace BWYSDPWeb.Com
             #region toolbar
             _page.Append("<div id=\"" + grid.GridGroupName + "_toolbar\" class=\"toolbar form-inline\">");
             #region 默认的分组按钮
-            _page.Append("<button type=\"button\" class=\"btn btn-default dropdown-toggle\" aria-label=\"columns\" data-toggle=\"dropdown\" aria-expanded=\"false\">分组按<span class=\"caret\"></span></button>");
+            _page.Append("<button type=\"button\" class=\"btn btn-default dropdown-toggle\" aria-label=\"columns\" data-toggle=\"dropdown\" aria-expanded=\"false\">@Html.GetMessage(\"sdp_btnGrouplist\")<span class=\"caret\"></span></button>");
             _page.Append("<ul id=\"sdp_rptgridgroupbtn\" class=\"dropdown-menu\" role=\"menu\">");
             foreach (LibReportField f in grid.ReportFields)
             {
