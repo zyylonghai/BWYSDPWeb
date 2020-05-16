@@ -9,6 +9,8 @@ namespace ProgViewModel
     public class ProgBaseViewModel
     {
         public List<AuthorityObj> AuthorityObjs { get; set; }
+        public bool IsTrans = false;
+        public string TransModelId = string.Empty;
 
         public ProgBaseViewModel()
         {
