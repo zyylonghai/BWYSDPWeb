@@ -184,7 +184,11 @@ namespace BWYSDPWeb.Com
                 _page.Append("<ul class=\"dropdown-menu\" role=\"menu\">");
                 foreach (TransInfo p in transmenues)
                 {
-                    _page.Append("<li><a href=\"/" + p.TargetPackage + "/ConverToPage?progId=" + p.TargetProgId + "\"  target=\"_blank\">@Html.GetFieldDesc(\"" + p.TargetProgId + "\",\"\",\"" + p.TargetProgId + "\")</a></li>");
+                    //var flagobj = new { flag = 1, data = p.TransModelId };
+                    QueryParams query = new QueryParams { flag = 1, data = p.TransModelId };
+                    //string str = DM5Help.Md5Encrypt(Newtonsoft.Json.JsonConvert.SerializeObject(query));
+                    //string st2= DM5Help.Md5Decrypt(str);
+                    _page.Append("<li><a href=\"/" + p.TargetPackage + "/ConverToPage?progId=" + p.TargetProgId + "&flag="+query .ToString ()+ "\"  target=\"_blank\">@Html.GetFieldDesc(\"" + p.TargetProgId + "\",\"\",\"" + p.TargetProgId + "\")</a></li>");
                 }
                 _page.Append("</ul>");
                 _page.Append("</div>");

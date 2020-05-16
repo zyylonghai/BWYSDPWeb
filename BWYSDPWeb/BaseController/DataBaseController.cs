@@ -3,6 +3,7 @@ using BWYSDPWeb.Com;
 using BWYSDPWeb.Models;
 using Com;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProgViewModel;
 using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
@@ -195,12 +196,24 @@ namespace BWYSDPWeb.BaseController
                             progType = ProgType.Report;
                         }
                     }
+                    if (!string.IsNullOrEmpty(flag))
+                    {
+                        //string flagstr = DM5Help.Md5Decrypt(flag);
+                        QueryParams query = QueryParams.ToqueryParams(flag);
+                        if (query !=null && query .flag ==1)//转单而来。
+                        {
+                            viewModel.IsTrans = true;
+                            viewModel.TransModelId = query.data.ToString();
+                        }
+                    }
+                    #region 权限模型检查
+                    var permresult = PermissionResult(this.ProgID, this.Package);
+                    if (permresult != null)
+                        return permresult;
+                    #endregion 
                     if (progType == ProgType.Form)//目前暂时 实现单据功能的权限验证
                     {
                         #region 权限验证
-                        var permresult = PermissionResult(this.ProgID, this.Package);
-                        if (permresult != null)
-                            return permresult;
                         DalResult result = this.ExecuteMethod("GetAuthority", this.UserInfo.UserId);
                         LibTableObj data = (LibTableObj)result.Value;
 

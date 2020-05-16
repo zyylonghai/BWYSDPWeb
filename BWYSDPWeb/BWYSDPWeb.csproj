@@ -198,6 +198,7 @@
     <Compile Include="Models\NotPermission.cs" />
     <Compile Include="Models\PageInfo.cs" />
     <Compile Include="Models\ProgInfo.cs" />
+    <Compile Include="Models\QueryParams.cs" />
     <Compile Include="Models\SearchCondition.cs" />
     <Compile Include="Models\SessionInfo.cs" />
     <Compile Include="Models\TableObj.cs" />
