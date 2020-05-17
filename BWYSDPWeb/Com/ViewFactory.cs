@@ -188,7 +188,7 @@ namespace BWYSDPWeb.Com
                     QueryParams query = new QueryParams { flag = 1, data = p.TransModelId };
                     //string str = DM5Help.Md5Encrypt(Newtonsoft.Json.JsonConvert.SerializeObject(query));
                     //string st2= DM5Help.Md5Decrypt(str);
-                    _page.Append("<li><a href=\"/" + p.TargetPackage + "/ConverToPage?progId=" + p.TargetProgId + "&flag="+query .ToString ()+ "\"  target=\"_blank\">@Html.GetFieldDesc(\"" + p.TargetProgId + "\",\"\",\"" + p.TargetProgId + "\")</a></li>");
+                    _page.Append("<li><a href=\"#\" onclick=\"SDP_getgridselectrow(this,'/" + p.TargetPackage + "/ConverToPage?progId=" + p.TargetProgId + "&flag=" + query.ToString() + "');\" target=\"_blank\">@Html.GetFieldDesc(\"" + p.TargetProgId + "\",\"\",\"" + p.TargetProgId + "\")</a></li>");
                 }
                 _page.Append("</ul>");
                 _page.Append("</div>");
@@ -662,7 +662,7 @@ namespace BWYSDPWeb.Com
             }
             _page.Append("</div>");
             #endregion
-            _page.Append("<table id=\"" + grid.GridGroupName + "\"></table>");
+            _page.Append("<table id=\"" + grid.GridGroupName + "\" tbnm=\""+ grid.GdGroupFields[0].FromTableNm + "\"></table>");
 
             _gridGroupdic.Add(id, false);
             AddGridColumns(grid);

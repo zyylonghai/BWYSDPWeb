@@ -11,6 +11,8 @@ namespace ProgViewModel
         public List<AuthorityObj> AuthorityObjs { get; set; }
         public bool IsTrans = false;
         public string TransModelId = string.Empty;
+        public object TransSource = null;
+
 
         public ProgBaseViewModel()
         {

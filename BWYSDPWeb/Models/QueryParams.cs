@@ -15,17 +15,17 @@ namespace BWYSDPWeb.Models
 
         public static QueryParams ToqueryParams(string querystr)
         {
-            //byte[] bts = Encoding.Default.GetBytes(querystr);
-            querystr = System.Text.RegularExpressions.Regex.Unescape(querystr);
-            return JsonConvert.DeserializeObject<QueryParams>(DM5Help.Md5Decrypt(querystr));
+            //byte[] bts = Encoding.UTF8.GetBytes(querystr);
+            //querystr = Convert.ToBase64String(bts);
+            return JsonConvert.DeserializeObject<QueryParams>(DM5Help.MD5Decrypt2(querystr));
         }
         public override string ToString()
         {
-            string result = DM5Help.Md5Encrypt(Newtonsoft.Json.JsonConvert.SerializeObject(this));
-            
+            string result = DM5Help.MD5Encrypt2(Newtonsoft.Json.JsonConvert.SerializeObject(this));
+
             //byte[] byts = Convert.FromBase64String(result);
-            
-            return System.Text.RegularExpressions.Regex.Escape(result);
+
+            return result;
         }
     }
 }

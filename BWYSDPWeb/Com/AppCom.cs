@@ -1,5 +1,7 @@
 ﻿using Bll;
 using BWYSDPWeb.Models;
+using Newtonsoft.Json.Linq;
+using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.Trans;
 using SDPCRL.CORE;
@@ -131,7 +133,32 @@ namespace BWYSDPWeb.Com
             return null;
         }
 
+        /// <summary>
+        /// 从参数libTables中 找出指定的index的表
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="libTables"></param>
+        /// <returns></returns>
+        public static DataTable GetTablebyindex(int index, LibTable[] libTables)
+        {
+            foreach (LibTable libtb in libTables)
+            {
+                foreach (LibTableObj tableobj in libtb.Tables)
+                {
+                    TableExtendedProperties extprop = tableobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties;
+                    if (extprop != null && extprop.TableIndex == index)
+                    {
+                        return tableobj.DataTable;
+                    }
+                }
+            }
+            return null;
+        }
 
+        //public static object GetJsonProperty(JObject jObject, string propertyNm)
+        //{
+        //    return jObject[propertyNm];
+        //}
 
         #region cookie
         public static void AddorUpdateCookies(string cookieNm, string key, string value)

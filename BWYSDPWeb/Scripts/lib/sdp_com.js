@@ -230,6 +230,24 @@ function SDP_RptGroupBy(ctrnm, tableid) {
     });
 }
 
+function SDP_getgridselectrow(obj,url) {
+    var grids = $("#sdp_form").find("table");
+    let rowidarray = [];
+    $.each(grids, function (index, o) {
+        let tbnm = $('#' + o.id).attr("tbnm");
+        if (tbnm != undefined && tbnm != "" && tbnm != null) {
+            var seletdr = $('#' + o.id).bootstrapTable('getSelections');
+            if (seletdr != null && seletdr.length > 0) {
+                $.each(seletdr, function (index, dr) {
+                    rowidarray.push({ tbnm: tbnm, rowid: dr.sdp_rowid });
+                });
+            }
+        }
+    }); 
+    $(obj).attr("href", url + "&data=" + escape(JSON.stringify(rowidarray)));
+}
+
+
 function TableBtnEdit(obj, grid) {
     let exist = $(obj).attr("data-toggle");
     if (!exist)

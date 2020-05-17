@@ -9,6 +9,7 @@ using SDPCRL.COM;
 using SDPCRL.COM.ModelManager;
 using SDPCRL.COM.ModelManager.FormTemplate;
 using SDPCRL.COM.ModelManager.Reports;
+using SDPCRL.COM.ModelManager.Trans;
 using SDPCRL.CORE;
 using SDPCRL.CORE.FileUtils;
 using System;
@@ -204,6 +205,7 @@ namespace BWYSDPWeb.BaseController
                         {
                             viewModel.IsTrans = true;
                             viewModel.TransModelId = query.data.ToString();
+                            viewModel.TransSource =JsonConvert.DeserializeObject(this.Request.Params["data"]);
                         }
                     }
                     #region 权限模型检查
@@ -494,6 +496,7 @@ namespace BWYSDPWeb.BaseController
         {
             if (this.SessionObj.MsgforSave == null || this.SessionObj.MsgforSave.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
+                if (this.SessionObj.ProgBaseVM.IsTrans) this.SessionObj.OperateAction = OperatAction.Add;
                 if (this.SessionObj.OperateAction != OperatAction.Preview && this.SessionObj.OperateAction!=OperatAction.Edit)
                 {
                     this.SessionObj.OperateAction = OperatAction.Add;
@@ -505,6 +508,7 @@ namespace BWYSDPWeb.BaseController
 
                     #endregion
                     //DataRow row = null;
+                    LibTableObj mtb = null;
                     if (this.LibTables != null)
                     {
                         foreach (var def in this.LibTables)
@@ -514,11 +518,57 @@ namespace BWYSDPWeb.BaseController
                                 if ((dtobj.DataTable.ExtendedProperties[SysConstManage.ExtProp] as TableExtendedProperties).TableIndex == 0)
                                 {
                                     //row = dt.NewRow();
-
+                                    mtb = dtobj;
                                     dtobj.DataTable.Rows.Add(dtobj.DataTable.NewRow());
                                 }
                             }
                         }
+                        #region 转单处理
+                        if (this.SessionObj.ProgBaseVM.IsTrans)
+                        {
+                            LibTransSource transSource = ModelManager.GetModelBymodelId<LibTransSource>(this.ModelRootPath, this.SessionObj.ProgBaseVM.TransModelId);
+                            if (transSource != null)
+                            {
+                                LibTable[] srctables = this.GetTableSchema(transSource.SrcProgId);
+                                if (srctables == null)
+                                {
+                                    this.AddMessage(19, null);
+                                }
+                                else
+                                {
+                                    if (transSource.TransFields != null)
+                                    {
+                                        DataTable srctable = null;
+                                        DataTable targettb = null;
+                                        JArray jarray = this.SessionObj.ProgBaseVM.TransSource as JArray;
+                                        foreach (LibTransFieldMap fieldmap in transSource.TransFields)
+                                        {
+                                            srctable = AppCom.GetTablebyindex(fieldmap.SrcTableIndex, srctables);
+                                            if (srctable == null) continue;
+                                            targettb = this.GetTableByIndex(fieldmap.TargetTableIndex);
+                                            if (targettb == null) continue;
+                                            if (fieldmap.TargetTableIndex == 0)
+                                            {
+                                                if (fieldmap.SrcTableIndex == 0)
+                                                {
+                                                    if (!string.IsNullOrEmpty(fieldmap.TargetFieldNm)&& mtb.DataTable.Columns[fieldmap.TargetFieldNm] != null)
+                                                        mtb.DataTable.Rows[0][fieldmap.TargetFieldNm] = srctable.Rows[0][fieldmap.SrcFieldNm];
+                                                }
+                                                else
+                                                {
+                                                    SetValuebyTransSource(jarray, fieldmap.TargetFieldNm, fieldmap.SrcFieldNm, srctable, targettb, true);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                SetValuebyTransSource(jarray, fieldmap.TargetFieldNm, fieldmap.SrcFieldNm, srctable, targettb, false);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        #endregion 
                     }
                     PageLoad();
                     if (flag == "1")
@@ -2301,6 +2351,47 @@ namespace BWYSDPWeb.BaseController
                         if (formgroup != null)
                         {
                             obj.GroupId = formgroup.FormGroupName;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SetValuebyTransSource(JArray jarray,string targefieldnm,string srcfieldnm,DataTable srctb,DataTable targettb,bool ismtb)
+        {
+            JObject jobj = null;
+            foreach (var item in jarray)
+            {
+                jobj = (JObject)item;
+                if (jobj["tbnm"].ToString() == srctb.TableName)
+                {
+                    if (string.IsNullOrEmpty (targefieldnm)|| targettb.Columns[targefieldnm] == null) continue;
+                    DataRow[] srcrow = srctb.Select(string.Format("{0}={1}", SysConstManage.sdp_rowid, jobj["rowid"]));
+                    if (srcrow != null && srcrow.Length > 0)
+                    {
+                        if (ismtb)
+                        {
+
+                            targettb.Rows[0][targefieldnm] = srcrow[0][srcfieldnm];
+                        }
+                        else
+                        {
+                            if (Convert.ToInt32(jobj["exist"]) ==0)
+                            {
+                                DataRow newrow = targettb.NewRow();
+                                newrow[targefieldnm] = srcrow[0][srcfieldnm];
+                                targettb.Rows.Add(newrow);
+                                jobj.Add("exist", 1);
+                                jobj.Add("targetrowid", Convert.ToInt32(newrow[SysConstManage.sdp_rowid]));
+                            }
+                            else
+                            {
+                                foreach (DataRow dr in targettb.Rows)
+                                {
+                                    if (Convert.ToInt32(dr[SysConstManage.sdp_rowid]) == Convert.ToInt32(jobj["targetrowid"]))
+                                        dr[targefieldnm] = srcrow[0][srcfieldnm];
+                                }
+                            }
                         }
                     }
                 }

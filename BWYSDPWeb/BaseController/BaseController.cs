@@ -116,7 +116,7 @@ namespace BWYSDPWeb.BaseController
             //var action = System.Web.HttpContext.Current.Session[SysConstManage.OperateAction];
             //this.OperatAction = action == null ? OperatAction.None : (OperatAction)action;
             //this.OperatAction =this.SessionObj==null ?this.OperatAction : this.SessionObj.OperateAction;
-            this.LibTables = GetTableSchema(this.DSID);
+            this.LibTables = GetTableSchema(this.ProgID);
             #region get temp data from db
             if (this.LibTables == null && !request.Url.ToString().Contains("BasePageLoad"))
             {
@@ -350,7 +350,7 @@ namespace BWYSDPWeb.BaseController
 
         }
 
-        public LibTable[] GetTableSchema(string key)
+        public LibTable[] GetTableSchema(string progid)
         {
             #region
             //LibTable[] tbs = System.Web.HttpContext.Current.Session[key] as LibTable[];
@@ -370,7 +370,7 @@ namespace BWYSDPWeb.BaseController
             #endregion
             #region 存cache
             CachHelp cachelp = new CachHelp();
-            LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, this.ProgID)) as LibTable[];
+            LibTable[] tbs = cachelp.GetCach(string.Format("{0}_{1}", System.Web.HttpContext.Current.Session.SessionID, progid)) as LibTable[];
             if (tbs == null) return null;
             //LibTable[] result = tbs;
             //LibTable[] result = new LibTable[tbs.Length];
