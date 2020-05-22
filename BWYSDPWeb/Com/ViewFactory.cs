@@ -432,6 +432,13 @@ namespace BWYSDPWeb.Com
                 _page.Append("<textarea class=\"form-control\" id=\"" + id + "\" name=\"" + name + "\" rows=\"3\" " + validatorAttr.ToString() + " ></textarea>");
                 _page.Append("</div>");//结束 col-sm
                 _page.Append("</div>");// 结束 form-group
+
+                #region 默认值
+                if (!string.IsNullOrEmpty(item.DealfValue.ToString()))
+                {
+                    _defaultvalue.Add(string.Format("{0}:{1}", id, item.DealfValue.ToString()));
+                }
+                #endregion 
             }
             foreach (LibFormGroupField item in imgs)
             {
@@ -1497,7 +1504,22 @@ namespace BWYSDPWeb.Com
 
             }
             #region pageload
-            _script.Append("$.ajax({url: \" /" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"flag="+(hasformandboy?0:1)+"\",type: 'Post',async: false,success: function (obj) {},");
+            _script.Append("$.ajax({url: \" /" + (string.IsNullOrEmpty(this.ControlClassNm) ? this.Package : this.ControlClassNm) + "/BasePageLoad\",data: \"flag=" + (hasformandboy ? 0 : 1) + "\",type: 'Post',async: false,success: function (obj) {");
+
+            #region 默认值赋值
+            foreach (string item in _defaultvalue)
+            {
+                string[] array = item.Split(':');
+                if (array[1].Contains("$"))
+                {
+                    _script.Append("if(!obj.sdp_preview && $('#" + array[0] + "').val()!=undefined && $('#" + array[0] + "').val()!=null &&($('#" + array[0] + "').val()=='' ||$('#" + array[0] + "').val()==0 )) $('#" + array[0] + "').val(" + array[1].Split('.')[1] + ");");
+                }
+                else
+                    _script.Append("if(!obj.sdp_preview && $('#" + array[0] + "').val()!=undefined && $('#" + array[0] + "').val()!=null && ($('#" + array[0] + "').val()==''||$('#" + array[0] + "').val()==0 )) $('#" + array[0] + "').val(\"" + array[1] + "\");");
+            }
+            #endregion 
+
+            _script.Append( "},");
             _script.Append("error: function (XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.status.toString() + \":\" + XMLHttpRequest.readyState.toString() + \", \" + textStatus + errorThrown);}");
             _script.Append(" });");
             #endregion
@@ -1567,18 +1589,6 @@ namespace BWYSDPWeb.Com
             }
             #endregion
 
-            #region 默认值赋值
-            foreach (string item in _defaultvalue)
-            {
-                string[] array = item.Split(':');
-                if (array[1].Contains("$"))
-                {
-                    _script.Append("$('#" + array[0] + "').val(" + array[1].Split ('.')[1] + ");");
-                }
-                else
-                    _script.Append("$('#" + array[0] + "').val(\""+array[1]+"\");");
-            }
-            #endregion 
 
             //#region msgforsave 函数
             //_script.Append("GetMsgForSave();");

@@ -1866,9 +1866,9 @@ namespace BWYSDPWeb.BaseController
                                 {
                                     if (dt != null)
                                     {
-
-                                        dt.Columns.Remove(SysConstManage.sdp_total_row);
-                                        DataColumn col = dt.Columns[fromSourceField.FromFieldNm];
+                                        DataColumn col = dt.Columns[SysConstManage.sdp_total_row];
+                                        if(col!=null) dt.Columns.Remove(SysConstManage.sdp_total_row);
+                                        col = dt.Columns[fromSourceField.FromFieldNm];
                                         if (col != null) col.ColumnName = AppCom.GetFieldDesc((int)this.Language, fromSourceField.FromDataSource, fromSourceField.FromStructTableNm, fromSourceField.FromFieldNm);
                                         col = dt.Columns[fromSourceField.FromFieldDesc];
                                         if (col != null) col.ColumnName = AppCom.GetFieldDesc((int)this.Language, fromSourceField.FromDataSource, fromSourceField.FromStructTableNm, fromSourceField.FromFieldDesc);
