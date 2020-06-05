@@ -639,6 +639,10 @@ namespace BWYSDPWeb.BaseController
                 //msg000000017   出现严重异常，LibTables为NUll,请刷新页面重试。
                 this.ThrowErrorException(17);
             }
+            if (this.LibTables.Count() == 0) {
+                //msg000000019   出现严重异常，未创建出数据源结构。
+                this.ThrowErrorException(19);
+            }
             if (this.LibTables[0].Tables[0] == null || this.LibTables[0].Tables[0].Rows.Count == 0)
             {
                 //msg000000018   出现严重异常，主表无数据，请确认。
@@ -800,6 +804,40 @@ namespace BWYSDPWeb.BaseController
                 }
             }
             #endregion
+            #endregion
+
+            #region 各个字段值的有效性检查
+            ColExtendedProperties colExtended = null;
+            char[] separator = { '+', '-', '*', '/', '(', ')', '<', '>', '=' };
+            string[] splitarry = null;
+            foreach (LibTable libtb in this.LibTables) {
+                foreach (LibTableObj tbobj in libtb.Tables)
+                {
+                    if (tbobj.DataTable == null) continue;
+                    string expressions = string.Empty;
+                    foreach (DataColumn c in tbobj.DataTable.Columns)
+                    {
+                        colExtended = c.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
+                        if (string.IsNullOrEmpty(colExtended.ValidateExpression)) continue;
+                        if (colExtended.ValidateExpression.ToUpper().Contains(SysConstManage.sdp_fx.ToUpper()))
+                        {
+                            expressions = colExtended.ValidateExpression.ToUpper().Replace(SysConstManage.sdp_fx.ToUpper(), "SDP_FX");
+                            splitarry = expressions.Split(separator);
+                            foreach (string s in splitarry)
+                            {
+                                if (!string.IsNullOrEmpty(s)&& s.Contains(SysConstManage.Point))
+                                {
+                                    
+                                }
+                            }
+                            foreach (DataRow dr in tbobj.DataTable.Rows)
+                            {
+                                
+                            }
+                        }
+                    }
+                }
+            }
             #endregion
             BeforeSave();
             //TableExtendedProperties tbext = new TableExtendedProperties();
