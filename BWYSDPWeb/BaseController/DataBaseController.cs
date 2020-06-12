@@ -807,36 +807,11 @@ namespace BWYSDPWeb.BaseController
             #endregion
 
             #region 各个字段值的有效性检查
-            ColExtendedProperties colExtended = null;
-            char[] separator = { '+', '-', '*', '/', '(', ')', '<', '>', '=' };
-            string[] splitarry = null;
-            foreach (LibTable libtb in this.LibTables) {
-                foreach (LibTableObj tbobj in libtb.Tables)
-                {
-                    if (tbobj.DataTable == null) continue;
-                    string expressions = string.Empty;
-                    foreach (DataColumn c in tbobj.DataTable.Columns)
-                    {
-                        colExtended = c.ExtendedProperties[SysConstManage.ExtProp] as ColExtendedProperties;
-                        if (string.IsNullOrEmpty(colExtended.ValidateExpression)) continue;
-                        if (colExtended.ValidateExpression.ToUpper().Contains(SysConstManage.sdp_fx.ToUpper()))
-                        {
-                            expressions = colExtended.ValidateExpression.ToUpper().Replace(SysConstManage.sdp_fx.ToUpper(), "SDP_FX");
-                            splitarry = expressions.Split(separator);
-                            foreach (string s in splitarry)
-                            {
-                                if (!string.IsNullOrEmpty(s)&& s.Contains(SysConstManage.Point))
-                                {
-                                    
-                                }
-                            }
-                            foreach (DataRow dr in tbobj.DataTable.Rows)
-                            {
-                                
-                            }
-                        }
-                    }
-                }
+            ValidateExpressHelper validateExpress = new ValidateExpressHelper();
+            bool pass= validateExpress.ColumnValidate(this.LibTables);
+            if (!pass)
+            {
+                this.AddMessagelist(validateExpress.MsgList);
             }
             #endregion
             BeforeSave();
@@ -893,9 +868,9 @@ namespace BWYSDPWeb.BaseController
                     }
                 }
                 this.SessionObj.OperateAction = OperatAction.Preview;
+                //msg000000001 保存成功
+                this.AddMessage(AppCom.GetMessageDesc("msg000000001"), LibMessageType.Prompt);
             }
-            //msg000000001 保存成功
-            this.AddMessage(AppCom.GetMessageDesc("msg000000001"), LibMessageType.Prompt);
             if (this.MsgList != null && this.MsgList.Count > 0)
             {
                 if (this.SessionObj.MsgforSave == null) this.SessionObj.MsgforSave = new List<LibMessage>();
