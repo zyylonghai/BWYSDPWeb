@@ -496,7 +496,7 @@ namespace BWYSDPWeb.BaseController
         {
             if (this.SessionObj.MsgforSave == null || this.SessionObj.MsgforSave.FirstOrDefault(i => i.MsgType == LibMessageType.Error) == null)
             {
-                if (this.SessionObj.ProgBaseVM.IsTrans) this.SessionObj.OperateAction = OperatAction.Add;
+                if (this.SessionObj.ProgBaseVM !=null && this.SessionObj.ProgBaseVM.IsTrans) this.SessionObj.OperateAction = OperatAction.Add;
                 if (this.SessionObj.OperateAction != OperatAction.Preview && this.SessionObj.OperateAction!=OperatAction.Edit)
                 {
                     this.SessionObj.OperateAction = OperatAction.Add;
@@ -524,7 +524,7 @@ namespace BWYSDPWeb.BaseController
                             }
                         }
                         #region 转单处理
-                        if (this.SessionObj.ProgBaseVM.IsTrans)
+                        if (this.SessionObj.ProgBaseVM != null && this.SessionObj.ProgBaseVM.IsTrans)
                         {
                             LibTransSource transSource = ModelManager.GetModelBymodelId<LibTransSource>(this.ModelRootPath, this.SessionObj.ProgBaseVM.TransModelId);
                             if (transSource != null)
@@ -811,6 +811,13 @@ namespace BWYSDPWeb.BaseController
             bool pass= validateExpress.ColumnValidate(this.LibTables);
             if (!pass)
             {
+                if (validateExpress.MsgcodeList.Count > 0)
+                {
+                    foreach (string msgcode in validateExpress.MsgcodeList)
+                    {
+                        this.AddMessage(msgcode);
+                    }
+                }
                 this.AddMessagelist(validateExpress.MsgList);
             }
             #endregion
