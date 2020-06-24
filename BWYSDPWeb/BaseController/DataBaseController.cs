@@ -811,11 +811,28 @@ namespace BWYSDPWeb.BaseController
             bool pass= validateExpress.ColumnValidate(this.LibTables);
             if (!pass)
             {
-                if (validateExpress.MsgcodeList.Count > 0)
+                if (validateExpress.ValidateMessages.Count > 0)
                 {
-                    foreach (string msgcode in validateExpress.MsgcodeList)
+                    foreach (var msg in validateExpress.ValidateMessages)
                     {
-                        this.AddMessage(msgcode);
+                        if (msg.MsgParams != null)
+                        {
+                            for (int n = 0; n < msg.MsgParams.Length; n++)
+                            {
+                                if (msg.MsgParams[n].ToString().Contains(SysConstManage.sdp_desc))
+                                {
+                                    string[] v = msg.MsgParams[n].ToString().Replace(SysConstManage.sdp_desc, "").Split(SysConstManage.Underline);
+                                    msg.MsgParams [n]= AppCom.GetFieldDesc(this.DSID, v[1], v[2]);
+                                }
+                            }
+                        }
+                        //object o = msg.MsgParams.FirstOrDefault(i => i.ToString().Contains(SysConstManage .sdp_desc));
+                        //if (o != null)
+                        //{
+                        //    string[] v = o.ToString().Replace(SysConstManage .sdp_desc ,"").Split(SysConstManage.Underline);
+                        //    o = AppCom.GetFieldDesc(this.DSID, v[1], v[2]);
+                        //}
+                        this.AddMessage(string.Format(AppCom.GetMessageDesc(msg.MsgCode), msg.MsgParams));
                     }
                 }
                 this.AddMessagelist(validateExpress.MsgList);
