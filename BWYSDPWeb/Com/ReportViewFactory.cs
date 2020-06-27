@@ -571,8 +571,9 @@ namespace BWYSDPWeb.Com
                                             css.Append("vertical-align:bottom ;");
                                             break;
                                         case VerticalAlignment.Center:
+                                            css.Append("vertical-align:central ;");
                                             if (elem.Height > 0)
-                                                css.AppendFormat("font-weight:{0}px;", elem.Height.ToString());
+                                                css.AppendFormat("line-height:{0}px;", elem.Height.ToString());
                                             break;
                                     }
                                     css.AppendFormat("width:{0};", (elem.Width == 0 ? "100%" : elem.Width.ToString()+"px"));
@@ -584,7 +585,7 @@ namespace BWYSDPWeb.Com
                                     switch (elem.ElemType)
                                     {
                                         case ElementType.Label:
-                                            _page.AppendFormat("<label style=\"{0}\">{1}</label>",css.ToString (), elem.ValueSource);
+                                            _page.AppendFormat("<label style=\"{0}\">{1}</label>", css.ToString (), elem.ValueSource);
                                             break;
                                         case ElementType.Img:
                                             _page.AppendFormat("<img src=\"~/img/0.jpg\" style=\"width:{0}; height:{1}\"/>",(elem .Width==0?"100%":elem .Width.ToString () + "px") ,(elem .Height ==0?"100%":elem.Height.ToString () + "px"));

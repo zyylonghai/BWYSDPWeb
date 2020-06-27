@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../../lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../css/okadmin.css" rel="stylesheet" />
+    <script src="../../lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../../lib/jquery/dist/jquery.js"></script>
+    <style>
+        .formcanvasrow {
+            border-top-width: 1px;
+            border-top-style: solid;
+            border-top-color: black;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: black;
+            border-left-width: 1px;
+            border-left-style: solid;
+            border-left-color: black;
+            border-right-width: 0px;
+            border-right-style: solid;
+            border-right-color: black;
+        }
+
+        .formcanvasrow2 {
+            border-top-width: 0px;
+            border-top-style: solid;
+            border-top-color: black;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: black;
+            border-left-width: 1px;
+            border-left-style: solid;
+            border-left-color: black;
+            border-right-width: 0px;
+            border-right-style: solid;
+            border-right-color: black;
+        }
+
+        .formcanvascol {
+            border-top-width: 0px;
+            border-top-style: solid;
+            border-top-color: black;
+            border-bottom-width: 0px;
+            border-bottom-style: solid;
+            border-bottom-color: black;
+            border-left-width: 0px;
+            border-left-style: solid;
+            border-left-color: black;
+            border-right-width: 1px;
+            border-right-style: solid;
+            border-right-color: black;
+        }
+    </style>
+</head>
+<body>
+    <!--<div>
+        <button style="width:85px; height:25px;" onclick="merge()">合并</button>
+        <button style=" height:25px;" onclick="addlabel()">插入标签文本</button>
+        <button style=" height:25px;" onclick="addinput()">插入输入框</button>
+        <button style=" height:25px;" onclick="addtextarea()">插入大输入框</button>
+        <button style=" height:25px;" onclick="backcolor()">修改背景色</button>
+        <button style=" height:25px;" onclick="insertRow()">插入行</button>
+    </div>-->
+    <div class="layui-btn-container">
+        <div class="layui-btn-group">
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-radio" onclick="merge()">合并</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-layer" onclick="addlabel()">插入标签文本</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-return" onclick="addinput()">插入输入框</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-delete" onclick="addtextarea()">插入大输入框</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-ok-circle" onclick="backcolor()">修改背景色</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-edit" onclick="insertRow()">插入行</button>
+            <!--<button class="layui-btn-primary layui-btn-sm layui-icon" onclick="test()">测试</button>-->
+        </div>
+    </div>
+    <div style="height:5px;">
+
+    </div>
+    <div class="container">
+        <div id="formdesigncanvas" style="align-content:center;">
+
+        </div>
+    </div>
+    <script>
+        var rowcout = 30;
+        var starselect = false, selected = [];
+        var canvas = document.getElementById("formdesigncanvas");
+        $(function () {
+            var col;
+            var row;
+            for (var i = 1; i <= rowcout; i++) {
+                if (i == 1)
+                    row = creatRow(i, "formcanvasrow");
+                else
+                    row = creatRow(i, "formcanvasrow2");
+                //row = document.createElement("div");
+                //row.setAttribute("id", i);
+                //if (i == 1)
+                //    row.setAttribute("class", "row clearfix formcanvasrow");
+                //else
+                //    row.setAttribute("class", "row clearfix formcanvasrow2");
+                //for (var n = 1; n <= 12; n++) {
+                //    col = creatCol(i.toString() + "_" + n.toString(), 1);
+                //    row.append(col);
+                //}
+                canvas.append(row);
+
+            }
+        });
+
+        function creatCol(id, cols) {
+            let col = document.createElement("div");
+            col.setAttribute("class", "col-md-" + cols + " column formcanvascol");
+            col.setAttribute("id", id);
+            col.setAttribute("cols", cols);
+            //$(col).attr("cols", 1);
+            col.addEventListener("mousedown", function (e) {
+                ClearSelected();
+                this.style.border = "1px solid red";
+                selected.push(this);
+                starselect = true;
+            });
+            col.addEventListener("mouseup", function (e) {
+                starselect = false;
+            });
+            col.addEventListener("mouseover", function (e) {
+                if (starselect) {
+                    let exis = false;
+                    let thisobj = this;
+                    selected.forEach(function (o) {
+                        if (o == thisobj) {
+                            exis = true;
+                            return false;
+                        }
+                    });
+                    if (!exis) {
+                        this.style.border = "1px solid red";
+                        selected.push(this);
+                    }
+                }
+            });
+            let lb = document.createElement("label");
+            lb.textContent = "";
+            col.append(lb);
+            return col;
+        }
+
+        function creatRow(id, cs) {
+            var row = document.createElement("div");
+            row.setAttribute("class", "row clearfix " + cs + "");
+            row.setAttribute("id", id);
+            for (var n = 1; n <= 12; n++) {
+                col = creatCol(id.toString() + "_" + n.toString(), 1);
+                row.append(col);
+            }
+            return row;
+        }
+
+        function merge() {
+            let r = 0, cols = 0, result = true;
+            if (selected.length == 0) return;
+            selected.forEach(function (o) {
+                let id = o.getAttribute("id");
+                let v = id.split("_");
+                if (r == 0) {
+                    r = parseInt(v[0]);
+                    cols += parseInt(o.getAttribute("cols"));
+                }
+                else {
+                    if (r != parseInt(v[0])) {
+                        alert("要合并的列必须属于同一行");
+                        result = false;
+                        return false;
+                    }
+                    else {
+                        cols += parseInt(o.getAttribute("cols"));
+                    }
+                }
+            });
+            if (!result) {
+                return;
+            }
+            let rw = document.getElementById(r.toString());
+            //let c = document.createElement("div");
+            let cindex = 0;
+            $.each(rw.children, function (i, o) {
+                if (o == selected[0] || o == selected[selected.length - 1]) {
+                    cindex = i + 1;
+                    return false;
+                }
+            });
+            let c = creatCol(r.toString() + "_" + cindex.toString(), cols);
+            //c.setAttribute("class", "col-md-" + cols + " column formcanvascol");
+            //c.setAttribute("id", r.toString() + "_" + cindex.toString());
+            //c.setAttribute("cols", cols);
+            rw.insertBefore(c, selected[0]);
+            let chlds = [];
+            for (var d = 0; d < selected.length; d++) {
+                $.each(selected[d].children, function (i, o) {
+                    let id = o.getAttribute("id");
+                    if (id != null && id != undefined)
+                        chlds.push(o);
+                });
+                rw.removeChild(selected[d]);
+            }
+            if (chlds.length > 0) c.innerHTML = "";
+            chlds.forEach(function (o) {
+                c.appendChild(o);
+            });
+            ClearSelected();
+            selectcol(c);
+            //canvas.
+            //canvas.insertBefore
+        }
+
+        function addlabel() {
+
+            selected.forEach(function (o) {
+                let lb = document.createElement("label");
+                lb.textContent = "字段名称";
+                lb.setAttribute("id", "label");
+                lb.style.width = "100%";
+                lb.style.textAlign = "center";
+                o.innerHTML = "";
+                o.append(lb);
+            });
+            ClearSelected();
+        }
+
+        function addinput() {
+            selected.forEach(function (o) {
+                let input = document.createElement("input");
+                //lb.textContent = "字段名称";
+                input.setAttribute("id", "input");
+                o.innerHTML = "";
+                o.append(input);
+            });
+            ClearSelected();
+        }
+        function addtextarea() {
+            selected.forEach(function (o) {
+                let input = document.createElement("textarea");
+                //lb.textContent = "字段名称";
+                input.setAttribute("id", "textarea");
+                input.setAttribute("class", "form-control");
+                input.setAttribute("rows", 3);
+                o.innerHTML = "";
+                o.append(input);
+            });
+            ClearSelected();
+        }
+
+        function backcolor() {
+            selected.forEach(function (o) {
+                o.style.backgroundColor = "#e6e6e8";
+            });
+            ClearSelected();
+        }
+        function insertRow() {
+            let row;
+            if (selected.length == 0) {
+                row = creatRow(rowcout, "formcanvasrow2");
+                canvas.append(row);
+            }
+            else {
+                let id = selected[0].getAttribute("id");
+                let v = id.split("_");
+                let r = document.getElementById(v[0]);
+                rowcout += 1;
+                if (canvas.firstElementChild == r) {
+                    row = creatRow(rowcout, "formcanvasrow");
+                }
+                else {
+                    row = creatRow(rowcout, "formcanvasrow2");
+                }
+                //let row = document.createElement("div");
+                //row.setAttribute("id", rowcout + 1);
+                //row.setAttribute("class", "row clearfix formcanvasrow2");
+                canvas.insertBefore(row, r);
+
+
+            }
+        }
+
+        function selectcol(c) {
+            c.style.border = "1px solid red";
+            selected.push(c);
+        }
+        function ClearSelected() {
+            selected.forEach(function (o) {
+                o.style.border = "";
+            });
+            selected.length = 0;
+        }
+    </script>
+</body>
+</html>

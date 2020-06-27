@@ -1,0 +1,862 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../../lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../../lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../../lib/jquery/dist/jquery.js"></script>
+    <link href="../../css/okadmin.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="layui-btn-container">
+        <div class="layui-btn-group">
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-radio" onclick="beginaddnode(true)">始终节点</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-layer" onclick="beginaddnode(false)">添加节点</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-return" onclick="addLine()">连接线</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-delete" onclick="deletenode()">删除</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-ok-circle" onclick="save()">保存</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon layui-icon-edit" onclick="Initialdata()">继续编辑</button>
+            <button class="layui-btn-primary layui-btn-sm layui-icon" onclick="test()">测试</button>
+        </div>
+    </div>
+    <div style="height:5px"></div>
+    <div class="text-center">
+        <!--<div id="btns">
+            <button style="width:85px; height:25px;" onclick="beginaddnode(true)">起/终节点</button>
+            <button style="width:85px; height:25px;" onclick="beginaddnode(false)">添加节点</button>
+            <button style="width:85px; height:25px;" onclick="addLine()">连接线</button>
+            <button style="width:85px; height:25px;" onclick="deletenode()">删除</button>
+            <button style="width:85px; height:25px;" onclick="save()">保存</button>
+            <button style="width:85px; height:25px;" onclick="Initialdata()">继续编辑</button>
+            <button style="width:85px; height:25px;" onclick="test()">测试</button>
+        </div>-->
+        <div id="canvas">
+            <svg id="flowcanvs" height="615" version="1.1" width="800" xmlns="http://www.w3.org/2000/svg" style=" background-color:antiquewhite">
+                <defs>
+                    <marker id="arrow" markerUnits="strokeWidth" markerWidth="8" markerHeight="8" viewBox="0 0 12 12" refX="6" refY="6" orient="auto">
+                        <path d="M2,2 L10,6 L2,10 " style="fill: #000000;" />
+                    </marker>
+                </defs>
+                <defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs>
+                <!--<polyline points="10,0 10,20 120,20 120,35" style="fill:none; stroke:red;stroke-width:2" marker-end="url(#arrow)" />-->
+            </svg>
+        </div>
+       
+    </div>
+    <script>
+        var x1, y1, vx, vy, vx1, vy1, nextobj, dragtarget, virtualNode = null, isclik = 0, createnode = false, isellipse = false;
+        var starline = false, currline, starlineobj, endlineobj, selectwidth = 5;
+        var movlineselect = false, dragselecpoint;
+        var nodesData = new Array();
+        var canvwidth = document.getElementById("canvas").clientWidth;
+        var can = document.getElementById("flowcanvs");
+        can.setAttribute("width", canvwidth - 200);
+        can.addEventListener("mousedown", function (e) {
+            if (createnode && virtualNode != null && virtualNode != undefined) {
+                let info = createNodeinfo(virtualNode);
+                can.removeChild(virtualNode);
+                addnode(false, info);
+            }
+            createnode = false;
+            virtualNode = null;
+        });
+        can.addEventListener("mousemove", function (e) {
+            if (createnode) {
+                if (virtualNode == null || virtualNode == undefined) {
+                    let r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    r.setAttribute("fill", "#e6e6e8");
+                    //$('#x1').text($('#canvas').offset().left+($('#canvas').width() - parseFloat(can.getAttribute("width"))) / 2);
+                    //$('#y1').text($('#canvas').offset().top);
+                    r.setAttribute("x", e.clientX - ($('#canvas').offset().left + ($('#canvas').width() - parseFloat(can.getAttribute("width"))) / 2));
+                    r.setAttribute("y", e.clientY - $('#canvas').offset().top);
+                    r.setAttribute("width", "120");
+                    r.setAttribute("height", "58");
+                    r.setAttribute("r", "10");
+                    r.setAttribute("rx", isellipse ? "60" : "10");
+                    r.setAttribute("ry", isellipse ? "28" : "15");
+                    r.setAttribute("stroke", "#587aa9");
+                    r.setAttribute("stroke-width", "1.3");
+                    virtualNode = r;
+                    can.append(r);
+                }
+                if (virtualNode != null && virtualNode != undefined) {
+                    //$('#x').text(e.clientX);
+                    //$('#y').text(e.clientY);
+                    virtualNode.setAttribute("x", e.clientX - ($('#canvas').offset().left + ($('#canvas').width() - parseFloat(can.getAttribute("width"))) / 2) - parseFloat(virtualNode.getAttribute("width")) / 2);
+                    virtualNode.setAttribute("y", e.clientY - $('#canvas').offset().top - parseFloat(virtualNode.getAttribute("height")) / 2);
+                }
+
+            }
+            if (isclik && (dragtarget != null && dragtarget != undefined)) {
+                //$('#x').text(e.clientX);
+                //$('#y').text(e.clientY);
+                if ((vx + (e.clientX - x1)) >= 0 && (vy + (e.clientY - y1)) >= 0) {
+                    dragtarget.setAttribute("x", vx + (e.clientX - x1));
+                    dragtarget.setAttribute("y", vy + (e.clientY - y1));
+                    nextobj.setAttribute("x", vx1 + (e.clientX - x1));
+                    nextobj.setAttribute("y", vy1 + (e.clientY - y1));
+                    let w = parseFloat(dragtarget.getAttribute("width"));
+                    let h = parseFloat(dragtarget.getAttribute("height"));
+                    nodesData.forEach(function (o) {
+                        if (o.ElemObj == dragtarget) {
+                            let pts, pointstr;
+                            if (o.Starlines != null && o.Starlines.length > 0) {
+                                $.each(o.Starlines, function (i, line) {
+                                    //line.Line.setAttribute("x1", line.x1 + (e.clientX - x1));
+                                    //line.Line.setAttribute("y1", line.y1 + (e.clientY - y1));
+                                    pts = getpolylinePoints(line.Line);
+                                    pts[0].x = line.x1 + (e.clientX - x1);
+                                    pts[0].y = line.y1 + (e.clientY - y1);
+                                    pointstr = getpointstr(pts);
+                                    line.Line.setAttribute("points", pointstr);
+                                });
+                            }
+                            if (o.Endlines != null && o.Endlines.length > 0) {
+                                $.each(o.Endlines, function (i, line) {
+                                    //line.Line.setAttribute("x2", line.x2 + (e.clientX - x1));
+                                    //line.Line.setAttribute("y2", line.y2 + (e.clientY - y1));
+                                    pts = getpolylinePoints(line.Line);
+                                    if (pts.length == 2) {
+                                        pts[1].x = line.x2 + (e.clientX - x1);
+                                        pts[1].y = line.y2 + (e.clientY - y1);
+                                    }
+                                    else if (pts.length == 4) {
+                                        pts[3].x = line.x2 + (e.clientX - x1);
+                                        pts[3].y = line.y2 + (e.clientY - y1);
+                                    }
+                                    pointstr = getpointstr(pts);
+                                    line.Line.setAttribute("points", pointstr);
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+            if (starline && starlineobj != null && starlineobj != undefined) {
+                //currline.setAttribute("x2", vx + (e.clientX - x1) + parseFloat(starlineobj.getAttribute("width")));
+                //currline.setAttribute("y2", vy + (e.clientY - y1) + parseFloat(starlineobj.getAttribute("height")));
+                let pts = getpolylinePoints(currline);
+                pts[1].x = vx + (e.clientX - x1) + parseFloat(starlineobj.getAttribute("width"));
+                pts[1].y = vy + (e.clientY - y1) + parseFloat(starlineobj.getAttribute("height"));
+                currline.setAttribute("points", pts[0].x.toString() + "," + pts[0].y + " " + pts[1].x + "," + pts[1].y);
+            }
+            if (movlineselect && dragselecpoint != null && dragselecpoint != undefined) {
+                dragselecpoint.setAttribute("x", vx + (e.clientX - x1));
+                dragselecpoint.setAttribute("y", vy + (e.clientY - y1));
+                retsetPoints(currline);
+            }
+        });
+        can.addEventListener("mouseup", function (e) { isclik = 0; movlineselect = false; });
+        can.addEventListener("click", function (e) {
+            removeSelect();
+            removeCurrLineElem();
+        });
+        function beginaddnode(ellipse) {
+            createnode = true;
+            isellipse = ellipse;
+        }
+        function addnode(ellipse, ninfo) {
+            removeSelect();
+            removeCurrLineElem();
+            starline = false;
+            var r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            r.setAttribute("fill", ninfo == null ? "#e6e6e8" : ninfo.fill);
+            r.setAttribute("x", ninfo == null ? "161" : ninfo.x);
+            r.setAttribute("y", ninfo == null ? "210" : ninfo.y);
+            r.setAttribute("width", ninfo == null ? "120" : ninfo.width);
+            r.setAttribute("height", ninfo == null ? "58" : ninfo.height);
+            r.setAttribute("r", ninfo == null ? "10" : ninfo.r);
+            r.setAttribute("rx", ninfo == null ? (ellipse ? "60" : "10") : ninfo.rx);
+            r.setAttribute("ry", ninfo == null ? (ellipse ? "28" : "15") : ninfo.ry);
+            r.setAttribute("stroke", ninfo == null ? "#587aa9" : ninfo.stroke);
+            r.setAttribute("stroke-width", ninfo == null ? "1.3" : ninfo.strokewidth);
+            r.textContent = "jiedian";
+            r.addEventListener("mousedown", function (e) {
+                removeSelect();
+                this.setAttribute("stroke", "red");
+                x1 = e.clientX;
+                y1 = e.clientY;
+                vx = parseFloat(this.getAttribute("x"));
+                vy = parseFloat(this.getAttribute("y"));
+                if (starline) {
+                    let w = parseFloat(this.getAttribute("width"));
+                    let h = parseFloat(this.getAttribute("height"));
+                    if ((currline != null && currline != undefined) && (starlineobj == null || starlineobj == undefined)) {
+                        let points = (vx + w / 2).toString() + "," + (vy + h).toString() + " " + (vx + w / 2).toString() + "," + (vy + h).toString();
+                        currline.setAttribute("points", points);
+                        starlineobj = this;
+                        nodesData.forEach(function (o) {
+                            if (o.ElemObj == starlineobj) {
+                                o.Starlines.push(new LineInfo(currline));
+                            }
+                        });
+                    }
+                    else if ((currline != null && currline != undefined) && (endlineobj == null || endlineobj == undefined)) {
+                        let sy = parseFloat(starlineobj.getAttribute("y"));
+                        let sx = parseFloat(starlineobj.getAttribute("x"));
+                        let pts = getpolylinePoints(currline);
+                        let curx = pts[0].x;
+                        let cury = pts[0].y;
+                        let pointstr;
+                        if (starlineobj == this) {
+                            alert("起点与终点不能是相同节点");
+                            return;
+                        }
+                        if (Math.abs(sy - vy) < h) {
+                            pointstr = (sx < vx ? curx + w / 2 : curx - w / 2).toString() + "," + (cury - h / 2).toString() + " " +
+                                (sx < vx ? vx : vx + w).toString() + "," + (vy + h / 2).toString();
+                        }
+                        else {
+                            pts[1].x = vx + w / 2;
+                            if (sy - vy > 0) {
+                                pts[0].y = pts[0].y - h;
+                                pts[1].y = vy + h;
+
+                            }
+                            else
+                                pts[1].y = vy;
+                            pointstr = pts[0].x.toString() + "," + pts[0].y.toString() + " " + pts[1].x.toString() + "," + pts[1].y;
+                        }
+                        currline.setAttribute("points", pointstr);
+                        endlineobj = this;
+                        //let nextnode;
+                        nodesData.forEach(function (o) {
+                            if (o.ElemObj == endlineobj) {
+                                o.Endlines.push(new LineInfo(currline));
+                                //nextnode = o;
+                            }
+                        });
+                        //nodesData.forEach(function (o) {
+                        //    if (o.ElemObj == starlineobj) {
+                        //        o.NextNode.push(nextnode);
+                        //    }
+                        //});
+                        currline.setAttribute("marker-end", "url(#arrow)");
+                        starline = false;
+                        starlineobj = null;
+                        endlineobj = null;
+                        currline = null;
+                    }
+                }
+                else {
+                    nextobj = this.nextSibling;
+                    dragtarget = this;
+                    vx1 = parseFloat(nextobj.getAttribute("x"));
+                    vy1 = parseFloat(nextobj.getAttribute("y"));
+                    isclik = 1;
+                    nodesData.forEach(function (o) {
+                        if (o.ElemObj == dragtarget) {
+                            let pts;
+                            o.Starlines.forEach(function (ln) {
+                                pts = getpolylinePoints(ln.Line);
+                                if (pts.length == 2) {
+                                    ln.x1 = pts[0].x;
+                                    ln.y1 = pts[0].y;
+                                    ln.x2 = pts[1].x;
+                                    ln.y2 = pts[1].y;
+                                }
+                                else if (pts.length == 4) {
+                                    ln.x1 = pts[0].x;
+                                    ln.y1 = pts[0].y;
+                                    ln.x2 = pts[3].x;
+                                    ln.y2 = pts[3].y;
+                                }
+
+                            });
+                            o.Endlines.forEach(function (ln) {
+                                pts = getpolylinePoints(ln.Line);
+                                if (pts.length == 2) {
+                                    ln.x1 = pts[0].x;
+                                    ln.y1 = pts[0].y;
+                                    ln.x2 = pts[1].x;
+                                    ln.y2 = pts[1].y;
+                                }
+                                else if (pts.length == 4) {
+                                    ln.x1 = pts[0].x;
+                                    ln.y1 = pts[0].y;
+                                    ln.x2 = pts[3].x;
+                                    ln.y2 = pts[3].y;
+                                }
+                            });
+                        }
+
+                    });
+                }
+            });
+            r.addEventListener("mousemove", mousemoveEvent);
+            r.addEventListener("mouseup", function (e) {
+                isclik = 0;
+                dragtarget = null;
+                this.removeEventListener("mousemove", mousemoveEvent);
+            });
+            r.addEventListener("click", function (e) {
+                var oEvent = e || event;
+
+                oEvent.cancelBubble = true;
+            });
+            can.append(r);
+            var node = new FlowNode((ninfo == null || (ninfo.ID == null || ninfo.ID == undefined)) ? guid() : ninfo.ID);
+            node.ElemObj = r;
+            nodesData.push(node);
+            var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            t.setAttribute("x", ninfo == null ? "218" : parseFloat(ninfo.x) + 58);
+            t.setAttribute("y", ninfo == null ? "239" : parseFloat(ninfo.y) + 29);
+            t.setAttribute("text-anchor", "middle");
+            t.setAttribute("font", "10px &quot;Arial&quot;");
+            t.setAttribute("fill", "#000000");
+            //r2.setAttribute("fill", "#000000");
+            can.append(t);
+            var sp = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+            //sp.setAttribute("x", "0");
+            sp.setAttribute("dy", "0.4em");
+            sp.textContent = "节点限制6字";
+            t.appendChild(sp);
+            //sp = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+            //sp.setAttribute("dy", "1em");
+            ////sp.setAttribute("x", "218");
+            //// sp.setAttribute("y", "250");
+            //sp.textContent = "贷款首付是的咖";
+            //t.appendChild(sp);
+
+            var mousemoveEvent = function (e) {
+                if (isclik == 1) {
+                    if ((vx + (e.clientX - x1)) >= 0 && (vy + (e.clientY - y1)) >= 0) {
+                        this.setAttribute("x", vx + (e.clientX - x1));
+                        this.setAttribute("y", vy + (e.clientY - y1));
+                        nextobj.setAttribute("x", vx1 + (e.clientX - x1));
+                        nextobj.setAttribute("y", vy1 + (e.clientY - y1));
+
+                        //nodesData.forEach(function (o) {
+                        //    if (o.ElemObj == dragtarget) {
+                        //        if (o.Starlines != null && o.Starlines.length > 0) {
+                        //            $.each(o.Starlines, function (i, o) {
+                        //            });
+                        //        }
+                        //    }
+                        //});
+                    }
+
+                }
+            }
+        }
+
+        function addLine(linfo) {
+            removeSelect();
+            removeCurrLineElem();
+            if (virtualNode != null || virtualNode != undefined) {
+                can.removeChild(virtualNode);
+                createnode = false;
+                virtualNode = null;
+            }
+            var l = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            if (linfo == null || linfo == undefined) {
+                starline = true;
+                l.setAttribute("points", "0,0 0,0");
+                l.setAttribute("stroke", "#587aa9");
+                l.setAttribute("stroke-width", 2);
+                l.setAttribute("fill", "none");
+            }
+            else {
+                //l.setAttribute("x1", linfo.x1);
+                //l.setAttribute("y1", linfo.y1);
+                //l.setAttribute("x2", linfo.x2);
+                //l.setAttribute("y2", linfo.y2);
+                //l.setAttribute("stroke", "#587aa9");
+                //l.setAttribute("stroke-width", 2);
+                //l.setAttribute("marker-end", "url(#arrow)");
+                //let pts = [];
+                //pts.push(new pointobj{ x: linfo.x1, y: linfo.y1 });
+                let pstr = linfo.x1 + "," + linfo.y1 + " " + linfo.x2 + "," + linfo.y2;
+                if (linfo.x3 != null && linfo.x3 != undefined)
+                    pstr += " " + linfo.x3 + "," + linfo.y3;
+                if (linfo.x4 != null && linfo.x4 != undefined)
+                    pstr += " " + linfo.x4 + "," + linfo.y4;
+                l.setAttribute("points", pstr);
+                l.setAttribute("stroke", "#587aa9");
+                l.setAttribute("stroke-width", 2);
+                l.setAttribute("fill", "none");
+                l.setAttribute("marker-end", "url(#arrow)");
+            }
+            l.addEventListener("click", function (e) {
+                removeSelect();
+                var oEvent = e || event;
+                let thisobj = this, v1, v2;
+                currline = this;
+                let pts = getpolylinePoints(this);
+                let rt = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rt.setAttribute("id", "sys_select1");
+                rt.setAttribute("x", parseFloat(pts[0].x) - selectwidth);
+                rt.setAttribute("y", parseFloat(pts[0].y) - selectwidth);
+                rt.setAttribute("fill", "red");
+                rt.setAttribute("width", "10");
+                rt.setAttribute("height", "10");
+                can.append(rt);
+
+                let rt4 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rt4.setAttribute("id", "sys_select4");
+                rt4.setAttribute("x", pts.length == 2 ? (pts[1].x - 5) : pts[3].x - selectwidth);
+                rt4.setAttribute("y", pts.length == 2 ? pts[1].y - 5 : pts[3].y - selectwidth);
+                rt4.setAttribute("fill", "red");
+                rt4.setAttribute("width", "10");
+                rt4.setAttribute("height", "10");
+                can.append(rt4);
+                if (pts.length == 2) {
+                    v1 = Math.abs(pts[1].x - pts[0].x) / 3;
+                    v2 = Math.abs(pts[1].y - pts[0].y) / 3;
+                }
+                let rt2 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rt2.setAttribute("id", "sys_select2");
+                rt2.setAttribute("x", pts.length == 2 ? (pts[0].x > pts[1].x ? pts[0].x - v1 - selectwidth : pts[0].x + v1 - selectwidth) : pts[1].x - selectwidth);
+                rt2.setAttribute("y", pts.length == 2 ? (pts[0].y > pts[1].y ? pts[0].y - v2 - selectwidth : pts[0].y + v2 - selectwidth) : pts[1].y - selectwidth);
+                rt2.setAttribute("fill", "red");
+                rt2.setAttribute("width", "10");
+                rt2.setAttribute("height", "10");
+                rt2.addEventListener("mousedown", function (e) {
+                    let oEvent2 = e || event;
+                    movlineselect = true;
+                    starline = false;
+                    createnode = false;
+                    isclik = 0;
+                    dragselecpoint = this;
+                    x1 = e.clientX;
+                    y1 = e.clientY;
+                    vx = parseFloat(this.getAttribute("x"));
+                    vy = parseFloat(this.getAttribute("y"));
+                });
+                rt2.addEventListener("mousemove", function (e) {
+                    let oEvent2 = e || event;
+                    if (movlineselect && thisobj != null && thisobj != undefined) {
+                        this.setAttribute("x", vx + (e.clientX - x1));
+                        this.setAttribute("y", vy + (e.clientY - y1));
+                        retsetPoints(thisobj);
+                    }
+                });
+                rt2.addEventListener("mouseup", function (e) {
+                    let oEvent2 = e || event;
+                    movlineselect = false;
+                    dragselecpoint = null;
+                });
+                rt2.addEventListener("click", function (e) {
+                    let oEvent2 = e || event;
+                    oEvent2.cancelBubble = true;
+                });
+                can.append(rt2);
+
+                let rt3 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rt3.setAttribute("id", "sys_select3");
+                rt3.setAttribute("x", pts.length == 2 ? (pts[0].x > pts[1].x ? pts[0].x - 2 * v1 - selectwidth : pts[0].x + 2 * v1 - selectwidth) : pts[2].x - selectwidth);
+                rt3.setAttribute("y", pts.length == 2 ? (pts[0].y > pts[1].y ? pts[0].y - 2 * v2 - selectwidth : pts[0].y + 2 * v2 - selectwidth) : pts[2].y - selectwidth);
+                rt3.setAttribute("fill", "red");
+                rt3.setAttribute("width", "10");
+                rt3.setAttribute("height", "10");
+                rt3.addEventListener("mousedown", function (e) {
+                    let oEvent2 = e || event;
+                    movlineselect = true;
+                    starline = false;
+                    createnode = false;
+                    isclik = 0;
+                    dragselecpoint = this;
+                    x1 = e.clientX;
+                    y1 = e.clientY;
+                    vx = parseFloat(this.getAttribute("x"));
+                    vy = parseFloat(this.getAttribute("y"));
+                });
+                rt3.addEventListener("mousemove", function (e) {
+                    let oEvent2 = e || event;
+                    if (movlineselect && thisobj != null && thisobj != undefined) {
+                        this.setAttribute("x", vx + (e.clientX - x1));
+                        this.setAttribute("y", vy + (e.clientY - y1));
+                        retsetPoints(thisobj);
+                    }
+                });
+                rt3.addEventListener("mouseup", function (e) {
+                    let oEvent2 = e || event;
+                    movlineselect = false;
+                    dragselecpoint = null;
+                });
+                rt3.addEventListener("click", function (e) {
+                    let oEvent2 = e || event;
+                    oEvent2.cancelBubble = true;
+                });
+                can.append(rt3);
+                retsetPoints(thisobj);
+                nodesData.forEach(function (o) {
+                    o.Starlines.forEach(function (l) {
+                        if (l.Line == thisobj)
+                            l.Select = true;
+                    });
+                    o.Endlines.forEach(function (l) {
+                        if (l.Line == thisobj)
+                            l.Select = true;
+                    });
+                });
+                oEvent.cancelBubble = true;
+            });
+            can.append(l);
+            currline = l;
+        }
+
+        function FlowNode(id) {
+            this.ID = id;
+            this.ElemObj;
+            //this.PreNode=[];
+            //this.NextNode=[];
+            this.Starlines = [];
+            this.Endlines = [];
+        }
+        function LineInfo(lineElem) {
+            this.Line = lineElem;
+            this.x1;
+            this.y1;
+            this.x2;
+            this.y2;
+            this.x3;
+            this.y3;
+            this.x4;
+            this.y4;
+            this.Select = false;
+        }
+        function NodeInfo() {
+            this.ID;
+            this.x;
+            this.y;
+            this.r;
+            this.rx;
+            this.ry;
+            this.width;
+            this.height;
+            this.fill;
+            this.stroke;
+            this.strokewidth;
+            this.nodeText;
+            this.NextNodes = [];
+            this.Lines = [];
+        }
+
+        function guid() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function removeSelect() {
+            //let s = document.getElementById("sys_select1");
+            //if (s != null && s != undefined) {
+            //    s.remove();
+            //}
+            //s = document.getElementById("sys_select2");
+            //if (s != null && s != undefined) {
+            //    s.remove();
+            //}
+            removeLineSelectElem();
+            //removeCurrLineElem();
+            nodesData.forEach(function (o) {
+                o.Starlines.forEach(function (l) {
+                    l.Select = false;
+                });
+                o.Endlines.forEach(function (l) {
+                    l.Select = false;
+                });
+            });
+            nodesData.forEach(function (o) {
+                o.ElemObj.setAttribute("stroke", "#587aa9");
+            });
+        }
+
+        function deletenode() {
+            //let deletindex;
+            $.each(nodesData, function (index, o) {
+                if (o.ElemObj.getAttribute("stroke") == "red") {
+                    $.each(o.Starlines, function (i, l) {
+                        $.each(nodesData, function (n, o2) {
+                            $.each(o2.Endlines, function (i2, l2) {
+                                if (l2.Line == l.Line) {
+                                    o2.Endlines.splice(i2, 1);
+                                    return false;
+                                }
+                            });
+                        });
+                        can.removeChild(l.Line);
+                    });
+                    o.Starlines.length = 0;
+                    $.each(o.Endlines, function (i, l) {
+                        $.each(nodesData, function (n, o2) {
+                            $.each(o2.Starlines, function (i2, l2) {
+                                if (l2.Line == l.Line) {
+                                    o2.Starlines.splice(i2, 1);
+                                    return false;
+                                }
+                            });
+                        });
+                        can.removeChild(l.Line);
+                    });
+                    o.Endlines.length = 0;
+                    can.removeChild(o.ElemObj.nextSibling);
+                    can.removeChild(o.ElemObj);
+                    nodesData.splice(index, 1);
+                    return false;
+                }
+            });
+            removeLineSelectElem();
+            $.each(nodesData, function (index, o) {
+                $.each(o.Starlines, function (i, l) {
+                    if (l.Select) {
+                        can.removeChild(l.Line);
+                        o.Starlines.splice(i, 1);
+                        return false;
+                    }
+                });
+                $.each(o.Endlines, function (i, l) {
+                    if (l.Select) {
+                        //can.removeChild(l.Line);
+                        o.Endlines.splice(i, 1);
+                        return false;
+                    }
+                });
+            });
+        }
+
+        function removeLineSelectElem() {
+            let s;
+            for (i = 1; i < 5; i++) {
+                s = document.getElementById("sys_select" + i);
+                if (s != null && s != undefined) {
+                    s.remove();
+                }
+            }
+            //let s = document.getElementById("sys_select1");
+            //if (s != null && s != undefined) {
+            //    s.remove();
+            //}
+            //s = document.getElementById("sys_select2");
+            //if (s != null && s != undefined) {
+            //    s.remove();
+            //}
+            //s = document.getElementById("sys_select3");
+            //if (s != null && s != undefined) {
+            //    s.remove();
+            //}
+        }
+
+        function removeCurrLineElem() {
+            if (starline && currline != null && currline != undefined) {
+                if (starlineobj != null && starlineobj != undefined) {
+                    nodesData.forEach(function (o) {
+                        if (o.ElemObj == starlineobj) {
+                            $.each(o.Starlines, function (i, l) {
+                                if (l.Line == currline) {
+                                    o.Starlines.splice(i, 1);
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                }
+                can.removeChild(currline);
+
+                currline = null;
+                starline = false;
+                starlineobj = null;
+            }
+        }
+        var data = [];
+        function save() {
+            let ninfo, linfo;
+            data.length = 0;
+            nodesData.forEach(function (o) {
+                ninfo = createNodeinfo(o.ElemObj);
+                ninfo.ID = o.ID;
+                $.each(o.Starlines, function (i, l) {
+                    linfo = new LineInfo(l.Line);
+                    let pts = getpolylinePoints(l.Line);
+                    linfo.x1 = pts[0].x;
+                    linfo.y1 = pts[0].y;
+                    linfo.x2 = pts[1].x;
+                    linfo.y2 = pts[1].y;
+                    if (pts.length > 2) {
+                        linfo.x3 = pts[2].x;
+                        linfo.y3 = pts[2].y;
+                        linfo.x4 = pts[3].x;
+                        linfo.y4 = pts[3].y;
+                    }
+                    //linfo.x1 = l.Line.getAttribute("x1");
+                    //linfo.y1 = l.Line.getAttribute("y1");
+                    //linfo.x2 = l.Line.getAttribute("x2");
+                    //linfo.y2 = l.Line.getAttribute("y2");
+                    ninfo.Lines.push(linfo);
+                    $.each(nodesData, function (n, o2) {
+                        $.each(o2.Endlines, function (i2, l2) {
+                            if (l2.Line == l.Line) {
+                                //ninfo = createNodeinfo(o2.ElemObj);
+                                //ninfo.ID = o2.ID;
+                                ninfo.NextNodes.push(o2.ID);
+                                return false;
+                            }
+                        });
+                    });
+                });
+                data.push(ninfo);
+            });
+            let datastr = JSON.stringify(data);
+        }
+
+        function Initialdata() {
+            can.innerHTML = "";
+            let def = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+            can.append(def);
+            let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+            marker.setAttribute("id", "arrow");
+            marker.setAttribute("markerUnits", "strokeWidth");
+            marker.setAttribute("markerWidth", "8");
+            marker.setAttribute("markerHeight", "8");
+            marker.setAttribute("viewBox", "0 0 12 12");
+            marker.setAttribute("refX", "6");
+            marker.setAttribute("refY", "6");
+            marker.setAttribute("orient", "auto");
+            def.append(marker);
+            let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", "M2,2 L10,6 L2,10");
+            path.setAttribute("style", "fill: #000000;");
+            marker.append(path);
+
+            def = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+            def.setAttribute("style", "-webkit-tap-highlight-color: rgba(0, 0, 0, 0);");
+            can.append(def);
+            nodesData.length = 0;
+            if (data != null && data != undefined && data.length > 0) {
+                data.forEach(function (o) {
+                    addnode(false, o);
+                });
+                data.forEach(function (o) {
+                    if (o.Lines != null && o.Lines != undefined && o.Lines.length > 0) {
+                        $.each(o.Lines, function (i, l) {
+                            addLine(l);
+                            nodesData.forEach(function (o2) {
+                                if (o2.ID == o.ID) {
+                                    o2.Starlines.push(new LineInfo(currline));
+                                    o.NextNodes.forEach(function (nextid) {
+                                        nodesData.forEach(function (o3) {
+                                            if (nextid == o3.ID) {
+                                                let endptxy = getendpointxy(currline);
+                                                let x = parseFloat(o3.ElemObj.getAttribute("x"));
+                                                let y = parseFloat(o3.ElemObj.getAttribute("y"));
+                                                let w = parseFloat(o3.ElemObj.getAttribute("width"));
+                                                let h = parseFloat(o3.ElemObj.getAttribute("height"));
+                                                if (endptxy.x >= x - 5 && endptxy.x <= x + w + 5 &&
+                                                    endptxy.y >= y - 5 && endptxy.y <= y + h + 5)
+                                                    o3.Endlines.push(new LineInfo(currline));
+                                            }
+                                        });
+                                    });
+                                    return false;
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        }
+        function createNodeinfo(elem) {
+            let ninfo = new NodeInfo();
+            //ninfo.ID = o.ID;
+            ninfo.x = elem.getAttribute("x");
+            ninfo.y = elem.getAttribute("y");
+            ninfo.r = elem.getAttribute("r");
+            ninfo.rx = elem.getAttribute("rx");
+            ninfo.ry = elem.getAttribute("ry");
+            ninfo.width = elem.getAttribute("width");
+            ninfo.height = elem.getAttribute("height");
+            ninfo.fill = elem.getAttribute("fill");
+            ninfo.stroke = elem.getAttribute("stroke");
+            ninfo.strokewidth = elem.getAttribute("stroke-width");
+            return ninfo;
+        }
+        var testobj = [], testobj2 = [];
+        function test() {
+            let l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            l.setAttribute("x1", 0);
+            l.setAttribute("y1", 0);
+            l.setAttribute("x2", 50);
+            l.setAttribute("y2", 50);
+            l.setAttribute("stroke", "#587aa9");
+            l.setAttribute("stroke-width", 2);
+            can.appendChild(l);
+            testobj.push(l);
+            testobj2.push(l);
+
+            testobj.splice(0, 1);
+            can.removeChild(l);
+            //let l2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            //l2.setAttribute("x1", 0);
+            //l2.setAttribute("y1", 0);
+            //l2.setAttribute("stroke", "#587aa9");
+            //l2.setAttribute("stroke-width", 2);
+            //let rs = l == l2;
+        }
+
+        function getElementTop(element) {
+            var actualTop = element.offsetTop;    //这是获取元素距父元素顶部的距离
+            var current = element.parentElement;   //这是获取父元素
+            while (current !== null && current != undefined) {      //当它上面有元素时就继续执行
+                actualTop += current.offsetTop;   //这是获取父元素距它的父元素顶部的距离累加起来
+                current = current.offsetParent;　　//继续找父元素
+            }
+            return actualTop;
+        }
+
+        function pointobj() { this.x; this.y; };
+        function getpolylinePoints(pline) {
+            let pts = pline.getAttribute("points").split(" ");
+            let result = [];
+            let o;
+            if (pts != null && pts != undefined && pts.length > 0) {
+                pts.forEach(function (p) {
+                    let xy = p.split(",");
+                    o = new pointobj();
+                    o.x = parseFloat(xy[0]);
+                    o.y = parseFloat(xy[1]);
+                    result.push(o);
+                });
+            }
+            return result;
+
+        }
+
+        function getpointstr(pts) {
+            let pointstr = "";
+            if (pts != null && pts != undefined) {
+                pts.forEach(function (p) {
+                    if (pointstr.length > 0) {
+                        pointstr += " ";
+                    }
+                    pointstr += p.x.toString() + "," + p.y.toString();
+                });
+            }
+            return pointstr;
+        }
+
+        function retsetPoints(pline) {
+            let x1 = parseFloat(document.getElementById("sys_select1").getAttribute("x")) + selectwidth,
+                y1 = parseFloat(document.getElementById("sys_select1").getAttribute("y")) + selectwidth,
+                x2 = parseFloat(document.getElementById("sys_select2").getAttribute("x")) + selectwidth,
+                y2 = parseFloat(document.getElementById("sys_select2").getAttribute("y")) + selectwidth,
+                x3 = parseFloat(document.getElementById("sys_select3").getAttribute("x")) + selectwidth,
+                y3 = parseFloat(document.getElementById("sys_select3").getAttribute("y")) + selectwidth,
+                x4 = parseFloat(document.getElementById("sys_select4").getAttribute("x")) + selectwidth,
+                y4 = parseFloat(document.getElementById("sys_select4").getAttribute("y")) + selectwidth;
+            pline.setAttribute("points", x1 + "," + y1 + " " + x2 + "," + y2 + " " + x3 + "," + y3 + " " + x4 + "," + y4);
+        }
+
+        function getendpointxy(pline) {
+            let pts = getpolylinePoints(pline);
+            if (pts.length == 2)
+                return pts[1];
+            else if (pts.length == 4)
+                return pts[3];
+            return null;
+        }
+    </script>
+</body>
+</html>
